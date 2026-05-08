@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 02 — Database Design · DB·MASTERY</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#eef2f7;--surface:#ffffff;--card:#f4f7fb;--border:#dde4ef;--border2:#c5cedf;
+  --text:#1a2440;--muted:#5a6a85;--dim:#8fa0bb;
+  --phase:#7c3aed;--phaseb:#ede9fe;--phased:#6d28d9;
+  --blue:#0284c7;--blueb:#e0f2fe;--blued:#0369a1;
+  --purple:#7c3aed;--purpleb:#ede9fe;
+  --green:#059669;--greenb:#d1fae5;--greend:#047857;
+  --orange:#d97706;--orangeb:#fef3c7;
+  --yellow:#b45309;--yellowb:#fef9c3;
+  --red:#dc2626;--redb:#fee2e2;
+  --teal:#0d9488;--tealb:#ccfbf1;
+  --indigo:#4338ca;--indigob:#e0e7ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;min-height:100vh}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;padding:0 24px;gap:0;box-shadow:0 1px 6px rgba(0,60,120,.06)}
+.nav-logo{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--text);padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:8px;white-space:nowrap;flex-shrink:0}
+.nav-logo span{color:var(--phase)}
+.nav-tab{padding:14px 12px;font-size:11px;font-weight:600;letter-spacing:.05em;cursor:pointer;color:var(--muted);transition:color .15s;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent;user-select:none}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--text);border-bottom-color:var(--phase)}
+.nav-tab.done-tab{color:var(--greend)}
+.nav-tab.done-tab.active{color:var(--text);border-bottom-color:var(--phase)}
+
+/* LAYOUT */
+.page{display:none;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.page.active{display:block}
+#page-home:not(.active){display:none}
+
+/* HERO */
+.hero{padding:56px 40px 40px;max-width:1100px;margin:0 auto}
+.eyebrow{font-size:11px;letter-spacing:.2em;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:14px}
+h1{font-size:48px;font-weight:800;line-height:1;letter-spacing:-.03em;margin-bottom:14px;color:var(--text)}
+h1 span{color:var(--phase)}
+.hero-sub{font-size:14px;color:var(--muted);max-width:600px;line-height:1.65;margin-bottom:36px}
+
+/* HERO GRID */
+.hero-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:7px;max-width:1100px;margin:0 40px 40px}
+.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px 10px;cursor:pointer;transition:border-color .15s,transform .12s,box-shadow .15s;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,60,120,.04);display:flex;align-items:center;gap:10px}
+.hero-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;border-radius:10px 0 0 10px}
+.hero-card.c-purple::before{background:var(--purple)}
+.hero-card.c-blue::before{background:var(--blue)}
+.hero-card.c-green::before{background:var(--green)}
+.hero-card.c-orange::before{background:var(--orange)}
+.hero-card.c-teal::before{background:var(--teal)}
+.hero-card.c-indigo::before{background:var(--indigo)}
+.hero-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,60,120,.09)}
+.hero-card-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.hero-card-body{flex:1;min-width:0}
+.hero-card-num{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px}
+.hero-card-title{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.status{font-size:9px;padding:2px 7px;border-radius:99px;display:inline-block;font-weight:600;letter-spacing:.04em}
+.hero-card-arrow{font-size:13px;color:var(--dim);flex-shrink:0;font-weight:300}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.page-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:8px}
+.lesson-num{font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.page-title{font-size:30px;font-weight:800;letter-spacing:-.02em}
+.back-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-family:'Syne',sans-serif;color:var(--muted);cursor:pointer;transition:color .15s,border-color .15s;white-space:nowrap}
+.back-btn:hover{color:var(--text);border-color:var(--border2)}
+.page-desc{font-size:13px;color:var(--muted);line-height:1.65;max-width:680px}
+
+/* COLLAPSIBLE SECTIONS */
+.section{margin-bottom:6px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface)}
+.section-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:12px 16px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;transition:background .12s;margin-bottom:0}
+.section-title:hover{background:var(--card)}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.section-chevron{font-size:11px;color:var(--dim);margin-left:4px;transition:transform .2s;flex-shrink:0}
+.section-title.sec-open{color:var(--phase);background:var(--card);border-bottom:1px solid var(--border)}
+.section-title.sec-open .section-chevron{transform:rotate(180deg)}
+.section-body{display:none;padding:14px 16px 12px}
+.section-body.sec-open{display:block}
+
+/* EXPAND BAR */
+.expand-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:0 2px}
+.expand-bar-label{font-size:11px;color:var(--dim)}
+.expand-all-btn{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--muted);cursor:pointer;transition:all .15s}
+.expand-all-btn:hover{color:var(--text);border-color:var(--border2)}
+
+/* CONCEPT CARDS */
+.concepts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.concept{background:var(--surface);border-radius:10px;padding:12px 16px;border:1px solid var(--border);border-left:3px solid var(--border2)}
+.concept.purple{border-left-color:var(--purple)}
+.concept.blue{border-left-color:var(--blue)}
+.concept.green{border-left-color:var(--green)}
+.concept.orange{border-left-color:var(--orange)}
+.concept.teal{border-left-color:var(--teal)}
+.concept.yellow{border-left-color:var(--yellow)}
+.concept.indigo{border-left-color:var(--indigo)}
+.concept-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.concept-desc{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* CODE BLOCKS */
+.code-block{background:#f8fafc;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,60,120,.04)}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--surface);gap:8px;flex-wrap:wrap}
+.code-header-left{display:flex;align-items:center;gap:8px}
+.code-label{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.code-label.sql{color:var(--blue)}
+.code-label.bash{color:var(--green)}
+.code-label.output{color:var(--orange)}
+.code-label.conf{color:var(--purple)}
+.copy-btn{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);background:none;border:1px solid var(--border);border-radius:5px;padding:3px 8px;cursor:pointer;transition:color .15s,border-color .15s}
+.copy-btn:hover{color:var(--text);border-color:var(--border2)}
+.copy-btn.copied{color:var(--green);border-color:var(--green)}
+.code-body{padding:16px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#334155;line-height:1.75;overflow-x:auto;white-space:pre;background:#f8fafc}
+.kw{color:#0284c7}.fn{color:#7c3aed}.str{color:#059669}.cm{color:#94a3b8}.num{color:#d97706}.op{color:#db2777}.tp{color:#b45309}.tb{color:#0d9488}
+
+/* EXAMPLE BADGES */
+.example-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.04em}
+.example-badge.ehr{background:#ccfbf1;color:#0d9488}
+.example-badge.db{background:#fee2e2;color:#EC0016}
+
+/* CALLOUTS */
+.callout{border-radius:0 10px 10px 0;padding:12px 16px;margin-bottom:16px;border:1px solid transparent;border-left-width:3px}
+.callout .lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.callout p,.callout li{font-size:12px;line-height:1.65}
+.callout ul{padding-left:16px}
+.callout li{margin-bottom:4px}
+.callout.tip{background:var(--greenb);border-color:#a7f3d0;border-left-color:var(--green)}
+.callout.tip .lbl{color:var(--green)}
+.callout.tip p,.callout.tip li{color:#065f46}
+.callout.warn{background:var(--yellowb);border-color:#fde68a;border-left-color:var(--yellow)}
+.callout.warn .lbl{color:var(--yellow)}
+.callout.warn p,.callout.warn li{color:#78350f}
+.callout.info{background:var(--blueb);border-color:#bae6fd;border-left-color:var(--blue)}
+.callout.info .lbl{color:var(--blue)}
+.callout.info p,.callout.info li{color:#075985}
+.callout.phr{background:var(--tealb);border-color:#99f6e4;border-left-color:var(--teal)}
+.callout.phr .lbl{color:var(--teal)}
+.callout.phr p,.callout.phr li{color:#134e4a}
+.callout.db{background:#fee2e2;border-color:#fca5a5;border-left-color:#EC0016}
+.callout.db .lbl{color:#b91c1c}
+.callout.db p,.callout.db li{color:#7f1d1d}
+.callout.interview{background:var(--indigob);border-color:#a5b4fc;border-left-color:var(--indigo)}
+.callout.interview .lbl{color:#3730a3}
+.callout.interview p{color:#312e81;font-weight:600}
+.callout.scenario{background:#1e293b;color:#e2e8f0;border-left-color:#dc2626;border-left-width:4px}
+.callout.scenario .lbl{color:#f87171;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.callout.scenario p{font-size:12px;line-height:1.6;color:#e2e8f0}
+.callout.scenario ol,.callout.scenario ul{padding-left:16px}
+.callout.scenario li{font-size:12px;line-height:1.6;color:#cbd5e1;margin-bottom:4px}
+
+/* INTERVIEW Q&A */
+.qa-list{display:flex;flex-direction:column;gap:8px}
+.qa-item{border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.qa-q{padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;background:var(--bg);transition:background .12s;display:flex;justify-content:space-between;align-items:center}
+.qa-q::after{content:'▾';font-size:11px;color:var(--dim);transition:transform .2s}
+.qa-q.open::after{transform:rotate(180deg)}
+.qa-q:hover{background:var(--card)}
+.qa-a{display:none;padding:12px 14px;border-top:1px solid var(--border)}
+.qa-a.open{display:block}
+.qa-a p{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:8px}
+
+/* CHALLENGE BOX */
+.challenge{background:var(--surface);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,60,120,.05)}
+.challenge-head{padding:12px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .12s}
+.challenge-head:hover{background:var(--card)}
+.challenge-head-left{display:flex;align-items:center;gap:10px}
+.challenge-badge{font-size:10px;font-weight:700;letter-spacing:.08em;background:var(--yellowb);color:var(--yellow);border:1px solid #fde68a;border-radius:99px;padding:2px 8px}
+.challenge-title{font-size:13px;font-weight:600;color:var(--text)}
+.challenge-arrow{font-size:12px;color:var(--muted);transition:transform .2s}
+.challenge-arrow.open{transform:rotate(180deg)}
+.challenge-body{display:none;padding:16px;border-top:1px solid var(--border)}
+.challenge-body.open{display:block}
+.challenge-q{font-size:13px;color:var(--text);margin-bottom:12px;line-height:1.6}
+.answer-toggle{font-size:11px;color:var(--muted);cursor:pointer;text-decoration:underline;margin-bottom:8px;display:inline-block}
+.answer-toggle:hover{color:var(--text)}
+.answer{display:none}
+.answer.open{display:block}
+
+/* SCHEMA DIAGRAM */
+.schema-wrap{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+.schema-table{background:var(--surface);border:1px solid var(--border2);border-radius:8px;overflow:hidden;display:inline-block;min-width:200px;vertical-align:top;box-shadow:0 1px 3px rgba(0,60,120,.06)}
+.schema-table-head{background:var(--card);padding:8px 14px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border)}
+.schema-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.schema-col{padding:5px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);display:flex;gap:12px;border-top:1px solid var(--border)}
+.schema-col .col-name{color:var(--text);min-width:110px}
+.schema-col .pk{color:var(--yellow);font-size:10px;font-weight:700}
+.schema-col .fk{color:var(--purple);font-size:10px;font-weight:700}
+.schema-col .uk{color:var(--teal);font-size:10px;font-weight:700}
+
+/* LESSON NAV */
+.lesson-nav{display:flex;gap:8px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border);flex-wrap:wrap}
+.lesson-nav-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-size:12px;font-family:'Syne',sans-serif;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
+.lesson-nav-btn:hover{color:var(--text);border-color:var(--border2)}
+.lesson-nav-btn.primary{background:var(--phaseb);border-color:var(--phase);color:var(--phase)}
+.lesson-nav-btn.primary:hover{background:#ddd6fe}
+.mark-done-btn{margin-left:auto;background:var(--greenb);border:1px solid #a7f3d0;border-radius:8px;padding:10px 20px;font-size:12px;font-family:'Syne',sans-serif;font-weight:600;color:var(--green);cursor:pointer;transition:all .15s}
+.mark-done-btn:hover{background:#a7f3d0}
+.mark-done-btn.done{background:#a7f3d0;border-color:var(--greend);color:var(--greend)}
+
+/* COMPARE TABLE */
+.compare-table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:12px}
+.compare-table th{background:var(--card);padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:1px solid var(--border)}
+.compare-table td{padding:8px 12px;color:var(--text);border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table .mono{font-family:'JetBrains Mono',monospace;color:var(--purple)}
+.compare-table .good{color:var(--green);font-weight:600}
+.compare-table .bad{color:var(--red);font-weight:600}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+  .page,.hero{padding:24px 16px 60px}
+  .hero-grid{margin:0 16px 28px;grid-template-columns:1fr 1fr}
+  h1{font-size:34px}
+  .page-title{font-size:22px}
+  .lesson-nav{flex-direction:column}
+  .mark-done-btn{margin-left:0}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">📐 DB·<span>DESIGN</span></div>
+  <div class="nav-tab active" id="tab-home" onclick="goTo('home')">Home</div>
+  <div class="nav-tab" id="tab-l1" onclick="goTo('l1')">01</div>
+  <div class="nav-tab" id="tab-l2" onclick="goTo('l2')">02</div>
+  <div class="nav-tab" id="tab-l3" onclick="goTo('l3')">03</div>
+  <div class="nav-tab" id="tab-l4" onclick="goTo('l4')">04</div>
+  <div class="nav-tab" id="tab-l5" onclick="goTo('l5')">05</div>
+</nav>
+
+<!-- ═══ HOME ══════════════════════════════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+<div class="hero">
+  <div class="eyebrow">Phase 02 · Database Design · Interview Weight: LOW · 12h total</div>
+  <h1>Database<br><span>Design</span></h1>
+  <p class="hero-sub">The difference between a schema that works and one that scales. Good design is invisible — bad design causes years of pain. Master normalization, relationships, index strategy, and real-world patterns using Morafek CareMate EHR and Deutsche Bahn operational tables.</p>
+  <div class="callout info" style="margin-top:16px">
+    <div class="lbl">🔧 Engine note</div>
+    <p>The <code>CREATE TABLE</code> examples in this phase are engine-agnostic — normalization rules, constraint syntax, and relationship patterns apply equally to MySQL and MariaDB. Phase 01 uses <strong>MySQL 8</strong>; Phase 03 explicitly adopts <strong>MariaDB 10.11+</strong> and includes a compatibility diff table covering the points where the two engines diverge.</p>
+  </div>
+</div>
+<div class="hero-grid">
+  <div class="hero-card c-purple" onclick="goTo('l1')">
+    <div class="hero-card-icon" style="background:var(--purpleb)">📊</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--purple)">01 · 4h</div>
+      <div class="hero-card-title">Normalization 1NF→3NF</div>
+      <div class="status" style="background:var(--purpleb);color:var(--purple)" id="st-l1">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-blue" onclick="goTo('l2')">
+    <div class="hero-card-icon" style="background:var(--blueb)">🔗</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--blue)">02 · 3h</div>
+      <div class="hero-card-title">Keys, Constraints & Relationships</div>
+      <div class="status" style="background:var(--blueb);color:var(--blue)" id="st-l2">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-orange" onclick="goTo('l3')">
+    <div class="hero-card-icon" style="background:var(--orangeb)">⚡</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--orange)">03 · 3h</div>
+      <div class="hero-card-title">Index Design Strategy</div>
+      <div class="status" style="background:var(--orangeb);color:var(--orange)" id="st-l3">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-teal" onclick="goTo('l4')">
+    <div class="hero-card-icon" style="background:var(--tealb)">🏗️</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--teal)">04 · 2h</div>
+      <div class="hero-card-title">Schema Design Patterns</div>
+      <div class="status" style="background:var(--tealb);color:var(--teal)" id="st-l4">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-indigo" onclick="goTo('l5')">
+    <div class="hero-card-icon" style="background:var(--indigob)">🎤</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--indigo)">05 · 1h</div>
+      <div class="hero-card-title">Interview Q&amp;A</div>
+      <div class="status" style="background:var(--indigob);color:var(--indigo)" id="st-l5">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ LESSON 1: NORMALIZATION ══════════════════════════════════════════════ -->
+<div id="page-l1" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--phase)">Phase 02 · Lesson 01 · 4h</div>
+        <div class="page-title">Normalization — 1NF → 3NF</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">Normalization is the systematic process of structuring a database to reduce redundancy and improve data integrity. Understanding the normal forms tells an interviewer you can reason about schema correctness — not just write CREATE TABLE.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <!-- WHY THIS MATTERS -->
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Why This Matters<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:12px">Normalization is the foundation of every good relational schema. In an OS GmbH interview, Michael Nietsch will care less about your exact definition of 3NF and more about whether you can look at a schema and immediately spot the redundancy that will cause update anomalies in production. For Morafek CareMate, proper normalization is also a DSGVO requirement — patient data duplicated across tables means more surfaces for inconsistency and audit failure.</p>
+      <div class="callout interview">
+        <div class="lbl">🎯 Interview Anchor</div>
+        <p>"I normalize first, always to at least 3NF, then I selectively denormalize only where I have a measured read-performance problem and document the trade-off explicitly."</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORE CONCEPTS -->
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Core Concepts<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="concepts">
+        <div class="concept purple">
+          <div class="concept-name">1NF — Atomic values, no repeating groups</div>
+          <div class="concept-desc">Every column holds exactly one indivisible value. No comma-separated lists in a cell. No phone1/phone2/phone3 columns. Each row must be uniquely identifiable by a primary key.<br><br>
+          <strong>EHR:</strong> An early CareMate schema stored <code>allergies</code> as <code>"penicillin,aspirin,latex"</code> in one VARCHAR column. Querying for all penicillin patients required a LIKE '%penicillin%' scan. Fix: a separate <code>patient_allergies(patient_id, allergy)</code> table.<br>
+          <strong>OS/DB:</strong> A booking system that stored multiple seat numbers as <code>"12A,13A,14A"</code> in a single column could not enforce seat uniqueness or answer "which passengers are in row 12" without string parsing.</div>
+        </div>
+        <div class="concept blue">
+          <div class="concept-name">2NF — No partial dependencies (applies to composite PKs)</div>
+          <div class="concept-desc">Every non-key column must depend on the <em>entire</em> primary key, not just part of it. This only applies when the primary key is composite (multi-column). If a column depends on only one part of the composite PK, it belongs in a separate table.<br><br>
+          <strong>EHR:</strong> A visits table with PK <code>(visit_id, patient_id)</code> that also stored <code>patient_name</code> violated 2NF — patient_name depends on patient_id alone. Move it to the patients table.<br>
+          <strong>OS/DB:</strong> A bookings_details table with PK <code>(booking_id, route_id)</code> that stored <code>route_description</code> violated 2NF — that description depends only on route_id.</div>
+        </div>
+        <div class="concept green">
+          <div class="concept-name">3NF — No transitive dependencies</div>
+          <div class="concept-desc">Non-key columns must depend only on the primary key — not on other non-key columns. If column B determines column C, and B is not the PK, then C should be in a separate table keyed by B.<br><br>
+          <strong>EHR:</strong> Storing <code>icd10_code</code> and <code>icd10_description</code> in the visits table violates 3NF — the description is determined by the code, not the visit. A separate <code>icd10_codes(code, description, category)</code> lookup table solves this.<br>
+          <strong>OS/DB:</strong> Storing <code>station_id</code> and <code>station_city</code> in the routes table violates 3NF — city is determined by station_id, not by route_id.</div>
+        </div>
+        <div class="concept orange">
+          <div class="concept-name">BCNF — Boyce-Codd Normal Form (stricter 3NF)</div>
+          <div class="concept-desc">For every functional dependency A → B, A must be a superkey. BCNF catches edge cases that 3NF misses when there are multiple overlapping candidate keys. In practice, 3NF is sufficient for most operational databases — BCNF matters most for complex multi-key tables.<br><br>
+          <strong>EHR:</strong> Rarely relevant in CareMate's operational tables. Arises in cases like scheduling where multiple candidate keys overlap (doctor + time + room).<br>
+          <strong>OS/DB:</strong> Train assignment tables where (train_number, date) and (driver_id, date) are both candidate keys can create BCNF violations.</div>
+        </div>
+        <div class="concept yellow">
+          <div class="concept-name">When to deliberately denormalize</div>
+          <div class="concept-desc">Denormalization is a conscious trade-off: you duplicate data to improve read performance, at the cost of write complexity and risk of inconsistency. Always normalize first — measure the problem — then denormalize with documentation.<br><br>
+          <strong>EHR:</strong> A CareMate analytics dashboard that aggregates vitals by city over 5 years might denormalize city onto the vitals table rather than joining patients every time.<br>
+          <strong>OS/DB:</strong> Deutsche Bahn's reporting layer uses a star schema (denormalized) for monthly KPI queries, while the operational OLTP system remains in 3NF.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EHR EXAMPLE -->
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">EHR Example — Normalizing CareMate<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout phr">
+        <div class="lbl">🩺 Morafek CareMate Context</div>
+        <p>An early version of CareMate stored visit data in a single flat table. The normalization process below fixes all three normal form violations, producing the production schema used throughout this course.</p>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left">
+            <span class="code-label sql">SQL</span>
+            <span class="example-badge ehr">🩺 EHR</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="code-body"><span class="cm">-- ❌ BEFORE: Un-normalized "fat" visits table (violates all three NFs)</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">visits_bad</span> (
+  visit_id         <span class="fn">INT PRIMARY KEY</span>,
+  patient_id       <span class="fn">INT</span>,
+  patient_name     <span class="fn">VARCHAR</span>(<span class="num">200</span>),   <span class="cm">-- violates 2NF: depends on patient_id, not visit</span>
+  patient_allergies <span class="fn">VARCHAR</span>(<span class="num">500</span>),  <span class="cm">-- violates 1NF: comma-separated list</span>
+  doctor_id        <span class="fn">INT</span>,
+  doctor_name      <span class="fn">VARCHAR</span>(<span class="num">200</span>),   <span class="cm">-- violates 2NF: depends on doctor_id</span>
+  doctor_specialty <span class="fn">VARCHAR</span>(<span class="num">100</span>),   <span class="cm">-- violates 2NF: depends on doctor_id</span>
+  icd10_code       <span class="fn">VARCHAR</span>(<span class="num">10</span>),
+  icd10_description <span class="fn">VARCHAR</span>(<span class="num">300</span>),  <span class="cm">-- violates 3NF: depends on icd10_code</span>
+  reason           <span class="fn">TEXT</span>,
+  created_at       <span class="fn">DATETIME</span>
+);
+
+<span class="cm">-- ✅ AFTER: Normalized to 3NF — the actual CareMate schema</span>
+
+<span class="cm">-- Patients table: stores patient facts once</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">patients</span> (
+  id           <span class="fn">BIGINT</span>       <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  full_name    <span class="fn">VARCHAR</span>(<span class="num">200</span>) <span class="kw">NOT NULL</span>,
+  date_of_birth <span class="fn">DATE</span>        <span class="kw">NOT NULL</span>,
+  blood_type   <span class="fn">ENUM</span>(<span class="str">'A+'</span>,<span class="str">'A-'</span>,<span class="str">'B+'</span>,<span class="str">'B-'</span>,<span class="str">'AB+'</span>,<span class="str">'AB-'</span>,<span class="str">'O+'</span>,<span class="str">'O-'</span>),
+  city         <span class="fn">VARCHAR</span>(<span class="num">100</span>),
+  email        <span class="fn">VARCHAR</span>(<span class="num">255</span>) <span class="kw">UNIQUE</span>,
+  created_at   <span class="fn">DATETIME</span>     <span class="kw">NOT NULL DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>
+);
+
+<span class="cm">-- Fix 1NF violation: allergies in their own table (one row per allergy)</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">patient_allergies</span> (
+  patient_id   <span class="fn">BIGINT</span>       <span class="kw">NOT NULL</span>,
+  allergy      <span class="fn">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+  severity     <span class="fn">ENUM</span>(<span class="str">'mild'</span>,<span class="str">'moderate'</span>,<span class="str">'severe'</span>) <span class="kw">NOT NULL DEFAULT</span> <span class="str">'moderate'</span>,
+  recorded_at  <span class="fn">DATETIME</span>     <span class="kw">NOT NULL DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+  <span class="kw">PRIMARY KEY</span> (patient_id, allergy),               <span class="cm">-- composite PK prevents duplicates</span>
+  <span class="kw">FOREIGN KEY</span> (patient_id) <span class="kw">REFERENCES</span> <span class="tb">patients</span>(id) <span class="kw">ON DELETE CASCADE</span>
+);
+
+<span class="cm">-- Fix 3NF: ICD-10 codes in their own lookup table</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">icd10_codes</span> (
+  code        <span class="fn">VARCHAR</span>(<span class="num">10</span>)  <span class="kw">PRIMARY KEY</span>,
+  description <span class="fn">VARCHAR</span>(<span class="num">300</span>) <span class="kw">NOT NULL</span>,
+  category    <span class="fn">VARCHAR</span>(<span class="num">100</span>)
+);
+
+<span class="cm">-- Clean visits table: references parent tables, no redundant data</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">visits</span> (
+  id          <span class="fn">BIGINT</span>      <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  patient_id  <span class="fn">BIGINT</span>      <span class="kw">NOT NULL</span>,
+  doctor_id   <span class="fn">BIGINT</span>      <span class="kw">NOT NULL</span>,
+  icd10_code  <span class="fn">VARCHAR</span>(<span class="num">10</span>),
+  reason      <span class="fn">TEXT</span>,
+  status      <span class="fn">ENUM</span>(<span class="str">'scheduled'</span>,<span class="str">'completed'</span>,<span class="str">'cancelled'</span>) <span class="kw">NOT NULL DEFAULT</span> <span class="str">'scheduled'</span>,
+  notes       <span class="fn">TEXT</span>,
+  created_at  <span class="fn">DATETIME</span>    <span class="kw">NOT NULL DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+  <span class="kw">FOREIGN KEY</span> (patient_id) <span class="kw">REFERENCES</span> <span class="tb">patients</span>(id)   <span class="kw">ON DELETE RESTRICT</span>,
+  <span class="kw">FOREIGN KEY</span> (doctor_id)  <span class="kw">REFERENCES</span> <span class="tb">doctors</span>(id)    <span class="kw">ON DELETE RESTRICT</span>,
+  <span class="kw">FOREIGN KEY</span> (icd10_code) <span class="kw">REFERENCES</span> <span class="tb">icd10_codes</span>(code) <span class="kw">ON DELETE SET NULL</span>
+);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OS/DB EXAMPLE -->
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">OS/DB Example — Normalizing Booking Data<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout db">
+        <div class="lbl">🚂 OS / Deutsche Bahn Context</div>
+        <p>Operational services manages millions of daily bookings. A poorly normalized bookings table would mean updating a route's departure time in thousands of rows instead of one.</p>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left">
+            <span class="code-label sql">SQL</span>
+            <span class="example-badge db">🚂 OS/DB</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="code-body"><span class="cm">-- ❌ BEFORE: flat booking record (update anomaly nightmare)</span>
+<span class="cm">-- Updating a route departure time requires touching every booking row</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">bookings_bad</span> (
+  booking_id          <span class="fn">INT PRIMARY KEY</span>,
+  passenger_name      <span class="fn">VARCHAR</span>(<span class="num">200</span>),       <span class="cm">-- 2NF violation</span>
+  passenger_bahn_card <span class="fn">VARCHAR</span>(<span class="num">20</span>),        <span class="cm">-- 2NF violation</span>
+  origin_station      <span class="fn">VARCHAR</span>(<span class="num">100</span>),       <span class="cm">-- 2NF violation</span>
+  destination_station <span class="fn">VARCHAR</span>(<span class="num">100</span>),       <span class="cm">-- 2NF violation</span>
+  scheduled_departure <span class="fn">DATETIME</span>,           <span class="cm">-- 2NF violation</span>
+  origin_city         <span class="fn">VARCHAR</span>(<span class="num">100</span>),       <span class="cm">-- 3NF: city determined by station</span>
+  seat_number         <span class="fn">VARCHAR</span>(<span class="num">5</span>),
+  price               <span class="fn">DECIMAL</span>(<span class="num">8</span>,<span class="num">2</span>)
+);
+
+<span class="cm">-- ✅ AFTER: 3NF — normalized OS production schema</span>
+
+<span class="kw">CREATE TABLE</span> <span class="tb">stations</span> (
+  id        <span class="fn">INT</span>          <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  name      <span class="fn">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+  city      <span class="fn">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,   <span class="cm">-- city lives here, not in routes</span>
+  eva_code  <span class="fn">VARCHAR</span>(<span class="num">10</span>)  <span class="kw">UNIQUE</span>       <span class="cm">-- Deutsche Bahn station code</span>
+);
+
+<span class="kw">CREATE TABLE</span> <span class="tb">passengers</span> (
+  id               <span class="fn">BIGINT</span>       <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  name             <span class="fn">VARCHAR</span>(<span class="num">200</span>) <span class="kw">NOT NULL</span>,
+  bahn_card_number <span class="fn">VARCHAR</span>(<span class="num">20</span>)  <span class="kw">UNIQUE</span>,
+  loyalty_tier     <span class="fn">ENUM</span>(<span class="str">'none'</span>,<span class="str">'silver'</span>,<span class="str">'gold'</span>,<span class="str">'senator'</span>) <span class="kw">DEFAULT</span> <span class="str">'none'</span>,
+  email            <span class="fn">VARCHAR</span>(<span class="num">255</span>) <span class="kw">UNIQUE NOT NULL</span>
+);
+
+<span class="kw">CREATE TABLE</span> <span class="tb">routes</span> (
+  id                    <span class="fn">INT</span>      <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  origin_station_id     <span class="fn">INT</span>      <span class="kw">NOT NULL</span>,
+  destination_station_id <span class="fn">INT</span>     <span class="kw">NOT NULL</span>,
+  scheduled_departure   <span class="fn">DATETIME</span> <span class="kw">NOT NULL</span>,
+  scheduled_arrival     <span class="fn">DATETIME</span> <span class="kw">NOT NULL</span>,
+  <span class="kw">FOREIGN KEY</span> (origin_station_id)      <span class="kw">REFERENCES</span> <span class="tb">stations</span>(id),
+  <span class="kw">FOREIGN KEY</span> (destination_station_id) <span class="kw">REFERENCES</span> <span class="tb">stations</span>(id)
+);
+
+<span class="kw">CREATE TABLE</span> <span class="tb">bookings</span> (
+  id           <span class="fn">BIGINT</span>          <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  passenger_id <span class="fn">BIGINT</span>          <span class="kw">NOT NULL</span>,
+  route_id     <span class="fn">INT</span>             <span class="kw">NOT NULL</span>,
+  seat_number  <span class="fn">VARCHAR</span>(<span class="num">5</span>),
+  class        <span class="fn">ENUM</span>(<span class="str">'1st'</span>,<span class="str">'2nd'</span>) <span class="kw">NOT NULL DEFAULT</span> <span class="str">'2nd'</span>,
+  price        <span class="fn">DECIMAL</span>(<span class="num">8</span>,<span class="num">2</span>)   <span class="kw">NOT NULL</span>,
+  status       <span class="fn">ENUM</span>(<span class="str">'confirmed'</span>,<span class="str">'cancelled'</span>,<span class="str">'used'</span>) <span class="kw">NOT NULL DEFAULT</span> <span class="str">'confirmed'</span>,
+  booked_at    <span class="fn">DATETIME</span>        <span class="kw">NOT NULL DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+  <span class="kw">FOREIGN KEY</span> (passenger_id) <span class="kw">REFERENCES</span> <span class="tb">passengers</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
+  <span class="kw">FOREIGN KEY</span> (route_id)     <span class="kw">REFERENCES</span> <span class="tb">routes</span>(id)     <span class="kw">ON DELETE RESTRICT</span>
+);
+
+<span class="cm">-- Now updating Frankfurt Hbf departure time touches ONE row in routes
+-- Not millions of rows in bookings — this is the power of normalization</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMON PITFALLS -->
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Common Pitfalls<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout warn">
+        <div class="lbl">⚠️ Storing lists in a single column</div>
+        <p>The most common 1NF violation: <code>tags VARCHAR(500)</code> storing <code>"urgent,cardiology,follow-up"</code>. This breaks indexing, prevents proper FK relationships, and makes any query on individual tags a full-table scan with LIKE. Always create a junction table.</p>
+      </div>
+      <div class="callout warn">
+        <div class="lbl">⚠️ Premature denormalization "for performance"</div>
+        <p>Adding redundant columns before measuring an actual performance problem is technical debt, not optimization. Joins in a properly indexed 3NF schema are extremely fast. Denormalize only after you have EXPLAIN output proving a join is the bottleneck — and document the decision in a schema comment.</p>
+      </div>
+      <div class="callout warn">
+        <div class="lbl">⚠️ Forgetting that normalization applies to data, not just structure</div>
+        <p>You can have a perfectly normalized schema that still stores denormalized data. Example: storing the full address string <code>"Bahnhofstr. 12, 60329 Frankfurt"</code> in a single VARCHAR when you will later need to filter by city or postal code. Break it into <code>street</code>, <code>postal_code</code>, <code>city</code> columns from the start.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERVIEW Q&A -->
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="qa-list">
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What is the difference between 2NF and 3NF? Give a concrete example.</div>
+          <div class="qa-a">
+            <p>2NF eliminates partial dependencies — where a non-key column depends on only part of a composite primary key. This only applies when the PK is composite. 3NF eliminates transitive dependencies — where a non-key column depends on another non-key column rather than directly on the primary key. Example: in a visits table, storing doctor_name alongside doctor_id violates 2NF (doctor_name depends on doctor_id, not visit_id). Storing icd10_description alongside icd10_code violates 3NF (description depends on code, which is a non-PK column).</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"2NF is about composite keys — partial dependencies. 3NF is about non-key columns — transitive dependencies. In practice I normalize to 3NF as a default."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">When would you intentionally denormalize a schema?</div>
+          <div class="qa-a">
+            <p>Denormalization is justified when: (1) a specific read query is measured to be slow due to expensive joins, (2) the data is more read-heavy than write-heavy, and (3) the write complexity of maintaining duplicated data is manageable. Common use cases are analytics/reporting tables, materialized aggregations, and data warehouse star schemas. I always normalize first, measure the problem, then denormalize the specific part that's slow — and leave a comment in the schema explaining why.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"Normalize first, measure second, denormalize last — and always document the reason in the schema itself."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What are update anomalies and how does normalization prevent them?</div>
+          <div class="qa-a">
+            <p>An update anomaly occurs when the same fact is stored in multiple places and an update to one copy creates inconsistency. For example, storing doctor specialty in the visits table means updating a doctor's specialty requires touching every visit row — and a missed row creates inconsistent data. Normalization ensures each fact is stored in exactly one place, so updates are atomic and consistent. Delete anomalies (losing facts when deleting a row) and insert anomalies (inability to insert without unrelated data) are similarly resolved by proper normalization.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"Normalization eliminates update, insert, and delete anomalies by ensuring each fact exists in exactly one place."</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHALLENGE -->
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">💪 Challenge<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="challenge">
+        <div class="challenge-head" onclick="togChallenge(this)">
+          <div class="challenge-head-left">
+            <span class="challenge-badge">TRY IT</span>
+            <span class="challenge-title">Identify the normal form violations in this schema</span>
+          </div>
+          <span class="challenge-arrow">▾</span>
+        </div>
+        <div class="challenge-body">
+          <p class="challenge-q">Given this table: <code>ticket_scans(scan_id PK, booking_id, passenger_name, passenger_loyalty_tier, scanned_at, station_id, station_city, scanner_id)</code> — identify every normal form violation (1NF, 2NF, 3NF) and write the corrected schema.</p>
+          <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+          <div class="answer">
+            <div class="code-block">
+              <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+              <div class="code-body"><span class="cm">-- Violations:
+-- • passenger_name depends on booking_id → 2NF violation
+-- • passenger_loyalty_tier depends on booking_id → 2NF violation  
+-- • station_city depends on station_id (non-key) → 3NF violation
+-- • No 1NF violations (all columns are atomic)
+
+-- Fix: data already exists in passengers, stations tables
+-- ticket_scans only needs FKs:</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">ticket_scans</span> (
+  id         <span class="fn">BIGINT</span>   <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  booking_id <span class="fn">BIGINT</span>   <span class="kw">NOT NULL</span>,
+  station_id <span class="fn">INT</span>      <span class="kw">NOT NULL</span>,
+  scanner_id <span class="fn">INT</span>      <span class="kw">NOT NULL</span>,
+  scanned_at <span class="fn">DATETIME</span> <span class="kw">NOT NULL DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+  <span class="kw">FOREIGN KEY</span> (booking_id) <span class="kw">REFERENCES</span> <span class="tb">bookings</span>(id),
+  <span class="kw">FOREIGN KEY</span> (station_id) <span class="kw">REFERENCES</span> <span class="tb">stations</span>(id)
+);</div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('home')">← Home</button>
+    <button class="mark-done-btn" id="done-l1" onclick="markDone('l1')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l2')">Next: Keys & Relationships →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 2: KEYS, CONSTRAINTS & RELATIONSHIPS ═══════════════════════════ -->
+<div id="page-l2" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--phase)">Phase 02 · Lesson 02 · 3h</div>
+        <div class="page-title">Keys, Constraints &amp; Relationships</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">Constraints are the database enforcing your business rules automatically — so your application code doesn't have to. Understanding primary keys, foreign keys, and referential integrity is critical for any DBA role.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Why This Matters<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:12px">At OS GmbH, you are responsible for databases where a deleted parent row could cascade and corrupt booking or operational data. Understanding ON DELETE behaviour is not theoretical — it is what prevents 3am disasters. For CareMate, proper foreign key constraints are also a DSGVO safeguard: referential integrity ensures you cannot have patient vitals pointing to a non-existent patient.</p>
+      <div class="callout interview">
+        <div class="lbl">🎯 Interview Anchor</div>
+        <p>"I use surrogate BIGINT primary keys almost universally — natural keys change over time, contain PII, and slow down joins. Foreign key constraints are always ON by default in my schemas unless there's a documented performance reason to disable them."</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Core Concepts<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="concepts">
+        <div class="concept purple">
+          <div class="concept-name">Natural key vs Surrogate key</div>
+          <div class="concept-desc">A <strong>natural key</strong> is a real-world identifier — email address, passport number, VAT ID. A <strong>surrogate key</strong> is a system-generated integer (AUTO_INCREMENT / BIGINT). Surrogate keys are almost always better: natural keys change (email addresses), contain PII, can be long strings that slow B-tree traversal, and cause complications if the business requirement changes.<br><br>
+          <strong>EHR:</strong> Patient email is tempting as a natural key but patients change email addresses. BIGINT AUTO_INCREMENT id is the correct PK.<br>
+          <strong>OS/DB:</strong> Train numbers look stable but Deutsche Bahn renumbers trains seasonally. Internal BIGINT id is the correct PK for trains table.</div>
+        </div>
+        <div class="concept blue">
+          <div class="concept-name">ON DELETE / ON UPDATE referential actions</div>
+          <div class="concept-desc">
+          <strong>RESTRICT</strong> (default): refuse the parent delete/update if children exist. Safest option — the application must handle deletion explicitly.<br>
+          <strong>CASCADE</strong>: automatically delete/update children when parent changes. Convenient but dangerous if misconfigured.<br>
+          <strong>SET NULL</strong>: set the FK column to NULL when parent is deleted. Requires the FK column to be nullable.<br>
+          <strong>NO ACTION</strong>: same as RESTRICT in MariaDB, checked at end of statement rather than immediately.<br><br>
+          <strong>EHR:</strong> <code>vitals.patient_id FK ON DELETE RESTRICT</code> — never allow deleting a patient who has vitals records without explicit cleanup.<br>
+          <strong>OS/DB:</strong> <code>ticket_scans.booking_id FK ON DELETE CASCADE</code> — if a booking is cancelled and purged, the scan records are meaningless and should go too.</div>
+        </div>
+        <div class="concept green">
+          <div class="concept-name">UNIQUE constraints vs UNIQUE indexes</div>
+          <div class="concept-desc">A UNIQUE constraint and a UNIQUE index are functionally equivalent in MariaDB/MySQL — defining one creates the other. They prevent duplicate values across one or more columns. UNIQUE on a nullable column allows multiple NULL values (NULL ≠ NULL in SQL).<br><br>
+          <strong>EHR:</strong> <code>patients.email UNIQUE</code> prevents two patient records sharing an email — critical for CareMate login and communication.<br>
+          <strong>OS/DB:</strong> A composite UNIQUE on <code>(route_id, seat_number)</code> in bookings prevents double-booking the same seat on the same train.</div>
+        </div>
+        <div class="concept orange">
+          <div class="concept-name">Many-to-many: junction tables</div>
+          <div class="concept-desc">A direct many-to-many relationship cannot be expressed with a FK — you need an intermediate junction (associative/bridge) table. Its PK is typically a composite of both FK columns. The junction table can carry its own attributes (the relationship data).<br><br>
+          <strong>EHR:</strong> <code>patient_doctors(patient_id, doctor_id, assigned_at, is_primary)</code> — a patient has multiple treating doctors, a doctor treats multiple patients.<br>
+          <strong>OS/DB:</strong> <code>train_staff(train_id, staff_id, role, shift_date)</code> — multiple staff per train, each staff member may work multiple trains.</div>
+        </div>
+        <div class="concept teal">
+          <div class="concept-name">CHECK constraints — database-enforced business rules</div>
+          <div class="concept-desc">A CHECK constraint validates a condition at INSERT/UPDATE time, at the database level — independent of application code. MariaDB has supported enforced CHECK constraints since 10.2.1.<br><br>
+          <strong>EHR:</strong> <code>CHECK (systolic > diastolic)</code> on the vitals table prevents medically impossible blood pressure readings from being inserted.<br>
+          <strong>OS/DB:</strong> <code>CHECK (scheduled_arrival > scheduled_departure)</code> on routes prevents logically impossible timetable entries.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">EHR Example — CareMate Relationship Schema<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout phr">
+        <div class="lbl">🩺 CareMate Schema</div>
+        <p>The full CareMate schema visualized. Note the FK directions — patients is the anchor table. All clinical data references patients.id with RESTRICT to protect data integrity.</p>
+      </div>
+      <div class="schema-wrap">
+        <div class="schema-table">
+          <div class="schema-table-head"><span class="schema-dot" style="background:var(--teal)"></span>patients</div>
+          <div class="schema-col"><span class="col-name">id</span><span class="pk">PK</span></div>
+          <div class="schema-col"><span class="col-name">full_name</span></div>
+          <div class="schema-col"><span class="col-name">date_of_birth</span></div>
+          <div class="schema-col"><span class="col-name">email</span><span class="uk">UK</span></div>
+        </div>
+        <div class="schema-table">
+          <div class="schema-table-head"><span class="schema-dot" style="background:var(--blue)"></span>vitals</div>
+          <div class="schema-col"><span class="col-name">id</span><span class="pk">PK</span></div>
+          <div class="schema-col"><span class="col-name">patient_id</span><span class="fk">FK→patients</span></div>
+          <div class="schema-col"><span class="col-name">systolic</span></div>
+          <div class="schema-col"><span class="col-name">diastolic</span></div>
+        </div>
+        <div class="schema-table">
+          <div class="schema-table-head"><span class="schema-dot" style="background:var(--purple)"></span>visits</div>
+          <div class="schema-col"><span class="col-name">id</span><span class="pk">PK</span></div>
+          <div class="schema-col"><span class="col-name">patient_id</span><span class="fk">FK→patients</span></div>
+          <div class="schema-col"><span class="col-name">doctor_id</span><span class="fk">FK→doctors</span></div>
+          <div class="schema-col"><span class="col-name">icd10_code</span><span class="fk">FK→icd10</span></div>
+        </div>
+        <div class="schema-table">
+          <div class="schema-table-head"><span class="schema-dot" style="background:var(--orange)"></span>doctors</div>
+          <div class="schema-col"><span class="col-name">id</span><span class="pk">PK</span></div>
+          <div class="schema-col"><span class="col-name">full_name</span></div>
+          <div class="schema-col"><span class="col-name">email</span><span class="uk">UK</span></div>
+          <div class="schema-col"><span class="col-name">specialty</span></div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left">
+            <span class="code-label sql">SQL</span>
+            <span class="example-badge ehr">🩺 EHR</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="code-body"><span class="cm">-- Vitals with CHECK constraint for medical validity</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">vitals</span> (
+  id          <span class="fn">BIGINT</span>         <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  patient_id  <span class="fn">BIGINT</span>         <span class="kw">NOT NULL</span>,
+  systolic    <span class="fn">SMALLINT</span>       <span class="kw">NOT NULL</span>,
+  diastolic   <span class="fn">SMALLINT</span>       <span class="kw">NOT NULL</span>,
+  pulse       <span class="fn">SMALLINT</span>,
+  weight_kg   <span class="fn">DECIMAL</span>(<span class="num">5</span>,<span class="num">2</span>),
+  notes       <span class="fn">TEXT</span>,
+  recorded_at <span class="fn">DATETIME</span>       <span class="kw">NOT NULL DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+
+  <span class="cm">-- Referential integrity: never allow orphaned vitals</span>
+  <span class="kw">CONSTRAINT</span> fk_vitals_patient
+    <span class="kw">FOREIGN KEY</span> (patient_id) <span class="kw">REFERENCES</span> <span class="tb">patients</span>(id)
+    <span class="kw">ON DELETE RESTRICT ON UPDATE CASCADE</span>,
+
+  <span class="cm">-- Medical validity check: systolic must be higher than diastolic</span>
+  <span class="kw">CONSTRAINT</span> chk_blood_pressure
+    <span class="kw">CHECK</span> (systolic <span class="op">></span> diastolic <span class="kw">AND</span> systolic <span class="op">BETWEEN</span> <span class="num">50</span> <span class="kw">AND</span> <span class="num">300</span>),
+
+  <span class="cm">-- Weight must be positive if provided</span>
+  <span class="kw">CONSTRAINT</span> chk_weight
+    <span class="kw">CHECK</span> (weight_kg <span class="kw">IS NULL OR</span> weight_kg <span class="op">></span> <span class="num">0</span>)
+);
+
+<span class="cm">-- Many-to-many: a patient can have multiple treating doctors</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">patient_doctors</span> (
+  patient_id  <span class="fn">BIGINT</span>  <span class="kw">NOT NULL</span>,
+  doctor_id   <span class="fn">BIGINT</span>  <span class="kw">NOT NULL</span>,
+  assigned_at <span class="fn">DATETIME</span> <span class="kw">NOT NULL DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+  is_primary  <span class="fn">TINYINT</span>(<span class="num">1</span>) <span class="kw">NOT NULL DEFAULT</span> <span class="num">0</span>,
+
+  <span class="cm">-- Composite PK prevents the same doctor being assigned twice</span>
+  <span class="kw">PRIMARY KEY</span> (patient_id, doctor_id),
+  <span class="kw">FOREIGN KEY</span> (patient_id) <span class="kw">REFERENCES</span> <span class="tb">patients</span>(id) <span class="kw">ON DELETE CASCADE</span>,
+  <span class="kw">FOREIGN KEY</span> (doctor_id)  <span class="kw">REFERENCES</span> <span class="tb">doctors</span>(id)  <span class="kw">ON DELETE RESTRICT</span>
+);
+
+<span class="cm">-- Verify foreign key constraints are active in this session</span>
+<span class="kw">SHOW VARIABLES LIKE</span> <span class="str">'foreign_key_checks'</span>;  <span class="cm">-- should be ON</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">OS/DB Example — Booking Integrity<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout db">
+        <div class="lbl">🚂 Deutsche Bahn Context</div>
+        <p>With millions of daily transactions, a missing FK constraint means inconsistent data reaching the KRITIS railway control system. Constraints are non-negotiable in operational services infrastructure.</p>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left">
+            <span class="code-label sql">SQL</span>
+            <span class="example-badge db">🚂 OS/DB</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="code-body"><span class="cm">-- Bookings with all constraints preventing operational data corruption</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">bookings</span> (
+  id           <span class="fn">BIGINT</span>           <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  passenger_id <span class="fn">BIGINT</span>           <span class="kw">NOT NULL</span>,
+  route_id     <span class="fn">INT</span>              <span class="kw">NOT NULL</span>,
+  seat_number  <span class="fn">VARCHAR</span>(<span class="num">5</span>)       <span class="kw">NOT NULL</span>,
+  class        <span class="fn">ENUM</span>(<span class="str">'1st'</span>,<span class="str">'2nd'</span>) <span class="kw">NOT NULL DEFAULT</span> <span class="str">'2nd'</span>,
+  price        <span class="fn">DECIMAL</span>(<span class="num">8</span>,<span class="num">2</span>)     <span class="kw">NOT NULL</span>,
+  status       <span class="fn">ENUM</span>(<span class="str">'confirmed'</span>,<span class="str">'cancelled'</span>,<span class="str">'used'</span>) <span class="kw">NOT NULL DEFAULT</span> <span class="str">'confirmed'</span>,
+  booked_at    <span class="fn">DATETIME</span>         <span class="kw">NOT NULL DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+
+  <span class="cm">-- Prevent double-booking: same route + same seat must be unique</span>
+  <span class="kw">CONSTRAINT</span> uk_booking_seat <span class="kw">UNIQUE</span> (route_id, seat_number),
+
+  <span class="cm">-- Price must be non-negative</span>
+  <span class="kw">CONSTRAINT</span> chk_price <span class="kw">CHECK</span> (price <span class="op">>=</span> <span class="num">0</span>),
+
+  <span class="cm">-- Referential integrity: RESTRICT prevents orphaned bookings</span>
+  <span class="kw">CONSTRAINT</span> fk_booking_passenger
+    <span class="kw">FOREIGN KEY</span> (passenger_id) <span class="kw">REFERENCES</span> <span class="tb">passengers</span>(id)
+    <span class="kw">ON DELETE RESTRICT ON UPDATE CASCADE</span>,
+
+  <span class="kw">CONSTRAINT</span> fk_booking_route
+    <span class="kw">FOREIGN KEY</span> (route_id) <span class="kw">REFERENCES</span> <span class="tb">routes</span>(id)
+    <span class="kw">ON DELETE RESTRICT ON UPDATE CASCADE</span>
+);
+
+<span class="cm">-- Query: find all routes with at least one booking, show occupancy</span>
+<span class="kw">SELECT</span>
+  r.id,
+  s_orig.name <span class="kw">AS</span> origin,
+  s_dest.name <span class="kw">AS</span> destination,
+  r.scheduled_departure,
+  <span class="fn">COUNT</span>(b.id) <span class="kw">AS</span> bookings_count,
+  t.capacity,
+  <span class="fn">ROUND</span>(<span class="fn">COUNT</span>(b.id) <span class="op">*</span> <span class="num">100.0</span> <span class="op">/</span> t.capacity, <span class="num">1</span>) <span class="kw">AS</span> occupancy_pct
+<span class="kw">FROM</span> <span class="tb">routes</span> r
+<span class="kw">JOIN</span> <span class="tb">stations</span> s_orig <span class="kw">ON</span> r.origin_station_id     <span class="op">=</span> s_orig.id
+<span class="kw">JOIN</span> <span class="tb">stations</span> s_dest <span class="kw">ON</span> r.destination_station_id <span class="op">=</span> s_dest.id
+<span class="kw">JOIN</span> <span class="tb">trains</span> t        <span class="kw">ON</span> r.train_id               <span class="op">=</span> t.id
+<span class="kw">LEFT JOIN</span> <span class="tb">bookings</span> b  <span class="kw">ON</span> b.route_id               <span class="op">=</span> r.id
+                       <span class="kw">AND</span> b.status <span class="op">=</span> <span class="str">'confirmed'</span>
+<span class="kw">GROUP BY</span> r.id, s_orig.name, s_dest.name, r.scheduled_departure, t.capacity
+<span class="kw">ORDER BY</span> r.scheduled_departure;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Common Pitfalls<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout warn">
+        <div class="lbl">⚠️ SET foreign_key_checks = 0 left in production scripts</div>
+        <p>Disabling FK checks for a data import and forgetting to re-enable them is a production hazard. Always use a transaction and verify <code>foreign_key_checks=ON</code> is restored. In MariaDB, this is a session variable — re-enabling affects only the current session. The safer pattern is to use <code>LOAD DATA</code> with the constraints pre-validated.</p>
+      </div>
+      <div class="callout warn">
+        <div class="lbl">⚠️ Using CASCADE DELETE without fully understanding the cascade chain</div>
+        <p>ON DELETE CASCADE is powerful but dangerous in deep relationship trees. Deleting a parent can silently remove thousands of child rows across multiple tables. Always map the full cascade chain before enabling it. For anything touching medical or financial data at CareMate or OS, prefer RESTRICT and write explicit cleanup logic.</p>
+      </div>
+      <div class="callout warn">
+        <div class="lbl">⚠️ Integer overflow on surrogate keys — using INT instead of BIGINT</div>
+        <p>An INT (4 bytes) maxes out at ~2.1 billion. Deutsche Bahn processes millions of ticket scans per day — INT on ticket_scans.id overflows in months. Always use BIGINT (8 bytes, ~9.2 × 10¹⁸) for any table that will see significant volume. The storage difference is 4 bytes per row — negligible.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="qa-list">
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What is the difference between ON DELETE RESTRICT and ON DELETE CASCADE? When would you use each?</div>
+          <div class="qa-a">
+            <p>RESTRICT prevents the parent row deletion if any child rows reference it — the database returns an error and the application must handle the cleanup explicitly. This is the safest default for critical data (patient records, financial transactions). CASCADE automatically deletes all child rows when the parent is deleted — useful for junction tables or data that is meaningless without the parent (e.g., ticket scan records without the booking). In a healthcare or railway system I default to RESTRICT on all business entities and only use CASCADE on technical/log tables where orphaned rows have no business meaning.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"RESTRICT for business data, CASCADE only for dependent technical records — and I always map the full cascade chain before enabling it."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">Why should you generally prefer surrogate keys over natural keys as primary keys?</div>
+          <div class="qa-a">
+            <p>Natural keys (email, VAT ID, train number) seem convenient but have three major problems in practice: (1) they change — a patient changes their email address, breaking all child row references; (2) they often contain PII (email, passport) that you want to be able to anonymize independently of the row's relationships; (3) string PKs are slower in B-tree traversal than integer PKs, and foreign key joins become expensive at scale. BIGINT AUTO_INCREMENT surrogate keys are fast, stable, PII-free, and unambiguous. The natural key can still have a UNIQUE constraint for business deduplication without being the PK.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"Natural keys change and contain PII — I use surrogate BIGINT PKs and put the natural key on a UNIQUE constraint separately."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">How do you model a many-to-many relationship in a relational database?</div>
+          <div class="qa-a">
+            <p>With a junction (associative/bridge) table that holds the foreign keys to both parent tables. The junction table's primary key is typically the composite of both FKs, which also acts as a natural deduplication constraint. The junction table can carry its own attributes — timestamps, roles, status — that describe the relationship itself rather than either entity. For example, patient_doctors(patient_id, doctor_id, assigned_at, is_primary) — the relationship has its own metadata. Always index both FK columns for bidirectional join performance.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"Junction table with composite PK, FKs to both parent tables, and additional attributes for any data that belongs to the relationship itself."</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">💪 Challenge<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="challenge">
+        <div class="challenge-head" onclick="togChallenge(this)">
+          <div class="challenge-head-left">
+            <span class="challenge-badge">TRY IT</span>
+            <span class="challenge-title">Design a doctor-specialties junction schema</span>
+          </div>
+          <span class="challenge-arrow">▾</span>
+        </div>
+        <div class="challenge-body">
+          <p class="challenge-q">A doctor at CareMate can have multiple specialties (e.g. cardiologist AND internist). A specialty can be held by many doctors. Design the complete schema for doctors, specialties, and their relationship — including appropriate constraints and a CHECK that prevents a doctor from having more than one "primary" specialty flag set to true.</p>
+          <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+          <div class="answer">
+            <div class="code-block">
+              <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+              <div class="code-body"><span class="kw">CREATE TABLE</span> <span class="tb">specialties</span> (
+  id   <span class="fn">INT</span>          <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  name <span class="fn">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL UNIQUE</span>,
+  code <span class="fn">VARCHAR</span>(<span class="num">10</span>)  <span class="kw">UNIQUE</span>   <span class="cm">-- e.g. "CARD", "INT", "ORTH"</span>
+);
+
+<span class="kw">CREATE TABLE</span> <span class="tb">doctor_specialties</span> (
+  doctor_id    <span class="fn">BIGINT</span>     <span class="kw">NOT NULL</span>,
+  specialty_id <span class="fn">INT</span>        <span class="kw">NOT NULL</span>,
+  is_primary   <span class="fn">TINYINT</span>(<span class="num">1</span>) <span class="kw">NOT NULL DEFAULT</span> <span class="num">0</span>,
+  certified_since <span class="fn">DATE</span>,
+  <span class="kw">PRIMARY KEY</span> (doctor_id, specialty_id),
+  <span class="kw">FOREIGN KEY</span> (doctor_id)    <span class="kw">REFERENCES</span> <span class="tb">doctors</span>(id)     <span class="kw">ON DELETE CASCADE</span>,
+  <span class="kw">FOREIGN KEY</span> (specialty_id) <span class="kw">REFERENCES</span> <span class="tb">specialties</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
+  <span class="kw">CONSTRAINT</span> chk_is_primary <span class="kw">CHECK</span> (is_primary <span class="kw">IN</span> (<span class="num">0</span>, <span class="num">1</span>))
+);
+
+<span class="cm">-- Enforce one-primary via unique partial index (MariaDB 10.5+):
+-- Only one row per doctor can have is_primary = 1</span>
+<span class="kw">CREATE UNIQUE INDEX</span> idx_one_primary
+  <span class="kw">ON</span> <span class="tb">doctor_specialties</span>(doctor_id, is_primary)
+  <span class="kw">WHERE</span> is_primary <span class="op">=</span> <span class="num">1</span>;</div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l1')">← Normalization</button>
+    <button class="mark-done-btn" id="done-l2" onclick="markDone('l2')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l3')">Next: Index Design →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 3: INDEX DESIGN STRATEGY ═══════════════════════════════════════ -->
+<div id="page-l3" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--phase)">Phase 02 · Lesson 03 · 3h</div>
+        <div class="page-title">Index Design Strategy</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">Indexes are the single most impactful performance tool in a DBA's toolkit. The right index turns a 5-second query into 4ms. The wrong index silently slows down every write. This lesson teaches you how to think about indexes strategically.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Why This Matters<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:12px">At OS GmbH, query performance directly affects train schedule reliability. A slow query in the booking system at peak time (Friday 17:00 departures) causes cascading delays. Michael Nietsch will almost certainly ask you to read an EXPLAIN output — this is the most common practical DBA task, and it requires understanding how indexes work at the B-tree level.</p>
+      <div class="callout interview">
+        <div class="lbl">🎯 Interview Anchor</div>
+        <p>"When I see a slow query, my first action is always EXPLAIN ANALYZE — not guessing. I look at the type column: ref or range is good, ALL means full table scan. Then I identify the access pattern and create the minimal covering index that serves that pattern."</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Core Concepts<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="concepts">
+        <div class="concept purple">
+          <div class="concept-name">How B-tree indexes work</div>
+          <div class="concept-desc">A B-tree index is a sorted tree structure. The leaf nodes contain: the indexed value(s) + a pointer back to the row (the clustered index key / PK value). A lookup traverses the tree in O(log n) — for a 1M-row table, that's ~20 comparisons instead of 1,000,000. The engine uses the index when the WHERE clause can use the sorted order.<br><br>
+          <strong>EHR:</strong> An index on <code>visits.patient_id</code> turns "all visits for patient #42" from a full-table scan of 2M rows to a 20-step tree traversal.<br>
+          <strong>OS/DB:</strong> An index on <code>ticket_scans.scanned_at</code> allows range queries ("all scans in the last 5 minutes") to be answered by reading only the relevant leaf pages.</div>
+        </div>
+        <div class="concept blue">
+          <div class="concept-name">Composite index column order — the leftmost prefix rule</div>
+          <div class="concept-desc">A composite index on <code>(A, B, C)</code> can satisfy queries filtering on: A, (A, B), or (A, B, C). It <em>cannot</em> efficiently satisfy a query filtering only on B or only on C. The rule: put the most-queried column first, then the second-most, etc. Equality conditions before range conditions in the index.<br><br>
+          <strong>EHR:</strong> Index <code>(patient_id, recorded_at)</code> on vitals serves both "all vitals for patient X" and "all vitals for patient X in the last 30 days". An index on just <code>(recorded_at)</code> cannot serve the first query efficiently.<br>
+          <strong>OS/DB:</strong> Index <code>(route_id, status, booked_at)</code> on bookings serves "all confirmed bookings for route 42 in May" efficiently. Query filtering only on status would not use this index.</div>
+        </div>
+        <div class="concept green">
+          <div class="concept-name">Covering indexes — index-only scans</div>
+          <div class="concept-desc">A covering index includes all columns needed by a query — SELECT columns + WHERE columns. The engine can answer the query entirely from the index without touching the main table (row data). This is the fastest possible query path. EXPLAIN shows "Using index" in the Extra column.<br><br>
+          <strong>EHR:</strong> <code>CREATE INDEX idx_vitals_cover ON vitals(patient_id, recorded_at, systolic, diastolic)</code> — the dashboard query "last 3 BP readings for patient X" never reads the table.<br>
+          <strong>OS/DB:</strong> Index <code>(route_id, status, seat_number)</code> on bookings — "is seat 12A confirmed on route 99?" is answered from the index alone.</div>
+        </div>
+        <div class="concept orange">
+          <div class="concept-name">Index selectivity — when indexes help vs hurt</div>
+          <div class="concept-desc">Selectivity = unique values / total rows. High selectivity (patient_id: thousands of unique values) → index is very useful. Low selectivity (status: 3 values for millions of rows) → the optimizer may skip the index and do a full scan (cheaper to scan than to random-access the index for 30% of rows).<br><br>
+          <strong>EHR:</strong> An index on <code>visits.status</code> where 80% of rows have status='completed' has poor selectivity. A composite index <code>(status, created_at)</code> with a date range becomes useful again.<br>
+          <strong>OS/DB:</strong> An index on <code>bookings.class</code> ('1st'/'2nd') is near-useless alone. An index on <code>bookings.booking_reference</code> (unique per booking) has perfect selectivity.</div>
+        </div>
+        <div class="concept teal">
+          <div class="concept-name">When NOT to index — write overhead</div>
+          <div class="concept-desc">Every index must be maintained on INSERT, UPDATE, and DELETE. A table with 10 indexes pays the price of updating 10 B-trees per write. Over-indexing slows bulk loads, high-write OLTP tables, and replication lag. Remove indexes that are not used.<br><br>
+          <strong>EHR:</strong> The CareMate vitals table receives ~50,000 inserts per day. Every unnecessary index on it adds write latency and replication load on the Galera cluster.<br>
+          <strong>OS/DB:</strong> The ticket_scans table receives millions of inserts per day. Only index columns that are actually queried — scanned_at for time-range lookups, booking_id for booking verification.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">EHR Example — Index Analysis with EXPLAIN<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left">
+            <span class="code-label sql">SQL</span>
+            <span class="example-badge ehr">🩺 EHR</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="code-body"><span class="cm">-- 1. Identify a slow query: patient dashboard — recent vitals</span>
+<span class="kw">EXPLAIN</span> <span class="kw">SELECT</span> systolic, diastolic, pulse, recorded_at
+<span class="kw">FROM</span> <span class="tb">vitals</span>
+<span class="kw">WHERE</span> patient_id <span class="op">=</span> <span class="num">4821</span>
+<span class="kw">ORDER BY</span> recorded_at <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="num">10</span>;
+
+<span class="cm">-- Without index: type=ALL, rows=2000000 → ~2s
+-- With index on (patient_id): type=ref, rows=180 → better but still sorts
+-- With composite (patient_id, recorded_at): type=ref, Using index condition → 4ms
+-- With covering (patient_id, recorded_at, systolic, diastolic, pulse): Using index → 1ms</span>
+
+<span class="cm">-- 2. Create the optimal covering index</span>
+<span class="kw">CREATE INDEX</span> idx_vitals_patient_time
+  <span class="kw">ON</span> <span class="tb">vitals</span>(patient_id, recorded_at <span class="kw">DESC</span>, systolic, diastolic, pulse);
+
+<span class="cm">-- 3. Verify the index is used and check cost</span>
+<span class="kw">EXPLAIN ANALYZE</span>
+<span class="kw">SELECT</span> systolic, diastolic, pulse, recorded_at
+<span class="kw">FROM</span> <span class="tb">vitals</span>
+<span class="kw">WHERE</span> patient_id <span class="op">=</span> <span class="num">4821</span>
+<span class="kw">ORDER BY</span> recorded_at <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="num">10</span>;
+<span class="cm">-- Extra: Using index  ← index-only scan confirmed</span>
+
+<span class="cm">-- 4. Find unused indexes (cleanup candidates after 30 days of monitoring)</span>
+<span class="kw">SELECT</span>
+  object_schema,
+  object_name  <span class="kw">AS</span> table_name,
+  index_name,
+  count_read,
+  count_write
+<span class="kw">FROM</span> performance_schema.table_io_waits_summary_by_index_usage
+<span class="kw">WHERE</span> object_schema <span class="op">=</span> <span class="str">'caremate'</span>
+  <span class="kw">AND</span> index_name <span class="op">!=</span> <span class="str">'PRIMARY'</span>
+  <span class="kw">AND</span> count_read <span class="op">=</span> <span class="num">0</span>
+<span class="kw">ORDER BY</span> count_write <span class="kw">DESC</span>;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">OS/DB Example — Booking Query Optimization<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout db">
+        <div class="lbl">🚂 OS Context</div>
+        <p>The booking verification query runs at every ticket scan — millions of times per day. This must be sub-millisecond. Index design here is directly safety-critical infrastructure.</p>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left">
+            <span class="code-label sql">SQL</span>
+            <span class="example-badge db">🚂 OS/DB</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="code-body"><span class="cm">-- Core index set for the bookings table at OS</span>
+
+<span class="cm">-- Index 1: PK (auto-created) — booking lookup by ID</span>
+<span class="cm">-- Index 2: Passenger's booking history (most common mobile app query)</span>
+<span class="kw">CREATE INDEX</span> idx_bookings_passenger
+  <span class="kw">ON</span> <span class="tb">bookings</span>(passenger_id, booked_at <span class="kw">DESC</span>);
+
+<span class="cm">-- Index 3: Ticket gate validation (safety-critical, must be sub-ms)</span>
+<span class="cm">-- Scanner checks: is booking #X confirmed for this route?</span>
+<span class="kw">CREATE INDEX</span> idx_bookings_route_status
+  <span class="kw">ON</span> <span class="tb">bookings</span>(route_id, status, seat_number);
+
+<span class="cm">-- Index 4: Seat availability check (prevent double-booking)</span>
+<span class="cm">-- This is also enforced by the UNIQUE constraint — dual purpose</span>
+<span class="cm">-- UNIQUE idx already created on (route_id, seat_number)</span>
+
+<span class="cm">-- ─────────────────────────────────────────────────────────────────────
+-- EXPLAIN comparison: same query, no index vs optimized index
+-- ─────────────────────────────────────────────────────────────────────</span>
+
+<span class="cm">-- Scanner validation query — runs ~500 times/second at peak</span>
+<span class="kw">EXPLAIN</span> <span class="kw">SELECT</span> b.id, b.status, b.seat_number, p.name
+<span class="kw">FROM</span> <span class="tb">bookings</span> b
+<span class="kw">JOIN</span> <span class="tb">passengers</span> p <span class="kw">ON</span> p.id <span class="op">=</span> b.passenger_id
+<span class="kw">WHERE</span> b.route_id <span class="op">=</span> <span class="num">9042</span>
+  <span class="kw">AND</span> b.seat_number <span class="op">=</span> <span class="str">'12A'</span>
+  <span class="kw">AND</span> b.status <span class="op">=</span> <span class="str">'confirmed'</span>;
+
+<span class="cm">-- Before indexes: type=ALL on bookings (full scan ~10M rows) → 3200ms
+-- After idx_bookings_route_status: type=ref, rows=1 → 0.4ms
+
+-- Ticket scan inserts — high volume, keep indexes minimal</span>
+<span class="kw">CREATE INDEX</span> idx_scans_booking
+  <span class="kw">ON</span> <span class="tb">ticket_scans</span>(booking_id);
+
+<span class="kw">CREATE INDEX</span> idx_scans_station_time
+  <span class="kw">ON</span> <span class="tb">ticket_scans</span>(station_id, scanned_at);
+
+<span class="cm">-- Monitor index usage after 30 days</span>
+<span class="kw">SELECT</span> index_name, stat_value <span class="kw">AS</span> pages_in_index
+<span class="kw">FROM</span> mysql.innodb_index_stats
+<span class="kw">WHERE</span> database_name <span class="op">=</span> <span class="str">'os_rail'</span>
+  <span class="kw">AND</span> table_name     <span class="op">=</span> <span class="str">'bookings'</span>
+  <span class="kw">AND</span> stat_name      <span class="op">=</span> <span class="str">'size'</span>
+<span class="kw">ORDER BY</span> stat_value <span class="kw">DESC</span>;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Common Pitfalls<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout warn">
+        <div class="lbl">⚠️ Indexing every column "just in case"</div>
+        <p>A common mistake is adding an index on every column of a table. Each index adds overhead to every INSERT, UPDATE, and DELETE. On a high-write table like ticket_scans (millions of inserts/day), this can increase write latency by 200-400%. Index only columns that appear in WHERE, JOIN ON, or ORDER BY clauses of actual production queries.</p>
+      </div>
+      <div class="callout warn">
+        <div class="lbl">⚠️ Wrong column order in composite indexes</div>
+        <p>Index on (status, patient_id) does NOT efficiently serve WHERE patient_id = 42. The leftmost prefix rule means the first column must match the query's equality filter. Always put the column with the highest cardinality (most unique values) first unless the query pattern dictates otherwise. Test with EXPLAIN before deploying.</p>
+      </div>
+      <div class="callout warn">
+        <div class="lbl">⚠️ Functions in WHERE clauses bypass indexes</div>
+        <p><code>WHERE YEAR(created_at) = 2024</code> cannot use an index on created_at because the function is applied to every row. Rewrite as <code>WHERE created_at BETWEEN '2024-01-01' AND '2024-12-31 23:59:59'</code> — the range can use the B-tree index. This is one of the most common query optimization mistakes.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="qa-list">
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">How do you diagnose a slow query? Walk me through your process.</div>
+          <div class="qa-a">
+            <p>First, I run EXPLAIN (or EXPLAIN ANALYZE for MariaDB 10.9+) on the query. I look at the 'type' column: const/eq_ref/ref is good, range is acceptable, ALL means full table scan. Then I check 'rows' — how many rows the optimizer estimates it will examine. Then 'Extra' — 'Using filesort' and 'Using temporary' are warnings. If the type is ALL on a large table, I look at the WHERE clause to identify which columns need an index. I also check if functions applied to columns are preventing index use. Finally I verify the index is actually being used after creation with EXPLAIN, not just assumed.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"EXPLAIN first, always. I look at type=ALL as the red flag, then rows, then Extra. I never add an index without verifying with EXPLAIN that it's actually used."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What is a covering index and when would you use one?</div>
+          <div class="qa-a">
+            <p>A covering index contains all the columns referenced by a query — both the WHERE filter columns and the SELECT result columns. When the optimizer uses a covering index, it never reads the main table: the data is served entirely from the index pages, which is faster because index pages are smaller and more cache-friendly. I use covering indexes for high-frequency queries that have stable column requirements — like the CareMate patient dashboard query that always requests the same 4 columns, or the booking scanner query at OS that runs 500 times per second. EXPLAIN shows "Using index" in Extra when a covering index is used.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"A covering index includes SELECT columns + WHERE columns so the engine never reads the table — it's the fastest possible access path. EXPLAIN shows 'Using index' to confirm."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">Why might the query optimizer ignore a perfectly valid index?</div>
+          <div class="qa-a">
+            <p>Several reasons: (1) Low selectivity — if 80% of rows match the WHERE condition, a full table scan reads pages sequentially which is faster than random-access index lookups for that proportion of rows; (2) Table statistics are stale — ANALYZE TABLE updates the statistics the optimizer uses to estimate costs; (3) A function is applied to the indexed column in WHERE, preventing index use; (4) The index columns don't match the leftmost prefix of the query's filter; (5) The table is very small and the optimizer correctly decides a full scan is cheaper. Running ANALYZE TABLE and checking EXPLAIN EXTENDED often reveals which case applies.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"Low selectivity, stale statistics (fix with ANALYZE TABLE), functions on indexed columns, or wrong column order in the index. EXPLAIN EXTENDED shows which path the optimizer chose and why."</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">💪 Challenge<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="challenge">
+        <div class="challenge-head" onclick="togChallenge(this)">
+          <div class="challenge-head-left">
+            <span class="challenge-badge">TRY IT</span>
+            <span class="challenge-title">Design the index strategy for a CareMate report query</span>
+          </div>
+          <span class="challenge-arrow">▾</span>
+        </div>
+        <div class="challenge-body">
+          <p class="challenge-q">This query runs every 5 minutes on the CareMate dashboard: <code>SELECT patient_id, AVG(systolic), AVG(diastolic), COUNT(*) FROM vitals WHERE recorded_at >= NOW() - INTERVAL 30 DAY GROUP BY patient_id ORDER BY AVG(systolic) DESC</code>. The vitals table has 10M rows. Design the optimal index and explain why.</p>
+          <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+          <div class="answer">
+            <div class="code-block">
+              <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+              <div class="code-body"><span class="cm">-- The query filters on recorded_at (range) and groups by patient_id
+-- and aggregates systolic + diastolic.
+
+-- Option A: Simple range index (partial help)</span>
+<span class="kw">CREATE INDEX</span> idx_vitals_time <span class="kw">ON</span> <span class="tb">vitals</span>(recorded_at);
+<span class="cm">-- Helps narrow to last 30 days (type=range), but then must read table
+-- for patient_id, systolic, diastolic → not a covering index</span>
+
+<span class="cm">-- Option B: Covering index (optimal)</span>
+<span class="kw">CREATE INDEX</span> idx_vitals_report
+  <span class="kw">ON</span> <span class="tb">vitals</span>(recorded_at, patient_id, systolic, diastolic);
+<span class="cm">-- recorded_at first (range filter), then all other needed columns
+-- → EXPLAIN shows: type=range, Extra: Using index (covering!)
+-- The entire GROUP BY aggregation runs on index pages only
+
+-- Why recorded_at first (not patient_id)?
+-- The range filter (recorded_at >= 30 days ago) is the PRIMARY filter
+-- that shrinks the result set from 10M to ~300K rows.
+-- patient_id comes second so within each time range slice,
+-- rows are co-located by patient for efficient grouping.
+
+-- Verify:</span>
+<span class="kw">EXPLAIN</span> <span class="kw">SELECT</span> patient_id, <span class="fn">AVG</span>(systolic), <span class="fn">AVG</span>(diastolic), <span class="fn">COUNT</span>(*)
+<span class="kw">FROM</span> <span class="tb">vitals</span>
+<span class="kw">WHERE</span> recorded_at <span class="op">>=</span> <span class="fn">NOW</span>() <span class="op">-</span> <span class="kw">INTERVAL</span> <span class="num">30</span> <span class="kw">DAY</span>
+<span class="kw">GROUP BY</span> patient_id;</div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l2')">← Keys & Relationships</button>
+    <button class="mark-done-btn" id="done-l3" onclick="markDone('l3')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l4')">Next: Schema Patterns →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 4: SCHEMA DESIGN PATTERNS ══════════════════════════════════════ -->
+<div id="page-l4" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--phase)">Phase 02 · Lesson 04 · 2h</div>
+        <div class="page-title">Schema Design Patterns</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">Beyond normalization, experienced designers use recurring patterns to solve common problems. Soft deletes, audit trails, and status state machines appear in virtually every production system — including CareMate and OS railway operations.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Why This Matters<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:12px">Schema patterns are how you communicate design intent to other engineers. At OS GmbH, schemas are maintained by teams across shifts — the deleted_at pattern, explicit status enumerations, and audit columns make the schema self-documenting. For CareMate, DSGVO requires auditability by law: knowing who created or modified a medical record, and when, is not optional.</p>
+      <div class="callout interview">
+        <div class="lbl">🎯 Interview Anchor</div>
+        <p>"Every table I create gets created_at and updated_at at minimum. For DSGVO-relevant data like patient records, I add created_by and updated_by. And I use soft deletes (deleted_at) instead of hard DELETE for any data with audit or compliance requirements."</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Core Concepts<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="concepts">
+        <div class="concept purple">
+          <div class="concept-name">Soft deletes — the deleted_at pattern</div>
+          <div class="concept-desc">Instead of issuing DELETE, set <code>deleted_at = NOW()</code>. Application logic always queries <code>WHERE deleted_at IS NULL</code>. Benefits: undo/restore capability, audit trail, forensic analysis. Cost: every query must filter deleted rows — easy to forget, causing "ghost data" bugs.<br><br>
+          <strong>EHR:</strong> Patient records are never hard-deleted in CareMate — DSGVO right-to-erasure is handled through anonymization, not row deletion. The record structure remains for audit trail integrity.<br>
+          <strong>OS/DB:</strong> Cancelled bookings set status='cancelled' (not deleted) so the booking history and revenue analytics remain intact.</div>
+        </div>
+        <div class="concept blue">
+          <div class="concept-name">Audit columns — created_at, updated_at, created_by</div>
+          <div class="concept-desc">Standard audit columns on every table: <code>created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP</code>, <code>updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</code>, and for compliance-sensitive tables: <code>created_by BIGINT FK→users</code>, <code>updated_by BIGINT FK→users</code>.<br><br>
+          <strong>EHR:</strong> Every medical record table (patients, vitals, visits) carries created_by and updated_by referencing the staff member who made the change — mandatory for HL7 FHIR audit log export and DSGVO Article 30 records.<br>
+          <strong>OS/DB:</strong> Route and schedule modifications carry a staff_id audit trail for liability documentation in case of operational incidents.</div>
+        </div>
+        <div class="concept green">
+          <div class="concept-name">ENUM for state machines — explicit valid states</div>
+          <div class="concept-desc">ENUM columns enforce a closed set of valid values at the database level. Combined with a clear naming convention, they document the state machine of your entities. Alternative: a separate status lookup table (more flexible for dynamic states, but joins are needed for constraints).<br><br>
+          <strong>EHR:</strong> <code>visits.status ENUM('scheduled','in_progress','completed','cancelled','no_show')</code> — only these five states are valid. The ENUM prevents typos and application bugs from inserting invalid states.<br>
+          <strong>OS/DB:</strong> <code>bookings.status ENUM('pending','confirmed','checked_in','used','cancelled','refunded')</code> — the booking lifecycle in one place.</div>
+        </div>
+        <div class="concept orange">
+          <div class="concept-name">Polymorphic associations (with caution)</div>
+          <div class="concept-desc">A polymorphic association allows one table to relate to multiple other tables via a (record_type, record_id) pair instead of separate FK columns. Common in ORMs. Problems: no foreign key constraint possible (the DB can't enforce referential integrity), queries are complex, and the pattern often indicates a normalization opportunity.<br><br>
+          <strong>EHR:</strong> An audit_log table with <code>(entity_type VARCHAR, entity_id BIGINT)</code> is a polymorphic pattern — acceptable for append-only logs where FK enforcement is not needed.<br>
+          <strong>OS/DB:</strong> Avoid polymorphic associations in transactional tables — use separate notification_bookings and notification_routes tables instead.</div>
+        </div>
+        <div class="concept teal">
+          <div class="concept-name">Versioning / temporal tables</div>
+          <div class="concept-desc">MariaDB 10.3+ supports system-versioned tables (temporal tables). The engine automatically maintains a history of all row changes. Queries can include <code>FOR SYSTEM_TIME AS OF '2024-01-01'</code> to see historical data without any application-level versioning.<br><br>
+          <strong>EHR:</strong> Enabling system versioning on the patients table provides a DSGVO-compliant audit trail with zero application code changes — the DB tracks every patient record modification automatically.<br>
+          <strong>OS/DB:</strong> System versioning on the routes table captures every schedule change for post-incident analysis and regulatory reporting.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">EHR Example — Production CareMate Schema Patterns<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left">
+            <span class="code-label sql">SQL</span>
+            <span class="example-badge ehr">🩺 EHR</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="code-body"><span class="cm">-- Full CareMate patients table with all production patterns</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">patients</span> (
+  id            <span class="fn">BIGINT</span>      <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  full_name     <span class="fn">VARCHAR</span>(<span class="num">200</span>) <span class="kw">NOT NULL</span>,
+  date_of_birth <span class="fn">DATE</span>        <span class="kw">NOT NULL</span>,
+  blood_type    <span class="fn">ENUM</span>(<span class="str">'A+'</span>,<span class="str">'A-'</span>,<span class="str">'B+'</span>,<span class="str">'B-'</span>,<span class="str">'AB+'</span>,<span class="str">'AB-'</span>,<span class="str">'O+'</span>,<span class="str">'O-'</span>),
+  city          <span class="fn">VARCHAR</span>(<span class="num">100</span>),
+  email         <span class="fn">VARCHAR</span>(<span class="num">255</span>) <span class="kw">UNIQUE</span>,
+
+  <span class="cm">-- Soft delete: never hard-delete patient records (DSGVO audit + right to undo)</span>
+  deleted_at    <span class="fn">DATETIME</span>    <span class="kw">NULL</span>,
+  deleted_by    <span class="fn">BIGINT</span>      <span class="kw">NULL</span>,     <span class="cm">-- FK to staff who performed deletion</span>
+  delete_reason <span class="fn">VARCHAR</span>(<span class="num">255</span>) <span class="kw">NULL</span>,    <span class="cm">-- required by DSGVO Article 17 documentation</span>
+
+  <span class="cm">-- Audit columns: mandatory for HL7 FHIR export and DSGVO Article 30</span>
+  created_at    <span class="fn">DATETIME</span>    <span class="kw">NOT NULL DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+  created_by    <span class="fn">BIGINT</span>      <span class="kw">NOT NULL</span>,   <span class="cm">-- FK to staff who registered patient</span>
+  updated_at    <span class="fn">DATETIME</span>    <span class="kw">NOT NULL DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>
+                              <span class="kw">ON UPDATE</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+  updated_by    <span class="fn">BIGINT</span>      <span class="kw">NULL</span>,       <span class="cm">-- FK to staff who last modified</span>
+
+  <span class="kw">FOREIGN KEY</span> (created_by) <span class="kw">REFERENCES</span> <span class="tb">staff</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
+  <span class="kw">FOREIGN KEY</span> (updated_by) <span class="kw">REFERENCES</span> <span class="tb">staff</span>(id) <span class="kw">ON DELETE SET NULL</span>,
+  <span class="kw">FOREIGN KEY</span> (deleted_by) <span class="kw">REFERENCES</span> <span class="tb">staff</span>(id) <span class="kw">ON DELETE SET NULL</span>
+);
+
+<span class="cm">-- MariaDB system versioning: automatic history of all changes</span>
+<span class="kw">ALTER TABLE</span> <span class="tb">patients</span> <span class="kw">ADD SYSTEM VERSIONING</span>;
+
+<span class="cm">-- Query: all active patients (soft-delete filter is mandatory)</span>
+<span class="kw">SELECT</span> id, full_name, email
+<span class="kw">FROM</span> <span class="tb">patients</span>
+<span class="kw">WHERE</span> deleted_at <span class="kw">IS NULL</span>;
+
+<span class="cm">-- DSGVO audit: who created or modified patient #4821 and when?</span>
+<span class="kw">SELECT</span>
+  p.id,
+  p.full_name,
+  s_create.name <span class="kw">AS</span> created_by_name,
+  p.created_at,
+  s_update.name <span class="kw">AS</span> updated_by_name,
+  p.updated_at
+<span class="kw">FROM</span> <span class="tb">patients</span> p
+<span class="kw">LEFT JOIN</span> <span class="tb">staff</span> s_create <span class="kw">ON</span> s_create.id <span class="op">=</span> p.created_by
+<span class="kw">LEFT JOIN</span> <span class="tb">staff</span> s_update <span class="kw">ON</span> s_update.id <span class="op">=</span> p.updated_by
+<span class="kw">WHERE</span> p.id <span class="op">=</span> <span class="num">4821</span>;
+
+<span class="cm">-- Temporal query: what did this patient record look like on 1 Jan 2024?</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">patients</span>
+<span class="kw">FOR SYSTEM_TIME AS OF</span> <span class="str">'2024-01-01 00:00:00'</span>
+<span class="kw">WHERE</span> id <span class="op">=</span> <span class="num">4821</span>;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">OS/DB Example — Booking Lifecycle State Machine<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left">
+            <span class="code-label sql">SQL</span>
+            <span class="example-badge db">🚂 OS/DB</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="code-body"><span class="cm">-- Booking with full state machine + audit trail</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">bookings</span> (
+  id           <span class="fn">BIGINT</span>    <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  passenger_id <span class="fn">BIGINT</span>    <span class="kw">NOT NULL</span>,
+  route_id     <span class="fn">INT</span>       <span class="kw">NOT NULL</span>,
+  seat_number  <span class="fn">VARCHAR</span>(<span class="num">5</span>) <span class="kw">NOT NULL</span>,
+  class        <span class="fn">ENUM</span>(<span class="str">'1st'</span>,<span class="str">'2nd'</span>) <span class="kw">NOT NULL DEFAULT</span> <span class="str">'2nd'</span>,
+  price        <span class="fn">DECIMAL</span>(<span class="num">8</span>,<span class="num">2</span>) <span class="kw">NOT NULL</span>,
+
+  <span class="cm">-- Explicit state machine — only valid transitions allowed at app layer</span>
+  <span class="cm">-- pending → confirmed → checked_in → used</span>
+  <span class="cm">-- confirmed → cancelled → refunded</span>
+  status       <span class="fn">ENUM</span>(<span class="str">'pending'</span>,<span class="str">'confirmed'</span>,<span class="str">'checked_in'</span>,<span class="str">'used'</span>,<span class="str">'cancelled'</span>,<span class="str">'refunded'</span>)
+               <span class="kw">NOT NULL DEFAULT</span> <span class="str">'pending'</span>,
+
+  <span class="cm">-- State transition timestamps for operational analytics</span>
+  confirmed_at  <span class="fn">DATETIME</span> <span class="kw">NULL</span>,
+  checked_in_at <span class="fn">DATETIME</span> <span class="kw">NULL</span>,
+  cancelled_at  <span class="fn">DATETIME</span> <span class="kw">NULL</span>,
+  cancel_reason <span class="fn">VARCHAR</span>(<span class="num">255</span>) <span class="kw">NULL</span>,
+
+  <span class="cm">-- Standard audit columns</span>
+  booked_at  <span class="fn">DATETIME</span> <span class="kw">NOT NULL DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+  updated_at <span class="fn">DATETIME</span> <span class="kw">NOT NULL DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>
+                        <span class="kw">ON UPDATE</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+
+  <span class="kw">CONSTRAINT</span> uk_seat <span class="kw">UNIQUE</span> (route_id, seat_number),
+  <span class="kw">FOREIGN KEY</span> (passenger_id) <span class="kw">REFERENCES</span> <span class="tb">passengers</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
+  <span class="kw">FOREIGN KEY</span> (route_id)     <span class="kw">REFERENCES</span> <span class="tb">routes</span>(id)     <span class="kw">ON DELETE RESTRICT</span>
+);
+
+<span class="cm">-- Revenue analytics: bookings are never deleted, only status-changed
+-- This query works correctly because no data is ever lost</span>
+<span class="kw">SELECT</span>
+  <span class="fn">DATE_FORMAT</span>(booked_at, <span class="str">'%Y-%m'</span>) <span class="kw">AS</span> month,
+  <span class="fn">COUNT</span>(*) <span class="kw">AS</span> total_bookings,
+  <span class="fn">SUM</span>(<span class="kw">CASE WHEN</span> status <span class="op">=</span> <span class="str">'used'</span> <span class="kw">THEN</span> price <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> revenue_eur,
+  <span class="fn">SUM</span>(<span class="kw">CASE WHEN</span> status <span class="op">=</span> <span class="str">'cancelled'</span> <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> cancellations
+<span class="kw">FROM</span> <span class="tb">bookings</span>
+<span class="kw">GROUP BY</span> <span class="fn">DATE_FORMAT</span>(booked_at, <span class="str">'%Y-%m'</span>)
+<span class="kw">ORDER BY</span> month <span class="kw">DESC</span>;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Common Pitfalls<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout warn">
+        <div class="lbl">⚠️ Forgetting to filter deleted_at IS NULL</div>
+        <p>Soft-deleted rows are invisible to business logic only if every query includes <code>WHERE deleted_at IS NULL</code>. Forgetting this filter — especially in JOIN conditions — causes deleted data to re-appear in reports. Mitigate with database views that pre-apply the filter, or with an ORM-level default scope. Always test soft-delete queries explicitly.</p>
+      </div>
+      <div class="callout warn">
+        <div class="lbl">⚠️ Using VARCHAR for status columns instead of ENUM</div>
+        <p>Storing status as VARCHAR(50) allows any string — including typos, mixed case, and invalid states. An ENUM enforces the valid state set at the database level, not just the application. If states need to change over time, prefer a lookup table with a FK; but for a stable state machine, ENUM is cleaner and more storage-efficient.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="qa-list">
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">How do you implement a DSGVO-compliant audit trail in MariaDB?</div>
+          <div class="qa-a">
+            <p>Several complementary approaches: (1) Application-level audit columns — created_at, created_by, updated_at, updated_by on every relevant table, populated by the application layer; (2) MariaDB system versioning (temporal tables) with <code>WITH SYSTEM VERSIONING</code> — the engine automatically maintains a complete history of every row change with timestamps, queryable via FOR SYSTEM_TIME; (3) An audit_log table recording change type, entity type/id, old values, new values, and acting user — populated by application triggers or framework. For CareMate, I'd combine all three: application audit columns for everyday queries, system versioning for point-in-time recovery and compliance investigation, and an audit_log for user-facing change history.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"Application audit columns for everyday queries, MariaDB system versioning for automatic historical tracking, and audit_log for compliance investigation — I use all three for DSGVO-relevant medical data."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What are the trade-offs of soft deletes vs hard deletes?</div>
+          <div class="qa-a">
+            <p>Soft deletes preserve data for audit, undo, and analytics — essential for medical records and financial data. But they add complexity: every query must filter deleted rows (easy to forget), unique constraints must account for deleted rows (a re-registered patient email would conflict with the soft-deleted record — solve with a unique index on (email, deleted_at)), and the table grows indefinitely without archival. Hard deletes are simpler and keep tables smaller but lose data permanently. For OS GmbH's booking data and CareMate patient records, soft deletes are the correct default. For high-volume ephemeral data like session logs, hard deletion or partitioned archival is better.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"Soft deletes for any data with audit, compliance, or analytics requirements. Hard deletes or archival partitioning for high-volume ephemeral data. The unique constraint interaction with deleted_at is a common implementation pitfall."</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">💪 Challenge<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="challenge">
+        <div class="challenge-head" onclick="togChallenge(this)">
+          <div class="challenge-head-left">
+            <span class="challenge-badge">TRY IT</span>
+            <span class="challenge-title">Enable system versioning and query patient history</span>
+          </div>
+          <span class="challenge-arrow">▾</span>
+        </div>
+        <div class="challenge-body">
+          <p class="challenge-q">Enable MariaDB system versioning on the CareMate patients table and write: (1) a query that shows all versions of patient #4821's record across time, and (2) a query that shows what the record looked like on 2024-06-01.</p>
+          <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+          <div class="answer">
+            <div class="code-block">
+              <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+              <div class="code-body"><span class="cm">-- Enable system versioning (MariaDB 10.3+)</span>
+<span class="kw">ALTER TABLE</span> <span class="tb">patients</span> <span class="kw">ADD SYSTEM VERSIONING</span>;
+
+<span class="cm">-- 1. All historical versions of patient #4821</span>
+<span class="kw">SELECT</span>
+  id,
+  full_name,
+  email,
+  city,
+  <span class="fn">ROW_START</span> <span class="kw">AS</span> valid_from,
+  <span class="fn">ROW_END</span>   <span class="kw">AS</span> valid_until
+<span class="kw">FROM</span> <span class="tb">patients</span>
+<span class="kw">FOR SYSTEM_TIME ALL</span>
+<span class="kw">WHERE</span> id <span class="op">=</span> <span class="num">4821</span>
+<span class="kw">ORDER BY</span> <span class="fn">ROW_START</span>;
+
+<span class="cm">-- 2. Snapshot of the record on 1 June 2024</span>
+<span class="kw">SELECT</span> *
+<span class="kw">FROM</span> <span class="tb">patients</span>
+<span class="kw">FOR SYSTEM_TIME AS OF</span> <span class="str">'2024-06-01 00:00:00'</span>
+<span class="kw">WHERE</span> id <span class="op">=</span> <span class="num">4821</span>;</div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l3')">← Index Design</button>
+    <button class="mark-done-btn" id="done-l4" onclick="markDone('l4')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l5')">Next: Interview Q&amp;A →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 5: INTERVIEW Q&A ═══════════════════════════════════════════════ -->
+<div id="page-l5" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--phase)">Phase 02 · Lesson 05 · 1h</div>
+        <div class="page-title">Interview Q&amp;A — Database Design</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">Rapid-fire Q&A review for the Phase 02 topics. These are questions a senior DBA like Michael Nietsch might ask to probe design reasoning — not just syntax knowledge. Practice answering out loud.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Design Fundamentals<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="qa-list">
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">You're given a 20-column flat table with no normalization. How do you approach redesigning it?</div>
+          <div class="qa-a">
+            <p>I start by identifying the primary entity (what is the main subject of a row?). Then I look for repeating values — columns where the same value appears in many rows, suggesting the data belongs in a lookup table. I check for columns that don't depend on the PK directly (transitive dependencies). I identify any multi-valued columns (comma-separated lists). Then I draw the entity relationships and design the normalized schema. Finally, I write a migration script that is reversible — with the new schema and a rollback plan. For a production table at OS GmbH, I'd also benchmark the migration and plan for a maintenance window.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"Identify the main entity, spot repeating values and multi-valued columns, draw the ERD, normalize to 3NF, write a reversible migration with rollback."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What is the difference between a clustered and non-clustered index in InnoDB?</div>
+          <div class="qa-a">
+            <p>In InnoDB, the primary key IS the clustered index — the actual table data is stored in PK order in a B-tree. There is exactly one clustered index per table. Every secondary (non-clustered) index stores the indexed column values plus the PK value as the row pointer — not a physical address. A secondary index lookup therefore requires two B-tree traversals: one to find the PK from the secondary index, and one to find the row data from the clustered index. This is called a "double lookup" or "bookmark lookup". Covering indexes avoid this by including all needed columns in the secondary index.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"In InnoDB, PK is the clustered index — data is physically ordered by PK. Secondary indexes store PK as pointer, requiring two lookups. Covering indexes eliminate the second lookup."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">A developer adds 8 indexes to a table to speed up their queries. What concerns would you raise?</div>
+          <div class="qa-a">
+            <p>Three main concerns: (1) Write overhead — every index adds maintenance cost on INSERT, UPDATE, and DELETE. For high-write tables (ticket_scans at OS), this can significantly increase latency and replication lag in Galera cluster; (2) Memory usage — all active index pages should fit in the InnoDB buffer pool. 8 indexes on a large table may exceed available RAM, causing disk I/O on queries; (3) Optimizer confusion — with many indexes, the query optimizer's cost estimates become more complex and it can occasionally choose a suboptimal index. I'd review the actual query patterns, use the performance_schema to identify which indexes are actually used after 30 days, and drop unused ones.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"Write overhead, buffer pool pressure, and optimizer confusion. I'd monitor with performance_schema.table_io_waits_summary_by_index_usage for 30 days and drop any indexes with count_read = 0."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">How would you model the CareMate EHR schema to support HL7 FHIR export requirements?</div>
+          <div class="qa-a">
+            <p>FHIR (Fast Healthcare Interoperability Resources) maps very naturally to a well-normalized relational schema. The key requirements: (1) every resource needs a unique identifier — our BIGINT PKs satisfy this; (2) resources must be versionable — MariaDB system versioning or explicit version columns with versionId; (3) audit trail with author references — our created_by/updated_by FK columns satisfy this; (4) standard coding systems — ICD-10 codes in a separate lookup table with the FHIR CodeSystem URI stored alongside; (5) no hard deletes — soft deletes with deleted_at; (6) meta.lastUpdated maps directly to updated_at. The existing 3NF schema with system versioning and audit columns is already FHIR-aligned — the export layer maps the relational data to FHIR JSON bundles.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"A well-normalized schema with BIGINT PKs, system versioning, audit columns, and standard code lookup tables maps directly to FHIR resource requirements — the export layer handles the JSON transformation."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">When would you use a partial index and does MariaDB support them?</div>
+          <div class="qa-a">
+            <p>A partial index (also called filtered index) covers only a subset of rows matching a WHERE condition. Classic use cases: an index on bookings(status) WHERE status='confirmed' — confirmed bookings are queried constantly but cancelled/used bookings rarely need to be found by status. This makes the index much smaller and faster. MariaDB 10.5+ supports partial indexes in a limited form via invisible indexes and expression indexes, but true partial indexes (WHERE clause filtered) are a PostgreSQL strength. In MariaDB, I approximate partial indexes by creating a generated/virtual column that is NULL for unwanted rows and indexing that column — NULL values are typically excluded from index lookups.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"Partial indexes filter index entries by a WHERE condition — great for indexing a minority of rows. MariaDB doesn't support them natively; I approximate with a nullable virtual column and index that."</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Quick Reference — Design Principles Summary<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <table class="compare-table">
+        <thead>
+          <tr><th>Pattern</th><th>When to use</th><th>Common mistake</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">1NF</td><td>Always — no repeating groups or multi-valued columns</td><td>Storing comma-separated values in one column</td></tr>
+          <tr><td class="mono">2NF</td><td>Always when PK is composite — no partial dependencies</td><td>Storing entity attributes in the junction table</td></tr>
+          <tr><td class="mono">3NF</td><td>Always — no transitive dependencies</td><td>Storing city alongside zip_code in the same table</td></tr>
+          <tr><td class="mono">Surrogate PK</td><td>Almost always — stable, small, PII-free</td><td>Using email or natural key as PK</td></tr>
+          <tr><td class="mono">ON DELETE RESTRICT</td><td>Business entities with relationships</td><td>Using CASCADE without mapping the full delete chain</td></tr>
+          <tr><td class="mono">deleted_at</td><td>Compliance, audit, any data needing undo</td><td>Forgetting to filter deleted_at IS NULL</td></tr>
+          <tr><td class="mono">Covering index</td><td>High-frequency queries with fixed column set</td><td>Over-indexing write-heavy tables</td></tr>
+          <tr><td class="mono">System versioning</td><td>DSGVO compliance, point-in-time audit</td><td>Enabling on high-write tables without sizing the history table</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l4')">← Schema Patterns</button>
+    <button class="mark-done-btn" id="done-l5" onclick="markDone('l5')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('home')">↑ Phase Home</button>
+  </div>
+</div>
+
+<script>
+// ─── State ──────────────────────────────────────────────────────────────────
+let currentPage = 'home';
+const LESSONS = ['home','l1','l2','l3','l4','l5'];
+
+// ─── Navigation ─────────────────────────────────────────────────────────────
+function goTo(id) {
+  document.getElementById('page-' + currentPage).classList.remove('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+  const page = document.getElementById('page-' + id);
+  if (page) {
+    page.classList.add('active');
+    // Collapse all sections for clean view
+    page.querySelectorAll('.section-title').forEach(t => t.classList.remove('sec-open'));
+    page.querySelectorAll('.section-body').forEach(b => b.classList.remove('sec-open'));
+    page.querySelectorAll('.expand-all-btn').forEach(b => { b.textContent = 'Expand all ↓'; });
+  } else {
+    document.getElementById('page-home').classList.add('active');
+    id = 'home';
+  }
+  const tab = document.getElementById('tab-' + id);
+  if (tab) tab.classList.add('active');
+
+  currentPage = id;
+  // CRITICAL: direct assignment bypasses smooth-scroll — home hero stays hidden
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+}
+
+// ─── Section toggle ──────────────────────────────────────────────────────────
+function togSection(titleEl) {
+  titleEl.classList.toggle('sec-open');
+  titleEl.nextElementSibling.classList.toggle('sec-open');
+}
+
+// ─── Expand all ──────────────────────────────────────────────────────────────
+function expandAll(btn) {
+  const page = btn.closest('.page');
+  const titles = (page || document).querySelectorAll('.section-title');
+  const bodies  = (page || document).querySelectorAll('.section-body');
+  const allOpen = [...bodies].every(b => b.classList.contains('sec-open'));
+  titles.forEach(t => t.classList.toggle('sec-open', !allOpen));
+  bodies.forEach(b => b.classList.toggle('sec-open', !allOpen));
+  btn.textContent = allOpen ? 'Expand all ↓' : 'Collapse all ↑';
+}
+
+// ─── Q&A accordion ───────────────────────────────────────────────────────────
+function togQA(qEl) {
+  qEl.classList.toggle('open');
+  qEl.nextElementSibling.classList.toggle('open');
+}
+
+// ─── Challenge toggle ────────────────────────────────────────────────────────
+function togChallenge(headEl) {
+  const body  = headEl.nextElementSibling;
+  const arrow = headEl.querySelector('.challenge-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function togAnswer(toggleEl) {
+  const ans = toggleEl.nextElementSibling;
+  ans.classList.toggle('open');
+  toggleEl.textContent = ans.classList.contains('open') ? 'Hide answer ↑' : 'Show answer ↓';
+}
+
+// ─── Copy button ─────────────────────────────────────────────────────────────
+function copyCode(btn) {
+  const body = btn.closest('.code-block').querySelector('.code-body');
+  const text = body.innerText || body.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ─── Progress persistence ────────────────────────────────────────────────────
+let done = {};
+try { done = JSON.parse(localStorage.getItem('phase_02_done') || '{}'); } catch(e) {}
+
+function markDone(id) {
+  done[id] = !done[id];
+  try { localStorage.setItem('phase_02_done', JSON.stringify(done)); } catch(e) {}
+  updateDoneState();
+}
+
+function updateDoneState() {
+  LESSONS.filter(l => l !== 'home').forEach(id => {
+    const btn = document.getElementById('done-' + id);
+    const tab = document.getElementById('tab-' + id);
+    const st  = document.getElementById('st-' + id);
+    if (btn) {
+      btn.classList.toggle('done', !!done[id]);
+      btn.textContent = done[id] ? 'Completed ✓' : 'Mark complete ✓';
+    }
+    if (tab) tab.classList.toggle('done-tab', !!done[id]);
+    if (st && done[id]) { st.textContent = 'Completed ✓'; st.style.background = 'var(--greenb)'; st.style.color = 'var(--greend)'; }
+    else if (st) { st.textContent = 'Not started'; }
+  });
+}
+
+// Init on load
+updateDoneState();
+</script>
+</body>
+</html>

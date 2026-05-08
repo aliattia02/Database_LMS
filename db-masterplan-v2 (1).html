@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DB·MASTERY — ANÜ MariaDB Interview Prep · OS GmbH</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f0f4f8;--surface:#ffffff;--card:#ffffff;--border:#dde4ef;--border2:#c3cfe0;
+  --text:#1a2332;--muted:#5a6a85;--dim:#e2e8f2;
+  --p1:#0284c7;--p1b:#e0f2fe;--p1d:#0369a1;
+  --p2:#7c3aed;--p2b:#ede9fe;--p2d:#6d28d9;
+  --p3:#059669;--p3b:#d1fae5;--p3d:#047857;
+  --p4:#ea6c00;--p4b:#ffedd5;--p4d:#c2530a;
+  --p5:#db2777;--p5b:#fce7f3;--p5d:#be185d;
+  --p6:#b45309;--p6b:#fef3c7;--p6d:#92400e;
+  --p7:#2563eb;--p7b:#dbeafe;--p7d:#1d4ed8;
+  --p8:#16a34a;--p8b:#dcfce7;--p8d:#15803d;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.05);
+  --shadow-lg:0 4px 16px rgba(0,0,0,.10),0 1px 4px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;min-height:100vh}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:0;overflow-x:auto;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.nav-logo{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--text);padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:8px;white-space:nowrap;flex-shrink:0}
+.nav-phase{padding:14px 12px;font-size:11px;font-weight:600;letter-spacing:.06em;cursor:pointer;color:var(--muted);transition:color .15s;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent}
+.nav-phase:hover{color:var(--text)}
+.nav-phase.active{color:var(--p7);border-bottom-color:var(--p7)}
+.nav-right{margin-left:auto;padding:8px 0;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.total-badge{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.prog-pill{background:var(--dim);border:1px solid var(--border);border-radius:99px;height:6px;width:100px;overflow:hidden}
+.prog-inner{height:6px;background:var(--p3);border-radius:99px;transition:width .4s}
+.study-toggle{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;font-family:'Syne',sans-serif;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.study-toggle:hover{color:var(--text);border-color:var(--border2)}
+body.study-interview .study-toggle{background:var(--p5b);border-color:var(--p5);color:var(--p5d)}
+
+/* HERO */
+.hero{padding:64px 48px 48px;max-width:1200px;margin:0 auto;position:relative}
+.hero::before{content:'';position:absolute;top:-1px;left:0;right:0;height:320px;background:linear-gradient(135deg,rgba(219,234,254,.45) 0%,rgba(237,233,254,.3) 50%,rgba(209,250,229,.25) 100%);border-radius:0 0 32px 32px;pointer-events:none;z-index:0}
+.hero>*{position:relative;z-index:1}
+.hero-eyebrow{font-size:11px;letter-spacing:.2em;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-bottom:16px;text-transform:uppercase}
+.hero h1{font-size:52px;font-weight:800;line-height:1;letter-spacing:-.03em;color:var(--text);margin-bottom:16px}
+.hero h1 span{color:var(--p3)}
+.hero-sub{font-size:15px;color:var(--muted);max-width:560px;line-height:1.6;margin-bottom:36px}
+.hero-stats{display:flex;gap:16px;flex-wrap:wrap}
+.stat{display:flex;flex-direction:column;gap:4px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 20px;box-shadow:var(--shadow)}
+.stat-n{font-size:28px;font-weight:800;letter-spacing:-.03em;font-family:'JetBrains Mono',monospace}
+.stat-l{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+
+/* WEIGHT BADGES */
+.weight-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;letter-spacing:.04em;white-space:nowrap}
+@keyframes pulse-border{0%,100%{border-color:var(--border)}50%{border-color:#b91c1c}}
+body.study-interview .phase-card.weight-low{opacity:.35;pointer-events:none}
+body.study-interview .phase-card.weight-critical{animation:pulse-border 2.5s ease-in-out infinite}
+
+/* JOB DECODER */
+.job-decoder{max-width:1200px;margin:0 auto 24px;padding:0 48px}
+.job-decoder-header{background:var(--p7b);border:1px solid var(--p7);border-radius:12px;padding:14px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:13px;color:var(--p7d);transition:border-radius .2s}
+.job-decoder-header.open{border-radius:12px 12px 0 0}
+.job-decoder-body{background:var(--card);border:1px solid var(--border);border-radius:0 0 12px 12px;border-top:none;padding:24px;display:grid;gap:20px}
+.decoder-section{background:var(--bg);border-radius:10px;padding:16px 20px;border:1px solid var(--border)}
+.decoder-section h3{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.decoder-pills{display:flex;flex-wrap:wrap;gap:6px}
+.decoder-pill-must{font-size:11px;padding:4px 10px;border-radius:99px;background:#fee2e2;color:#b91c1c;font-weight:700}
+.decoder-pill-nice{font-size:11px;padding:4px 10px;border-radius:99px;background:var(--p1b);color:var(--p1d);font-weight:600}
+.rank-row{display:flex;align-items:center;gap:10px;padding:4px 0}
+.rank-label{font-size:12px;font-weight:600;color:var(--text);min-width:220px}
+.rank-bar-wrap{flex:1;background:var(--dim);border-radius:99px;height:8px;overflow:hidden}
+.rank-bar-fill{height:8px;border-radius:99px}
+.rank-bar-critical{background:#dc2626}
+.rank-bar-high{background:#ea580c}
+.rank-bar-medium{background:#d97706}
+.rank-weight-lbl{font-size:11px;font-weight:700;min-width:80px}
+.decoder-clients{display:flex;flex-wrap:wrap;gap:8px}
+.decoder-client{font-size:11px;padding:4px 10px;border-radius:8px;background:var(--card);border:1px solid var(--border2);color:var(--muted);font-family:'JetBrains Mono',monospace}
+
+/* PHASE GRID */
+.phase-grid{max-width:1200px;margin:0 auto;padding:0 48px 32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.phase-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px;cursor:pointer;transition:border-color .15s,transform .1s,box-shadow .15s,opacity .3s;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.phase-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.phase-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.phase-card-num{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-family:'JetBrains Mono',monospace}
+.phase-card-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
+.phase-card-sub{font-size:12px;color:var(--muted);line-height:1.4;margin-bottom:12px}
+.phase-card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.phase-card-hrs{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted)}
+.phase-card-deepdive{margin-top:10px;border-top:1px solid var(--border);padding-top:8px}
+.deepdive-link{font-size:11px;color:var(--p7);font-weight:600;text-decoration:none;letter-spacing:.03em}
+.deepdive-link:hover{text-decoration:underline}
+
+/* PHASE DETAIL */
+.phase-detail{display:none;max-width:1200px;margin:0 auto;padding:0 48px 64px}
+.phase-detail.visible{display:block}
+.phase-header{margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.phase-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:8px}
+.phase-title-big{font-size:32px;font-weight:800;letter-spacing:-.02em}
+.back-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-family:'Syne',sans-serif;color:var(--muted);cursor:pointer;transition:color .15s,border-color .15s,background .15s}
+.back-btn:hover{color:var(--text);border-color:var(--border2);background:var(--dim)}
+.phase-desc{font-size:13px;color:var(--muted);line-height:1.6;max-width:700px}
+
+/* TOPIC CARDS */
+.topics-list{display:flex;flex-direction:column;gap:10px}
+.topic-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.topic-head{padding:14px 18px;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:14px;transition:background .12s}
+.topic-head:hover{background:var(--bg)}
+.topic-idx{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);min-width:28px}
+.topic-title-wrap{min-width:0}
+.topic-name{font-size:14px;font-weight:600;color:var(--text)}
+.topic-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.topic-time{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted);white-space:nowrap}
+.topic-check{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--border2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.topic-check.done{background:var(--p3);border-color:var(--p3)}
+.topic-check.done::after{content:'✓';font-size:10px;color:#ffffff;font-weight:700}
+.topic-body{display:none;border-top:1px solid var(--border);padding:20px 18px}
+.topic-body.open{display:block}
+.topic-body h4{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;margin-top:16px}
+.topic-body h4:first-child{margin-top:0}
+.concepts-grid{display:flex;flex-direction:column;gap:8px}
+.concept{background:var(--bg);border-radius:8px;padding:10px 14px;border-left:3px solid var(--border2)}
+.concept-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.concept-desc{font-size:12px;color:var(--muted);line-height:1.55}
+.code{background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#334155;line-height:1.7;overflow-x:auto;white-space:pre;margin-top:4px}
+.code .kw{color:#0369a1;font-weight:600} .code .fn{color:#7c3aed} .code .str{color:#047857} .code .cm{color:#94a3b8} .code .num{color:#ea6c00} .code .op{color:#db2777}
+.insight{background:var(--p1b);border-left:3px solid var(--p1);border-radius:0 8px 8px 0;padding:10px 14px;margin-top:4px}
+.insight .lbl{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--p1d);text-transform:uppercase;margin-bottom:5px}
+.insight p{font-size:12px;color:var(--p1d);line-height:1.55;font-style:italic}
+.warn{background:var(--p6b);border-left:3px solid var(--p6);border-radius:0 8px 8px 0;padding:10px 14px;margin-top:4px}
+.warn .lbl{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--p6d);text-transform:uppercase;margin-bottom:5px}
+.warn p{font-size:12px;color:var(--p6d);line-height:1.55}
+.scenario{background:#1e293b;color:#e2e8f0;border-left:4px solid #dc2626;border-radius:0 8px 8px 0;padding:12px 16px;margin-top:8px}
+.scenario .lbl{font-size:10px;font-weight:700;letter-spacing:.1em;color:#f87171;text-transform:uppercase;margin-bottom:6px}
+.scenario p{font-size:12px;line-height:1.6}
+.badge-ehr{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-bottom:6px;background:#0d9488;color:#ffffff;letter-spacing:.04em}
+.badge-os{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-bottom:6px;background:#EC0016;color:#ffffff;letter-spacing:.04em}
+.qa-list{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.qa-item{border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.qa-q{padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--text);transition:background .12s}
+.qa-q:hover{background:var(--dim)}
+.qa-a{padding:12px 14px;border-top:1px solid var(--border)}
+.qa-a p{font-size:12px;color:var(--muted);line-height:1.6}
+.interview-anchor{background:var(--p7b);border-left:3px solid var(--p7);border-radius:0 8px 8px 0;padding:8px 12px;margin-top:8px}
+.interview-anchor .lbl{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--p7d);text-transform:uppercase;margin-bottom:4px}
+.interview-anchor p{font-size:12px;color:var(--p7d);font-weight:600}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.pill{font-size:11px;padding:3px 9px;border-radius:99px;background:var(--bg);border:1px solid var(--border2);color:var(--muted);font-family:'JetBrains Mono',monospace}
+
+/* PROGRESS SIDEBAR */
+.layout{display:grid;grid-template-columns:1fr 220px;gap:24px;align-items:start}
+.sidebar{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;position:sticky;top:56px;box-shadow:var(--shadow)}
+.sidebar h3{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.sidebar-phase{display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer}
+.sidebar-phase:hover .sidebar-phase-name{color:var(--text)}
+.sidebar-phase-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sidebar-phase-name{font-size:12px;color:var(--muted);transition:color .12s;flex:1}
+.sidebar-phase-pct{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted)}
+.mini-bar{height:2px;background:var(--border);border-radius:99px;margin-top:2px;overflow:hidden}
+.mini-fill{height:2px;border-radius:99px}
+.total-prog{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.total-prog-num{font-size:24px;font-weight:800;font-family:'JetBrains Mono',monospace;letter-spacing:-.03em;color:var(--p3)}
+.total-prog-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* COLOR UTILITIES */
+.c1{color:var(--p1)}.c2{color:var(--p2)}.c3{color:var(--p3)}.c4{color:var(--p4)}.c5{color:var(--p5)}.c6{color:var(--p6)}.c7{color:var(--p7)}.c8{color:var(--p8)}
+.bg1::before,.phase-card.p1::before{background:var(--p1)} .bg2::before,.phase-card.p2::before{background:var(--p2)} .bg3::before,.phase-card.p3::before{background:var(--p3)} .bg4::before,.phase-card.p4::before{background:var(--p4)} .bg5::before,.phase-card.p5::before{background:var(--p5)} .bg6::before,.phase-card.p6::before{background:var(--p6)} .bg7::before,.phase-card.p7::before{background:var(--p7)} .bg8::before,.phase-card.p8::before{background:var(--p8)} .phase-card.p9::before{background:var(--p1)}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .phase-grid{padding:0 20px 24px}
+  .hero{padding:40px 20px 32px}
+  .hero h1{font-size:36px}
+  .phase-detail{padding:0 20px 48px}
+  .job-decoder{padding:0 20px}
+  .hero-stats{gap:12px}
+  .stat{padding:10px 14px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">DB·MASTERY</div>
+  <div id="nav-tabs" style="display:flex;align-items:center;gap:0;overflow-x:auto"></div>
+  <div class="nav-right">
+    <button class="study-toggle" id="study-toggle" onclick="toggleStudyMode()">🎤 Interview</button>
+    <span class="total-badge" id="total-badge">0 / 0 done</span>
+    <div class="prog-pill"><div class="prog-inner" id="nav-prog" style="width:0%"></div></div>
+  </div>
+</nav>
+
+<div id="home-view">
+<div class="hero">
+  <div class="hero-eyebrow">ANÜ Interview Preparation · OS GmbH · Michael Nietsch · Frankfurt</div>
+  <h1>DB·<span>MASTERY</span></h1>
+  <p class="hero-sub">Nine phases from SELECT to Galera split-brain recovery. Optimised for your MariaDB / MaxScale / Galera interview at operational services GmbH.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-n c3" id="hero-phases">9</span><span class="stat-l">Phases</span></div>
+    <div class="stat"><span class="stat-n c1" id="hero-topics">0</span><span class="stat-l">Topics</span></div>
+    <div class="stat"><span class="stat-n c6" id="hero-hours">~0h</span><span class="stat-l">Study time</span></div>
+    <div class="stat"><span class="stat-n c5" id="hero-done">0</span><span class="stat-l">Completed</span></div>
+    <div class="stat" id="stat-ready"><span class="stat-n" id="hero-ready" style="color:var(--p3)">0%</span><span class="stat-l">Interview Ready</span></div>
+  </div>
+</div>
+
+<div class="job-decoder" id="job-decoder">
+  <div class="job-decoder-header" onclick="toggleDecoder()" id="decoder-header">
+    <span>🎯 Interview Target — OS GmbH · Michael Nietsch · Frankfurt</span>
+    <span id="decoder-arrow">▼</span>
+  </div>
+  <div class="job-decoder-body" id="decoder-body" style="display:none"></div>
+</div>
+
+<div class="phase-grid" id="phase-grid"></div>
+</div>
+
+<div id="phase-view" style="display:none">
+  <div class="phase-detail visible" id="phase-detail">
+    <div class="phase-header">
+      <div class="phase-header-top">
+        <div>
+          <div class="phase-card-num" id="pd-num" style="margin-bottom:6px"></div>
+          <div class="phase-title-big" id="pd-title"></div>
+        </div>
+        <button class="back-btn" onclick="goHome()">← All phases</button>
+      </div>
+      <p class="phase-desc" id="pd-desc"></p>
+    </div>
+    <div class="layout">
+      <div class="topics-list" id="pd-topics"></div>
+      <div class="sidebar">
+        <h3>Your progress</h3>
+        <div id="sb-phases"></div>
+        <div class="total-prog">
+          <div class="total-prog-num" id="sb-total">0%</div>
+          <div class="total-prog-lbl">overall complete</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const PHASES = [
+{
+  id:0, num:'Phase 01', color:'var(--p1)', hours:20, weight:'LOW', deepDive:'db-deep-p01-sql.html',
+  title:'SQL Foundations',
+  desc:'The universal language of databases. Master these and you can work with any relational database. Every topic here should become muscle memory — you will use them daily.',
+  topics:[
+    {
+      title:'Basic SELECT & Filtering',
+      sub:'SELECT · WHERE · ORDER BY · LIMIT · DISTINCT · LIKE · IN · BETWEEN · NULL',
+      time:'4h',
+      concepts:[
+        {name:'SELECT statement anatomy',desc:'SELECT [columns] FROM [table] WHERE [condition] ORDER BY [col] LIMIT [n]. The WHERE clause filters rows before they are returned. ORDER BY sorts the result set. LIMIT caps the number of rows.'},
+        {name:'NULL handling',desc:'NULL means "unknown" — it is not zero or empty string. NULL compared to anything returns NULL (not true/false). Always use IS NULL or IS NOT NULL, never = NULL.'},
+        {name:'Pattern matching with LIKE',desc:'[EHR] In CareMate, finding patients by partial surname uses LIKE \'%müller%\'. The % matches any number of characters, _ matches exactly one. PostgreSQL adds ILIKE for case-insensitive matching.'},
+      ],
+      code:`<span class="kw">SELECT</span> first_name, last_name, salary
+<span class="kw">FROM</span> employees
+<span class="kw">WHERE</span> department <span class="kw">IN</span> (<span class="str">'Engineering'</span>, <span class="str">'Product'</span>)
+  <span class="kw">AND</span> salary <span class="kw">BETWEEN</span> <span class="num">60000</span> <span class="kw">AND</span> <span class="num">120000</span>
+  <span class="kw">AND</span> manager_id <span class="kw">IS NOT NULL</span>
+  <span class="kw">AND</span> last_name <span class="kw">LIKE</span> <span class="str">'A%'</span>
+<span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="num">10</span>;
+
+<span class="cm">-- NULL gotcha: this returns NO rows even if salary IS NULL</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> employees <span class="kw">WHERE</span> salary <span class="op">!=</span> <span class="num">50000</span>;
+<span class="cm">-- Fix: add OR salary IS NULL</span>`,
+      insight:'Every WHERE clause is applied to every row in the table unless an index exists. Understanding this is the foundation of query optimization.',
+    },
+    {
+      title:'Aggregations & Grouping',
+      sub:'COUNT · SUM · AVG · MIN · MAX · GROUP BY · HAVING · ROLLUP',
+      time:'3h',
+      concepts:[
+        {name:'GROUP BY splits rows into buckets',desc:'GROUP BY groups rows that share the same value in specified columns into summary rows. Every column in SELECT must either be in GROUP BY or wrapped in an aggregate function.'},
+        {name:'HAVING vs WHERE',desc:'WHERE filters individual rows BEFORE grouping. HAVING filters groups AFTER aggregation. You cannot use aggregate functions in WHERE — use HAVING instead.'},
+        {name:'COUNT(*) vs COUNT(column)',desc:'[OS] Fraport reports count daily gate activity using COUNT(*) for all rows, COUNT(flight_id) for non-NULL flights only. COUNT(DISTINCT flight_id) counts unique flights — essential for KPI dashboards.'},
+      ],
+      code:`<span class="cm">-- Sales by department with minimum threshold</span>
+<span class="kw">SELECT</span>
+  department,
+  <span class="fn">COUNT</span>(*) <span class="kw">AS</span> employee_count,
+  <span class="fn">AVG</span>(salary) <span class="kw">AS</span> avg_salary,
+  <span class="fn">SUM</span>(salary) <span class="kw">AS</span> total_payroll,
+  <span class="fn">MAX</span>(salary) <span class="kw">AS</span> top_salary
+<span class="kw">FROM</span> employees
+<span class="kw">WHERE</span> status <span class="op">=</span> <span class="str">'active'</span>        <span class="cm">-- filter rows first</span>
+<span class="kw">GROUP BY</span> department
+<span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) <span class="op">></span> <span class="num">5</span>           <span class="cm">-- filter groups after aggregation</span>
+<span class="kw">ORDER BY</span> avg_salary <span class="kw">DESC</span>;`,
+      insight:'HAVING is one of the most commonly misused clauses. Write WHERE when you can — it reduces rows before grouping, making the query faster.',
+    },
+    {
+      title:'JOINs — all types',
+      sub:'INNER · LEFT · RIGHT · FULL OUTER · CROSS · SELF JOIN',
+      time:'5h',
+      concepts:[
+        {name:'INNER JOIN',desc:'Returns only rows where the join condition is true in BOTH tables. The most common join. If a row has no match in the other table, it is excluded entirely.'},
+        {name:'LEFT JOIN (LEFT OUTER JOIN)',desc:'Returns ALL rows from the left table, plus matching rows from the right. If no match exists, right-side columns are NULL. Use to find "customers with no orders": WHERE orders.id IS NULL.'},
+        {name:'SELF JOIN',desc:'[EHR] CareMate uses a self-join on the doctors table to find which consultants report to which senior doctors — hierarchical staff relationships modelled in one table.'},
+      ],
+      code:`<span class="cm">-- LEFT JOIN to find customers with NO orders</span>
+<span class="kw">SELECT</span> c.name, o.id <span class="kw">AS</span> order_id
+<span class="kw">FROM</span> customers c
+<span class="kw">LEFT JOIN</span> orders o <span class="kw">ON</span> c.id <span class="op">=</span> o.customer_id
+<span class="kw">WHERE</span> o.id <span class="kw">IS NULL</span>;   <span class="cm">-- no order = NULL from right side</span>
+
+<span class="cm">-- SELF JOIN: employees earning more than their manager</span>
+<span class="kw">SELECT</span> e.name <span class="kw">AS</span> employee, e.salary,
+       m.name <span class="kw">AS</span> manager,  m.salary <span class="kw">AS</span> mgr_salary
+<span class="kw">FROM</span> employees e
+<span class="kw">JOIN</span> employees m <span class="kw">ON</span> e.manager_id <span class="op">=</span> m.id
+<span class="kw">WHERE</span> e.salary <span class="op">></span> m.salary;`,
+      insight:'LEFT JOIN is used more than INNER in data analysis. The pattern "LEFT JOIN ... WHERE right.id IS NULL" is the standard way to find unmatched records.',
+    },
+    {
+      title:'DML — Modifying Data',
+      sub:'INSERT · UPDATE · DELETE · TRUNCATE · UPSERT · transactions',
+      time:'4h',
+      concepts:[
+        {name:'UPDATE with JOIN (MariaDB/MySQL)',desc:'In MySQL/MariaDB, you can UPDATE by joining tables directly in the UPDATE statement — more efficient than a subquery. PostgreSQL uses UPDATE ... FROM instead.'},
+        {name:'UPSERT — INSERT or UPDATE',desc:'MySQL/MariaDB: INSERT ... ON DUPLICATE KEY UPDATE. PostgreSQL: INSERT ... ON CONFLICT DO UPDATE. Critical for idempotent data pipelines.'},
+        {name:'TRUNCATE vs DELETE',desc:'[OS] On S-Bahn Berlin\'s staging tables, TRUNCATE resets the table instantly (no per-row logging) before reload. DELETE is used when row-level audit or conditions apply. Never run either without a WHERE in production without explicit intention.'},
+      ],
+      code:`<span class="cm">-- UPSERT: insert or update on conflict (MariaDB)</span>
+<span class="kw">INSERT INTO</span> user_stats (user_id, login_count, last_seen)
+<span class="kw">VALUES</span> (<span class="num">42</span>, <span class="num">1</span>, <span class="fn">NOW</span>())
+<span class="kw">ON DUPLICATE KEY UPDATE</span>
+  login_count <span class="op">=</span> login_count <span class="op">+</span> <span class="num">1</span>,
+  last_seen   <span class="op">=</span> <span class="fn">NOW</span>();
+
+<span class="cm">-- UPDATE with JOIN (MariaDB)</span>
+<span class="kw">UPDATE</span> orders o
+<span class="kw">JOIN</span> customers c <span class="kw">ON</span> o.customer_id <span class="op">=</span> c.id
+<span class="kw">SET</span> o.priority <span class="op">=</span> <span class="str">'high'</span>
+<span class="kw">WHERE</span> c.tier <span class="op">=</span> <span class="str">'enterprise'</span>;`,
+      warn:'Never run UPDATE or DELETE without a WHERE clause in production. Always test with SELECT using the same WHERE first.',
+    },
+    {
+      title:'DDL — Defining Structure',
+      sub:'CREATE TABLE · data types · constraints · ALTER · indexes · DROP',
+      time:'4h',
+      concepts:[
+        {name:'Choosing data types correctly',desc:'INT for integers, BIGINT for large IDs (user IDs at scale), DECIMAL(p,s) for money (never FLOAT — binary floating point introduces rounding errors), VARCHAR(n) for variable strings, TEXT for large text, DATETIME/TIMESTAMP for dates.'},
+        {name:'Constraints enforce integrity',desc:'NOT NULL prevents empty values. UNIQUE ensures no duplicates. CHECK validates a condition (e.g., salary > 0). FOREIGN KEY links to another table. Default values fill in when INSERT omits a column.'},
+        {name:'Indexes — the most impactful performance tool',desc:'[EHR] In CareMate, adding an index on visits.patient_id reduced visit lookup from 2000ms to 4ms — a 500x improvement. An index is a sorted copy of column data that allows fast lookups without scanning every row.'},
+      ],
+      code:`<span class="kw">CREATE TABLE</span> orders (
+  id          <span class="fn">BIGINT</span>        <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  customer_id <span class="fn">BIGINT</span>        <span class="kw">NOT NULL</span>,
+  total       <span class="fn">DECIMAL</span>(<span class="num">12</span>,<span class="num">2</span>) <span class="kw">NOT NULL CHECK</span> (total <span class="op">>=</span> <span class="num">0</span>),
+  status      <span class="fn">ENUM</span>(<span class="str">'pending'</span>,<span class="str">'paid'</span>,<span class="str">'shipped'</span>,<span class="str">'cancelled'</span>)
+              <span class="kw">NOT NULL DEFAULT</span> <span class="str">'pending'</span>,
+  created_at  <span class="fn">DATETIME</span>      <span class="kw">NOT NULL DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+  <span class="kw">FOREIGN KEY</span> (customer_id) <span class="kw">REFERENCES</span> customers(id)
+              <span class="kw">ON DELETE RESTRICT ON UPDATE CASCADE</span>
+);
+<span class="kw">CREATE INDEX</span> idx_orders_status ON orders(status);
+<span class="kw">CREATE INDEX</span> idx_orders_customer ON orders(customer_id, created_at);`,
+    },
+  ]
+},
+{
+  id:1, num:'Phase 02', color:'var(--p2)', hours:12, weight:'LOW', deepDive:'db-deep-p02-design.html',
+  title:'Database Design',
+  desc:'The difference between a schema that works and one that scales. Good design is invisible — bad design causes years of pain.',
+  topics:[
+    {
+      title:'Normalization (1NF → 3NF)',
+      sub:'1NF · 2NF · 3NF · BCNF · denormalization trade-offs',
+      time:'4h',
+      concepts:[
+        {name:'1NF — Atomic values, no repeating groups',desc:'Each column holds one value (not a comma-separated list). Each row is uniquely identifiable. Bad: storing phone1, phone2, phone3 columns. Good: separate phone_numbers table.'},
+        {name:'2NF — No partial dependencies',desc:'[EHR] In CareMate, an early schema stored doctor_name in the visits table — but doctor_name depends only on doctor_id, not the full (visit_id, doctor_id) key. Fixing this moves doctor info to the doctors table.'},
+        {name:'3NF — No transitive dependencies',desc:'Non-key columns must depend only on the primary key. Bad: storing zip_code and city in same table — city depends on zip_code, not the PK. Fix: zip_codes lookup table.'},
+        {name:'When to denormalize',desc:'For read-heavy reporting/analytics, duplication can improve performance. A data warehouse intentionally denormalizes (star schema). Always normalize first, then selectively denormalize with documentation.'},
+      ],
+      code:`<span class="cm">-- BEFORE: un-normalized (violates 2NF)</span>
+<span class="cm">-- order_items(order_id, product_id, product_name, quantity, price)</span>
+<span class="cm">-- product_name depends only on product_id → partial dependency</span>
+
+<span class="cm">-- AFTER: normalized</span>
+<span class="kw">CREATE TABLE</span> products (
+  id   <span class="fn">INT PRIMARY KEY</span>,
+  name <span class="fn">VARCHAR</span>(<span class="num">200</span>) <span class="kw">NOT NULL</span>
+);
+<span class="kw">CREATE TABLE</span> order_items (
+  order_id   <span class="fn">INT</span> <span class="kw">NOT NULL</span>,
+  product_id <span class="fn">INT</span> <span class="kw">NOT NULL</span>,
+  quantity   <span class="fn">INT</span> <span class="kw">NOT NULL</span>,
+  unit_price <span class="fn">DECIMAL</span>(<span class="num">10</span>,<span class="num">2</span>) <span class="kw">NOT NULL</span>,
+  <span class="kw">PRIMARY KEY</span> (order_id, product_id),
+  <span class="kw">FOREIGN KEY</span> (product_id) <span class="kw">REFERENCES</span> products(id)
+);`,
+    },
+    {
+      title:'Keys, Constraints & Relationships',
+      sub:'PK · FK · UK · Composite keys · ON DELETE · Cardinality',
+      time:'3h',
+      concepts:[
+        {name:'Primary key vs natural key vs surrogate key',desc:'Natural key: a real-world attribute (email, passport). Surrogate key: system-generated ID (AUTO_INCREMENT). Surrogate keys are almost always better — natural keys change, contain PII, and complicate JOINs.'},
+        {name:'ON DELETE / ON UPDATE actions',desc:'RESTRICT: reject the delete if child rows exist (safest). CASCADE: delete children automatically. SET NULL: set FK to NULL. Understanding these prevents data integrity disasters.'},
+        {name:'Many-to-many requires a junction table',desc:'[EHR] In CareMate, a patient can have many doctors, and a doctor can have many patients. Junction table: patient_doctors(patient_id, doctor_id, assigned_at). PK is the composite (patient_id, doctor_id).'},
+      ],
+      code:`<span class="kw">CREATE TABLE</span> article_tags (
+  article_id <span class="fn">BIGINT</span> <span class="kw">NOT NULL REFERENCES</span> articles(id) <span class="kw">ON DELETE CASCADE</span>,
+  tag_id     <span class="fn">INT</span>    <span class="kw">NOT NULL REFERENCES</span> tags(id)    <span class="kw">ON DELETE CASCADE</span>,
+  tagged_at  <span class="fn">TIMESTAMP</span> <span class="kw">DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+  <span class="kw">PRIMARY KEY</span> (article_id, tag_id)
+);`,
+    },
+    {
+      title:'Index Design Strategy',
+      sub:'B-tree · Composite index · Covering index · Index selectivity · When NOT to index',
+      time:'3h',
+      concepts:[
+        {name:'How B-tree indexes work',desc:'A B-tree is a sorted tree structure. A lookup on an indexed column traverses the tree in O(log n) time instead of O(n) full scan. The index stores the indexed value + a pointer back to the row.'},
+        {name:'Composite index column order matters',desc:'Index on (last_name, first_name) helps queries filtering on last_name alone. It does NOT help queries filtering on first_name alone. Put the most selective column first, but respect query patterns.'},
+        {name:'Covering index',desc:'[OS] On Fraport\'s flight queries, a covering index on (flight_date, gate, status) means SELECT status FROM flights WHERE flight_date=... AND gate=... never reads the main table — an index-only scan.'},
+      ],
+      code:`<span class="cm">-- Check if a query uses an index</span>
+<span class="kw">EXPLAIN</span> <span class="kw">SELECT</span> * <span class="kw">FROM</span> orders <span class="kw">WHERE</span> customer_id <span class="op">=</span> <span class="num">42</span>;
+<span class="cm">-- Look for: type=ref or range (good), type=ALL (table scan = bad)</span>
+
+<span class="kw">CREATE INDEX</span> idx_orders_cover
+  <span class="kw">ON</span> orders(customer_id, created_at, total, status);
+
+<span class="cm">-- Check unused indexes</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> sys.schema_unused_indexes;`,
+      insight:'The most common DBA performance task is adding missing indexes. Learn to read EXPLAIN output — it is the most valuable diagnostic tool in SQL.',
+    },
+    {
+      title:'Schema Design Patterns',
+      sub:'EAV · Star schema · Soft deletes · Audit trails · Polymorphic associations',
+      time:'2h',
+      concepts:[
+        {name:'Soft deletes (deleted_at pattern)',desc:'Instead of deleting rows, set deleted_at = NOW(). Application logic filters WHERE deleted_at IS NULL. Enables undo/restore and forensic analysis. Every query must add the filter.'},
+        {name:'Audit trail (created_by, updated_by)',desc:'[EHR] CareMate adds created_at, updated_at, created_by, updated_by to every medical record table — GDPR and audit trail requirements. MariaDB makes this easy with DEFAULT CURRENT_TIMESTAMP and ON UPDATE CURRENT_TIMESTAMP.'},
+        {name:'Star schema (data warehousing)',desc:'Central fact table (sales_facts) surrounded by dimension tables (products, customers, dates). Optimized for analytical queries. Deliberately denormalized for read performance.'},
+      ],
+      code:`<span class="cm">-- Audit columns on every important table</span>
+<span class="kw">ALTER TABLE</span> patients
+  <span class="kw">ADD COLUMN</span> created_at   <span class="fn">DATETIME</span> <span class="kw">NOT NULL DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+  <span class="kw">ADD COLUMN</span> updated_at   <span class="fn">DATETIME</span> <span class="kw">NOT NULL DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>
+                          <span class="kw">ON UPDATE</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+  <span class="kw">ADD COLUMN</span> deleted_at   <span class="fn">DATETIME</span> <span class="kw">NULL</span>;
+
+<span class="cm">-- Always filter soft-deleted rows</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> patients <span class="kw">WHERE</span> deleted_at <span class="kw">IS NULL</span>;`,
+    },
+  ]
+},
+{
+  id:2, num:'Phase 03', color:'var(--p3)', hours:16, weight:'MEDIUM', deepDive:'db-deep-p03-advsql.html',
+  title:'Advanced SQL',
+  desc:'The queries that separate junior from senior. Window functions alone will unlock a class of analytics problems that are impossible with basic GROUP BY.',
+  topics:[
+    {
+      title:'Window Functions',
+      sub:'ROW_NUMBER · RANK · DENSE_RANK · LAG · LEAD · SUM OVER · PARTITION BY · FRAME',
+      time:'5h',
+      concepts:[
+        {name:'Window functions never collapse rows',desc:'Unlike GROUP BY which returns one row per group, window functions return a value for EVERY row while still being able to look at other rows. This is their superpower.'},
+        {name:'PARTITION BY divides the window',desc:'PARTITION BY is like GROUP BY for the window, but without collapsing rows. SUM(sales) OVER (PARTITION BY region) gives the total for that region on every row in that region.'},
+        {name:'LAG / LEAD — look at adjacent rows',desc:'[OS] VW automotive uses LAG(production_count, 1) to compute daily production delta on assembly line reports — comparing today\'s output to yesterday\'s without a self-join.'},
+      ],
+      code:`<span class="cm">-- Rank employees by salary within each department</span>
+<span class="kw">SELECT</span>
+  name, department, salary,
+  <span class="fn">RANK</span>()       <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> department <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>) <span class="kw">AS</span> rank,
+  <span class="fn">DENSE_RANK</span>() <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> department <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>) <span class="kw">AS</span> dense_rank,
+  <span class="fn">LAG</span>(salary, <span class="num">1</span>) <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>) <span class="kw">AS</span> prev_salary
+<span class="kw">FROM</span> employees;`,
+      insight:'Window functions are the most impactful thing to learn after JOINs. They appear in virtually every analytics query in a professional environment.',
+    },
+    {
+      title:'CTEs & Recursive Queries',
+      sub:'WITH clause · Multiple CTEs · Recursive CTE · Hierarchy traversal',
+      time:'3h',
+      concepts:[
+        {name:'CTE (WITH clause) = named subquery',desc:'A CTE defines a temporary named result set at the top of a query. It makes complex queries readable. Multiple CTEs can reference each other. They are not persisted.'},
+        {name:'Recursive CTE for hierarchies',desc:'[EHR] CareMate uses a recursive CTE to traverse the referral chain: a patient was referred by doctor A, who was onboarded by manager B — the full chain visible in one query without multiple round trips.'},
+      ],
+      code:`<span class="cm">-- Multiple CTEs: readable pipeline</span>
+<span class="kw">WITH</span>
+  active_patients <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> id, name <span class="kw">FROM</span> patients <span class="kw">WHERE</span> deleted_at <span class="kw">IS NULL</span>
+  ),
+  recent_visits <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> patient_id, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> cnt
+    <span class="kw">FROM</span> visits
+    <span class="kw">WHERE</span> visit_date <span class="op">></span> <span class="fn">NOW</span>() - <span class="kw">INTERVAL</span> <span class="num">30</span> <span class="kw">DAY</span>
+    <span class="kw">GROUP BY</span> patient_id
+  )
+<span class="kw">SELECT</span> p.name, <span class="fn">COALESCE</span>(r.cnt, <span class="num">0</span>) <span class="kw">AS</span> visits_last_30d
+<span class="kw">FROM</span> active_patients p
+<span class="kw">LEFT JOIN</span> recent_visits r <span class="kw">ON</span> p.id <span class="op">=</span> r.patient_id;`,
+    },
+    {
+      title:'EXPLAIN & Query Optimization',
+      sub:'EXPLAIN · EXPLAIN ANALYZE · Access types · Join algorithms · Index hints',
+      time:'4h',
+      concepts:[
+        {name:'Reading EXPLAIN output',desc:'Key field: "type" column (MariaDB). ALL=full scan (bad). index=full index scan. range=index range scan. ref=non-unique index lookup. eq_ref=unique index lookup. const/system=single row (best).'},
+        {name:'rows × filtered = actual rows scanned',desc:'"rows" estimates how many rows the engine expects to examine. "filtered" is the estimated percentage that pass the WHERE clause. rows=10000, filtered=1% means 10,000 were read but 100 survive.'},
+        {name:'Common optimization patterns',desc:'[OS] On Fraport\'s database, a report query was scanning 2M passenger rows because YEAR(arrival_time)=2024 disabled the index. Replacing with arrival_time BETWEEN \'2024-01-01\' AND \'2024-12-31\' made it an index range scan.'},
+      ],
+      code:`<span class="kw">EXPLAIN</span>
+<span class="kw">SELECT</span> o.id, c.name, o.total
+<span class="kw">FROM</span> orders o
+<span class="kw">JOIN</span> customers c <span class="kw">ON</span> o.customer_id <span class="op">=</span> c.id
+<span class="kw">WHERE</span> o.status <span class="op">=</span> <span class="str">'pending'</span>
+  <span class="kw">AND</span> o.created_at <span class="op">></span> <span class="str">'2024-01-01'</span>;
+<span class="cm">-- type=ALL = bad. type=ref or eq_ref = good.
+-- key=NULL means no index was used</span>`,
+    },
+    {
+      title:'Stored Procedures & Functions',
+      sub:'CREATE PROCEDURE · IN/OUT params · DELIMITER · Error handling · When NOT to use SP',
+      time:'2h',
+      concepts:[
+        {name:'Stored procedure vs function',desc:'Stored procedure: called with CALL, can modify data, can have OUT parameters, cannot be used in SELECT. Function: returns a value, can be used in SELECT/WHERE, should have no side effects.'},
+        {name:'DELIMITER in MariaDB CLI',desc:'[EHR] CareMate\'s DBA uses DELIMITER // when creating procedures for archiving old patient audit logs — necessary because the procedure body itself contains semicolons that would otherwise end the CREATE statement.'},
+      ],
+      code:`<span class="kw">DELIMITER</span> //
+<span class="kw">CREATE PROCEDURE</span> <span class="fn">archive_old_records</span>(IN days_old <span class="fn">INT</span>)
+<span class="kw">BEGIN</span>
+  <span class="kw">DECLARE</span> rows_moved <span class="fn">INT</span>;
+  <span class="kw">INSERT INTO</span> visits_archive
+    <span class="kw">SELECT</span> * <span class="kw">FROM</span> visits
+    <span class="kw">WHERE</span> visit_date <span class="op"><</span> <span class="fn">NOW</span>() - <span class="kw">INTERVAL</span> days_old <span class="kw">DAY</span>;
+  <span class="kw">SET</span> rows_moved <span class="op">=</span> <span class="fn">ROW_COUNT</span>();
+  <span class="kw">DELETE FROM</span> visits
+    <span class="kw">WHERE</span> visit_date <span class="op"><</span> <span class="fn">NOW</span>() - <span class="kw">INTERVAL</span> days_old <span class="kw">DAY</span>;
+  <span class="kw">SELECT</span> rows_moved <span class="kw">AS</span> archived_count;
+<span class="kw">END</span>//
+<span class="kw">DELIMITER</span> ;
+<span class="kw">CALL</span> <span class="fn">archive_old_records</span>(<span class="num">365</span>);`,
+    },
+    {
+      title:'Transactions & Isolation Levels',
+      sub:'ACID · BEGIN/COMMIT/ROLLBACK · Savepoints · Isolation levels · Deadlocks',
+      time:'4h',
+      concepts:[
+        {name:'ACID properties',desc:'Atomicity: all or nothing. Consistency: database goes from one valid state to another. Isolation: concurrent transactions don\'t see each other\'s uncommitted work. Durability: committed data survives crashes.'},
+        {name:'Isolation levels & their anomalies',desc:'READ UNCOMMITTED: dirty reads possible. READ COMMITTED: only see committed data (default PostgreSQL). REPEATABLE READ: same query returns same results within a transaction (default MariaDB/MySQL). SERIALIZABLE: strictest, no anomalies.'},
+        {name:'Deadlocks are inevitable — design for them',desc:'[OS] On S-Bahn Berlin\'s booking database, two simultaneous seat reservations on the same train deadlock when they lock rows in opposite order. The fix: always lock rows in a consistent order (by seat_id ASC) and implement retry logic.'},
+      ],
+      code:`<span class="kw">START TRANSACTION</span>;
+
+<span class="kw">UPDATE</span> accounts <span class="kw">SET</span> balance <span class="op">=</span> balance <span class="op">-</span> <span class="num">500</span> <span class="kw">WHERE</span> id <span class="op">=</span> <span class="num">1</span>;
+<span class="kw">UPDATE</span> accounts <span class="kw">SET</span> balance <span class="op">=</span> balance <span class="op">+</span> <span class="num">500</span> <span class="kw">WHERE</span> id <span class="op">=</span> <span class="num">2</span>;
+<span class="kw">COMMIT</span>;
+
+<span class="cm">-- Detect current deadlocks (MariaDB/MySQL)</span>
+<span class="kw">SHOW ENGINE INNODB STATUS</span>\G
+<span class="cm">-- Look for "LATEST DETECTED DEADLOCK" section</span>`,
+      warn:'Never leave a transaction open at application layer without a timeout. Long-running transactions hold locks and can bring down a production database.',
+    },
+  ]
+},
+{
+  id:3, num:'Phase 04', color:'var(--p4)', hours:12, weight:'MEDIUM', deepDive:'db-deep-p04-internals.html',
+  title:'Database Internals',
+  desc:'Understanding what happens below the SQL layer. This is what separates administrators from developers — and what interviewers test when they ask hard questions.',
+  topics:[
+    {
+      title:'Storage: Pages, Tablespaces & InnoDB Architecture',
+      sub:'Pages · Buffer pool · InnoDB file layout · Clustered index · Row formats',
+      time:'3h',
+      concepts:[
+        {name:'Data is stored in fixed-size pages',desc:'InnoDB stores data in 16KB pages. A page holds multiple rows. The buffer pool is a cache of pages in RAM. A read = load the page containing the row. A write = mark page as "dirty" in buffer pool, flush to disk later.'},
+        {name:'Clustered index = the table itself',desc:'In InnoDB, the primary key IS the table. The data rows are stored in sorted PK order within the B-tree. Secondary index lookups require two lookups: secondary index → PK, then PK → row.'},
+        {name:'Buffer pool hit ratio',desc:'[OS] On Fraport\'s MariaDB cluster, innodb_buffer_pool_size was set to 96GB on 128GB nodes — keeping 99.97% of hot pages in RAM. When hit ratio dropped below 99%, the on-call DBA was alerted automatically.'},
+      ],
+      code:`<span class="kw">SHOW GLOBAL STATUS LIKE</span> <span class="str">'Innodb_buffer_pool%'</span>;
+<span class="cm">-- Innodb_buffer_pool_reads         = disk reads (misses)
+-- Innodb_buffer_pool_read_requests = total reads
+-- Hit ratio = 1 - (reads / read_requests) × 100 — should be > 99%</span>
+
+<span class="cm">-- In /etc/mysql/mariadb.conf.d/50-server.cnf:</span>
+<span class="cm">-- innodb_buffer_pool_size = 12G   (for 16GB RAM server)</span>`,
+    },
+    {
+      title:'MVCC & Concurrency Control',
+      sub:'Multi-Version Concurrency Control · Undo log · Read views · Snapshot isolation',
+      time:'3h',
+      concepts:[
+        {name:'MVCC — readers never block writers',desc:'When a row is updated, the engine does NOT overwrite the old data. It creates a new version and keeps the old one in the undo log. A transaction that started before the update still reads the old version.'},
+        {name:'InnoDB undo log vs PostgreSQL dead rows',desc:'InnoDB stores old versions in a separate undo tablespace — cleanup happens in the purge thread. PostgreSQL stores old versions inline in the table (heap), requiring VACUUM to reclaim space.'},
+        {name:'Read view / snapshot',desc:'[EHR] When a CareMate API request begins a transaction (REPEATABLE READ), it gets a snapshot of the data at that moment. Even if a nurse updates a patient record mid-request, the API sees consistent data from when it started.'},
+      ],
+      code:`<span class="cm">-- Check undo log size (indicator of long-running transactions)</span>
+<span class="kw">SHOW ENGINE INNODB STATUS</span>\G
+<span class="cm">-- Find: "History list length" — should be < 1000
+-- High value = long-running transaction preventing purge</span>
+
+<span class="kw">SELECT</span> trx_id, trx_started, trx_query
+<span class="kw">FROM</span> information_schema.INNODB_TRX
+<span class="kw">ORDER BY</span> trx_started <span class="kw">ASC</span> <span class="kw">LIMIT</span> <span class="num">5</span>;`,
+    },
+    {
+      title:'WAL, Binlog & Crash Recovery',
+      sub:'Write-Ahead Log · InnoDB redo log · Binary log · Checkpoints · Point-in-time recovery',
+      time:'3h',
+      concepts:[
+        {name:'Write-Ahead Log (WAL) = durability guarantee',desc:'Before any change reaches the data file on disk, it is written to the redo log (InnoDB) or WAL (PostgreSQL). If a crash occurs, the engine replays the log on restart. "Committed" means the redo log entry is flushed — not the data page.'},
+        {name:'Binary log (binlog) — replication + PITR',desc:'A separate log at the server level (above InnoDB). Records every write in a format suitable for replay on another server. Used for: asynchronous replication, point-in-time recovery.'},
+        {name:'innodb_flush_log_at_trx_commit settings',desc:'[OS] On production Fraport database: always set to 1 (flush every commit). Values 0 and 2 risk 1 second of data loss on OS crash — unacceptable for KRITIS infrastructure.'},
+      ],
+      code:`<span class="kw">SHOW VARIABLES LIKE</span> <span class="str">'log_bin'</span>;
+<span class="kw">SHOW BINARY LOGS</span>;
+
+<span class="cm">-- Point-in-time recovery workflow:
+-- 1. Restore last full backup
+mariabackup --prepare --target-dir=/backup/full
+mariabackup --copy-back --target-dir=/backup/full
+
+-- 2. Replay binlog from backup time to target time
+mysqlbinlog --start-datetime="2024-03-01 02:00:00" \
+            --stop-datetime="2024-03-01 10:30:00" \
+            /var/log/mysql/mariadb-bin.000045 | mysql -u root -p</span>`,
+      warn:'innodb_flush_log_at_trx_commit=1 is the only fully ACID-safe setting. Values 0 and 2 can lose the last 1 second of committed transactions on crash.',
+    },
+    {
+      title:'Locking: Row Locks, Table Locks & Deadlocks',
+      sub:'Shared locks · Exclusive locks · Gap locks · Intention locks · Deadlock anatomy',
+      time:'3h',
+      concepts:[
+        {name:'Shared (S) vs Exclusive (X) locks',desc:'Shared lock: multiple transactions can read simultaneously (SELECT ... LOCK IN SHARE MODE). Exclusive lock: one transaction at a time (UPDATE, DELETE, SELECT ... FOR UPDATE). A plain SELECT takes NO lock in MVCC — it reads the snapshot.'},
+        {name:'Gap locks (InnoDB REPEATABLE READ)',desc:'When you lock a range (WHERE id BETWEEN 10 AND 20), InnoDB locks the gaps between values too — so no new rows can be inserted into that range. Prevents phantom reads.'},
+        {name:'Deadlock anatomy',desc:'[EHR] Two CareMate nurse sessions: Session A locks patient row 42, tries to lock visit row 100. Session B already holds visit row 100, tries patient row 42. InnoDB detects the cycle in ~1s and rolls back the transaction with fewer undo records.'},
+      ],
+      code:`<span class="kw">SELECT</span>
+  r.trx_id            <span class="kw">AS</span> waiting_trx,
+  r.trx_mysql_thread_id <span class="kw">AS</span> waiting_thread,
+  b.trx_id            <span class="kw">AS</span> blocking_trx,
+  b.trx_mysql_thread_id <span class="kw">AS</span> blocking_thread
+<span class="kw">FROM</span> information_schema.INNODB_TRX r
+<span class="kw">JOIN</span> performance_schema.data_lock_waits w
+  <span class="kw">ON</span> r.trx_id <span class="op">=</span> w.requesting_engine_transaction_id
+<span class="kw">JOIN</span> information_schema.INNODB_TRX b
+  <span class="kw">ON</span> b.trx_id <span class="op">=</span> w.blocking_engine_transaction_id;
+
+<span class="cm">-- Kill a blocking thread</span>
+<span class="kw">KILL</span> <span class="num">1234</span>;`,
+    },
+  ]
+},
+{
+  id:4, num:'Phase 05', color:'var(--p5)', hours:20, weight:'HIGH', deepDive:'db-deep-p05-mariadb.html',
+  title:'MariaDB Administration',
+  desc:'The core of the interview requirement. Every command here should feel natural. Install, configure, secure, backup, and recover — including under 3am pressure.',
+  topics:[
+    {
+      title:'Installation & Core Configuration',
+      sub:'Installation · my.cnf/mariadb.cnf · Key variables · Socket vs TCP · Character sets',
+      time:'3h',
+      concepts:[
+        {name:'Configuration file hierarchy',desc:'MariaDB reads config from multiple locations: /etc/mysql/mariadb.cnf → /etc/mysql/conf.d/*.cnf → /etc/mysql/mariadb.conf.d/*.cnf → ~/.my.cnf. Later files override earlier ones. Use /etc/mysql/mariadb.conf.d/50-server.cnf for server settings.'},
+        {name:'Critical variables to know',desc:'[EHR] For CareMate on a 16GB server: innodb_buffer_pool_size=12G, max_connections=200, slow_query_log=1, long_query_time=1. For the same app on a 128GB Fraport server: innodb_buffer_pool_size=96G, max_connections=1000.'},
+        {name:'Character set is critical',desc:'Always use character_set_server=utf8mb4 + collation_server=utf8mb4_unicode_ci. "utf8" in MySQL/MariaDB is only 3-byte (can\'t store emoji or some Asian characters). utf8mb4 is true 4-byte Unicode.'},
+      ],
+      code:`<span class="cm"># Install on RHEL/CentOS</span>
+dnf install mariadb-server mariadb
+systemctl enable --now mariadb
+mysql_secure_installation
+
+<span class="cm"># /etc/mysql/mariadb.conf.d/50-server.cnf</span>
+[mysqld]
+bind-address            = 0.0.0.0
+character-set-server    = utf8mb4
+collation-server        = utf8mb4_unicode_ci
+innodb_buffer_pool_size = 12G
+innodb_log_file_size    = 2G
+max_connections         = 500
+slow_query_log          = 1
+slow_query_log_file     = /var/log/mysql/slow.log
+long_query_time         = 1
+log_bin                 = /var/log/mysql/mariadb-bin
+expire_logs_days        = 7`,
+      scenario:'max_connections exhausted at 2am. Application reports "Too many connections." Steps: 1) SHOW STATUS LIKE \'Max_used_connections\'; 2) SHOW PROCESSLIST; find blocking or idle connections. 3) KILL idle ones. 4) Increase max_connections in my.cnf and SET GLOBAL max_connections=600 immediately. 5) Add connection pooling (MaxScale or ProxySQL) to prevent recurrence.',
+      qa:[
+        {q:'What\'s the first my.cnf variable you\'d tune on a new server and why?',a:'innodb_buffer_pool_size. The default is 128MB which is catastrophically low for any production workload. Set it to 70–80% of available RAM. This is the single biggest performance lever in InnoDB and also determines how much data stays in RAM versus going to disk.',anchor:'Buffer pool = most impactful single variable. Target 70–80% RAM.'},
+        {q:'How does the configuration file hierarchy work? Which file wins?',a:'MariaDB reads files in a defined order: /etc/mysql/mariadb.cnf first, then glob-expanded conf.d/ and mariadb.conf.d/ directories, then ~/.my.cnf last. The last file to set a variable wins. Always put custom server settings in /etc/mysql/mariadb.conf.d/50-server.cnf so you can easily find and maintain them.',anchor:'Last file wins. Use 50-server.cnf for all custom settings.'},
+      ]
+    },
+    {
+      title:'Users, Roles & Privilege Management',
+      sub:'CREATE USER · GRANT · REVOKE · ed25519 · Roles · Minimal privilege principle',
+      time:'3h',
+      concepts:[
+        {name:'Authentication plugins',desc:'mysql_native_password: SHA-1 based, most compatible. ed25519 (MariaDB 10.1.22+): elliptic curve auth, much more secure. caching_sha2_password: default in MySQL 8. For production: use ed25519 or caching_sha2_password + TLS.'},
+        {name:'Minimal privilege principle',desc:'[EHR] CareMate\'s read-only reporting user: GRANT SELECT ON carematephr.* — nothing else. If that account is compromised, attackers can only read, not modify patient data.'},
+        {name:'MaxScale monitoring user (know this cold)',desc:'[OS] MaxScale requires a dedicated monitoring user with minimal grants: SELECT on mysql.user, REPLICATION CLIENT, and SHOW DATABASES. Creating this correctly is often tested in MariaDB admin interviews.'},
+      ],
+      code:`<span class="cm">-- Create read-only user for CareMate reports</span>
+<span class="kw">CREATE USER</span> <span class="str">'carematereport'</span>@<span class="str">'10.0.1.%'</span>
+  IDENTIFIED VIA ed25519 USING PASSWORD(<span class="str">'strong_pass'</span>);
+<span class="kw">GRANT SELECT ON</span> carematephr.* <span class="kw">TO</span> <span class="str">'carematereport'</span>@<span class="str">'10.0.1.%'</span>;
+
+<span class="cm">-- MaxScale monitoring user</span>
+<span class="kw">CREATE USER</span> <span class="str">'maxscale_monitor'</span>@<span class="str">'%'</span> IDENTIFIED BY <span class="str">'monpass'</span>;
+<span class="kw">GRANT SELECT ON</span> mysql.user <span class="kw">TO</span> <span class="str">'maxscale_monitor'</span>@<span class="str">'%'</span>;
+<span class="kw">GRANT REPLICATION CLIENT ON</span> *.* <span class="kw">TO</span> <span class="str">'maxscale_monitor'</span>@<span class="str">'%'</span>;
+<span class="kw">GRANT SHOW DATABASES ON</span> *.* <span class="kw">TO</span> <span class="str">'maxscale_monitor'</span>@<span class="str">'%'</span>;
+<span class="kw">FLUSH PRIVILEGES</span>;`,
+      qa:[
+        {q:'How does ed25519 auth differ from mysql_native_password? Why would you prefer it?',a:'mysql_native_password uses SHA-1 which has known weaknesses and sends a hash over the wire. ed25519 is an elliptic curve digital signature algorithm — the server sends a challenge, the client signs it with a private key. No password is ever transmitted. It\'s dramatically more resistant to replay attacks and brute force.',anchor:'ed25519: challenge-response, no password transmitted, elliptic curve = cryptographically superior.'},
+      ]
+    },
+    {
+      title:'Backup: mariabackup Full + Incremental + Restore',
+      sub:'mariabackup · --backup · --prepare · --incremental · --copy-back · PITR',
+      time:'4h',
+      concepts:[
+        {name:'Physical vs logical backup',desc:'mysqldump = logical (SQL statements): portable, slow for large DBs, can restore selectively. mariabackup = physical (data file copy): fast, hot backup supported, handles Galera clusters safely.'},
+        {name:'The prepare step is mandatory',desc:'[EHR] A CareMate backup taken with mariabackup --backup is NOT immediately restorable. It may contain in-flight transactions. The --prepare step applies the redo log, making the backup consistent. Skip this and you restore a corrupt database.'},
+        {name:'Incremental backup chain',desc:'[OS] OS\'s Fraport backup strategy: Sunday full, Monday–Saturday incrementals. Each incremental uses --incremental-basedir pointing to the previous backup. To restore to Wednesday, you apply: full → Mon incr → Tue incr → Wed incr.'},
+      ],
+      code:`<span class="cm">## Full backup</span>
+mariabackup --backup --target-dir=/backups/full_$(date +%Y%m%d) \
+  --user=backup_user --password=pass
+
+<span class="cm">## Incremental backup</span>
+mariabackup --backup --target-dir=/backups/inc_$(date +%Y%m%d) \
+  --incremental-basedir=/backups/full_20240301 \
+  --user=backup_user --password=pass
+
+<span class="cm">## Prepare (apply incrementals in order, then finalize)</span>
+mariabackup --prepare --apply-log-only --target-dir=/backups/full_20240301
+mariabackup --prepare --apply-log-only --target-dir=/backups/full_20240301 \
+  --incremental-dir=/backups/inc_20240302
+mariabackup --prepare --target-dir=/backups/full_20240301
+
+<span class="cm">## Restore</span>
+systemctl stop mariadb
+rm -rf /var/lib/mysql/*
+mariabackup --copy-back --target-dir=/backups/full_20240301
+chown -R mysql:mysql /var/lib/mysql
+systemctl start mariadb`,
+      scenario:'3am restore request: database corruption detected. Last backup: full from Sunday + two incrementals (Mon, Tue). Current time: Wednesday 03:00. Steps: 1) Stop MariaDB. 2) Prepare full backup, then apply Mon incr (--apply-log-only), then Tue incr (--apply-log-only), then final --prepare. 3) copy-back. 4) chown. 5) Start MariaDB. 6) Use mysqlbinlog to replay binlog from Tuesday backup point to corruption event. Estimated downtime: 45min for 200GB database.',
+      qa:[
+        {q:'What does --prepare do and why must you run it before restoring?',a:'During backup, mariabackup copies data files while transactions may be in flight. The resulting backup set is crash-consistent but not transaction-consistent. --prepare applies the InnoDB redo log to roll forward committed transactions and roll back uncommitted ones. Without this step, starting MariaDB on the backup would trigger crash recovery, which may fail or produce an inconsistent state.',anchor:'--prepare = makes backup transaction-consistent by applying redo log. Never skip it.'},
+        {q:'How do you restore a full backup plus two incrementals?',a:'Prepare the full backup with --apply-log-only (do NOT run plain --prepare yet — that finalizes it). Then apply each incremental in chronological order, also with --apply-log-only. Only run the final --prepare (without --apply-log-only) after the last incremental. Then stop MariaDB, clear the data directory, run --copy-back, fix ownership, and start.',anchor:'Apply-log-only on all except the last. Final --prepare finalizes. Order matters.'},
+      ]
+    },
+    {
+      title:'Binary Log & Point-in-Time Recovery (PITR)',
+      sub:'mysqlbinlog · PITR workflow · GTID · binlog formats · Binlog management',
+      time:'4h',
+      concepts:[
+        {name:'PITR workflow: backup + binlog replay',desc:'Restore the most recent full (+ incrementals) backup first. Then replay the binary log from the backup\'s end-position up to the target timestamp using mysqlbinlog. This covers the gap between the backup and the incident.'},
+        {name:'mysqlbinlog to target a timestamp',desc:'[EHR] A developer ran DELETE FROM patient_vitals WHERE 1=1 at 14:37. Last backup was at 02:00. Use mysqlbinlog to replay binlog from 02:00 to 14:36:59 — recovering 12 hours 36 minutes of data.'},
+        {name:'Binary log formats: ROW vs STATEMENT',desc:'[OS] On Galera clusters, binlog_format MUST be ROW. STATEMENT format can cause different results on different nodes due to non-deterministic functions (NOW(), RAND()). Galera requires ROW — it\'s not optional.'},
+      ],
+      code:`<span class="cm">-- Verify binary log is ON</span>
+<span class="kw">SHOW VARIABLES LIKE</span> <span class="str">'log_bin'</span>;
+<span class="kw">SHOW BINARY LOGS</span>;                  <span class="cm">-- list all binlog files</span>
+<span class="kw">SHOW MASTER STATUS</span>\G               <span class="cm">-- current position</span>
+
+<span class="cm">## PITR: restore + binlog replay to 14:36:59</span>
+<span class="cm"># 1. Restore backup (mariabackup as above)</span>
+<span class="cm"># 2. Replay binlog</span>
+mysqlbinlog \
+  --start-datetime=<span class="str">"2024-03-01 02:00:00"</span> \
+  --stop-datetime=<span class="str">"2024-03-01 14:36:59"</span> \
+  /var/log/mysql/mariadb-bin.000045 \
+  /var/log/mysql/mariadb-bin.000046 \
+  | mysql -u root -p
+
+<span class="cm">## Read binlog in human-readable form</span>
+mysqlbinlog --base64-output=DECODE-ROWS -v \
+  /var/log/mysql/mariadb-bin.000045 | head -200`,
+      scenario:'Developer ran DELETE FROM orders WHERE 1=1 at 14:37. Your last backup is from 02:00. Walk through the recovery. Answer: 1) Confirm binlog is enabled and files exist. 2) Restore full backup to a recovery server (not production). 3) Replay binlog from 02:00 to 14:36:59. 4) SHOW TABLE STATUS — verify row count matches expectation. 5) Export the recovered orders table: mysqldump carematephr orders > orders_recovered.sql. 6) Import to production. 7) Post-mortem: add an application-level safeguard (require WHERE clause validation).',
+      qa:[
+        {q:'A developer ran DELETE FROM orders WHERE 1=1 at 14:37. Your last backup is from 02:00. Walk me through the recovery.',a:'First confirm binary logging is enabled (SHOW VARIABLES LIKE \'log_bin\'). Restore the 02:00 backup to a staging server. Replay the binary log with mysqlbinlog using --stop-datetime="2024-03-01 14:36:59" — stopping one second before the DELETE. The staging server now has the data. Export the affected table, import to production. Total process: 30–60 minutes depending on database size.',anchor:'Restore backup to staging → replay binlog to T-1s → export table → import to production.'},
+      ]
+    },
+    {
+      title:'SHOW ENGINE INNODB STATUS — Reading Under Pressure',
+      sub:'TRANSACTIONS · LATEST DEADLOCK · BUFFER POOL · ROW OPERATIONS · History list',
+      time:'3h',
+      concepts:[
+        {name:'TRANSACTIONS section',desc:'[EHR] When CareMate\'s app reports "Lock wait timeout exceeded", run SHOW ENGINE INNODB STATUS. The TRANSACTIONS section shows all active transactions, which rows they hold locks on, and which are waiting. Find the blocking trx_id and KILL its thread.'},
+        {name:'History list length',desc:'[OS] On Fraport\'s database during peak flight operations, the history list length rose to 4,000. This indicates a long-running read transaction is preventing the purge thread from cleaning old row versions from the undo log. Find and kill it: SELECT * FROM INNODB_TRX ORDER BY trx_started LIMIT 5.'},
+        {name:'BUFFER POOL AND MEMORY section',desc:'Shows buffer pool size, pages used, dirty pages, and reads vs read requests. Calculate hit ratio inline: (read_requests - reads) / read_requests × 100. Should exceed 99%.'},
+      ],
+      code:`<span class="kw">SHOW ENGINE INNODB STATUS</span>\G
+
+<span class="cm">-- Key sections to read:
+-- LATEST DETECTED DEADLOCK — full transaction+query that caused deadlock
+-- TRANSACTIONS — all active transactions, lock info
+-- BUFFER POOL AND MEMORY — hit ratio, dirty pages
+-- ROW OPERATIONS — inserts/updates/deletes per second</span>
+
+<span class="cm">-- Find long-running transactions (check if blocking)</span>
+<span class="kw">SELECT</span>
+  trx_id, trx_started,
+  <span class="fn">TIMESTAMPDIFF</span>(<span class="kw">SECOND</span>, trx_started, <span class="fn">NOW</span>()) <span class="kw">AS</span> age_s,
+  trx_query, trx_rows_locked
+<span class="kw">FROM</span> information_schema.INNODB_TRX
+<span class="kw">ORDER BY</span> trx_started <span class="kw">ASC</span>;`,
+      scenario:'"Lock wait timeout exceeded" reported at 2am on the Fraport check-in application. Steps: 1) SHOW ENGINE INNODB STATUS\G — find LATEST DEADLOCK and TRANSACTIONS sections. 2) Identify the blocking transaction\'s thread ID. 3) KILL <thread_id>. 4) Check if the application retried and recovered. 5) Review the deadlock pattern: are two queries always locking tables in opposite order? Fix at application level.',
+      qa:[
+        {q:'What does "History list length" tell you and when does it become alarming?',a:'History list length is the number of old row versions in the InnoDB undo log that haven\'t been purged yet. It grows when a long-running read transaction holds a snapshot, preventing the purge thread from cleaning up committed updates. Values above 1,000 warrant investigation; above 10,000 indicate a serious problem. Find and kill the oldest transaction in INNODB_TRX.',anchor:'History list = unpurged undo log entries. >1000 = investigate. >10000 = emergency.'},
+      ]
+    },
+    {
+      title:'Slow Query Log + pt-query-digest',
+      sub:'slow_query_log · long_query_time · pt-query-digest · Reading digest output · EXPLAINing top queries',
+      time:'3h',
+      concepts:[
+        {name:'Enable and target slow query log',desc:'slow_query_log=1 and long_query_time=1 (queries > 1 second). Set log_queries_not_using_indexes=1 to catch full scans even if they\'re fast. This is your primary performance data source.'},
+        {name:'pt-query-digest output format',desc:'[EHR] On CareMate, pt-query-digest identified a SELECT on visits.patient_id as the top offender: 12,000 calls/day, 0.8s average — consuming 40% of total query time. Adding an index on patient_id reduced it to 2ms.'},
+        {name:'EXPLAIN every top query from the digest',desc:'[OS] On Fraport, the digest showed a report query doing a full table scan on a 50M-row passenger table. EXPLAIN revealed type=ALL. Adding a composite index on (flight_date, terminal) changed type=range and cut query time from 45s to 0.2s.'},
+      ],
+      code:`<span class="cm">## Enable slow query log dynamically</span>
+<span class="kw">SET GLOBAL</span> slow_query_log <span class="op">=</span> <span class="num">1</span>;
+<span class="kw">SET GLOBAL</span> long_query_time <span class="op">=</span> <span class="num">1</span>;
+
+<span class="cm"># Analyze with pt-query-digest</span>
+pt-query-digest --since=24h /var/log/mysql/slow.log | head -200
+
+<span class="cm"># Output format interpretation:
+# Rank  Response time  Calls  R/Call  V/M  Query
+#    1   45.3s 29.3%   2341  0.0194  0.01  SELECT * FROM visits WHERE...
+#
+# R/Call = avg response time per call
+# V/M    = variance-to-mean ratio (high = inconsistent = investigate)
+# Response time total = this query's share of all slow query time</span>
+
+<span class="cm">-- Always EXPLAIN the top 3 queries from digest output</span>
+<span class="kw">EXPLAIN</span> <span class="kw">SELECT</span> * <span class="kw">FROM</span> visits <span class="kw">WHERE</span> patient_id <span class="op">=</span> <span class="num">42</span>;`,
+    },
+  ]
+},
+{
+  id:5, num:'Phase 06', color:'var(--p6)', hours:12, weight:'CRITICAL', deepDive:'db-deep-p06-maxscale.html',
+  title:'MaxScale',
+  desc:'Michael Nietsch\'s primary focus area. MaxScale is the traffic layer in front of every Galera cluster at OS GmbH. Know every component, every maxctrl command, and every failure mode.',
+  topics:[
+    {
+      title:'Architecture: Listeners → Routers → Monitors → Servers',
+      sub:'4-layer model · How a query flows · Service · Protocol · Module types',
+      time:'2h',
+      concepts:[
+        {name:'The four-layer MaxScale model',desc:'Servers: the actual MariaDB backends. Monitors: continuously check server health (galeramon for Galera, mariadbmon for primary-replica). Services: bind a router to a set of servers. Listeners: accept TCP connections from clients on a port and hand them to a service.'},
+        {name:'How a query flows through MaxScale',desc:'[EHR] CareMate API connects to MaxScale on port 4006. The listener hands the connection to the RW-Split service. The readwritesplit router decides: write → current Galera primary; read → any Synced node. The backend server processes the query and responds through MaxScale.'},
+        {name:'Routers are the intelligence',desc:'[OS] readwritesplit: routes writes to master, reads to slaves — the default for Galera. readconnroute: all connections go to the same server (used for read-only replicas). schemarouter: routes based on which database/table is queried (for sharding).'},
+      ],
+      code:`<span class="cm">## MaxScale component overview</span>
+<span class="cm"># [server]   → actual MariaDB nodes (node1, node2, node3)</span>
+<span class="cm"># [monitor]  → watches servers (galeramon / mariadbmon)</span>
+<span class="cm"># [service]  → router + servers bound together</span>
+<span class="cm"># [listener] → TCP port → service</span>
+
+<span class="cm">## Query flow for a CareMate write:</span>
+<span class="cm"># App → :4006 → [RW-Listener] → [RW-Split service]</span>
+<span class="cm">#   → readwritesplit router → Primary node (wsrep_local_state=Synced, wsrep_local_index=0)</span>
+<span class="cm">#   → MariaDB executes → response back through MaxScale → App</span>
+
+maxctrl list servers     <span class="cm"># see all registered backend servers</span>
+maxctrl list services    <span class="cm"># see all services and their routers</span>
+maxctrl list monitors    <span class="cm"># see all monitors and their intervals</span>
+maxctrl list listeners   <span class="cm"># see all listening ports</span>`,
+      qa:[
+        {q:'Explain the difference between a router and a monitor in MaxScale.',a:'A monitor watches backend servers and maintains their current health state — it runs on an interval (e.g., every 2 seconds) checking wsrep_local_state, replication lag, and connectivity. It tags each server with labels like Master, Slave, Synced, Down. A router makes per-query routing decisions using those labels. The monitor collects intelligence; the router acts on it.',anchor:'Monitor = health watcher (labels servers). Router = query traffic director (uses those labels).'},
+      ]
+    },
+    {
+      title:'maxscale.cnf — Production Galera Config',
+      sub:'[maxscale] · [GaleraMonitor] · [server] sections · [RW-Split] · Listeners · All options annotated',
+      time:'3h',
+      concepts:[
+        {name:'maxscale.cnf structure',desc:'The config file has sections: [maxscale] for global settings, one [server] per backend node, one [monitor] section, one or more [service] sections, one [listener] per service. Every non-obvious parameter should be in your memory.'},
+        {name:'GaleraMonitor key parameters',desc:'[OS] On OS\'s production clusters: use_priority=true (so wsrep_local_index=0 node is always the writer, preventing role flapping). available_when_donor=false (removes donor from the read pool during SST). monitor_interval=2000ms.'},
+        {name:'ReadWriteSplit key parameters',desc:'[EHR] For CareMate: slave_selection_criteria=LEAST_CURRENT_OPERATIONS (routes reads to least-loaded node). master_accept_reads=true (primary also takes reads when no replicas available). transaction_replay=true (retries transactions on transient failures).'},
+      ],
+      code:`<span class="cm">## Complete production maxscale.cnf for Galera + readwritesplit</span>
+[maxscale]
+threads          = auto          <span class="cm"># use all CPU cores</span>
+log_info         = true
+log_warning      = true
+admin_host       = 127.0.0.1    <span class="cm"># bind admin API to localhost only</span>
+
+[node1]
+type     = server
+address  = 10.0.1.11
+port     = 3306
+protocol = MariaDBBackend
+
+[node2]
+type     = server
+address  = 10.0.1.12
+port     = 3306
+protocol = MariaDBBackend
+
+[node3]
+type     = server
+address  = 10.0.1.13
+port     = 3306
+protocol = MariaDBBackend
+
+[GaleraMonitor]
+type             = monitor
+module           = galeramon
+servers          = node1,node2,node3
+user             = maxscale_monitor
+password         = monpass
+monitor_interval = 2000ms
+use_priority     = true          <span class="cm"># wsrep_local_index=0 → master</span>
+available_when_donor = false     <span class="cm"># remove donor from pool during SST</span>
+
+[RW-Split]
+type                     = service
+router                   = readwritesplit
+servers                  = node1,node2,node3
+user                     = maxscale_svc
+password                 = svcpass
+master_accept_reads      = true
+slave_selection_criteria = LEAST_CURRENT_OPERATIONS
+transaction_replay       = true
+transaction_replay_max_size = 1Mi
+
+[RW-Listener]
+type     = listener
+service  = RW-Split
+port     = 4006
+protocol = MariaDBClient
+
+[ReadConn]
+type    = service
+router  = readconnroute
+servers = node1,node2,node3
+user    = maxscale_svc
+password= svcpass
+router_options = synced          <span class="cm"># only route to Synced nodes</span>
+
+[Read-Listener]
+type     = listener
+service  = ReadConn
+port     = 4008
+protocol = MariaDBClient`,
+      warn:'Never put plaintext passwords in maxscale.cnf on multi-user systems. Use maxkeys to encrypt: maxpasswd /var/lib/maxscale/.secrets <password> and reference the encrypted value.',
+    },
+    {
+      title:'maxctrl — Daily Operations CLI',
+      sub:'list · show · set · clear · alter · reload · call command · Server states',
+      time:'2h',
+      concepts:[
+        {name:'maxctrl is your eyes and hands',desc:'maxctrl connects to the MaxScale REST API (default localhost:8989). All runtime changes — maintenance mode, server removal, config reload, statistics — go through maxctrl. No MaxScale restart needed for most operations.'},
+        {name:'Server state flags — memorise these',desc:'Master: the current write target. Slave: read-only replica. Synced: Galera-specific — node is in wsrep_local_state=4. Running: TCP-reachable. Down: unreachable. Maintenance: manually drained. Draining: gracefully removing new connections while existing ones finish.'},
+        {name:'Maintenance vs Draining',desc:'[OS] Before a rolling Galera node restart at OS, the DBA runs maxctrl set server node2 maintenance — MaxScale immediately stops sending NEW connections to node2. For zero-impact drain, use Draining: MaxScale stops new connections but lets existing ones complete their transaction first.'},
+      ],
+      code:`<span class="cm">## Daily maxctrl operations</span>
+maxctrl list servers                     <span class="cm"># cluster overview + states</span>
+maxctrl show server node1                <span class="cm"># detailed: connections, state, stats</span>
+maxctrl list services                    <span class="cm"># all services</span>
+maxctrl show service RW-Split            <span class="cm"># routing stats, session count</span>
+maxctrl list monitors                    <span class="cm"># monitor status</span>
+
+<span class="cm">## Maintenance workflow (before node restart)</span>
+maxctrl set server node2 maintenance     <span class="cm"># drain immediately</span>
+<span class="cm"># ... do maintenance (stop/start mariadb) ...</span>
+maxctrl clear server node2 maintenance   <span class="cm"># return to rotation</span>
+
+<span class="cm">## Dynamic changes (no restart)</span>
+maxctrl alter server node2 address 10.0.1.12  <span class="cm"># change IP</span>
+maxctrl reload config                          <span class="cm"># reload maxscale.cnf</span>
+
+<span class="cm">## Trigger manual monitor check</span>
+maxctrl call command galeramon monitor GaleraMonitor`,
+      scenario:'maxctrl list servers at 3am shows node2 as Down. Steps: 1) ssh to node2. 2) systemctl status mariadb — is it running? 3) If not: journalctl -u mariadb -n 50 — find the error. 4) Check disk: df -h /var/lib/mysql — full disk is #1 cause. 5) Attempt restart: systemctl start mariadb. 6) Watch: watch -n2 maxctrl list servers — wait for Synced. 7) Clear maintenance if you set it: maxctrl clear server node2 maintenance.',
+      qa:[
+        {q:'What is the difference between Maintenance and Draining state in MaxScale?',a:'Maintenance immediately stops all new AND existing connections to the server — it\'s an abrupt removal. Draining is graceful: MaxScale stops routing new connections to the server but allows existing sessions to complete their current transaction before disconnecting. Use Draining for zero-disruption rolling upgrades; use Maintenance when you need to take the node offline immediately.',anchor:'Maintenance = immediate cutoff. Draining = graceful wind-down. Use Draining for rolling restarts.'},
+      ]
+    },
+    {
+      title:'Galera Monitor: Primary Election & wsrep_local_index',
+      sub:'galeramon · Primary election · wsrep_local_index · disable_master_failback · available_when_donor',
+      time:'2h',
+      concepts:[
+        {name:'How galeramon elects the primary node',desc:'galeramon checks wsrep_cluster_status (must be Primary), wsrep_local_state (must be 4/Synced), and wsrep_local_index. With use_priority=true, the node with wsrep_local_index=0 is elected master. Without it, MaxScale picks based on sequence number and other criteria.'},
+        {name:'wsrep_local_index and election stability',desc:'[EHR] In CareMate\'s dev cluster, without use_priority=true, the "master" in MaxScale would rotate between nodes as wsrep_local_index changed — causing confusing write distribution. Setting use_priority=true fixed the master to node1 (index=0) permanently.'},
+        {name:'disable_master_failback',desc:'[OS] After a master failure and automatic promotion, OS sets disable_master_failback=true in galeramon. This prevents MaxScale from switching the master back when the original primary returns — avoiding a second disruption. The DBA manually decides when to switch back.'},
+      ],
+      code:`<span class="cm">-- Check wsrep_local_index on all nodes</span>
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'wsrep_local_index'</span>;
+<span class="cm">-- 0 = first node (primary candidate with use_priority=true)
+-- 1, 2 = secondary nodes (read replicas in MaxScale's view)</span>
+
+<span class="cm">-- Galera Monitor config options</span>
+[GaleraMonitor]
+type                  = monitor
+module                = galeramon
+servers               = node1,node2,node3
+user                  = maxscale_monitor
+password              = monpass
+monitor_interval      = 2000ms
+use_priority          = true       <span class="cm"># wsrep_local_index=0 → master</span>
+disable_master_failback = true     <span class="cm"># don't auto-switch back after failover</span>
+available_when_donor  = false      <span class="cm"># remove donor from pool during SST</span>`,
+      qa:[
+        {q:'What does disable_master_failback do and when would you set it to true?',a:'By default, when the original master returns after a failover, galeramon will switch the master role back to it. This causes a second routing disruption. Setting disable_master_failback=true prevents this automatic switchback. You would set it to true in production clusters where you want the DBA to control when and how the primary designation is moved — preventing two disruptions during a recovery event.',anchor:'Prevents auto-switchback after recovery. Set true to let the DBA control timing of master reassignment.'},
+      ]
+    },
+    {
+      title:'Read/Write Split Behaviour & Transaction Handling',
+      sub:'What routes where · Autocommit selects · Explicit transactions · transaction_replay · SELECT FOR UPDATE',
+      time:'2h',
+      concepts:[
+        {name:'What readwritesplit routes where',desc:'Autocommit SELECT → any Synced node (read). Autocommit write (INSERT/UPDATE/DELETE) → master. BEGIN…COMMIT block → ALL queries in the transaction go to master. SELECT FOR UPDATE → master. LAST_INSERT_ID() → master (it\'s session-specific).'},
+        {name:'transaction_replay — safety net for transient failures',desc:'[EHR] If MaxScale loses the connection to the master mid-transaction (e.g., during a Galera node restart), transaction_replay=true causes MaxScale to silently retry the transaction on the new master. The application never sees the error. Requires transaction_replay_max_size to limit replayed transaction size.'},
+        {name:'Diagnosing intermittent writes to replicas',desc:'[OS] If developers report writes going to replicas, check: 1) Are they using autocommit=0 with explicit transactions? 2) Is transaction_replay causing a retry to a different node? 3) Use MaxScale query log (log_info=true) to see routing decisions per query.'},
+      ],
+      code:`<span class="cm">## Enable MaxScale query log for diagnosis</span>
+<span class="cm"># In maxscale.cnf [maxscale] section:</span>
+log_info = true
+
+<span class="cm">## Then tail the log</span>
+journalctl -u maxscale -f | grep -E "(route|master|slave)"
+
+<span class="cm">## Check current routing via maxctrl</span>
+maxctrl show service RW-Split
+<span class="cm">-- Shows: queries routed to master vs slave count</span>
+
+<span class="cm">## Test routing manually</span>
+<span class="cm"># Connect on port 4006, check which node handles your query:</span>
+mysql -h 127.0.0.1 -P 4006 -u app -p -e "SELECT @@hostname, @@wsrep_node_name"`,
+      qa:[
+        {q:'A developer reports that writes seem to be going to replicas intermittently. How do you diagnose using MaxScale query log?',a:'Enable log_info=true in maxscale.cnf and reload config with maxctrl reload config. Tail the MaxScale log: journalctl -u maxscale -f. Look for "Routing to slave" or "Routing to master" entries. If you see writes being routed to a slave, check whether the client is using autocommit=1 (writes should route to master) or wrapping in BEGIN (which MaxScale should route to master). Also check transaction_replay — a replayed transaction might go to a different master than the original.',anchor:'Enable log_info=true → tail log → filter routing decisions → identify the query pattern causing misrouting.'},
+      ]
+    },
+    {
+      title:'Failover: Automatic vs Manual Intervention',
+      sub:'auto_failover · auto_rejoin · switchover · When NOT to auto-failover · Stopping mid-flight',
+      time:'1h',
+      concepts:[
+        {name:'What MaxScale handles automatically vs what needs DBA',desc:'galeramon auto-demotes a node that becomes non-Synced (wsrep_local_state ≠ 4) and removes it from routing. It does NOT automatically promote a new Galera primary — Galera\'s quorum handles that. mariadbmon (for primary-replica) does auto_failover and auto_rejoin.'},
+        {name:'auto_failover and auto_rejoin (mariadbmon)',desc:'[OS] For OS\'s primary-replica setups (not Galera), mariadbmon monitors replication lag and promotes a replica if the primary goes down. auto_rejoin automatically adds the old primary back as a replica when it returns. Both require careful testing in staging before enabling.'},
+        {name:'When NOT to auto-failover',desc:'[OS] During a network partition affecting only MaxScale\'s visibility (not actual node failure), auto_failover would promote a replica incorrectly — causing split-brain. OS\'s runbook: disable auto_failover for clusters in geo-distributed setups. Manually verify the actual node state before promoting.'},
+      ],
+      code:`<span class="cm">## mariadbmon failover config (primary-replica, NOT Galera)</span>
+[MariaDBMonitor]
+type             = monitor
+module           = mariadbmon
+servers          = primary,replica1,replica2
+user             = maxscale_monitor
+password         = monpass
+monitor_interval = 2000ms
+auto_failover    = true
+auto_rejoin      = true
+failcount        = 3             <span class="cm"># wait 3 intervals before failover</span>
+
+<span class="cm">## Manual switchover (graceful, preferred)</span>
+maxctrl call command mariadbmon switchover MariaDBMonitor replica1 primary
+
+<span class="cm">## Stop auto-failover mid-flight (emergency)</span>
+maxctrl alter monitor MariaDBMonitor auto_failover=false`,
+      warn:'Never enable auto_failover on a Galera cluster monitored by galeramon — Galera manages its own quorum. auto_failover is a mariadbmon feature for traditional primary-replica topologies only.',
+      qa:[
+        {q:'A MaxScale node is promoting a replica automatically but you suspect it shouldn\'t — how do you stop it mid-flight?',a:'Run immediately: maxctrl alter monitor MariaDBMonitor auto_failover=false. This dynamically disables auto_failover without a restart. Then check the situation: is the "failed" primary actually down? Use maxctrl show server <primary> and SSH to verify directly. If the primary is actually alive (maybe MaxScale lost connectivity but the node is fine), you now have two nodes that think they are primary — a split-brain. Resolve by restoring connectivity and carefully deciding which state to keep.',anchor:'maxctrl alter monitor <name> auto_failover=false — dynamic, no restart. Then verify the actual node state.'},
+      ]
+    },
+  ]
+},
+{
+  id:6, num:'Phase 07', color:'var(--p7)', hours:16, weight:'CRITICAL', deepDive:'db-deep-p07-galera.html',
+  title:'Galera Cluster',
+  desc:'Michael Nietsch\'s deepest focus area. Every wsrep variable, every state transition, every failure mode must be drillable under pressure. This is the heart of OS GmbH\'s production infrastructure.',
+  topics:[
+    {
+      title:'wsrep Architecture & Certification-Based Replication',
+      sub:'Write-set broadcast · Certification algorithm · wsrep_cert_deps_distance · No distributed locks',
+      time:'3h',
+      concepts:[
+        {name:'Synchronous multi-master: how commits work',desc:'Step 1: transaction executes locally. Step 2: at COMMIT, a write-set (all modified rows + binlog events) is broadcast to ALL nodes via wsrep. Step 3: every node certifies the write-set for conflicts. Step 4: if all certify OK, every node commits. If conflict: rollback on the originating node. Zero replication lag. No data divergence.'},
+        {name:'Certification-based conflict detection',desc:'[EHR] Two CareMate nurses simultaneously update the same patient record from different nodes. The second COMMIT arrives and the certification algorithm detects the row-level conflict (same primary key modified in overlapping transactions). One transaction rolls back and the nurse\'s UI shows an error — which the application retries.'},
+        {name:'Why there are no distributed locks',desc:'[OS] An interviewer question: "Galera claims to be synchronous but has no distributed locks — isn\'t that a contradiction?" Answer: Galera uses optimistic concurrency. Transactions execute locally without cross-node coordination (no locks). Synchrony happens at commit time via certification. Most transactions succeed; conflicts are rare and handled by rollback+retry. True synchrony = no committed transaction is ever lost.'},
+      ],
+      code:`<span class="cm">## Galera cluster config (/etc/mysql/conf.d/galera.cnf)</span>
+[mysqld]
+wsrep_on                 = ON
+wsrep_provider           = /usr/lib/galera/libgalera_smm.so
+wsrep_cluster_name       = <span class="str">"prod_cluster"</span>
+wsrep_cluster_address    = <span class="str">"gcomm://10.0.1.11,10.0.1.12,10.0.1.13"</span>
+wsrep_node_address       = <span class="str">"10.0.1.11"</span>
+wsrep_node_name          = <span class="str">"node1"</span>
+wsrep_sst_method         = mariabackup    <span class="cm"># NEVER rsync in production</span>
+binlog_format            = ROW            <span class="cm"># REQUIRED for Galera</span>
+innodb_autoinc_lock_mode = <span class="num">2</span>            <span class="cm"># REQUIRED for Galera</span>
+default_storage_engine   = InnoDB
+
+<span class="cm">## Diagnostic commands</span>
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'wsrep_local_state_comment'</span>;  <span class="cm">-- Synced / Donor / Joining</span>
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'wsrep_cluster_size'</span>;           <span class="cm">-- should be 3</span>
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'wsrep_cluster_status'</span>;         <span class="cm">-- Primary or Non-Primary</span>
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'wsrep_cert_deps_distance'</span>;     <span class="cm">-- parallelism headroom</span>`,
+      qa:[
+        {q:'Galera claims to be synchronous but also claims to have no distributed locks. Isn\'t that a contradiction? Explain.',a:'Not a contradiction — they refer to different phases. During execution, Galera uses optimistic concurrency: each node executes transactions locally with no cross-node coordination. Synchrony occurs at commit time: the write-set is broadcast to ALL nodes, and ALL nodes must certify it before any node commits. If any node detects a conflict, the originating node rolls back. So "synchronous" means: once a transaction commits on any node, it is committed on all nodes simultaneously. No data is ever committed on one node but not another.',anchor:'Synchrony is at commit time, not execution time. Optimistic concurrency during execution, atomic commit via certification.'},
+      ]
+    },
+    {
+      title:'wsrep_local_state Values — Memorise These',
+      sub:'States 1–4 · Operational meaning · MaxScale visibility · When a node is healthy for writes',
+      time:'2h',
+      concepts:[
+        {name:'State 1 — Joining',desc:'The node has connected to the cluster and is waiting to receive state transfer (SST or IST). It is not yet ready for traffic. MaxScale sees this node as unavailable and routes around it.'},
+        {name:'State 2 — Donor/Desynced',desc:'[OS] During an SST on Fraport\'s cluster, the donor node enters state 2. Performance degrades. With available_when_donor=false in MaxScale, this node is automatically removed from the read pool. The cluster continues with 2 healthy nodes. Monitor: the donor should return to Synced within the SST window.'},
+        {name:'State 3 — Joined',desc:'The node has received the full state transfer and is catching up on transactions that arrived during the transfer. Almost ready. Still not accepting writes via MaxScale.'},
+        {name:'State 4 — Synced',desc:'[EHR] State 4 is the ONLY state where a CareMate node is healthy for writes via MaxScale (with wsrep_cluster_status=Primary). MaxScale\'s galeramon filters strictly: only Synced nodes in the Primary component are eligible for routing. Verify with: SHOW STATUS LIKE \'wsrep_local_state_comment\';'},
+      ],
+      code:`<span class="cm">-- Check local state on every node</span>
+<span class="kw">SHOW STATUS WHERE</span> Variable_name <span class="kw">IN</span> (
+  <span class="str">'wsrep_local_state'</span>,
+  <span class="str">'wsrep_local_state_comment'</span>,
+  <span class="str">'wsrep_cluster_status'</span>,
+  <span class="str">'wsrep_connected'</span>,
+  <span class="str">'wsrep_ready'</span>
+);
+
+<span class="cm">-- Healthy node output:
+-- wsrep_local_state         | 4
+-- wsrep_local_state_comment | Synced
+-- wsrep_cluster_status      | Primary
+-- wsrep_connected           | ON
+-- wsrep_ready               | ON</span>
+
+<span class="cm">-- State transition map:
+-- 1 (Joining) → 3 (Joined) → 4 (Synced) = normal rejoin path
+-- 4 → 2 (Donor) → 4 = SST donor cycle</span>`,
+      scenario:'wsrep_local_state_comment = Joining on node3. Is the cluster at risk? What do you do? Answer: With 3 nodes and quorum at >50% weight, 2 Synced nodes maintain the Primary component. The cluster continues serving writes. Node3 is receiving state transfer. DO NOT restart it — interrupting SST/IST restarts the transfer. Check: SHOW STATUS LIKE \'wsrep_local_recv_queue\'; — is it draining? Check MaxScale: maxctrl list servers — node3 should show as non-Master. Watch for state progression: Joining → Joined → Synced. If stuck in Joining >30 min, investigate: journalctl -u mariadb on node3.',
+      qa:[
+        {q:'wsrep_local_state_comment = Joining on one of your three Galera nodes. Is the cluster at risk? What do you do?',a:'The cluster is not at immediate risk. With 2 of 3 nodes Synced and in the Primary component, quorum is maintained and writes continue. The joining node is receiving state transfer. Do not restart it — that would abort and restart the transfer from scratch. Monitor the joining node\'s log for progress, check wsrep_local_recv_queue to confirm it\'s catching up. If it hasn\'t transitioned to Joined within a reasonable time (depends on DB size), investigate the SST donor\'s logs for errors.',anchor:'2 Synced nodes = quorum maintained. Do NOT restart the joining node. Monitor progress. State: Joining → Joined → Synced.'},
+      ]
+    },
+    {
+      title:'SST vs IST — The Performance Cliff',
+      sub:'gcache · IST: fast · SST: full transfer · wsrep_sst_method=mariabackup · gcache.size tuning',
+      time:'3h',
+      concepts:[
+        {name:'IST (Incremental State Transfer) — the fast path',desc:'If the rejoining node\'s last committed transaction is still in the donor\'s gcache ring buffer, the donor replays only the missed write-sets directly. No table lock. No full copy. Duration: seconds to minutes. This is what happens when a node is restarted quickly.'},
+        {name:'SST (State Transfer) — the performance cliff',desc:'[EHR] CareMate node3 was offline for emergency maintenance for 6 hours. gcache.size=512MB held only 45 minutes of write-sets. Node3 returns — IST is impossible. The donor performs a mariabackup hot backup and transfers the full dataset (50GB). During the 25-minute transfer, the donor is in Donor/Desynced state. MaxScale routes around it.'},
+        {name:'gcache.size tuning calculation',desc:'[OS] OS calculates gcache size as: peak write rate (bytes/s) × max_acceptable_downtime (seconds). Fraport peak: 5MB/s × 3600s (1 hour) = 18GB gcache. Set wsrep_provider_options="gcache.size=20G" to provide margin. Larger gcache = more RAM used but more IST headroom.'},
+      ],
+      code:`<span class="cm">## gcache configuration</span>
+[mysqld]
+wsrep_provider_options = <span class="str">"gcache.size=4G;gcache.page_size=512M"</span>
+
+<span class="cm">-- Check gcache hit rate (IST vs SST likelihood)</span>
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'wsrep_local_cached_downtime'</span>;
+<span class="cm">-- This shows how long the current gcache can cover an offline node</span>
+
+<span class="cm">-- SST method must be mariabackup</span>
+wsrep_sst_method = mariabackup    <span class="cm"># non-blocking hot backup</span>
+<span class="cm">-- NEVER use rsync (blocks ALL writes on donor during transfer)</span>
+
+<span class="cm">## Monitor SST progress on joiner</span>
+journalctl -u mariadb -f | grep -i sst
+<span class="cm">-- Look for: "Receiving SST..." and then "SST complete"</span>
+
+<span class="cm">## Monitor donor performance impact</span>
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'wsrep_local_state_comment'</span>;
+<span class="cm">-- Donor/Desynced = SST in progress, expect performance degradation</span>`,
+      warn:'NEVER use wsrep_sst_method=rsync in production. rsync requires the donor to stop accepting writes for the entire transfer duration — this takes your cluster from 3 to 1 writable nodes and guarantees a production incident.',
+      qa:[
+        {q:'A node that was offline for 2 hours rejoins. What determines whether it gets an SST or IST, and how would you influence this?',a:'Whether the node gets IST or SST depends on whether the donor\'s gcache still contains the write-sets the rejoining node missed during its 2-hour absence. If the gcache is large enough (gcache.size covers 2 hours of writes), IST is used — fast, low-impact. If the gcache is too small, SST is triggered. To influence: increase gcache.size (wsrep_provider_options="gcache.size=8G") so it covers your expected maintenance windows. Also reduce the downtime itself — bring nodes back quickly to stay within the IST window.',anchor:'IST if missed writes fit in gcache. SST if not. Tune gcache.size = peak_write_rate × max_downtime_seconds.'},
+      ]
+    },
+    {
+      title:'Quorum, Split-Brain & pc.weight',
+      sub:'Quorum calculation · Non-Primary component · pc.weight · gcs.fc_limit · pc.bootstrap',
+      time:'3h',
+      concepts:[
+        {name:'How quorum is computed',desc:'Each node has a weight (default: 1). The cluster requires a segment with >50% of total weight to be a Primary component. In a 3-node cluster: total weight = 3. Any partition with 2 nodes (weight=2 > 50% of 3) forms the Primary. A partition with 1 node (weight=1 = 33%) becomes Non-Primary — it stops accepting writes.'},
+        {name:'Exactly what happens when you lose half',desc:'[OS] Fraport cluster: 2 nodes in Frankfurt, 1 in Berlin. Berlin link goes down. Frankfurt partition: 2 nodes, weight=2 of 3 total → Primary component → continues serving writes. Berlin node: weight=1 of 3 → Non-Primary → stops accepting writes → wsrep_cluster_status=Non-Primary. MaxScale sees the Berlin node as unavailable and routes only to Frankfurt.'},
+        {name:'pc.bootstrap — handle with extreme care',desc:'SET GLOBAL wsrep_provider_options="pc.bootstrap=YES" forces a non-primary component to promote itself to primary. Use ONLY when you are 100% certain all other nodes are permanently dead and you want to continue with the surviving fraction. If the other nodes are alive and you bootstrap, you create two separate clusters — the worst split-brain scenario.'},
+      ],
+      code:`<span class="cm">-- Check cluster status on each node</span>
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'wsrep_cluster_status'</span>;
+<span class="cm">-- Primary     = healthy, accepting writes
+-- Non-Primary = split from majority, writes REJECTED</span>
+
+<span class="cm">-- Set node weights for asymmetric quorum</span>
+[mysqld]
+wsrep_provider_options = <span class="str">"pc.weight=2"</span>  <span class="cm"># make this node count as 2 votes</span>
+
+<span class="cm">## Emergency: bootstrap Non-Primary component
+## ONLY when you are 100% certain other nodes are dead</span>
+<span class="kw">SET GLOBAL</span> wsrep_provider_options=<span class="str">"pc.bootstrap=YES"</span>;
+<span class="cm">-- This makes the surviving node the new primary
+-- DANGER: if other nodes are alive, you now have two clusters</span>`,
+      warn:'pc.bootstrap=YES is a one-way door in the wrong hands. Never run it without verifying that ALL other nodes are truly offline. If any other node is alive, you will corrupt data by running two separate clusters that diverge.',
+      scenario:'Network split: 2 nodes in Frankfurt, 1 node in Berlin. The Berlin link goes down. What happens on each side? What does MaxScale see? Answer: Frankfurt (2 nodes, weight 2/3): wsrep_cluster_status=Primary, wsrep_cluster_size=2. They continue serving writes. Berlin (1 node, weight 1/3): wsrep_cluster_status=Non-Primary. It stops accepting writes. MaxScale: galeramon detects the Berlin node is Non-Primary and removes it from routing. All traffic goes to Frankfurt. When the network link restores: Berlin node rejoins, gets IST or SST, returns to Synced.',
+    },
+    {
+      title:'Flow Control — Diagnosing & Fixing',
+      sub:'wsrep_flow_control_paused · Fraction of time paused · Slow node · I/O saturation · Fix procedure',
+      time:'2h',
+      concepts:[
+        {name:'wsrep_flow_control_paused explained',desc:'A value from 0.0 to 1.0 representing the fraction of time the cluster was paused due to flow control in the last monitoring period. 0.0 = no pausing. 1.0 = cluster was completely halted. Values above 0.1 indicate a problem; above 0.5 is a production incident.'},
+        {name:'What causes flow control',desc:'[EHR] On CareMate: a nightly report query running a full table scan on vitals (10M rows) caused the CareMate node to fall behind applying write-sets, triggering flow control that throttled the entire 3-node cluster. The fix: add a covering index and schedule the report to run on a read-only endpoint.'},
+        {name:'How to identify the slow node',desc:'[OS] At OS: check wsrep_local_recv_queue on each node. The node with the largest recv_queue is the slow one — it\'s behind on applying write-sets. Also check iostat -x 1 5 on that node. High %util on the data disk = I/O saturation. Isolate the node (maxctrl set server maintenance), fix the I/O issue, let it rejoin.'},
+      ],
+      code:`<span class="cm">-- Flow control diagnostics</span>
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'wsrep_flow_control_paused'</span>;
+<span class="cm">-- > 0.1 = a slow node is throttling the cluster
+-- > 0.5 = production incident — cluster is half-stalled</span>
+
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'wsrep_local_recv_queue'</span>;   <span class="cm">-- growing = this node is slow</span>
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'wsrep_flow_control_sent'</span>;  <span class="cm">-- how many FC signals sent</span>
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'wsrep_flow_control_recv'</span>;  <span class="cm">-- how many FC signals received</span>
+
+<span class="cm">## Identify I/O saturation on the slow node</span>
+iostat -x 1 5    <span class="cm"># %util column — > 80% = saturated</span>
+top              <span class="cm"># check iowait in the CPU line</span>
+
+<span class="cm">## Isolate the slow node via MaxScale</span>
+maxctrl set server node2 maintenance
+<span class="cm">-- Then fix the I/O issue, verify Synced, clear maintenance</span>`,
+      scenario:'wsrep_flow_control_paused = 0.87 at 3am. The cluster is nearly halted. Step-by-step: 1) Check all nodes: SHOW STATUS LIKE \'wsrep_local_recv_queue\'; on each. The highest queue is the slow node. 2) SSH to that node. 3) iostat -x 1 5 — is disk saturated? top — high iowait? 4) SHOW PROCESSLIST — is there a long-running query holding it back? 5) If I/O: check df -h — is disk full? Check for runaway log rotation or backup eating I/O. 6) Put node in maintenance: maxctrl set server <node> maintenance. 7) Fix the underlying cause. 8) Wait for it to rejoin (Synced) and remove maintenance.',
+      qa:[
+        {q:'wsrep_flow_control_paused is 0.65. What does that mean and what do you do first?',a:'It means the cluster was paused 65% of the time due to flow control in the last monitoring interval — a slow node is throttling the entire cluster\'s throughput. First action: identify the slow node by checking wsrep_local_recv_queue on all three nodes (highest = slow). Then SSH to that node and run iostat -x 1 5 and top to identify whether it\'s disk I/O saturation, CPU, or a long-running query. Isolate it via MaxScale maintenance, fix the root cause, verify it rejoins as Synced.',anchor:'0.65 = cluster 65% stalled. First: find slow node via recv_queue. Then: iostat/top/processlist. Isolate via maintenance.'},
+      ]
+    },
+    {
+      title:'Bootstrapping a Crashed Cluster (grastate.dat)',
+      sub:'grastate.dat · seqno · safe_to_bootstrap · galera_new_cluster · Full recovery procedure',
+      time:'3h',
+      concepts:[
+        {name:'grastate.dat is the cluster recovery key',desc:'Every node writes its last applied transaction sequence number (seqno) to /var/lib/mysql/grastate.dat before shutting down. On recovery, this file tells you which node has the most recent data. The node with the highest seqno must be bootstrapped first.'},
+        {name:'seqno: -1 means dangerous',desc:'[OS] During a Fraport power failure, one node wrote seqno: -1 to grastate.dat — it crashed mid-transaction. This node cannot be the bootstrap candidate. Bootstrap from the node with the highest positive seqno only. Starting from a seqno: -1 node loses committed transactions.'},
+        {name:'Full cluster recovery procedure',desc:'[EHR] All 3 CareMate nodes went down during a host upgrade. Recovery: 1) cat grastate.dat on all nodes — find highest seqno. 2) On that node: set safe_to_bootstrap: 1 in grastate.dat. 3) galera_new_cluster. 4) Start others with systemctl start mariadb. They automatically IST from the bootstrapped node.'},
+      ],
+      code:`<span class="cm">## Step 1: Find most recent node</span>
+<span class="kw">for</span> node in node1 node2 node3; <span class="kw">do</span>
+  echo <span class="str">"$node: $(ssh $node 'cat /var/lib/mysql/grastate.dat')"</span>
+<span class="kw">done</span>
+
+<span class="cm">## Example output:
+# node1: seqno: 4521092   safe_to_bootstrap: 0
+# node2: seqno: 4521089   safe_to_bootstrap: 0
+# node3: seqno: -1         safe_to_bootstrap: 0  ← CRASHED, DO NOT USE</span>
+
+<span class="cm">## Step 2: On node1 (highest positive seqno)</span>
+<span class="cm"># Edit /var/lib/mysql/grastate.dat:</span>
+<span class="cm"># Change: safe_to_bootstrap: 0</span>
+<span class="cm"># To:     safe_to_bootstrap: 1</span>
+
+<span class="cm">## Step 3: Bootstrap the cluster from node1</span>
+galera_new_cluster        <span class="cm"># starts single-node cluster</span>
+<span class="cm"># Verify: wsrep_cluster_size=1, wsrep_cluster_status=Primary</span>
+
+<span class="cm">## Step 4: Start other nodes normally (they IST from node1)</span>
+systemctl start mariadb   <span class="cm"># on node2</span>
+systemctl start mariadb   <span class="cm"># on node3</span>
+<span class="cm"># Watch: wsrep_cluster_size grows to 2, then 3</span>`,
+      warn:'NEVER bootstrap from a node with seqno: -1. NEVER bootstrap two nodes simultaneously. Bootstrapping from a node with a lower seqno than another surviving node means you lose the transactions that happened after that seqno — permanently.',
+      scenario:'All 3 nodes shut down uncleanly during a power failure. grastate.dat shows: node1=seqno:4521092, node2=seqno:4521089, node3=seqno:-1. Walk through exactly what you do. Answer: node3 is unsafe (mid-transaction crash, cannot be used). node1 has highest seqno. Edit node1\'s grastate.dat: safe_to_bootstrap: 1. Run galera_new_cluster on node1. Verify wsrep_cluster_size=1. Start MariaDB on node2 (will IST from node1, gap of 3 transactions). Start MariaDB on node3 (will SST or IST depending on gcache). Watch cluster size grow to 3.',
+      qa:[
+        {q:'All 3 Galera nodes crashed and grastate.dat shows different seqnos. How do you decide which node to bootstrap from?',a:'Bootstrap from the node with the highest non-negative seqno. seqno: -1 means the node crashed mid-transaction — it may have partially-committed data. Never bootstrap from this node. The node with the highest positive seqno has committed the most transactions and is the most up-to-date. Set safe_to_bootstrap: 1 in its grastate.dat, then run galera_new_cluster. Start all other nodes normally after the bootstrap node reaches wsrep_cluster_status=Primary.',anchor:'Highest positive seqno = bootstrap candidate. Set safe_to_bootstrap=1. Never bootstrap from seqno=-1.'},
+      ]
+    },
+  ]
+},
+{
+  id:7, num:'Phase 08', color:'var(--p8)', hours:16, weight:'MEDIUM', deepDive:'db-deep-p08-postgres.html',
+  title:'PostgreSQL Administration',
+  desc:'PostgreSQL has a different philosophy from MariaDB — process-based, schema-aware, with powerful extension ecosystem. Secondary focus for the OS GmbH interview but expected as a bonus.',
+  topics:[
+    {
+      title:'Architecture & Core Config',
+      sub:'Cluster vs database · postgresql.conf · pg_hba.conf · listen_addresses · roles',
+      time:'3h',
+      concepts:[
+        {name:'PostgreSQL cluster = data directory',desc:'A PostgreSQL "cluster" (confusingly) is one running instance with one data directory (PGDATA). Inside it, you create multiple databases. A connection specifies which database to use. Contrast with MariaDB where "database" = schema.'},
+        {name:'pg_hba.conf — host-based authentication',desc:'Controls who can connect and how they authenticate. Rules are read top-to-bottom, first match wins. Types: local (Unix socket), host (TCP), hostssl (TCP+TLS). Methods: trust (no password), md5, scram-sha-256 (recommended), reject.'},
+        {name:'shared_buffers is PostgreSQL\'s buffer pool',desc:'[EHR] Default is only 128MB — catastrophically low for production. CareMate\'s 16GB PostgreSQL server uses shared_buffers=4GB (25% of RAM). effective_cache_size=12GB tells the planner how much OS cache exists.'},
+      ],
+      code:`<span class="cm"># postgresql.conf — critical settings</span>
+shared_buffers          = 4GB       <span class="cm"># 25% of RAM</span>
+effective_cache_size    = 12GB      <span class="cm"># 75% of RAM (hint for planner)</span>
+work_mem                = 64MB      <span class="cm"># per sort/hash operation (×connections!)</span>
+maintenance_work_mem    = 512MB     <span class="cm"># for VACUUM, CREATE INDEX</span>
+max_connections         = 200
+listen_addresses        = <span class="str">'*'</span>
+log_min_duration_statement = <span class="num">1000</span>  <span class="cm"># log queries > 1s</span>
+
+<span class="cm"># pg_hba.conf — authentication rules</span>
+local   all      postgres                     peer
+host    all      all         127.0.0.1/32     scram-sha-256
+host    myapp    app_user    10.0.1.0/24      scram-sha-256
+host    all      all         0.0.0.0/0        reject`,
+    },
+    {
+      title:'Roles, Schemas & Privileges',
+      sub:'CREATE ROLE · GRANT · Row-level security · Schema search_path · Ownership',
+      time:'3h',
+      concepts:[
+        {name:'Roles = users in PostgreSQL',desc:'PostgreSQL has no separate "user" concept — a role with LOGIN permission is a user. Roles can own database objects and be granted to other roles.'},
+        {name:'Schemas — namespace within a database',desc:'A schema is a namespace containing tables, views, functions. Default: public. Best practice: create an app-specific schema. Search_path controls which schema is searched first.'},
+        {name:'Row-Level Security (RLS)',desc:'[EHR] CareMate\'s PostgreSQL instance uses RLS on the patient_records table: each doctor-role only sees their own patients automatically, without any application-level filtering. Critical for GDPR multi-tenant healthcare applications.'},
+      ],
+      code:`<span class="kw">CREATE ROLE</span> readonly;
+<span class="kw">GRANT CONNECT ON DATABASE</span> mydb <span class="kw">TO</span> readonly;
+<span class="kw">GRANT SELECT ON ALL TABLES IN SCHEMA</span> public <span class="kw">TO</span> readonly;
+
+<span class="cm">-- Row-level security</span>
+<span class="kw">ALTER TABLE</span> patient_records <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="kw">CREATE POLICY</span> patient_own_records
+  <span class="kw">ON</span> patient_records
+  <span class="kw">USING</span> (doctor_id <span class="op">=</span> <span class="fn">current_setting</span>(<span class="str">'app.current_doctor_id'</span>)::bigint);`,
+    },
+    {
+      title:'VACUUM, Autovacuum & Bloat Management',
+      sub:'Dead tuples · VACUUM · VACUUM FULL · Autovacuum tuning · pg_stat_user_tables',
+      time:'4h',
+      concepts:[
+        {name:'Why VACUUM is unique to PostgreSQL',desc:'PostgreSQL\'s MVCC stores old row versions inline in the table (unlike InnoDB which uses a separate undo log). Every UPDATE leaves a dead tuple. Without VACUUM, these accumulate forever, bloating the table.'},
+        {name:'Autovacuum vs manual VACUUM',desc:'Autovacuum runs automatically. Standard VACUUM marks dead space as reusable (does NOT shrink the file). VACUUM FULL rewrites the table entirely, shrinks the file, but requires an exclusive lock — table is offline. Only run VACUUM FULL in maintenance windows.'},
+        {name:'Transaction ID wraparound — the real emergency',desc:'[OS] On an OS legacy PostgreSQL instance, a missed autovacuum run caused XID age to approach 2 billion. PostgreSQL refused ALL writes with "database is not accepting commands to avoid wraparound data loss." Emergency VACUUM ANALYZE (with connection reserved for superuser) resolved it after 4 hours of downtime.'},
+      ],
+      code:`<span class="kw">SELECT</span> schemaname, tablename,
+  n_live_tup, n_dead_tup,
+  <span class="fn">round</span>(n_dead_tup::numeric / <span class="fn">NULLIF</span>(n_live_tup+n_dead_tup,<span class="num">0</span>) * <span class="num">100</span>, <span class="num">1</span>) <span class="kw">AS</span> dead_pct
+<span class="kw">FROM</span> pg_stat_user_tables
+<span class="kw">WHERE</span> n_dead_tup <span class="op">></span> <span class="num">1000</span>
+<span class="kw">ORDER BY</span> n_dead_tup <span class="kw">DESC</span>;
+
+<span class="cm">-- Monitor transaction ID age (wraparound risk)</span>
+<span class="kw">SELECT</span> datname,
+  age(datfrozenxid) <span class="kw">AS</span> xid_age,
+  <span class="num">2000000000</span> - age(datfrozenxid) <span class="kw">AS</span> txns_until_wraparound
+<span class="kw">FROM</span> pg_database
+<span class="kw">ORDER BY</span> xid_age <span class="kw">DESC</span>;
+<span class="cm">-- Alert if txns_until_wraparound < 500,000,000</span>`,
+      warn:'PostgreSQL transaction ID wraparound is one of the most catastrophic failures in production. It shuts down ALL writes. Monitor and ensure autovacuum is always running.',
+    },
+    {
+      title:'WAL, Streaming Replication & pg_basebackup',
+      sub:'WAL · Primary/replica setup · pg_basebackup · Replication slots · Monitoring lag',
+      time:'4h',
+      concepts:[
+        {name:'WAL (Write-Ahead Log)',desc:'Every change is written to WAL first. WAL files are 16MB segments in pg_wal/. On crash, the engine replays WAL to recover. For replication: the replica continuously receives WAL from the primary and applies it — streaming replication.'},
+        {name:'Replication slots — dangerous if misconfigured',desc:'A replication slot prevents WAL from being deleted until the replica has consumed it. DANGER: if a replica goes offline permanently and no one removes its slot, WAL files accumulate forever and can fill the disk — a production emergency.'},
+        {name:'pg_basebackup for replica setup and backup',desc:'[OS] OS uses pg_basebackup with the -R flag (auto-creates standby.signal and primary_conninfo) to provision new PostgreSQL replicas for their secondary clusters. Much faster than pg_dump for large databases.'},
+      ],
+      code:`<span class="cm"># postgresql.conf on PRIMARY:</span>
+wal_level = replica
+max_wal_senders = <span class="num">5</span>
+
+<span class="kw">CREATE USER</span> replicator REPLICATION LOGIN ENCRYPTED PASSWORD <span class="str">'replpass'</span>;
+
+<span class="cm"># On REPLICA — take base backup and start</span>
+pg_basebackup -h 10.0.1.11 -U replicator -D /var/lib/postgresql/data \
+  -P -Xs -R
+systemctl start postgresql
+
+<span class="cm">-- Monitor replication lag (run on primary)</span>
+<span class="kw">SELECT</span>
+  client_addr,
+  pg_wal_lsn_diff(pg_current_wal_lsn(), sent_lsn)   <span class="kw">AS</span> send_lag_bytes,
+  pg_wal_lsn_diff(pg_current_wal_lsn(), replay_lsn) <span class="kw">AS</span> replay_lag_bytes
+<span class="kw">FROM</span> pg_stat_replication;`,
+    },
+    {
+      title:'PgBouncer — Connection Pooling',
+      sub:'Session · Transaction · Statement pooling · Configuration · pgbouncer.ini',
+      time:'2h',
+      concepts:[
+        {name:'Why PostgreSQL needs a pooler',desc:'Each PostgreSQL connection spawns a new OS process (~5-10MB RAM). At 500 connections, that\'s 2.5-5GB just for connection overhead. PgBouncer sits in front and multiplexes many application connections onto few actual Postgres connections.'},
+        {name:'Transaction pooling is the sweet spot',desc:'In transaction mode: a real Postgres connection is held only for the duration of one transaction, then returned to pool. One Postgres connection can serve hundreds of app connections.'},
+      ],
+      code:`<span class="cm"># /etc/pgbouncer/pgbouncer.ini</span>
+[databases]
+mydb = host=127.0.0.1 port=5432 dbname=mydb
+
+[pgbouncer]
+listen_port     = 6432
+listen_addr     = 0.0.0.0
+pool_mode       = transaction   <span class="cm"># recommended</span>
+max_client_conn = 1000
+default_pool_size = 20          <span class="cm"># real Postgres connections</span>
+
+<span class="cm"># Check pool health</span>
+psql -h 127.0.0.1 -p 6432 -U pgbouncer pgbouncer -c <span class="str">"SHOW POOLS;"</span>`,
+    },
+    {
+      title:'Patroni — High Availability for PostgreSQL',
+      sub:'patronictl · Leader election · etcd · Failover · pg_hba managed by Patroni',
+      time:'3h',
+      concepts:[
+        {name:'What Patroni does',desc:'Patroni is an HA daemon running alongside each PostgreSQL instance. It uses etcd/consul/ZooKeeper for leader election. It monitors the primary, promotes a replica if the primary fails, and manages pg_hba.conf.'},
+        {name:'patronictl — the admin CLI',desc:'Used to view cluster state, trigger manual failover, restart instances, reload config, and check synchronization status.'},
+        {name:'Patroni vs Galera — key comparison',desc:'[OS] Interview question comparison: Patroni (PostgreSQL HA) = single-primary with automatic promotion. Galera (MariaDB HA) = multi-master, certification-based. Patroni needs etcd for consensus; Galera has built-in group communication (wsrep). Both provide HA but with different failure characteristics.'},
+      ],
+      code:`<span class="cm"># patronictl commands</span>
+patronictl -c /etc/patroni.yml list          <span class="cm"># cluster status</span>
+patronictl -c /etc/patroni.yml topology      <span class="cm"># visual tree</span>
+patronictl -c /etc/patroni.yml failover      <span class="cm"># manual failover</span>
+patronictl -c /etc/patroni.yml switchover    <span class="cm"># graceful switch</span>
+patronictl -c /etc/patroni.yml restart node1
+patronictl -c /etc/patroni.yml reinit  node1  <span class="cm"># rebuild from scratch</span>`,
+      insight:'For the job interview: Patroni for PostgreSQL ↔ Galera+MaxScale for MariaDB. Both solve high availability but with different architectures. Patroni is single-primary; Galera is multi-primary.',
+    },
+  ]
+},
+{
+  id:8, num:'Phase 09', color:'var(--p1)', hours:12, weight:'HIGH', deepDive:'db-deep-p09-ops.html',
+  title:'Operations & Scripting',
+  desc:'The daily toolkit of a production DBA. Linux fluency, bash automation, 3am incident response. OS GmbH runs 24/7 Rufbereitschaft — you must be able to diagnose and fix under pressure.',
+  topics:[
+    {
+      title:'systemd & journalctl for DBAs',
+      sub:'systemctl · journalctl · Unit overrides · LimitNOFILE · Restart policies',
+      time:'2h',
+      concepts:[
+        {name:'systemd service management',desc:'Every database runs as a systemd service. Know: start/stop/restart/enable/disable/status. Use systemctl edit to override unit settings (e.g., LimitNOFILE). Use systemctl daemon-reload after editing unit files.'},
+        {name:'journalctl — structured log access',desc:'[EHR] During a CareMate startup failure, journalctl -u mariadb --since "10 minutes ago" immediately showed "InnoDB: The transaction log size is too large" — a misconfigured innodb_log_file_size after a my.cnf edit. Resolved in 5 minutes.'},
+        {name:'journalctl for MaxScale at 3am',desc:'[OS] On OS\'s Rufbereitschaft: journalctl -u maxscale -p err --since "1 hour ago" shows only error-level MaxScale events — cutting through informational log noise to find the actual connection failure root cause.'},
+      ],
+      code:`<span class="cm">## systemd DBA essentials</span>
+systemctl status mariadb
+systemctl status maxscale
+journalctl -u mariadb --since <span class="str">"2024-03-01 00:00:00"</span>
+journalctl -u mariadb -p err -n 50       <span class="cm"># errors only, last 50</span>
+journalctl -u maxscale -f                <span class="cm"># follow MaxScale log live</span>
+
+<span class="cm">## Override a unit setting without editing the original</span>
+systemctl edit mariadb
+<span class="cm"># Add: [Service]
+#       LimitNOFILE=65536
+#       Restart=on-failure
+#       RestartSec=5s</span>
+systemctl daemon-reload
+systemctl restart mariadb
+
+<span class="cm">## SELinux diagnosis (if MariaDB moved to non-default path)</span>
+ausearch -m avc -ts today
+semanage fcontext -a -t mysqld_db_t <span class="str">"/data/mysql(/.*)?"</span>
+restorecon -R -v /data/mysql`,
+      qa:[
+        {q:'How do you tell systemd to restart MariaDB automatically if it crashes?',a:'Use systemctl edit mariadb to create a drop-in override file. Add [Service] with Restart=on-failure and RestartSec=5s (wait 5 seconds between restart attempts). Run systemctl daemon-reload to apply. This ensures MariaDB automatically recovers from unexpected crashes without waking the on-call DBA for every transient failure.',anchor:'systemctl edit mariadb → Restart=on-failure + RestartSec=5s → daemon-reload.'},
+      ]
+    },
+    {
+      title:'Bash Health-Check Script (production quality)',
+      sub:'set -euo pipefail · wsrep checks · Replication lag · Disk usage · MaxScale count',
+      time:'3h',
+      concepts:[
+        {name:'set -euo pipefail — always use this',desc:'-e: exit on any error. -u: treat unset variables as errors. -o pipefail: the pipe fails if any command in it fails. Without these, a script can silently continue after a failure and do dangerous things.'},
+        {name:'Galera health check metrics',desc:'[EHR] CareMate\'s DBA health check script (run every minute via cron) checks: wsrep_cluster_size (alert if < 3), wsrep_local_state_comment (alert if not Synced), wsrep_flow_control_paused (alert if > 0.1), disk usage > 85%, MaxScale server count via maxctrl.'},
+        {name:'MySQL from bash — credential security',desc:'[OS] Never put passwords in the command line (visible in ps aux). Use a MySQL option file (~/.my.cnf or /etc/mysql/backup.cnf) with [client] section. Pass with --defaults-file=. OS\'s scripts all use /etc/mysql/health-check.cnf.'},
+      ],
+      code:`<span class="kw">#!/bin/bash</span>
+<span class="cm"># Galera health check script (production-grade)</span>
+<span class="kw">set</span> -euo pipefail
+
+readonly MYSQL_CNF=<span class="str">"/etc/mysql/health-check.cnf"</span>
+readonly LOG=<span class="str">"/var/log/galera-health.log"</span>
+readonly SLACK_WEBHOOK=<span class="str">"https://hooks.slack.com/services/..."</span>
+ALERT=<span class="num">0</span>
+
+log() { printf <span class="str">'[%s] %s\n'</span> <span class="str">"$(date '+%Y-%m-%d %H:%M:%S')"</span> <span class="str">"$*"</span> | tee -a <span class="str">"$LOG"</span>; }
+alert() { log <span class="str">"ALERT: $*"</span>; ALERT=<span class="num">1</span>; }
+notify() {
+  curl -s -X POST <span class="str">"$SLACK_WEBHOOK"</span> \
+    -H <span class="str">'Content-Type: application/json'</span> \
+    -d <span class="str">"{\"text\": \":fire: $*\"}"</span>
+}
+
+mysql_get() { mysql --defaults-file=<span class="str">"$MYSQL_CNF"</span> -sNe <span class="str">"$1"</span>; }
+
+<span class="cm"># 1. Galera cluster size</span>
+CLUSTER_SIZE=$(mysql_get <span class="str">"SHOW STATUS LIKE 'wsrep_cluster_size'"</span> | awk '{print $2}')
+[ <span class="str">"$CLUSTER_SIZE"</span> -lt <span class="num">3</span> ] && alert <span class="str">"Galera cluster size=$CLUSTER_SIZE (expected 3)"</span>
+
+<span class="cm"># 2. Local node state</span>
+STATE=$(mysql_get <span class="str">"SHOW STATUS LIKE 'wsrep_local_state_comment'"</span> | awk '{print $2}')
+[ <span class="str">"$STATE"</span> != <span class="str">"Synced"</span> ] && alert <span class="str">"Node state=$STATE (not Synced)"</span>
+
+<span class="cm"># 3. Flow control</span>
+FC=$(mysql_get <span class="str">"SHOW STATUS LIKE 'wsrep_flow_control_paused'"</span> | awk '{print $2}')
+echo <span class="str">"$FC > 0.1"</span> | bc -l | grep -q <span class="num">1</span> && alert <span class="str">"Flow control paused=$FC"</span>
+
+<span class="cm"># 4. Disk usage</span>
+DISK=$(df /var/lib/mysql | tail -1 | awk '{print $5}' | tr -d %)
+[ <span class="str">"$DISK"</span> -gt <span class="num">85</span> ] && alert <span class="str">"Disk usage=\${DISK}% on /var/lib/mysql"</span>
+
+<span class="cm"># 5. MaxScale server count</span>
+MX_COUNT=$(maxctrl list servers --tsv | grep -c Synced || true)
+[ <span class="str">"$MX_COUNT"</span> -lt <span class="num">2</span> ] && alert <span class="str">"MaxScale only sees $MX_COUNT Synced nodes"</span>
+
+[ <span class="str">"$ALERT"</span> -eq <span class="num">1</span> ] && notify <span class="str">"Health check failed on $(hostname) — check $LOG"</span>
+log <span class="str">"Health check complete (ALERT=$ALERT)"</span>`,
+    },
+    {
+      title:'Cron Patterns for Backup Automation',
+      sub:'crontab syntax · flock · trap ERR · Log rotation · Alerting on failure',
+      time:'3h',
+      concepts:[
+        {name:'Cron for scheduled DBA tasks',desc:'Use /etc/cron.d/ for system cron files (not crontab -e, which is user-level). Set MAILTO= so job output goes to the DBA team. Always test cron jobs manually first as the same user (mysql or root) they\'ll run as.'},
+        {name:'flock — prevent concurrent runs',desc:'[EHR] CareMate\'s nightly backup cron fired at 02:00. The previous night\'s backup was still running (slow network). flock -n /tmp/backup.lock prevents the second instance from starting and corrupting the partial backup.'},
+        {name:'trap ERR — alert on failure',desc:'[OS] OS\'s backup scripts always include trap \'notify_fail "Unexpected exit at line $LINENO"\' ERR. If any command fails (e.g., mariabackup encounters a disk error), the Slack alert fires immediately — not discovered at 08:00 when someone checks.'},
+      ],
+      code:`<span class="cm"># /etc/cron.d/mariadb-dba</span>
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=dba-team@os-gmbh.de
+
+<span class="cm"># Daily full backup at 02:00 (CareMate / Fraport)</span>
+0 2 * * * mysql flock -n /tmp/mariadb-backup.lock /opt/scripts/mariadb-backup.sh
+
+<span class="cm"># Incremental backup Mon-Sat at 03:00</span>
+0 3 * * 1-6 mysql flock -n /tmp/mariadb-incr.lock /opt/scripts/mariadb-incr-backup.sh
+
+<span class="cm"># Hourly Galera health check</span>
+0 * * * * mysql /opt/scripts/galera-health-check.sh
+
+<span class="cm"># Weekly backup integrity verification (Sunday 04:00)</span>
+0 4 * * 0 mysql /opt/scripts/verify-latest-backup.sh
+
+<span class="cm">## Script template with proper error handling</span>
+<span class="kw">#!/bin/bash</span>
+<span class="kw">set</span> -euo pipefail
+readonly BACKUP_DIR=<span class="str">"/backups/mariadb"</span>
+readonly LOG=<span class="str">"/var/log/mariadb-backup.log"</span>
+readonly MYSQL_CNF=<span class="str">"/etc/mysql/backup.cnf"</span>
+log() { printf <span class="str">'[%s] %s\n'</span> <span class="str">"$(date '+%Y-%m-%d %H:%M:%S')"</span> <span class="str">"$*"</span> | tee -a <span class="str">"$LOG"</span>; }
+die() { log <span class="str">"ERROR: $*"</span>; curl -s -X POST <span class="str">"$SLACK_WEBHOOK"</span> \
+  -d <span class="str">"{\"text\":\":fire: Backup FAILED on $(hostname): $1\"}"</span>; exit 1; }
+trap <span class="str">'die "Unexpected exit at line $LINENO"'</span> ERR`,
+    },
+    {
+      title:'Network & Process Diagnostics Under Pressure',
+      sub:'ss · lsof · iostat · vmstat · ps · top — The 3am toolkit',
+      time:'2h',
+      concepts:[
+        {name:'ss — check which ports are listening',desc:'ss -tlnp | grep -E "3306|4006|4008|4567|4568" — verifies Galera (4567/4568), MaxScale (4006/4008), and MariaDB (3306) are all listening. If 3306 is absent, MariaDB is not running or is bound to a different address.'},
+        {name:'iostat and vmstat for I/O diagnosis',desc:'[OS] On OS\'s on-call: the first tool after SSH is iostat -x 1 5. %util > 80% on the database disk = I/O saturation. This is the #1 cause of slow queries, flow control, and replication lag at 3am.'},
+        {name:'ps and lsof for process/connection state',desc:'[EHR] When CareMate\'s max_connections was exhausted, lsof -i :3306 | wc -l showed 498 connections — the limit was 500. Cross-referenced with SHOW PROCESSLIST — 400 were idle in sleep from the connection pool not closing stale connections.'},
+      ],
+      code:`<span class="cm">## Database port check</span>
+ss -tlnp | grep -E <span class="str">"3306|4006|4008|4567|4568"</span>
+<span class="cm"># 3306 = MariaDB, 4006 = MaxScale RW, 4008 = MaxScale RO
+# 4567 = Galera replication, 4568 = Galera IST</span>
+
+<span class="cm">## Who is connected on 3306</span>
+lsof -i :3306                     <span class="cm"># all connections</span>
+lsof -i :3306 | wc -l             <span class="cm"># total count</span>
+
+<span class="cm">## I/O diagnosis (run for 5 seconds)</span>
+iostat -x 1 5
+<span class="cm"># %util > 80% = disk saturated
+# await > 20ms on SSD = investigate
+# r/s and w/s show read/write operations per second</span>
+
+<span class="cm">## Process check</span>
+ps aux | grep -E <span class="str">"mariadb|maxscale"</span>
+vmstat 1 5    <span class="cm"># wa column = iowait %, si/so = swap in/out</span>`,
+      scenario:'"The monitoring system shows 3306 unreachable. You SSH to the server. What are your first 5 commands, in order?" Answer: 1) systemctl status mariadb — is the service running? 2) ss -tlnp | grep 3306 — is the port listening? 3) journalctl -u mariadb -n 50 — what error caused the failure? 4) df -h /var/lib/mysql — is disk full? 5) cat /var/lib/mysql/mariadb.pid — does a PID file exist (zombie process blocking restart)?',
+    },
+    {
+      title:'Log Files, Locations & Rotation',
+      sub:'Error log · Slow query log · Binary logs · MaxScale log · logrotate · mysqlbinlog',
+      time:'2h',
+      concepts:[
+        {name:'Log file locations (know these cold)',desc:'MariaDB error log: /var/log/mysql/error.log (or journald). Slow query log: /var/log/mysql/slow.log. Binary logs: /var/log/mysql/mariadb-bin.XXXXXX. MaxScale log: /var/log/maxscale/maxscale.log.'},
+        {name:'Binary log management',desc:'[OS] On Fraport: expire_logs_days=7 in my.cnf. But during a PITR event, the DBA needs binlogs older than 7 days — which is why OS stores a copy of binlogs in S3 (synced hourly). Binary logs grow fastest under high-write workloads; monitor /var/log/mysql disk usage.'},
+        {name:'logrotate for MariaDB and MaxScale',desc:'[EHR] CareMate\'s slow query log grew to 40GB in 3 months. A logrotate config with size 1G and rotate 5 now keeps it bounded. After rotation, the DBA runs FLUSH SLOW LOGS so MariaDB reopens the file handle.'},
+      ],
+      code:`<span class="cm">## Read a binary log in human-readable form</span>
+mysqlbinlog --base64-output=DECODE-ROWS -v \
+  /var/log/mysql/mariadb-bin.000045 | head -100
+
+<span class="cm">## Find a specific event by timestamp in binlog</span>
+mysqlbinlog --start-datetime=<span class="str">"2024-03-01 14:35:00"</span> \
+            --stop-datetime=<span class="str">"2024-03-01 14:40:00"</span> \
+            /var/log/mysql/mariadb-bin.000045
+
+<span class="cm"># /etc/logrotate.d/mariadb</span>
+/var/log/mysql/slow.log {
+  size 1G
+  rotate 5
+  missingok
+  compress
+  postrotate
+    mysql -e "FLUSH SLOW LOGS"
+  endscript
+}
+
+<span class="cm"># /etc/logrotate.d/maxscale</span>
+/var/log/maxscale/maxscale.log {
+  daily
+  rotate 14
+  compress
+  postrotate
+    systemctl reload maxscale
+  endscript
+}`,
+      qa:[
+        {q:'Your binary logs are filling the disk. What are your options and what are the trade-offs?',a:'Option 1: Reduce expire_logs_days (e.g., from 14 to 7). Trade-off: shorter PITR window — you can only recover to within 7 days. Option 2: PURGE BINARY LOGS BEFORE NOW() - INTERVAL 3 DAY — immediately frees space. Trade-off: same PITR window reduction, but instant relief. Option 3: Add more disk. No trade-off except cost, but doesn\'t address root cause. Option 4: Investigate what is generating so many binlog events — a runaway application insert loop? Fixing the source is the real solution.',anchor:'Short-term: PURGE BINARY LOGS for instant relief. Long-term: investigate write rate + consider S3 offload.'},
+      ]
+    },
+  ]
+}
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let done = {};
+try { done = JSON.parse(localStorage.getItem('db_done')||'{}'); } catch(e){}
+let studyMode = false;
+
+function saveState(){ try{localStorage.setItem('db_done',JSON.stringify(done));}catch(e){} }
+
+// ─── PROGRESS ────────────────────────────────────────────────────────────────
+function computeProgress(){
+  let total=0,completed=0;
+  PHASES.forEach(p=>{
+    p.topics.forEach((_,ti)=>{
+      total++;
+      if(done[p.id+'-'+ti]) completed++;
+    });
+  });
+  return {total,completed,pct:total?Math.round(completed/total*100):0};
+}
+
+function updateUI(){
+  const {total,completed,pct} = computeProgress();
+  const badge = document.getElementById('total-badge');
+  if(badge) badge.textContent = completed+' / '+total+' done';
+  const prog = document.getElementById('nav-prog');
+  if(prog) prog.style.width = pct+'%';
+  const heroDone = document.getElementById('hero-done');
+  if(heroDone) heroDone.textContent = completed;
+
+  // Interview Readiness stat
+  let critTotal=0, critDone=0;
+  PHASES.forEach(p=>{
+    if(p.weight==='HIGH'||p.weight==='CRITICAL'){
+      p.topics.forEach((_,ti)=>{ critTotal++; if(done[p.id+'-'+ti]) critDone++; });
+    }
+  });
+  const critPct = critTotal ? Math.round(critDone/critTotal*100) : 0;
+  const readyEl = document.getElementById('hero-ready');
+  if(readyEl){
+    readyEl.textContent = critPct+'%';
+    readyEl.style.color = critPct>=70?'var(--p3)':critPct>=40?'var(--p4)':'var(--p5)';
+  }
+
+  // Update grid card topic counts
+  PHASES.forEach((p,pi)=>{
+    const pDone = p.topics.filter((_,ti)=>done[p.id+'-'+ti]).length;
+    const el = document.getElementById('card-h-'+pi);
+    if(el) el.textContent = pDone+'/'+p.topics.length+' topics';
+  });
+
+  updateSidebar();
+}
+
+function updateSidebar(){
+  const sb = document.getElementById('sb-phases');
+  if(!sb) return;
+  let html='';
+  PHASES.forEach((p,pi)=>{
+    const pDone = p.topics.filter((_,ti)=>done[p.id+'-'+ti]).length;
+    const pPct = Math.round(pDone/p.topics.length*100);
+    html+=`<div class="sidebar-phase" onclick="openPhase(${pi})">
+      <div class="sidebar-phase-dot" style="background:${p.color}"></div>
+      <div class="sidebar-phase-name">${p.title.split(' ').slice(0,2).join(' ')}</div>
+      <div class="sidebar-phase-pct">${pPct}%</div>
+    </div>
+    <div class="mini-bar"><div class="mini-fill" style="width:${pPct}%;background:${p.color}"></div></div>`;
+  });
+  sb.innerHTML=html;
+  const {pct}=computeProgress();
+  const sbTotal = document.getElementById('sb-total');
+  if(sbTotal) sbTotal.textContent=pct+'%';
+}
+
+// ─── WEIGHT BADGE ─────────────────────────────────────────────────────────────
+function weightBadgeHTML(weight){
+  const map={
+    CRITICAL:{emoji:'⚡',bg:'#fef2f2',color:'#b91c1c'},
+    HIGH:    {emoji:'🔥',bg:'#fff7ed',color:'#c2410c'},
+    MEDIUM:  {emoji:'📘',bg:'#eff6ff',color:'#1d4ed8'},
+    LOW:     {emoji:'📗',bg:'#f0fdf4',color:'#15803d'},
+  };
+  const w=map[weight]||map.LOW;
+  return `<span class="weight-badge" style="background:${w.bg};color:${w.color}">${w.emoji} ${weight}</span>`;
+}
+
+// ─── BUILD NAV ───────────────────────────────────────────────────────────────
+function buildNav(){
+  const tabs = document.getElementById('nav-tabs');
+  if(!tabs) return;
+  let html = `<div class="nav-phase active" onclick="goHome()" id="nav-home">Overview</div>`;
+  PHASES.forEach((p,i)=>{
+    const num = p.num.split(' ')[1];
+    const shortTitle = p.title.split(' ').slice(0,2).join(' ');
+    html += `<div class="nav-phase" onclick="openPhase(${i})" id="nav-${i}">${num} ${shortTitle}</div>`;
+  });
+  tabs.innerHTML = html;
+}
+
+// ─── BUILD HERO STATS ────────────────────────────────────────────────────────
+function buildHeroStats(){
+  const totalTopics = PHASES.reduce((s,p)=>s+p.topics.length, 0);
+  const totalHours  = PHASES.reduce((s,p)=>s+p.hours, 0);
+  const el_phases = document.getElementById('hero-phases');
+  const el_topics = document.getElementById('hero-topics');
+  const el_hours  = document.getElementById('hero-hours');
+  if(el_phases) el_phases.textContent = PHASES.length;
+  if(el_topics) el_topics.textContent = totalTopics;
+  if(el_hours)  el_hours.textContent  = '~'+totalHours+'h';
+}
+
+// ─── BUILD DECODER ───────────────────────────────────────────────────────────
+function buildDecoder(){
+  const body = document.getElementById('decoder-body');
+  if(!body) return;
+  body.innerHTML = `
+    <div class="decoder-section">
+      <h3>Company &amp; Role</h3>
+      <p style="font-size:12px;color:var(--muted);line-height:1.7">
+        <strong>operational services GmbH &amp; Co. KG</strong> — Deutsche Telekom ICT subsidiary, Frankfurt. 1,100+ staff, €160M+ revenue. 24/7 datacenter + application operations for German Mittelstand.<br>
+        <strong>Role:</strong> Applications Administrator (ANÜ / Arbeitnehmerüberlassung via Randstad) · Ref: C01267544 · Job code: 992025068MNI<br>
+        <strong>Location:</strong> Frankfurt primary — covers all 10 OS offices (Fraport/VW/LMBV/S-Bahn clusters)<br>
+        <strong>On-call (Rufbereitschaft):</strong> Yes — required
+      </p>
+    </div>
+    <div class="decoder-section">
+      <h3>Must-have vs Nice-to-have</h3>
+      <p style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">MUST-HAVE</p>
+      <div class="decoder-pills" style="margin-bottom:12px">
+        ${['MariaDB','MySQL','MaxScale','Galera Cluster','Linux Red Hat','Bash scripting'].map(s=>`<span class="decoder-pill-must">${s}</span>`).join('')}
+      </div>
+      <p style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">NICE-TO-HAVE</p>
+      <div class="decoder-pills">
+        ${['PostgreSQL','MSSQL','Oracle'].map(s=>`<span class="decoder-pill-nice">${s}</span>`).join('')}
+      </div>
+    </div>
+    <div class="decoder-section">
+      <h3>Interviewer Focus Ranking — Michael Nietsch</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+        ${[
+          {label:'Galera Cluster internals',pct:100,type:'critical',wt:'🔴 Critical'},
+          {label:'MaxScale config &amp; failover',pct:100,type:'critical',wt:'🔴 Critical'},
+          {label:'MariaDB Admin (backup/repl/users)',pct:80,type:'high',wt:'🟠 High'},
+          {label:'On-call incident scenarios',pct:80,type:'high',wt:'🟠 High'},
+          {label:'Linux / RHEL / bash scripting',pct:80,type:'high',wt:'🟠 High'},
+          {label:'PostgreSQL basics',pct:50,type:'medium',wt:'🟡 Medium'},
+        ].map(r=>`
+          <div class="rank-row">
+            <span class="rank-label">${r.label}</span>
+            <div class="rank-bar-wrap">
+              <div class="rank-bar-fill rank-bar-${r.type}" style="width:${r.pct}%"></div>
+            </div>
+            <span class="rank-weight-lbl">${r.wt}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="decoder-section">
+      <h3>Known Clients OS Likely Operates</h3>
+      <div class="decoder-clients">
+        ${['Fraport AG (Frankfurt Airport — KRITIS 24/7)','Volkswagen CSN/CONNECT (supplier network PDM)','LMBV (federal government, Senftenberg)','S-Bahn Berlin GmbH','Schnellecke Logistics (Wolfsburg/Zwickau)','W.E.T. Automotive Systems'].map(c=>`<span class="decoder-client">${c}</span>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ─── BUILD GRID ──────────────────────────────────────────────────────────────
+function buildGrid(){
+  const grid = document.getElementById('phase-grid');
+  if(!grid) return;
+  grid.innerHTML = PHASES.map((p,i)=>{
+    const pDone = p.topics.filter((_,ti)=>done[p.id+'-'+ti]).length;
+    const colorClass = 'p'+(i < 8 ? i+1 : 1);
+    const cNum = i < 8 ? i+1 : 1;
+    const dimmed = studyMode && p.weight==='LOW' ? ' weight-low' : '';
+    const critical = p.weight==='CRITICAL' ? ' weight-critical' : '';
+    return `<div class="phase-card ${colorClass} weight-${p.weight.toLowerCase()}${dimmed}${critical}"
+               onclick="openPhase(${i})" id="grid-card-${i}">
+      <div class="phase-card-num c${cNum}">${p.num} · ${p.hours}h</div>
+      <div class="phase-card-title">${p.title}</div>
+      <div class="phase-card-sub">${p.desc.substring(0,90)}…</div>
+      <div class="phase-card-meta">
+        <span class="phase-card-hrs" id="card-h-${i}">${pDone}/${p.topics.length} topics</span>
+        ${weightBadgeHTML(p.weight)}
+      </div>
+      <div class="phase-card-deepdive">
+        <a href="${p.deepDive}" class="deepdive-link" onclick="event.stopPropagation()">Open deep-dive →</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── DECODER TOGGLE ──────────────────────────────────────────────────────────
+function toggleDecoder(){
+  const body = document.getElementById('decoder-body');
+  const arrow = document.getElementById('decoder-arrow');
+  const header = document.getElementById('decoder-header');
+  if(!body) return;
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : '';
+  if(arrow) arrow.textContent = isOpen ? '▼' : '▲';
+  if(header) header.classList.toggle('open', !isOpen);
+}
+
+// ─── STUDY MODE ──────────────────────────────────────────────────────────────
+function toggleStudyMode(){
+  studyMode = !studyMode;
+  document.body.classList.toggle('study-interview', studyMode);
+  const btn = document.getElementById('study-toggle');
+  if(btn) btn.textContent = studyMode ? '📖 Study' : '🎤 Interview';
+  if(studyMode){
+    const decoderBody = document.getElementById('decoder-body');
+    const arrow = document.getElementById('decoder-arrow');
+    const header = document.getElementById('decoder-header');
+    if(decoderBody) decoderBody.style.display = '';
+    if(arrow) arrow.textContent = '▲';
+    if(header) header.classList.add('open');
+  }
+  buildGrid();
+}
+
+// ─── QA TOGGLE ───────────────────────────────────────────────────────────────
+function togQA(id){
+  const el = document.getElementById(id);
+  if(el) el.style.display = el.style.display === 'none' ? '' : 'none';
+}
+
+// ─── NAVIGATION ──────────────────────────────────────────────────────────────
+function goHome(){
+  document.getElementById('home-view').style.display='';
+  document.getElementById('phase-view').style.display='none';
+  document.querySelectorAll('.nav-phase').forEach(n=>n.classList.remove('active'));
+  const navHome = document.getElementById('nav-home');
+  if(navHome) navHome.classList.add('active');
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  updateUI();
+}
+
+function openPhase(i){
+  const p = PHASES[i];
+  document.getElementById('home-view').style.display='none';
+  document.getElementById('phase-view').style.display='';
+  document.getElementById('pd-num').textContent = p.num+' · '+p.hours+'h · '+p.weight;
+  document.getElementById('pd-num').style.color = p.color;
+  document.getElementById('pd-title').textContent = p.title;
+  document.getElementById('pd-title').style.color = p.color;
+  document.getElementById('pd-desc').textContent = p.desc;
+
+  const list = document.getElementById('pd-topics');
+  list.innerHTML = p.topics.map((t,ti)=>{
+    const isDone = !!done[p.id+'-'+ti];
+    let body = '';
+
+    if(t.concepts && t.concepts.length){
+      body+=`<h4>Core concepts</h4><div class="concepts-grid">`;
+      t.concepts.forEach(c=>{
+        let badge='', descText=c.desc;
+        if(descText.startsWith('[EHR]')){
+          badge=`<span class="badge-ehr">🩺 EHR context</span><br>`;
+          descText=descText.slice(5).trim();
+        } else if(descText.startsWith('[OS]')){
+          badge=`<span class="badge-os">🚂 OS/DB context</span><br>`;
+          descText=descText.slice(4).trim();
+        }
+        body+=`<div class="concept"><div class="concept-name">${c.name}</div>
+          <div class="concept-desc">${badge}${descText}</div></div>`;
+      });
+      body+=`</div>`;
+    }
+
+    if(t.code){
+      body+=`<h4>Commands &amp; code</h4><div class="code">${t.code}</div>`;
+    }
+
+    if(t.insight){
+      body+=`<div class="insight" style="margin-top:12px"><div class="lbl">⚓ Interview anchor</div><p>${t.insight}</p></div>`;
+    }
+
+    if(t.warn){
+      body+=`<div class="warn" style="margin-top:12px"><div class="lbl">⚠ Warning</div><p>${t.warn}</p></div>`;
+    }
+
+    if(t.scenario){
+      body+=`<div class="scenario" style="margin-top:12px">
+        <div class="lbl">🔴 3am Scenario</div>
+        <p>${t.scenario}</p>
+      </div>`;
+    }
+
+    if(t.qa && t.qa.length){
+      body+=`<h4>🎤 Interview Questions</h4><div class="qa-list">`;
+      t.qa.forEach((item,qi)=>{
+        const qaId = `qa-${p.id}-${ti}-${qi}`;
+        body+=`<div class="qa-item">
+          <div class="qa-q" onclick="togQA('${qaId}')">${item.q}</div>
+          <div class="qa-a" id="${qaId}" style="display:none">
+            <p>${item.a}</p>
+            <div class="interview-anchor">
+              <div class="lbl">⚓ Interview anchor</div>
+              <p>${item.anchor}</p>
+            </div>
+          </div>
+        </div>`;
+      });
+      body+=`</div>`;
+    }
+
+    return `<div class="topic-card">
+      <div class="topic-head" onclick="togTopic(this,${p.id},${ti})">
+        <span class="topic-idx">${String(ti+1).padStart(2,'0')}</span>
+        <div class="topic-title-wrap">
+          <div class="topic-name">${t.title}</div>
+          <div class="topic-sub">${t.sub}</div>
+        </div>
+        <span class="topic-time">${t.time}</span>
+        <div class="topic-check${isDone?' done':''}" onclick="event.stopPropagation();markDone(${p.id},${ti},this)" title="Mark complete"></div>
+      </div>
+      <div class="topic-body">${body}</div>
+    </div>`;
+  }).join('');
+
+  document.querySelectorAll('.nav-phase').forEach(n=>n.classList.remove('active'));
+  const navEl = document.getElementById('nav-'+i);
+  if(navEl) navEl.classList.add('active');
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  updateSidebar();
+}
+
+function togTopic(head){
+  const body = head.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+function markDone(pi, ti, el){
+  const key = pi+'-'+ti;
+  done[key] = !done[key];
+  el.classList.toggle('done', !!done[key]);
+  saveState();
+  updateUI();
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+buildNav();
+buildHeroStats();
+buildDecoder();
+buildGrid();
+updateUI();
+</script>
+</body>
+</html>

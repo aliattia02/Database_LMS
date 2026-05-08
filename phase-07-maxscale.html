@@ -1,0 +1,2188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 07 — MaxScale · DB·MASTERY</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── ROOT: MaxScale orange phase accent ──────────────────────────────────── */
+:root {
+  --bg:#eef2f7;--surface:#ffffff;--card:#f4f7fb;--border:#dde4ef;--border2:#c5cedf;
+  --text:#1a2440;--muted:#5a6a85;--dim:#8fa0bb;
+  --phase:#ea6c00;--phaseb:#fff7ed;--phased:#c2530a;
+  --blue:#0284c7;--blueb:#e0f2fe;--blued:#0369a1;
+  --purple:#7c3aed;--purpleb:#ede9fe;
+  --green:#059669;--greenb:#d1fae5;--greend:#047857;
+  --orange:#d97706;--orangeb:#fef3c7;
+  --yellow:#b45309;--yellowb:#fef9c3;
+  --red:#dc2626;--redb:#fee2e2;
+  --teal:#0d9488;--tealb:#ccfbf1;
+  --indigo:#4338ca;--indigob:#e0e7ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;min-height:100vh}
+
+/* ── NAV ─────────────────────────────────────────────────────────────────── */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;padding:0 20px;gap:0;box-shadow:0 1px 6px rgba(180,60,0,.07)}
+.nav-logo{font-family:'Syne',sans-serif;font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--text);padding:14px 18px 14px 0;border-right:1px solid var(--border);margin-right:10px;white-space:nowrap;flex-shrink:0}
+.nav-logo span{color:var(--phase)}
+.nav-tab{padding:6px 13px;margin:6px 2px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.03em;cursor:pointer;color:var(--muted);transition:all .15s;white-space:nowrap;flex-shrink:0;border-radius:99px;user-select:none}
+.nav-tab:hover{background:var(--phaseb);color:var(--phased)}
+.nav-tab.active{background:var(--phase);color:#fff;font-weight:700}
+.nav-tab.done-tab{color:var(--greend)}
+.nav-tab.done-tab.active{background:var(--phase);color:#fff}
+
+/* ── LAYOUT ──────────────────────────────────────────────────────────────── */
+.page{display:none;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.page.active{display:block}
+#page-home:not(.active){display:none}
+
+/* ── HERO ────────────────────────────────────────────────────────────────── */
+.hero{padding:52px 40px 36px;max-width:1100px;margin:0 auto}
+.phase-pill{display:inline-flex;align-items:center;gap:7px;background:var(--phaseb);border:1.5px solid var(--phase);border-radius:99px;padding:4px 14px 4px 8px;margin-bottom:18px}
+.phase-pill-dot{width:7px;height:7px;background:var(--phase);border-radius:50%;flex-shrink:0}
+.phase-pill-text{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.12em;color:var(--phased);text-transform:uppercase}
+h1{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;line-height:1;letter-spacing:-.03em;margin-bottom:12px;color:var(--text)}
+h1 span{color:var(--phase)}
+.hero-sub{font-size:13.5px;color:var(--muted);max-width:640px;line-height:1.75;margin-bottom:24px}
+.hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:36px}
+.hero-chip{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)}
+.hero-chip strong{color:var(--text);font-weight:600}
+
+/* ── HERO GRID ───────────────────────────────────────────────────────────── */
+.hero-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:7px;max-width:1100px;margin:0 40px 40px}
+.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px 10px;cursor:pointer;transition:border-color .15s,transform .12s,box-shadow .15s;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(180,60,0,.04);display:flex;align-items:center;gap:10px}
+.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:10px 10px 0 0;background:var(--phase)}
+.hero-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:0 3px 10px rgba(180,60,0,.09)}
+.hero-card-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;background:var(--phaseb)}
+.hero-card-body{flex:1;min-width:0}
+.hero-card-num{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;color:var(--phase)}
+.hero-card-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.status{font-size:9px;padding:2px 7px;border-radius:99px;display:inline-block;font-weight:600;letter-spacing:.04em}
+.status.critical{background:#fee2e2;color:#b91c1c}
+.status.ready{background:var(--greenb);color:var(--greend)}
+.hero-card-arrow{font-size:13px;color:var(--dim);flex-shrink:0}
+
+/* ── PAGE HEADER ─────────────────────────────────────────────────────────── */
+.page-header{margin-bottom:28px;padding-bottom:18px;border-bottom:2px solid var(--border)}
+.page-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:8px}
+.lesson-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;color:var(--phase)}
+.page-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.02em}
+.back-btn{background:var(--card);border:1px solid var(--border);border-radius:99px;padding:7px 16px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.back-btn:hover{color:var(--text);border-color:var(--border2);background:var(--phaseb)}
+.page-desc{font-size:13px;color:var(--muted);line-height:1.7;max-width:680px}
+
+/* ── COLLAPSIBLE SECTIONS ────────────────────────────────────────────────── */
+.section{margin-bottom:6px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface)}
+.section-title{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:12px 16px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;transition:all .12s;border-left:3px solid transparent}
+.section-title:hover{background:var(--card);color:var(--text)}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.section-chevron{font-size:11px;color:var(--dim);margin-left:4px;transition:transform .2s;flex-shrink:0}
+.section-title.sec-open{color:var(--phase);background:var(--phaseb);border-left-color:var(--phase);border-bottom:1px solid var(--border)}
+.section-title.sec-open .section-chevron{transform:rotate(180deg)}
+.section-body{display:none;padding:14px 16px 12px}
+.section-body.sec-open{display:block}
+
+/* ── EXPAND BAR ──────────────────────────────────────────────────────────── */
+.expand-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:0 2px}
+.expand-bar-label{font-size:11px;color:var(--dim)}
+.expand-all-btn{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;background:var(--card);border:1px solid var(--border);border-radius:99px;padding:4px 12px;color:var(--muted);cursor:pointer;transition:all .15s}
+.expand-all-btn:hover{color:var(--phase);border-color:var(--phase);background:var(--phaseb)}
+
+/* ── CONCEPT CARDS ───────────────────────────────────────────────────────── */
+.concepts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.concept{background:var(--card);border-radius:10px;padding:13px 16px;border:1px solid var(--border);border-top:3px solid var(--border2)}
+.concept.orange{border-top-color:var(--phase)}
+.concept.blue{border-top-color:var(--blue)}
+.concept.purple{border-top-color:var(--purple)}
+.concept.green{border-top-color:var(--green)}
+.concept.teal{border-top-color:var(--teal)}
+.concept.yellow{border-top-color:var(--yellow)}
+.concept.indigo{border-top-color:var(--indigo)}
+.concept.red{border-top-color:var(--red)}
+.concept-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px}
+.concept-desc{font-family:'Inter',sans-serif;font-size:12px;color:var(--muted);line-height:1.65}
+
+/* ── CODE BLOCKS ─────────────────────────────────────────────────────────── */
+.code-block{background:#f8fafc;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 3px rgba(180,60,0,.04)}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--surface);gap:8px;flex-wrap:wrap;border-left:3px solid var(--phase)}
+.code-header-left{display:flex;align-items:center;gap:8px}
+.code-label{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.code-label.sql{color:var(--blue)}
+.code-label.bash{color:var(--green)}
+.code-label.output{color:var(--orange)}
+.code-label.conf{color:var(--purple)}
+.copy-btn{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);background:none;border:1px solid var(--border);border-radius:99px;padding:3px 10px;cursor:pointer;transition:all .15s}
+.copy-btn:hover{color:var(--text);border-color:var(--border2)}
+.copy-btn.copied{color:var(--green);border-color:var(--green)}
+.code-body{padding:16px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#334155;line-height:1.8;overflow-x:auto;white-space:pre;background:#f8fafc}
+.kw{color:#0284c7}.fn{color:#7c3aed}.str{color:#059669}.cm{color:#94a3b8}.num{color:#d97706}.op{color:#db2777}.tp{color:#b45309}.tb{color:#0d9488}
+
+/* ── EXAMPLE BADGES ──────────────────────────────────────────────────────── */
+.example-badge{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.04em}
+.example-badge.ehr{background:#ccfbf1;color:#0d9488}
+.example-badge.db{background:#fee2e2;color:#EC0016}
+
+/* ── CALLOUTS ────────────────────────────────────────────────────────────── */
+.callout{border-radius:0 12px 12px 0;padding:13px 16px;margin-bottom:14px;border:1px solid transparent;border-left-width:4px}
+.callout .lbl{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.callout p,.callout li{font-family:'Inter',sans-serif;font-size:12px;line-height:1.7}
+.callout ul,.callout ol{padding-left:16px}
+.callout li{margin-bottom:4px}
+.callout.tip{background:var(--greenb);border-color:#a7f3d0;border-left-color:var(--green)}
+.callout.tip .lbl{color:var(--greend)}
+.callout.tip p,.callout.tip li{color:#065f46}
+.callout.warn{background:var(--yellowb);border-color:#fde68a;border-left-color:var(--yellow)}
+.callout.warn .lbl{color:var(--yellow)}
+.callout.warn p,.callout.warn li{color:#78350f}
+.callout.info{background:var(--blueb);border-color:#bae6fd;border-left-color:var(--blue)}
+.callout.info .lbl{color:var(--blue)}
+.callout.info p,.callout.info li{color:#075985}
+.callout.phr{background:var(--tealb);border-color:#99f6e4;border-left-color:var(--teal)}
+.callout.phr .lbl{color:var(--teal)}
+.callout.phr p,.callout.phr li{color:#134e4a}
+.callout.db{background:#fee2e2;border-color:#fca5a5;border-left-color:#EC0016}
+.callout.db .lbl{color:#b91c1c}
+.callout.db p,.callout.db li{color:#7f1d1d}
+.callout.interview{background:var(--indigob);border-color:#a5b4fc;border-left-color:var(--indigo)}
+.callout.interview .lbl{color:#3730a3}
+.callout.interview p{color:#312e81;font-weight:700}
+.callout.scenario{background:#1e293b;color:#e2e8f0;border-left-color:#dc2626;border-left-width:4px}
+.callout.scenario .lbl{color:#f87171;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.callout.scenario p{font-family:'Inter',sans-serif;font-size:12px;line-height:1.65;color:#e2e8f0}
+.callout.scenario ol,.callout.scenario ul{padding-left:16px}
+.callout.scenario li{font-family:'Inter',sans-serif;font-size:12px;line-height:1.6;color:#cbd5e1;margin-bottom:4px}
+.callout.scenario strong{color:#f1f5f9}
+
+/* ── INTERVIEW Q&A ───────────────────────────────────────────────────────── */
+.qa-list{display:flex;flex-direction:column;gap:8px}
+.qa-item{border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.qa-q{padding:11px 14px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:var(--card);transition:background .12s;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.qa-q::after{content:'▾';font-size:11px;color:var(--dim);transition:transform .2s;flex-shrink:0}
+.qa-q.open::after{transform:rotate(180deg)}
+.qa-q:hover{background:var(--phaseb)}
+.qa-a{display:none;padding:13px 14px;border-top:1px solid var(--border)}
+.qa-a.open{display:block}
+.qa-a p{font-family:'Inter',sans-serif;font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:8px}
+
+/* ── CHALLENGE ───────────────────────────────────────────────────────────── */
+.challenge{background:var(--surface);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 4px rgba(180,60,0,.05)}
+.challenge-head{padding:12px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .12s;background:var(--phaseb)}
+.challenge-head:hover{background:#fed7aa}
+.challenge-head-left{display:flex;align-items:center;gap:10px}
+.challenge-badge{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;background:var(--phase);color:#fff;border-radius:99px;padding:2px 9px}
+.challenge-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--phased)}
+.challenge-arrow{font-size:12px;color:var(--phased);transition:transform .2s}
+.challenge-arrow.open{transform:rotate(180deg)}
+.challenge-body{display:none;padding:16px;border-top:1px solid var(--border)}
+.challenge-body.open{display:block}
+.challenge-q{font-family:'Inter',sans-serif;font-size:13px;color:var(--text);margin-bottom:12px;line-height:1.65}
+.answer-toggle{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--phase);cursor:pointer;text-decoration:underline;margin-bottom:8px;display:inline-block}
+.answer{display:none}
+.answer.open{display:block}
+
+/* ── COMPARE TABLE ───────────────────────────────────────────────────────── */
+.compare-table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:12px;font-family:'Inter',sans-serif}
+.compare-table th{background:var(--card);padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:2px solid var(--border)}
+.compare-table td{padding:9px 12px;color:var(--text);border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table .mono{font-family:'JetBrains Mono',monospace;color:var(--purple);font-size:11px}
+.compare-table .good{color:var(--green);font-weight:700}
+.compare-table .bad{color:var(--red);font-weight:700}
+
+/* ── LESSON NAV ──────────────────────────────────────────────────────────── */
+.lesson-nav{display:flex;gap:8px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border);flex-wrap:wrap}
+.lesson-nav-btn{background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:10px 20px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
+.lesson-nav-btn:hover{color:var(--text);border-color:var(--border2)}
+.lesson-nav-btn.primary{background:var(--phaseb);border-color:var(--phase);color:var(--phased)}
+.lesson-nav-btn.primary:hover{background:#fed7aa}
+.mark-done-btn{margin-left:auto;background:var(--greenb);border:1px solid #a7f3d0;border-radius:99px;padding:10px 20px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:var(--greend);cursor:pointer;transition:all .15s}
+.mark-done-btn:hover{background:#a7f3d0}
+.mark-done-btn.done{background:var(--green);border-color:var(--greend);color:#fff}
+
+/* ── ASCII DIAGRAM ───────────────────────────────────────────────────────── */
+.ascii-wrap{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;overflow-x:auto}
+.ascii-wrap pre{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#334155;line-height:1.6;white-space:pre}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────────────── */
+@media(max-width:700px){
+  .page,.hero{padding:24px 16px 60px}
+  .hero-grid{margin:0 16px 28px;grid-template-columns:1fr 1fr}
+  h1{font-size:34px}
+  .page-title{font-size:22px}
+  .lesson-nav{flex-direction:column}
+  .mark-done-btn{margin-left:0}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ NAV -->
+<nav>
+  <div class="nav-logo">⚡ MAX<span>SCALE</span></div>
+  <div class="nav-tab active" id="tab-home" onclick="goTo('home')">Home</div>
+  <div class="nav-tab" id="tab-l1" onclick="goTo('l1')">01</div>
+  <div class="nav-tab" id="tab-l2" onclick="goTo('l2')">02</div>
+  <div class="nav-tab" id="tab-l3" onclick="goTo('l3')">03</div>
+  <div class="nav-tab" id="tab-l4" onclick="goTo('l4')">04</div>
+  <div class="nav-tab" id="tab-l5" onclick="goTo('l5')">05</div>
+  <div class="nav-tab" id="tab-l6" onclick="goTo('l6')">06</div>
+  <div class="nav-tab" id="tab-l7" onclick="goTo('l7')">07</div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════ HOME -->
+<div id="page-home" class="page active">
+<div class="hero">
+  <div class="phase-pill"><span class="phase-pill-dot"></span><span class="phase-pill-text">Phase 07 · MaxScale · Interview Weight: CRITICAL · 17h</span></div>
+  <h1>MaxScale<br><span>Proxy Layer</span></h1>
+  <p class="hero-sub">MaxScale is MariaDB's enterprise database proxy — the traffic controller sitting between your application and Galera Cluster. At OS GmbH, MaxScale is the single point of truth for read/write routing, failover, connection pooling and health monitoring. Nicht zu kennen ist keine Option.</p>
+  <div class="hero-chips">
+    <div class="hero-chip"><strong>Phase</strong> 07 / 09</div>
+    <div class="hero-chip"><strong>Weight</strong> CRITICAL</div>
+    <div class="hero-chip"><strong>Interviewer</strong> Michael Nietsch</div>
+    <div class="hero-chip"><strong>Total</strong> 17h</div>
+    <div class="hero-chip"><strong>Stack</strong> MaxScale 23.x + Galera</div>
+  </div>
+</div>
+<div class="hero-grid">
+  <div class="hero-card" onclick="goTo('l1')">
+    <div class="hero-card-icon">🏗️</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num">01 · 2h</div>
+      <div class="hero-card-title">Architecture & Installation</div>
+      <span class="status critical">CRITICAL</span>
+    </div>
+    <div class="hero-card-arrow">→</div>
+  </div>
+  <div class="hero-card" onclick="goTo('l2')">
+    <div class="hero-card-icon">⚙️</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num">02 · 3h</div>
+      <div class="hero-card-title">maxscale.cnf Deep Dive</div>
+      <span class="status critical">CRITICAL</span>
+    </div>
+    <div class="hero-card-arrow">→</div>
+  </div>
+  <div class="hero-card" onclick="goTo('l3')">
+    <div class="hero-card-icon">🔭</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num">03 · 3h</div>
+      <div class="hero-card-title">Galera Monitor</div>
+      <span class="status critical">CRITICAL</span>
+    </div>
+    <div class="hero-card-arrow">→</div>
+  </div>
+  <div class="hero-card" onclick="goTo('l4')">
+    <div class="hero-card-icon">↔️</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num">04 · 2h</div>
+      <div class="hero-card-title">Read/Write Split Router</div>
+      <span class="status critical">CRITICAL</span>
+    </div>
+    <div class="hero-card-arrow">→</div>
+  </div>
+  <div class="hero-card" onclick="goTo('l5')">
+    <div class="hero-card-icon">🖥️</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num">05 · 2h</div>
+      <div class="hero-card-title">maxctrl CLI</div>
+      <span class="status critical">CRITICAL</span>
+    </div>
+    <div class="hero-card-arrow">→</div>
+  </div>
+  <div class="hero-card" onclick="goTo('l6')">
+    <div class="hero-card-icon">🔁</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num">06 · 2h</div>
+      <div class="hero-card-title">Failover & Recovery</div>
+      <span class="status critical">CRITICAL</span>
+    </div>
+    <div class="hero-card-arrow">→</div>
+  </div>
+  <div class="hero-card" onclick="goTo('l7')">
+    <div class="hero-card-icon">🎤</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num">07 · 1h</div>
+      <div class="hero-card-title">Interview Q&A + 3am Scenarios</div>
+      <span class="status critical">CRITICAL</span>
+    </div>
+    <div class="hero-card-arrow">→</div>
+  </div>
+</div>
+</div><!-- /page-home -->
+
+
+<!-- ═══════════════════════════════════════════════════ LESSON 1 -->
+<div id="page-l1" class="page">
+<div class="page-header">
+  <div class="page-header-top">
+    <div>
+      <div class="lesson-num">Phase 07 · Lesson 01 · 2h</div>
+      <div class="page-title">Architecture & Installation</div>
+    </div>
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+  </div>
+  <p class="page-desc">Understand MaxScale's four-component model — servers, monitors, routers, and listeners — and how they assemble into a functioning proxy. Covers installation on RHEL/Rocky, service management, and verifying a healthy startup.</p>
+</div>
+
+<div class="callout warn" style="margin-bottom:20px;border-left-color:#ea6c00;background:#fff7ed;border-color:#fed7aa">
+  <div class="lbl" style="color:#c2530a">📋 Prerequisites — complete Phase 06 (Galera) first</div>
+  <p style="color:#7c2d12;margin-bottom:8px">This phase assumes you understand the Galera concepts that MaxScale's monitor and router are built around. Before continuing, make sure you are comfortable with:</p>
+  <ul style="color:#7c2d12;font-size:12px;line-height:1.7;padding-left:18px">
+    <li><strong>Write-set certification</strong> — why Galera can have multiple writable nodes without split-brain (<a href="phase-06-Galera.html" style="color:#c2530a">Phase 06 · Lesson 01</a>)</li>
+    <li><code style="font-family:'JetBrains Mono',monospace;font-size:11px">wsrep_local_state</code> values: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Synced</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Donor/Desynced</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Joined</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Joiner</code> — MaxScale's GaleraMonitor reads these to decide routing (<a href="phase-06-Galera.html#l2" style="color:#c2530a">Phase 06 · Lesson 02</a>)</li>
+    <li><strong>Quorum and Primary Component</strong> — what happens when MaxScale marks a node <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Down</code> and why a 3-node cluster is the minimum (<a href="phase-06-Galera.html#l4" style="color:#c2530a">Phase 06 · Lesson 04</a>)</li>
+  </ul>
+  <p style="color:#7c2d12;font-size:12px;margin-top:6px">MaxScale is Galera's traffic controller — the concepts above are the vocabulary used throughout every lesson in this phase.</p>
+</div>
+
+<div class="expand-bar">
+  <span class="expand-bar-label">Click any section to expand</span>
+  <button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button>
+</div>
+
+<!-- Why This Matters -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚡ Why This Matters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">MaxScale is the critical middleware layer at OS GmbH — every application query passes through it before reaching the Galera cluster. Nietsch will expect you to draw the four-component architecture from memory and explain why each component is distinct. For Morafek CareMate EHR, MaxScale enables zero-downtime node maintenance by transparently re-routing queries when a node enters maintenance mode.</p>
+    <div class="callout interview">
+      <div class="lbl">⚓ Interview Anchor</div>
+      <p>"MaxScale has four logical components: Servers (the MariaDB backends), a Monitor (polls health via SQL), a Router Service (contains routing logic + server references), and a Listener (the TCP port clients connect to). Traffic flows: Client → Listener → Router Service → Monitor-aware server pool → Backend. Removing any layer breaks the chain."</p>
+    </div>
+  </div>
+</div>
+
+<!-- Core Concepts -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🧠 Core Concepts<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="concepts">
+      <div class="concept orange">
+        <div class="concept-name">Server — a backend MariaDB node</div>
+        <div class="concept-desc">A <code style="font-family:'JetBrains Mono',monospace;font-size:11px">[server]</code> stanza defines one backend DB host: address, port, and protocol. MaxScale sends health-check queries to it via the monitor. Server objects are stateless — they carry no routing logic, only connection parameters.<br><br><strong>EHR:</strong> Three <code style="font-family:'JetBrains Mono',monospace;font-size:11px">server</code> objects represent the three Galera nodes running the CareMate database — db1, db2, db3 in the Frankfurt datacenter.<br><strong>OS/DB:</strong> OS GmbH runs five Galera nodes across two availability zones; each is a separate <code style="font-family:'JetBrains Mono',monospace;font-size:11px">server</code> object so MaxScale can individually drain or quarantine AZ-2 nodes during maintenance.</div>
+      </div>
+      <div class="concept blue">
+        <div class="concept-name">Monitor — health intelligence</div>
+        <div class="concept-desc">The monitor (<code style="font-family:'JetBrains Mono',monospace;font-size:11px">galeramon</code> for Galera, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">mariadbmon</code> for primary/replica) periodically queries every server and assigns state flags: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Master</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Slave</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Synced</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Down</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Maintenance</code>. The router reads these flags to decide routing.<br><br><strong>EHR:</strong> <code style="font-family:'JetBrains Mono',monospace;font-size:11px">galeramon</code> detects when a CareMate node's <code style="font-family:'JetBrains Mono',monospace;font-size:11px">wsrep_local_state</code> drops to 2 (Donor/Desynced) and immediately removes it from the read pool.<br><strong>OS/DB:</strong> Monitor interval is set to 1000ms (1s) on OS's cluster — a 2s detection window for node failure is acceptable for 99.999% SLA; longer would increase client error exposure.</div>
+      </div>
+      <div class="concept purple">
+        <div class="concept-name">Router Service — the routing brain</div>
+        <div class="concept-desc">A <code style="font-family:'JetBrains Mono',monospace;font-size:11px">[service]</code> stanza references a router module (<code style="font-family:'JetBrains Mono',monospace;font-size:11px">readwritesplit</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">readconnroute</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">schemarouter</code>) and a list of servers. It holds connection credentials, session limits, retry policies, and filter chains. Multiple services can share the same server pool with different routing policies.<br><br><strong>EHR:</strong> Two services — <code style="font-family:'JetBrains Mono',monospace;font-size:11px">caremate-rw</code> (readwritesplit for Flask app) and <code style="font-family:'JetBrains Mono',monospace;font-size:11px">caremate-ro</code> (readconnroute for reporting queries).<br><strong>OS/DB:</strong> OS uses a separate <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ticketing-rw</code> service for real-time bookings and a <code style="font-family:'JetBrains Mono',monospace;font-size:11px">analytics-ro</code> service pointing only to replica-tier nodes — protecting OLTP from batch reporting.</div>
+      </div>
+      <div class="concept teal">
+        <div class="concept-name">Listener — the client-facing TCP port</div>
+        <div class="concept-desc">A <code style="font-family:'JetBrains Mono',monospace;font-size:11px">[listener]</code> stanza binds a TCP address:port and links to a service. Clients connect here using the standard MariaDB protocol. You can run multiple listeners on different ports linking to different services — a common pattern for separating OLTP, read-only, and admin traffic.<br><br><strong>EHR:</strong> Listener on port 3306 for the Flask API (readwritesplit) and port 3307 for Metabase reporting (readconnroute, max_connections=20).<br><strong>OS/DB:</strong> Port 3306 for booking engine, 3307 for Prometheus exporter queries, 3308 for DBA admin access with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">localhost</code> bind only.</div>
+      </div>
+      <div class="concept green">
+        <div class="concept-name">Filter — query inspection middleware</div>
+        <div class="concept-desc">Filters are optional middleware inserted into the query pipeline within a service. Common filters: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">qlafilter</code> (query log), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">regexfilter</code> (rewrite queries), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">throttlefilter</code> (rate limit), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">cachefilter</code> (result cache). They are chained in order and can modify, log, or reject queries.<br><br><strong>EHR:</strong> <code style="font-family:'JetBrains Mono',monospace;font-size:11px">qlafilter</code> logs all queries touching the <code style="font-family:'JetBrains Mono',monospace;font-size:11px">patients</code> table to a DSGVO-compliant audit file, satisfying Article 30 GDPR record-of-processing requirements.<br><strong>OS/DB:</strong> <code style="font-family:'JetBrains Mono',monospace;font-size:11px">throttlefilter</code> limits the analytics service to 500 queries/sec, preventing a runaway reporting job from saturating the cluster during peak operations.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Deep Dive -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔬 Deep Dive — MaxScale Architecture<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout info"><div class="lbl">ℹ️ Architecture</div><p>Understanding the data-flow path helps you diagnose connection errors, routing anomalies and monitor failures. Draw this diagram in your interview if asked.</p></div>
+    <div class="ascii-wrap"><pre>
+  APPLICATION (Flask / JDBC / psycopg2)
+        │
+        │  TCP :3306  (MariaDB protocol)
+        ▼
+  ┌─────────────────────────────────────────────────┐
+  │               L I S T E N E R                  │
+  │  [listener-rw]  address=0.0.0.0  port=3306      │
+  │  links to → service=caremate-rw-service         │
+  └───────────────────────┬─────────────────────────┘
+                          │
+                          ▼
+  ┌─────────────────────────────────────────────────┐
+  │          R O U T E R   S E R V I C E           │
+  │  [caremate-rw-service]                          │
+  │  router=readwritesplit                          │
+  │  servers=db1,db2,db3                            │
+  │  filters=audit-filter                           │
+  │                                                 │
+  │  Routing decision:                              │
+  │    BEGIN/DML/DDL  ──────► Master (Synced)       │
+  │    SELECT (outside TX) ► Slaves (Synced only)   │
+  └────────────┬──────────────────┬─────────────────┘
+               │                  │
+               ▼                  ▼
+  ┌──────────────────┐  ┌──────────────────┐
+  │  [db1] :3306     │  │  [db2] :3306     │  [db3]…
+  │  state: Master   │  │  state: Slave    │
+  │         Synced   │  │         Synced   │
+  └──────────────────┘  └──────────────────┘
+               ▲                  ▲
+               └────────┬─────────┘
+                        │ monitor polls every 1000ms
+  ┌─────────────────────────────────────────────────┐
+  │              M O N I T O R                     │
+  │  [galera-monitor]  module=galeramon             │
+  │  Queries: SHOW STATUS LIKE 'wsrep%'             │
+  │  Assigns state flags: Synced/Down/Maintenance   │
+  └─────────────────────────────────────────────────┘</pre></div>
+    <p style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:12px">The critical insight: <strong>the monitor and the router are decoupled</strong>. The monitor updates server state flags asynchronously; the router reads those flags on each new connection or transaction. This means a node can go from <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Synced</code> to <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Down</code> mid-session — MaxScale will retry that query on another node if <code style="font-family:'JetBrains Mono',monospace;font-size:11px">master_failure_mode=fail_on_write</code>.</p>
+  </div>
+</div>
+
+<!-- Installation -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚂 OS/DB Installation — RHEL/Rocky<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout db"><div class="lbl">🚂 OS Context</div><p>OS GmbH runs Rocky Linux 8.x on all DB servers. MaxScale is installed from the official MariaDB Enterprise repo — never use the community repo in production as it lags behind security patches.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label bash">BASH</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm"># 1. Add the MariaDB Enterprise repo (token from customer portal)</span>
+curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup \
+  | sudo bash -s -- --mariadb-maxscale-version=23.08
+
+<span class="cm"># 2. Install MaxScale</span>
+sudo dnf install -y maxscale
+
+<span class="cm"># 3. Create the monitoring user on every Galera node</span>
+<span class="cm"># (run this SQL on one Galera node — replicates to all)</span>
+<span class="kw">CREATE</span> <span class="kw">USER</span> <span class="str">'maxscale_monitor'</span>@<span class="str">'%'</span>
+  <span class="kw">IDENTIFIED BY</span> <span class="str">'Str0ng!M0nP@ss'</span>;
+
+<span class="kw">GRANT</span> REPLICATION SLAVE, REPLICATION CLIENT,
+      SHOW DATABASES,
+      BINLOG MONITOR,
+      SLAVE MONITOR
+  <span class="kw">ON</span> *.*
+  <span class="kw">TO</span> <span class="str">'maxscale_monitor'</span>@<span class="str">'%'</span>;
+
+<span class="cm"># 4. Create the routing service user</span>
+<span class="kw">CREATE</span> <span class="kw">USER</span> <span class="str">'maxscale_router'</span>@<span class="str">'%'</span>
+  <span class="kw">IDENTIFIED BY</span> <span class="str">'R0ut3r!S3cure'</span>;
+<span class="kw">GRANT</span> <span class="kw">SELECT</span>, <span class="kw">INSERT</span>, <span class="kw">UPDATE</span>, <span class="kw">DELETE</span>
+  <span class="kw">ON</span> operational_db.*
+  <span class="kw">TO</span> <span class="str">'maxscale_router'</span>@<span class="str">'%'</span>;
+
+<span class="cm"># 5. Start and enable MaxScale</span>
+sudo systemctl enable --now maxscale
+
+<span class="cm"># 6. Verify startup — look for "MaxScale started with N servers"</span>
+sudo journalctl -u maxscale -n 50 --no-pager
+maxctrl list servers</div>
+    </div>
+    <div class="callout tip"><div class="lbl">✅ Best Practice</div><p>Use <strong>two separate MariaDB users</strong> for MaxScale: one with minimal privileges for the monitor (REPLICATION CLIENT + SHOW DATABASES) and one for the router service. Never use root. This follows the principle of least privilege and limits blast radius if credentials are compromised.</p></div>
+  </div>
+</div>
+
+<!-- EHR Installation -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🩺 EHR Example — CareMate Verification<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout phr"><div class="lbl">🩺 Context</div><p>After installing MaxScale for the CareMate EHR, verify that all three Galera nodes are reachable and correctly classified before switching the Flask application connection string from direct MariaDB to MaxScale.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label bash">BASH</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm"># Verify all servers are detected and in correct state</span>
+maxctrl list servers
+<span class="cm"># Expected output:</span>
+<span class="cm"># ┌──────┬──────────────┬──────┬─────────────────┬───────────────────────────┐</span>
+<span class="cm"># │ Name │ Address      │ Port │ Connections     │ State                     │</span>
+<span class="cm"># ├──────┼──────────────┼──────┼─────────────────┼───────────────────────────┤</span>
+<span class="cm"># │ db1  │ 10.0.1.11   │ 3306 │ 2               │ Master, Synced, Running   │</span>
+<span class="cm"># │ db2  │ 10.0.1.12   │ 3306 │ 1               │ Slave, Synced, Running    │</span>
+<span class="cm"># │ db3  │ 10.0.1.13   │ 3306 │ 1               │ Slave, Synced, Running    │</span>
+<span class="cm"># └──────┴──────────────┴──────┴─────────────────┴───────────────────────────┘</span>
+
+<span class="cm"># Verify the listener is accepting connections</span>
+ss -tlnp | grep <span class="num">3306</span>
+
+<span class="cm"># Test write routing — should go to db1 (Master)</span>
+mysql -h <span class="num">127.0.0.1</span> -P <span class="num">3306</span> -u maxscale_router -p \
+  -e <span class="str">"SELECT @@hostname, @@wsrep_node_name;"</span>
+
+<span class="cm"># Test that SELECTs are distributed to slaves</span>
+<span class="kw">for</span> i <span class="kw">in</span> {<span class="num">1</span>..<span class="num">6</span>}; <span class="kw">do</span>
+  mysql -h <span class="num">127.0.0.1</span> -P <span class="num">3306</span> -u maxscale_router -p<span class="str">'R0ut3r!S3cure'</span> \
+    -e <span class="str">"SELECT @@wsrep_node_name AS routed_to;"</span> 2>/dev/null
+<span class="kw">done</span>
+<span class="cm"># Should show db2, db3, db2, db3... (round-robin slaves)</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Pitfalls -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚠️ Common Pitfalls<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout warn"><div class="lbl">⚠️ Wrong User Privileges</div><p>Using a monitor user without <code style="font-family:'JetBrains Mono',monospace;font-size:11px">REPLICATION CLIENT</code> means MaxScale cannot run <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SHOW SLAVE STATUS</code> and will mark all servers as <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Running</code> without any Galera state — it will happily route to a <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Donor</code> node performing SST. Always verify monitor user privileges immediately after install.</p></div>
+    <div class="callout warn"><div class="lbl">⚠️ Firewall Blocks Monitor Queries</div><p>MaxScale connects to each backend on port 3306. If the server firewall or <code style="font-family:'JetBrains Mono',monospace;font-size:11px">iptables</code> blocks the MaxScale host, the monitor marks all backends as <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Down</code> and the proxy goes into a state where it refuses all new connections. Check with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">telnet db1 3306</code> from the MaxScale host before going live.</p></div>
+    <div class="callout warn"><div class="lbl">⚠️ Binding to 0.0.0.0 on the Listener</div><p>A listener bound to <code style="font-family:'JetBrains Mono',monospace;font-size:11px">0.0.0.0</code> exposes MaxScale to all network interfaces, including external ones. In OS GmbH's network topology, MaxScale should bind only to the internal app-tier VLAN IP. Use <code style="font-family:'JetBrains Mono',monospace;font-size:11px">address=10.0.2.10</code> not <code style="font-family:'JetBrains Mono',monospace;font-size:11px">address=0.0.0.0</code> in the listener stanza.</p></div>
+  </div>
+</div>
+
+<!-- Interview -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="qa-list">
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">What are the four components of MaxScale and how do they relate to each other?</div>
+        <div class="qa-a">
+          <p>MaxScale has Servers (backend MariaDB nodes with address/port), a Monitor (polls servers and assigns state flags like Synced/Down/Maintenance), a Router Service (applies routing logic using server state flags, holds credentials and filter chains), and a Listener (the TCP endpoint clients connect to, linked to one service). Traffic flows strictly: Listener receives TCP connection → Service router makes routing decision → selected backend Server. The monitor runs independently in a background thread and updates state flags that the router reads per-connection.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"The monitor and router are decoupled — monitor updates state asynchronously every N milliseconds; the router reads those state flags on every new connection. This is why MaxScale reacts to node failures within one monitor interval."</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">Why does MaxScale require two separate database users, and what minimum privileges does each need?</div>
+        <div class="qa-a">
+          <p>The monitor user needs only <code style="font-family:'JetBrains Mono',monospace;font-size:11px">REPLICATION CLIENT</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">REPLICATION SLAVE</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SHOW DATABASES</code>, and <code style="font-family:'JetBrains Mono',monospace;font-size:11px">BINLOG MONITOR</code> — it never touches application data, only runs SHOW STATUS queries. The service/router user needs DML privileges on application schemas. Keeping them separate means a leaked router credential cannot be used to query replication topology, and a failed monitor doesn't affect session credentials.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"Least privilege and blast-radius isolation — monitor user touches zero application data, router user has zero replication visibility."</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">How would you verify a new MaxScale installation is routing correctly without touching the application?</div>
+        <div class="qa-a">
+          <p>First run <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl list servers</code> to confirm all backends show <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Master, Synced, Running</code> or <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Slave, Synced, Running</code>. Then connect directly via <code style="font-family:'JetBrains Mono',monospace;font-size:11px">mysql -h 127.0.0.1 -P 3306</code> and run <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SELECT @@hostname</code> multiple times — writes should always return the master node name, SELECTs should round-robin across slaves. Check <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl list services</code> for connection counts and <code style="font-family:'JetBrains Mono',monospace;font-size:11px">journalctl -u maxscale</code> for any routing errors.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"maxctrl list servers is always my first command — if states are wrong, no amount of routing config matters."</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Challenge -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🏋️ Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Draw the MaxScale data-flow from application to backend</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">Without looking at the diagram: on paper, draw the complete path a <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SELECT * FROM patients WHERE id=42</code> query takes from the Flask app through MaxScale to the backend. Label every MaxScale component it passes through, which component makes the routing decision, and what happens if the selected slave returns an error mid-query.</p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer →</span>
+        <div class="answer">
+          <div class="callout tip"><div class="lbl">✅ Answer</div><p>Flask → TCP :3306 → <strong>Listener</strong> (accepts connection, hands off to service) → <strong>Router Service</strong> (readwritesplit checks: is this a SELECT outside a transaction? Yes → route to a Synced slave) → the router checks Monitor state flags → selects db2 (Slave, Synced) → <strong>Server db2</strong> executes query. If db2 returns a connection error: MaxScale checks <code style="font-family:'JetBrains Mono',monospace;font-size:11px">slave_failure_mode</code> — if set to <code style="font-family:'JetBrains Mono',monospace;font-size:11px">fail_instantly</code> the client gets an error; if <code style="font-family:'JetBrains Mono',monospace;font-size:11px">error_on_mismatch</code> it retries on another slave. The monitor runs independently and will mark db2 as Down within its next poll interval.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('home')">← Home</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('l2')">Next: maxscale.cnf →</button>
+  <button class="mark-done-btn" id="done-l1" onclick="markDone('l1')">Mark complete ✓</button>
+</div>
+</div><!-- /page-l1 -->
+
+
+<!-- ═══════════════════════════════════════════════════ LESSON 2 -->
+<div id="page-l2" class="page">
+<div class="page-header">
+  <div class="page-header-top">
+    <div>
+      <div class="lesson-num">Phase 07 · Lesson 02 · 3h</div>
+      <div class="page-title">maxscale.cnf Deep Dive</div>
+    </div>
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+  </div>
+  <p class="page-desc">A complete, production-ready <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxscale.cnf</code> for a three-node Galera cluster with readwritesplit, covering every parameter you'll be asked about — monitor intervals, connection pooling, retry logic, and filter configuration.</p>
+</div>
+
+<div class="expand-bar">
+  <span class="expand-bar-label">Click any section to expand</span>
+  <button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚡ Why This Matters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">Nietsch will almost certainly hand you a broken or incomplete <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxscale.cnf</code> and ask you to identify the problem. Every parameter in this file has a reason; being able to explain <em>why</em> a parameter exists separates a competent admin from someone who just copy-pasted a config. For OS GmbH's 24/7 operations, a misconfigured <code style="font-family:'JetBrains Mono',monospace;font-size:11px">master_failure_mode</code> or wrong <code style="font-family:'JetBrains Mono',monospace;font-size:11px">monitor_interval</code> can mean the difference between a 2-second blip and a 30-second outage.</p>
+    <div class="callout interview">
+      <div class="lbl">⚓ Interview Anchor</div>
+      <p>"In maxscale.cnf I focus on three areas: the monitor interval (how fast we detect failures), master_failure_mode (what to do with in-flight writes when master goes down), and slave_selection_criteria (how we choose which replica to use). Everything else is important, but those three determine your availability profile."</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🧠 Core Concepts — Key Parameters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="concepts">
+      <div class="concept orange">
+        <div class="concept-name">monitor_interval — detection latency</div>
+        <div class="concept-desc"><code style="font-family:'JetBrains Mono',monospace;font-size:11px">monitor_interval=1000ms</code> means MaxScale polls each server every second. A node going down is detected within 1–2 polling cycles (1–2 seconds). Lower values mean faster detection but more DB connections consumed by health checks. For OS GmbH's 99.999% SLA, 500ms–1000ms is typical. Never set below 200ms in production — the health check queries themselves add load.<br><br><strong>EHR:</strong> CareMate uses 2000ms — acceptable for an EHR where a 2s routing delay during failover won't cause patient harm.<br><strong>OS/DB:</strong> 500ms on ticket-processing cluster — a train departure system cannot tolerate long routing errors during peak boarding.</div>
+      </div>
+      <div class="concept blue">
+        <div class="concept-name">master_failure_mode — in-flight write handling</div>
+        <div class="concept-desc">Controls what happens to active write sessions when the master node disappears. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">fail_instantly</code> — return error to client immediately (safe, predictable). <code style="font-family:'JetBrains Mono',monospace;font-size:11px">error_on_write</code> — allow reads to continue but fail the next write. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">fail_on_write</code> — close session on next write attempt. For Galera, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">fail_instantly</code> is safest because the Galera cluster will elect a new master quickly.<br><br><strong>EHR:</strong> <code style="font-family:'JetBrains Mono',monospace;font-size:11px">error_on_write</code> — allows a doctor mid-session to finish reading patient history even if the master just failed, but blocks the next SAVE action.<br><strong>OS/DB:</strong> <code style="font-family:'JetBrains Mono',monospace;font-size:11px">fail_instantly</code> — booking transactions are short-lived; it's better to retry cleanly than to allow partial session state.</div>
+      </div>
+      <div class="concept purple">
+        <div class="concept-name">slave_selection_criteria — replica load balancing</div>
+        <div class="concept-desc">Determines which slave receives a read query. Options: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">LEAST_CURRENT_OPERATIONS</code> (fewest active queries — best for heterogeneous hardware), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">LEAST_BEHIND_MASTER</code> (lowest replication lag — best for read-after-write consistency), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">LEAST_ROUTER_CONNECTIONS</code> (fewest MaxScale-managed connections), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ADAPTIVE_ROUTING</code> (response-time-aware).<br><br><strong>EHR:</strong> <code style="font-family:'JetBrains Mono',monospace;font-size:11px">LEAST_CURRENT_OPERATIONS</code> — CareMate's two slave nodes have identical hardware; distribute by current query load.<br><strong>OS/DB:</strong> <code style="font-family:'JetBrains Mono',monospace;font-size:11px">LEAST_BEHIND_MASTER</code> — for ticket scan lookups, reading stale data (e.g. a scan not yet replicated) could cause double-boarding. Prefer the freshest replica.</div>
+      </div>
+      <div class="concept teal">
+        <div class="concept-name">max_slave_connections — connection pool sizing</div>
+        <div class="concept-desc">Limits how many backend connections MaxScale opens to each slave. Default is 255. Setting this too low causes connection queuing; too high exhausts <code style="font-family:'JetBrains Mono',monospace;font-size:11px">max_connections</code> on the backend. Rule of thumb: MaxScale backend connections per server = (expected concurrent sessions × 1.5) / number of slaves.<br><br><strong>EHR:</strong> CareMate has max 50 concurrent Flask connections; with 2 slaves, max_slave_connections=40 is appropriate with headroom for spikes.<br><strong>OS/DB:</strong> OS allows 500 concurrent app connections; with 4 slaves, max_slave_connections=200 per slave (800 total slave capacity vs 500 app demand).</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EHR Config -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🩺 EHR Example — CareMate maxscale.cnf<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout phr"><div class="lbl">🩺 Context</div><p>Complete maxscale.cnf for Morafek CareMate EHR. Three-node Galera cluster, readwritesplit for Flask API, readconnroute for reporting, and a qlafilter for DSGVO audit logging on the patients table.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label conf">CONF</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm"># /etc/maxscale.cnf — Morafek CareMate EHR</span>
+<span class="cm"># Three-node Galera: db1 (master), db2, db3 (slaves)</span>
+
+<span class="cm">## ──────────────────────────────────────────────────────</span>
+<span class="cm">## GLOBAL SETTINGS</span>
+<span class="cm">## ──────────────────────────────────────────────────────</span>
+[maxscale]
+threads=auto                    <span class="cm"># One worker thread per CPU core</span>
+log_info=false                  <span class="cm"># Reduce log verbosity in production</span>
+log_warning=true
+admin_host=127.0.0.1            <span class="cm"># REST API only on loopback (security)</span>
+admin_port=8989
+admin_secure_gui=false          <span class="cm"># Disable GUI in production</span>
+
+<span class="cm">## ──────────────────────────────────────────────────────</span>
+<span class="cm">## BACKEND SERVERS</span>
+<span class="cm">## ──────────────────────────────────────────────────────</span>
+[db1]
+type=server
+address=10.0.1.11
+port=3306
+protocol=MariaDBBackend
+
+[db2]
+type=server
+address=10.0.1.12
+port=3306
+protocol=MariaDBBackend
+
+[db3]
+type=server
+address=10.0.1.13
+port=3306
+protocol=MariaDBBackend
+
+<span class="cm">## ──────────────────────────────────────────────────────</span>
+<span class="cm">## GALERA MONITOR</span>
+<span class="cm">## ──────────────────────────────────────────────────────</span>
+[galera-monitor]
+type=monitor
+module=galeramon
+servers=db1,db2,db3
+user=maxscale_monitor
+password=Str0ng!M0nP@ss
+monitor_interval=2000ms         <span class="cm"># Poll every 2 seconds (EHR: acceptable latency)</span>
+available_when_donor=false      <span class="cm"># Donor (SST) nodes removed from routing pool</span>
+disable_master_failback=false   <span class="cm"># Re-elect master after recovery</span>
+
+<span class="cm">## ──────────────────────────────────────────────────────</span>
+<span class="cm">## AUDIT FILTER — DSGVO / GDPR compliance</span>
+<span class="cm">## ──────────────────────────────────────────────────────</span>
+[audit-filter]
+type=filter
+module=qlafilter
+match=patients|vitals            <span class="cm"># Log all queries touching PHI tables</span>
+log_type=unified
+filebase=/var/log/maxscale/audit
+separator=|
+append=true
+
+<span class="cm">## ──────────────────────────────────────────────────────</span>
+<span class="cm">## READ/WRITE SPLIT SERVICE (Flask application)</span>
+<span class="cm">## ──────────────────────────────────────────────────────</span>
+[caremate-rw-service]
+type=service
+router=readwritesplit
+servers=db1,db2,db3
+user=maxscale_router
+password=R0ut3r!S3cure
+master_failure_mode=error_on_write
+slave_selection_criteria=LEAST_CURRENT_OPERATIONS
+max_slave_connections=40        <span class="cm"># 40 backend conns per slave max</span>
+slave_failure_mode=error_on_mismatch
+transaction_replay=true         <span class="cm"># Replay uncommitted TX on master failover</span>
+transaction_replay_max_size=1Mi
+causal_reads=fast               <span class="cm"># Ensure read-your-writes consistency</span>
+filters=audit-filter
+
+<span class="cm">## ──────────────────────────────────────────────────────</span>
+<span class="cm">## READ-ONLY SERVICE (Metabase reporting)</span>
+<span class="cm">## ──────────────────────────────────────────────────────</span>
+[caremate-ro-service]
+type=service
+router=readconnroute
+servers=db2,db3                  <span class="cm"># Only route to slaves — never touch master</span>
+user=maxscale_router
+password=R0ut3r!S3cure
+router_options=slave             <span class="cm"># Only connect to Slave-state servers</span>
+max_connections=20               <span class="cm"># Hard cap for reporting queries</span>
+
+<span class="cm">## ──────────────────────────────────────────────────────</span>
+<span class="cm">## LISTENERS</span>
+<span class="cm">## ──────────────────────────────────────────────────────</span>
+[caremate-rw-listener]
+type=listener
+service=caremate-rw-service
+protocol=MariaDBClient
+address=10.0.2.10               <span class="cm"># Bind to app-tier VLAN only</span>
+port=3306
+
+[caremate-ro-listener]
+type=listener
+service=caremate-ro-service
+protocol=MariaDBClient
+address=10.0.2.10
+port=3307                        <span class="cm"># Metabase connects here</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- OS/DB Config -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — Production maxscale.cnf<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout db"><div class="lbl">🚂 OS Context</div><p>OS GmbH production config for the ticketing cluster: 5 Galera nodes across two AZs, fast monitor interval for 99.999% SLA, transaction replay enabled, and a throttle filter protecting OLTP from analytics overload.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label conf">CONF</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm"># /etc/maxscale.cnf — OS GmbH Ticketing Cluster</span>
+<span class="cm"># 5-node Galera: db1-db3 AZ1, db4-db5 AZ2</span>
+
+[maxscale]
+threads=auto
+log_info=false
+log_warning=true
+admin_host=127.0.0.1
+admin_port=8989
+
+<span class="cm">## SERVERS — five Galera nodes across two AZs</span>
+[db1]
+type=server
+address=10.10.1.101
+port=3306
+protocol=MariaDBBackend
+
+[db2]
+type=server
+address=10.10.1.102
+port=3306
+protocol=MariaDBBackend
+
+[db3]
+type=server
+address=10.10.1.103
+port=3306
+protocol=MariaDBBackend
+
+[db4]
+type=server
+address=10.10.2.101           <span class="cm"># AZ2 nodes</span>
+port=3306
+protocol=MariaDBBackend
+
+[db5]
+type=server
+address=10.10.2.102
+port=3306
+protocol=MariaDBBackend
+
+<span class="cm">## MONITOR — 500ms interval for fast failure detection</span>
+[galera-monitor]
+type=monitor
+module=galeramon
+servers=db1,db2,db3,db4,db5
+user=maxscale_monitor
+password=M0n1torStr0ng!
+monitor_interval=500ms          <span class="cm"># Fast detection for 99.999% SLA</span>
+available_when_donor=false
+disable_master_failback=false
+backend_connect_timeout=3s
+backend_read_timeout=3s
+backend_write_timeout=3s
+
+<span class="cm">## THROTTLE FILTER — protect OLTP from analytics</span>
+[throttle-analytics]
+type=filter
+module=throttlefilter
+max_qps=500                      <span class="cm"># Max 500 queries/sec from analytics service</span>
+throttling_duration=30000ms
+
+<span class="cm">## PRIMARY TICKETING SERVICE</span>
+[ticketing-rw-service]
+type=service
+router=readwritesplit
+servers=db1,db2,db3,db4,db5
+user=maxscale_router
+password=R0uterStr0ng!
+master_failure_mode=fail_instantly  <span class="cm"># Short bookings: fail fast, let app retry</span>
+slave_selection_criteria=LEAST_BEHIND_MASTER  <span class="cm"># Freshest data for scans</span>
+max_slave_connections=200
+transaction_replay=true
+transaction_replay_max_size=2Mi
+causal_reads=fast
+connection_keepalive=300s       <span class="cm"># Keep idle connections warm</span>
+
+<span class="cm">## ANALYTICS READ-ONLY SERVICE</span>
+[analytics-ro-service]
+type=service
+router=readconnroute
+servers=db4,db5                  <span class="cm"># Route analytics ONLY to AZ2 replicas</span>
+user=maxscale_router
+password=R0uterStr0ng!
+router_options=slave
+max_connections=50
+filters=throttle-analytics        <span class="cm"># Throttle analytics queries</span>
+
+<span class="cm">## LISTENERS</span>
+[ticketing-rw-listener]
+type=listener
+service=ticketing-rw-service
+protocol=MariaDBClient
+address=10.10.0.1
+port=3306
+
+[analytics-ro-listener]
+type=listener
+service=analytics-ro-service
+protocol=MariaDBClient
+address=10.10.0.1
+port=3307
+
+[admin-listener]
+type=listener
+service=ticketing-rw-service
+protocol=MariaDBClient
+address=127.0.0.1               <span class="cm"># DBA access: localhost only</span>
+port=3308</div>
+    </div>
+  </div>
+</div>
+
+<!-- Pitfalls -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚠️ Common Pitfalls<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout warn"><div class="lbl">⚠️ transaction_replay with non-idempotent writes</div><p><code style="font-family:'JetBrains Mono',monospace;font-size:11px">transaction_replay=true</code> can replay a transaction against a new master after failover. If the transaction contained <code style="font-family:'JetBrains Mono',monospace;font-size:11px">NOW()</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">UUID()</code> or row counts, the replayed result may differ from the original attempt. Always set <code style="font-family:'JetBrains Mono',monospace;font-size:11px">transaction_replay_max_size</code> to a small value and ensure application logic handles duplicate-key errors gracefully.</p></div>
+    <div class="callout warn"><div class="lbl">⚠️ causal_reads adds latency for every read</div><p><code style="font-family:'JetBrains Mono',monospace;font-size:11px">causal_reads=true</code> (strict mode) adds a GTID-based synchronization step before every slave read to guarantee read-your-writes consistency. This adds 1–5ms to every SELECT. Use <code style="font-family:'JetBrains Mono',monospace;font-size:11px">causal_reads=fast</code> which only tracks per-session GTIDs, or set it only on services where stale reads would cause business problems.</p></div>
+    <div class="callout warn"><div class="lbl">⚠️ Forgetting to reload config after changes</div><p>MaxScale does not automatically detect config file changes. After editing <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxscale.cnf</code>, run <code style="font-family:'JetBrains Mono',monospace;font-size:11px">systemctl reload maxscale</code> (or <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl reload config</code> for hot-reload of supported parameters). A full restart drops all existing client connections — avoid during business hours without draining first.</p></div>
+  </div>
+</div>
+
+<!-- Interview -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="qa-list">
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">What does master_failure_mode=fail_instantly do and when would you choose it over error_on_write?</div>
+        <div class="qa-a">
+          <p><code style="font-family:'JetBrains Mono',monospace;font-size:11px">fail_instantly</code> causes MaxScale to immediately return an error to the client the moment the master is detected as down — even for in-progress sessions. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">error_on_write</code> allows existing sessions to continue reading until they attempt a write. Choose <code style="font-family:'JetBrains Mono',monospace;font-size:11px">fail_instantly</code> for high-frequency short transactions (ticketing, payment) where a clean fast retry is better than an uncertain partial session. Use <code style="font-family:'JetBrains Mono',monospace;font-size:11px">error_on_write</code> for user-facing sessions where interrupting a read-heavy workflow (e.g., a doctor reviewing patient history) creates worse UX than a delayed write error.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"fail_instantly trades session continuity for predictability — critical for booking systems where you'd rather have a fast retry than a zombie session."</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">Explain causal_reads and when it's necessary in a Galera setup.</div>
+        <div class="qa-a">
+          <p>In Galera, all nodes are writable, but replication is synchronous only in terms of certification — a committed transaction on node db1 might not be visible on db2 for a few milliseconds. Without causal_reads, a session that does INSERT then immediately SELECT could read its own write from a slave that hasn't applied it yet. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">causal_reads=fast</code> makes MaxScale track the session's latest GTID and wait for the chosen slave to reach that GTID before sending the SELECT. It's necessary in any flow where a user writes data and immediately reads it back — like a doctor saving a vital sign and then the UI refreshing to show the saved value.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"causal_reads=fast solves read-your-writes in Galera without requiring all reads to hit the master — it's the feature that makes readwritesplit viable for user-facing apps."</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">How do you change a MaxScale parameter without dropping client connections?</div>
+        <div class="qa-a">
+          <p>Some parameters support dynamic reconfiguration via <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl alter service</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl alter monitor</code>, etc — these take effect immediately without restart. For example: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl alter monitor galera-monitor monitor_interval=500ms</code>. For parameters that require a restart, the safe procedure is: use <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl set server db1 maintenance</code> to drain connections to MaxScale itself first, then use a load balancer or keepalived VIP to redirect traffic to a standby MaxScale instance while performing the restart.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"maxctrl alter is the first tool — check if the parameter is dynamic. If not: drain via VIP failover, restart, validate, re-enable. Never cold-restart MaxScale with live traffic."</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Challenge -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🏋️ Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Spot the 3 bugs in this maxscale.cnf snippet</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">Find all three problems in this config snippet:<br><br><code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--card);padding:8px 12px;border-radius:6px;display:block;margin:8px 0">[rw-service]<br>type=service<br>router=readwritesplit<br>servers=db1,db2,db3<br>user=root<br>password=root<br>master_failure_mode=allow_master<br>causal_reads=true<br>monitor_interval=100ms</code></p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer →</span>
+        <div class="answer">
+          <div class="callout tip"><div class="lbl">✅ Three Bugs Found</div><p><strong>1.</strong> <code style="font-family:'JetBrains Mono',monospace;font-size:11px">user=root</code> — Never use root as the MaxScale service user. Create a dedicated minimal-privilege account.<br><strong>2.</strong> <code style="font-family:'JetBrains Mono',monospace;font-size:11px">master_failure_mode=allow_master</code> — this is not a valid value. Valid options are <code style="font-family:'JetBrains Mono',monospace;font-size:11px">fail_instantly</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">fail_on_write</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">error_on_write</code>.<br><strong>3.</strong> <code style="font-family:'JetBrains Mono',monospace;font-size:11px">monitor_interval=100ms</code> is in the service stanza — monitor_interval belongs in the [monitor] stanza, not the service. It will be silently ignored here. Also 100ms is too aggressive and would load backends with health checks.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('l1')">← Architecture</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('l3')">Next: Galera Monitor →</button>
+  <button class="mark-done-btn" id="done-l2" onclick="markDone('l2')">Mark complete ✓</button>
+</div>
+</div><!-- /page-l2 -->
+
+
+<!-- ═══════════════════════════════════════════════════ LESSON 3 -->
+<div id="page-l3" class="page">
+<div class="page-header">
+  <div class="page-header-top">
+    <div>
+      <div class="lesson-num">Phase 07 · Lesson 03 · 3h</div>
+      <div class="page-title">Galera Monitor</div>
+    </div>
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+  </div>
+  <p class="page-desc">Deep dive into <code style="font-family:'JetBrains Mono',monospace;font-size:11px">galeramon</code> — how it detects Galera node state, elects a primary, handles wsrep_local_index, responds to split-brain, and controls failback behavior.</p>
+</div>
+
+<div class="expand-bar">
+  <span class="expand-bar-label">Click any section to expand</span>
+  <button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚡ Why This Matters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">The Galera Monitor is the component Nietsch is most likely to probe deeply — because it's the intelligence that keeps traffic away from a desynced or split-brained node. Understanding how <code style="font-family:'JetBrains Mono',monospace;font-size:11px">galeramon</code> uses <code style="font-family:'JetBrains Mono',monospace;font-size:11px">wsrep_local_state</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">wsrep_cluster_size</code>, and <code style="font-family:'JetBrains Mono',monospace;font-size:11px">wsrep_local_index</code> to make routing decisions is what separates a MaxScale user from a MaxScale administrator.</p>
+    <div class="callout interview">
+      <div class="lbl">⚓ Interview Anchor</div>
+      <p>"galeramon selects the primary node using wsrep_local_index — the node with index 0 becomes Master. It only routes to nodes with wsrep_local_state=4 (Synced). If available_when_donor=false, a node performing SST (state=2) is immediately removed from the pool, preventing slow donor I/O from bleeding into application queries."</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🧠 Core Concepts<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="concepts">
+      <div class="concept orange">
+        <div class="concept-name">wsrep_local_state — what galeramon reads</div>
+        <div class="concept-desc">galeramon queries <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SHOW STATUS LIKE 'wsrep_local_state'</code> on each server every monitor_interval. The returned integer determines routing eligibility: 1=Joining (excluded), 2=Donor/Desynced (excluded if available_when_donor=false), 3=Joined (excluded, still catching up), 4=Synced (eligible — routes traffic here). Only state 4 means the node is fully caught up and safe for reads and writes.<br><br><strong>EHR:</strong> During a planned CareMate DB upgrade, galeramon detects db3 entering state 3 (Joined, applying IST) and keeps it excluded until state reaches 4 — patients never hit an outdated node.<br><strong>OS/DB:</strong> A ticket scan arriving at a state-3 node could return stale seat availability — galeramon's strict state-4 requirement prevents this class of booking error.</div>
+      </div>
+      <div class="concept blue">
+        <div class="concept-name">wsrep_local_index — primary election</div>
+        <div class="concept-desc">galeramon reads <code style="font-family:'JetBrains Mono',monospace;font-size:11px">wsrep_local_index</code> (the node's position in the membership list) and designates the Synced node with index 0 as Master (write target). This is a logical label — all Galera nodes accept writes, but MaxScale routes all writes through one to avoid certification conflicts. If node 0 leaves, the node with the next lowest index becomes Master.<br><br><strong>EHR:</strong> On initial startup of CareMate cluster, db1 gets index 0 and becomes MaxScale Master. After db1 maintenance, db2 (index 1) is promoted automatically — no config change needed.<br><strong>OS/DB:</strong> With 5-node cluster, if the current index-0 node is drained for AZ maintenance, galeramon re-elects based on index order deterministically — no tie-breaking needed.</div>
+      </div>
+      <div class="concept purple">
+        <div class="concept-name">available_when_donor — SST protection</div>
+        <div class="concept-desc">When a Galera node performs SST (State Snapshot Transfer — full resync), it enters state 2 (Donor/Desynced) and may pause query processing for minutes or hours. Setting <code style="font-family:'JetBrains Mono',monospace;font-size:11px">available_when_donor=false</code> (recommended) removes the donor node from the routing pool immediately. If <code style="font-family:'JetBrains Mono',monospace;font-size:11px">true</code>, the donor stays in pool but queries may hang while it streams state to the joiner.<br><br><strong>EHR:</strong> A new CareMate replica node joining via SST takes 20 minutes to sync 50GB. With available_when_donor=false, the donor node (db2) disappears from routing during this window — Flask only uses db1 and db3 for reads.<br><strong>OS/DB:</strong> A 200GB booking database SST would freeze the donor for 30+ minutes. available_when_donor=false is non-negotiable on OS's cluster — donor exclusion is automatic and immediate.</div>
+      </div>
+      <div class="concept teal">
+        <div class="concept-name">disable_master_failback — controlling re-election</div>
+        <div class="concept-desc">After the original master node (index 0) recovers from maintenance or failure, should MaxScale re-elect it as Master? <code style="font-family:'JetBrains Mono',monospace;font-size:11px">disable_master_failback=true</code> keeps the current elected master stable — avoids a second routing disruption. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">false</code> (default) re-elects the lowest-index synced node, which may be the original master. For planned maintenance, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">true</code> gives you manual control of failback timing.<br><br><strong>EHR:</strong> <code style="font-family:'JetBrains Mono',monospace;font-size:11px">disable_master_failback=true</code> during CareMate DB patching — allows controlled failback after verifying the patched node is stable, rather than automatic re-election.<br><strong>OS/DB:</strong> OS uses <code style="font-family:'JetBrains Mono',monospace;font-size:11px">false</code> in normal operation — automatic re-election to the primary node is preferred to avoid load imbalance from keeping a non-optimal primary long-term.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Deep Dive -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔬 Deep Dive — galeramon Decision Tree<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="ascii-wrap"><pre>
+  galeramon polls every monitor_interval (e.g. 1000ms)
+  For each server, it queries:
+    SHOW STATUS LIKE 'wsrep_%'
+    → wsrep_cluster_size      (expected: 3 for 3-node cluster)
+    → wsrep_local_state        (1=Joining 2=Donor 3=Joined 4=Synced)
+    → wsrep_local_index        (0,1,2... position in membership)
+    → wsrep_connected          (ON/OFF)
+    → wsrep_ready              (ON/OFF)
+
+  Decision for each server:
+  ┌─────────────────────────────────────────────────────────┐
+  │  wsrep_connected=OFF or query failed?                   │
+  │    → State: Down (excluded from routing)                │
+  │                                                         │
+  │  wsrep_local_state=1 (Joining)?                         │
+  │    → State: Joining (excluded)                          │
+  │                                                         │
+  │  wsrep_local_state=2 (Donor)?                           │
+  │    → available_when_donor=true  → stay in pool          │
+  │    → available_when_donor=false → excluded              │
+  │                                                         │
+  │  wsrep_local_state=3 (Joined / catching up)?            │
+  │    → State: Synced=No (excluded)                        │
+  │                                                         │
+  │  wsrep_local_state=4 (Synced)?                          │
+  │    → Eligible for routing                               │
+  │    → wsrep_local_index = 0 AND disable_master_failback? │
+  │        → Assign: Master                                 │
+  │    → All other Synced nodes: Slave                      │
+  └─────────────────────────────────────────────────────────┘
+
+  Quorum check:
+  If wsrep_cluster_size < (configured_cluster_size / 2 + 1)
+    → galeramon marks all servers in Non-Primary Component
+    → No routing until quorum is restored</pre></div>
+  </div>
+</div>
+
+<!-- EHR Example -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🩺 EHR Example — Monitoring galeramon State<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout phr"><div class="lbl">🩺 Context</div><p>During a CareMate maintenance window, verify galeramon is correctly tracking node state transitions as db3 is gracefully stopped and restarted.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label bash">BASH</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm"># Watch live server state (run in separate terminal)</span>
+watch -n 1 'maxctrl list servers'
+
+<span class="cm"># Expected before maintenance:</span>
+<span class="cm"># db1: Master, Synced, Running</span>
+<span class="cm"># db2: Slave,  Synced, Running</span>
+<span class="cm"># db3: Slave,  Synced, Running</span>
+
+<span class="cm"># Step 1: Drain db3 in MaxScale (stop sending new connections)</span>
+maxctrl set server db3 maintenance
+
+<span class="cm"># Step 2: Wait for active sessions to db3 to complete</span>
+maxctrl show server db3
+<span class="cm"># Watch "Current Connections: 0"</span>
+
+<span class="cm"># Step 3: Stop MariaDB on db3</span>
+ssh db3 'sudo systemctl stop mariadb'
+
+<span class="cm"># galeramon now detects db3 as Down within next poll cycle</span>
+<span class="cm"># db1 and db2 remain in full service</span>
+maxctrl list servers
+<span class="cm"># db3: Down, Maintenance</span>
+
+<span class="cm"># Step 4: After maintenance, restart MariaDB on db3</span>
+ssh db3 'sudo systemctl start mariadb'
+
+<span class="cm"># Watch db3 progress through states:</span>
+<span class="cm"># Joining → Joined → Synced (IST applies donor's missing transactions)</span>
+
+<span class="cm"># Step 5: Clear maintenance flag</span>
+maxctrl clear server db3 maintenance
+
+<span class="cm"># Verify db3 returns to routing pool</span>
+maxctrl list servers
+<span class="cm"># db3: Slave, Synced, Running — back in production</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- OS/DB Example -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — Diagnosing Monitor Failures<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout db"><div class="lbl">🚂 OS Context</div><p>3am scenario: MaxScale has marked all five DB nodes as Down despite the Galera cluster being healthy. diagnose galeramon communication failure.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label bash">BASH</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm"># 1. Check MaxScale logs for connection errors</span>
+journalctl -u maxscale --since "10 min ago" | grep -i "error\|fail\|down"
+
+<span class="cm"># 2. Verify monitor can reach each backend</span>
+<span class="kw">for</span> ip <span class="kw">in</span> 10.10.1.101 10.10.1.102 10.10.1.103 10.10.2.101 10.10.2.102; <span class="kw">do</span>
+  mysql -h $ip -P <span class="num">3306</span> -u maxscale_monitor -p<span class="str">'M0n1torStr0ng!'</span> \
+    -e <span class="str">"SELECT 1;"</span> 2>&amp;1 | grep -E "ERROR|1"
+<span class="kw">done</span>
+
+<span class="cm"># 3. Check if monitor user privileges are intact on each node</span>
+mysql -h 10.10.1.101 -u maxscale_monitor -p<span class="str">'M0n1torStr0ng!'</span> \
+  -e <span class="str">"SHOW GRANTS FOR 'maxscale_monitor'@'%';"</span>
+
+<span class="cm"># 4. Verify monitor interval config (may have been accidentally changed)</span>
+maxctrl show monitor galera-monitor | grep -i interval
+
+<span class="cm"># 5. Check wsrep status directly on one backend node</span>
+mysql -h 10.10.1.101 -u maxscale_monitor -p<span class="str">'M0n1torStr0ng!'</span> \
+  -e <span class="str">"SHOW STATUS WHERE Variable_name IN (
+    'wsrep_local_state',
+    'wsrep_local_state_comment',
+    'wsrep_cluster_size',
+    'wsrep_connected',
+    'wsrep_ready',
+    'wsrep_local_index'
+  );"</span>
+
+<span class="cm"># 6. Force monitor re-check immediately (without waiting for interval)</span>
+maxctrl restart monitor galera-monitor
+
+<span class="cm"># 7. If still down, check network — firewall rule change is common culprit</span>
+iptables -L -n | grep <span class="num">3306</span>
+ss -tlnp | grep <span class="num">3306</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- 3am Scenario -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚨 3am Scenario — All Nodes Marked Down<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🚨 3AM INCIDENT — MAXSCALE MONITOR BLACKOUT</div>
+      <p><strong>Situation:</strong> 03:17. PagerDuty fires. Application monitoring shows 100% 503 errors. MaxScale is running but <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl list servers</code> shows all five OS GmbH ticketing nodes as <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Down</code>. Direct MySQL connection to db1 works fine from your laptop.</p>
+      <p><strong>Immediate steps:</strong></p>
+      <ol>
+        <li>Verify the Galera cluster is actually healthy: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">mysql -h db1 -e "SHOW STATUS LIKE 'wsrep_cluster_size';"</code> — should return 5. If it returns 5, this is a MaxScale-side problem, not a DB problem.</li>
+        <li>Check if MaxScale can reach the backends: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">mysql -h db1 -u maxscale_monitor -p'...' -e "SELECT 1;"</code> from the MaxScale host. If this fails, network or auth changed.</li>
+        <li>Check recent MaxScale logs: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">journalctl -u maxscale --since "30 min ago" | grep -i "auth\|refused\|down\|error"</code>. Look for "Access denied" — monitor user password may have been rotated.</li>
+        <li>Check firewall: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">iptables -L -n | grep 3306</code> — an overnight security automation job may have added a DROP rule.</li>
+        <li>Force monitor restart: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl restart monitor galera-monitor</code> — if nodes come back immediately, this was a transient network blip.</li>
+      </ol>
+      <p><strong>Resolution:</strong> In this scenario, an automated password rotation job changed the <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxscale_monitor</code> user's password in MariaDB but not in maxscale.cnf. Fix: update password in cnf with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl alter monitor galera-monitor password='NewPassHere'</code> (persists to runtime config). Nodes come back online within one monitor interval.</p>
+      <p><strong>Prevention:</strong> Add MaxScale monitor user to password rotation exclusion list OR implement a post-rotation validation script that tests <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl list servers</code> after every credential rotation. Alert on any server state change to Down for >2 polling intervals.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Interview -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="qa-list">
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">What wsrep variables does galeramon query and what does it do with them?</div>
+        <div class="qa-a">
+          <p>galeramon queries <code style="font-family:'JetBrains Mono',monospace;font-size:11px">wsrep_local_state</code> (4=Synced is required for routing), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">wsrep_local_index</code> (used to elect Master — lowest index among Synced nodes), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">wsrep_cluster_size</code> (quorum check — if below majority, nodes are marked Non-Primary), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">wsrep_connected</code> and <code style="font-family:'JetBrains Mono',monospace;font-size:11px">wsrep_ready</code> (fast health checks). Based on these, it assigns state flags used by the router for every routing decision.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"wsrep_local_state=4 is the entry ticket to the routing pool. wsrep_local_index=0 is what makes one Synced node the Master. These two variables are what galeramon cares about most."</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">What happens in MaxScale when a Galera node goes into SST donor state?</div>
+        <div class="qa-a">
+          <p>When a node transitions to <code style="font-family:'JetBrains Mono',monospace;font-size:11px">wsrep_local_state=2</code> (Donor/Desynced), galeramon detects this on the next polling cycle. If <code style="font-family:'JetBrains Mono',monospace;font-size:11px">available_when_donor=false</code> (recommended), MaxScale immediately removes that node from the routing pool — any existing sessions to it are closed, and new queries are routed only to the remaining Synced nodes. If the donor was the current Master (index 0), galeramon promotes the next lowest-index Synced node to Master.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"available_when_donor=false is critical — an SST donor can pause for minutes. We never route production traffic to a donating node."</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">How does galeramon handle a split-brain scenario where two partitions each believe they are the primary?</div>
+        <div class="qa-a">
+          <p>In a genuine split-brain, both partitions will have nodes reporting <code style="font-family:'JetBrains Mono',monospace;font-size:11px">wsrep_cluster_size</code> less than the majority. galeramon checks the quorum: if a partition's <code style="font-family:'JetBrains Mono',monospace;font-size:11px">wsrep_cluster_size</code> is below <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ceil(total_nodes / 2 + 1)</code>, those nodes are in a Non-Primary Component and MaxScale marks them as non-eligible for routing. However, if one partition has majority quorum (e.g., 3 of 5 nodes), those nodes remain Synced and available. MaxScale will only route to the majority partition — protecting against writing to both sides.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"galeramon doesn't resolve split-brain — Galera does. But it enforces that only quorum-bearing nodes receive traffic, preventing writes to isolated minority partitions."</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Challenge -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🏋️ Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Which nodes does MaxScale route to in this cluster state?</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">Given this cluster state (available_when_donor=false, disable_master_failback=false):<br><br>db1: wsrep_local_state=4, wsrep_local_index=0<br>db2: wsrep_local_state=2, wsrep_local_index=1<br>db3: wsrep_local_state=4, wsrep_local_index=2<br>db4: wsrep_local_state=1, wsrep_local_index=3<br><br>Which node is Master? Which nodes receive reads? Which are excluded?</p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer →</span>
+        <div class="answer">
+          <div class="callout tip"><div class="lbl">✅ Answer</div><p><strong>Master: db1</strong> — state=4 (Synced) with lowest index (0). All writes go here.<br><strong>Read pool: db1 and db3</strong> — both Synced (state=4). Reads round-robin between them (or per slave_selection_criteria).<br><strong>Excluded: db2</strong> — state=2 (Donor), and available_when_donor=false means it's immediately removed from pool.<br><strong>Excluded: db4</strong> — state=1 (Joining), never eligible for routing regardless of settings.<br>Note: db2 is SST donor and db4 is joining from that SST — this is a normal new-node-joining scenario.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('l2')">← maxscale.cnf</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('l4')">Next: Read/Write Split →</button>
+  <button class="mark-done-btn" id="done-l3" onclick="markDone('l3')">Mark complete ✓</button>
+</div>
+</div><!-- /page-l3 -->
+
+
+<!-- ═══════════════════════════════════════════════════ LESSON 4 -->
+<div id="page-l4" class="page">
+<div class="page-header">
+  <div class="page-header-top">
+    <div>
+      <div class="lesson-num">Phase 07 · Lesson 04 · 2h</div>
+      <div class="page-title">Read/Write Split Router</div>
+    </div>
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+  </div>
+  <p class="page-desc">The readwritesplit router is MaxScale's most powerful module. Understand routing rules, transaction boundaries, sticky sessions, and the edge cases that catch operators off guard.</p>
+</div>
+
+<div class="expand-bar">
+  <span class="expand-bar-label">Click any section to expand</span>
+  <button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚡ Why This Matters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">readwritesplit is what makes a Galera cluster useful as a scale-out read platform. Getting routing wrong — a SELECT inside a transaction going to a slave, or a temporary table created on one node then queried on another — causes application bugs that are hard to reproduce. Nietsch will test whether you understand transaction boundaries, sticky sessions, and the difference between autocommit SELECTs and transactional SELECTs.</p>
+    <div class="callout interview">
+      <div class="lbl">⚓ Interview Anchor</div>
+      <p>"readwritesplit routes all writes and any statement inside an open transaction to the Master. Autocommit SELECTs go to slaves. The critical edge cases are: temporary tables (always sticky to the node that created them), stored procedures (always to master by default), and causal_reads ensuring read-your-writes after a write completes."</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🧠 Core Concepts<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="concepts">
+      <div class="concept orange">
+        <div class="concept-name">Transaction routing — writes lock to master</div>
+        <div class="concept-desc">Once a client sends <code style="font-family:'JetBrains Mono',monospace;font-size:11px">BEGIN</code> or <code style="font-family:'JetBrains Mono',monospace;font-size:11px">START TRANSACTION</code>, readwritesplit pins the entire transaction to the Master — including any SELECTs within it. This is the safest behavior: it prevents a SELECT from reading an older snapshot on a replica that may lag. After COMMIT or ROLLBACK, the session returns to normal split routing.<br><br><strong>EHR:</strong> A CareMate Flask transaction that begins a consultation (BEGIN), writes a vitals row (INSERT), then reads it back (SELECT) — all three statements go to the master, ensuring the SELECT sees the uncommitted INSERT.<br><strong>OS/DB:</strong> A ticket booking transaction (BEGIN → check seat → reserve seat → COMMIT) all goes to master — never a race condition with a seat being double-booked due to stale slave reads.</div>
+      </div>
+      <div class="concept blue">
+        <div class="concept-name">Sticky sessions — special connection states</div>
+        <div class="concept-desc">Certain SQL constructs force readwritesplit to pin all subsequent statements to one backend node for the lifetime of the session: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">CREATE TEMPORARY TABLE</code> (temp tables are connection-scoped), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">GET_LOCK()</code> (advisory locks are connection-scoped), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">LAST_INSERT_ID()</code> without causal_reads. Once sticky, the session stays on that node until disconnected.<br><br><strong>EHR:</strong> A legacy CareMate stored procedure uses <code style="font-family:'JetBrains Mono',monospace;font-size:11px">CREATE TEMPORARY TABLE tmp_vitals</code> — that connection becomes sticky to the master for its lifetime. Important to track with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl list sessions</code>.<br><strong>OS/DB:</strong> An ETL job using temporary tables causes all 20 ETL connections to become master-sticky — effectively routing all ETL load to master during the batch window. Switch ETL to CTEs instead.</div>
+      </div>
+      <div class="concept purple">
+        <div class="concept-name">use_sql_variables_in — WHERE variables route</div>
+        <div class="concept-desc"><code style="font-family:'JetBrains Mono',monospace;font-size:11px">use_sql_variables_in=master</code> ensures that any query using SQL user variables (<code style="font-family:'JetBrains Mono',monospace;font-size:11px">@user_var</code>) is routed to master. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">all</code> allows them on slaves too. User variables are session-scoped — routing a SET @var to master then a SELECT using @var to a slave would read an empty variable. Default is <code style="font-family:'JetBrains Mono',monospace;font-size:11px">master</code> and should stay that way unless you fully control variable usage.<br><br><strong>EHR:</strong> Some legacy CareMate queries use <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SET @patient_id=42; SELECT * FROM vitals WHERE patient_id=@patient_id;</code> — use_sql_variables_in=master routes both to master, maintaining variable state.<br><strong>OS/DB:</strong> Never change to <code style="font-family:'JetBrains Mono',monospace;font-size:11px">all</code> — variable-using queries in the booking engine must always hit master to guarantee seat inventory consistency.</div>
+      </div>
+      <div class="concept teal">
+        <div class="concept-name">retry_failed_reads — slave query retry</div>
+        <div class="concept-desc"><code style="font-family:'JetBrains Mono',monospace;font-size:11px">retry_failed_reads=true</code> automatically retries a failed read on another slave (or the master) if the original slave drops mid-query. This is safe for SELECTs since they are idempotent. For writes, there is no automatic retry — use transaction_replay instead. retry_failed_reads reduces transient slave failures from reaching the application.<br><br><strong>EHR:</strong> If db3 crashes mid-SELECT during a patient history page load, MaxScale retries the query on db2 transparently — the Flask API never sees the error.<br><strong>OS/DB:</strong> With retry_failed_reads=true and 5 nodes, a single node crash is invisible to the application for read queries — critical for maintaining perceived availability during rolling updates.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Routing table -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">📊 Routing Decision Table<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <table class="compare-table">
+      <tr><th>Statement Type</th><th>Routes To</th><th>Notes</th></tr>
+      <tr><td>SELECT (autocommit)</td><td class="good">Slave</td><td>Round-robin or per slave_selection_criteria</td></tr>
+      <tr><td>SELECT inside BEGIN…COMMIT</td><td class="bad">Master</td><td>Transaction pins to master</td></tr>
+      <tr><td>INSERT / UPDATE / DELETE</td><td class="bad">Master</td><td>All DML → master always</td></tr>
+      <tr><td>CREATE TEMPORARY TABLE</td><td class="bad">Master (sticky)</td><td>Session becomes master-sticky for lifetime</td></tr>
+      <tr><td>CALL stored_procedure()</td><td class="bad">Master</td><td>Stored procs may contain writes — always master</td></tr>
+      <tr><td>SET @variable = ...</td><td class="bad">Master</td><td>user variable routing (use_sql_variables_in=master)</td></tr>
+      <tr><td>SELECT LAST_INSERT_ID()</td><td class="bad">Master</td><td>Result is connection-scoped from last INSERT</td></tr>
+      <tr><td>SHOW STATUS/VARIABLES</td><td class="good">Any available</td><td>Read from whichever node responds fastest</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- EHR Example -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🩺 EHR Example — Verifying Routing Behaviour<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout phr"><div class="lbl">🩺 Context</div><p>Verify that CareMate's readwritesplit service correctly routes writes to master and distributes reads across slaves. Also catch a sticky session created by a temporary table.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm">-- Connect via MaxScale and verify routing</span>
+<span class="cm">-- Test 1: Autocommit SELECT → should go to a slave</span>
+<span class="kw">SELECT</span> @@wsrep_node_name <span class="kw">AS</span> routed_to;
+<span class="cm">-- Returns: db2 or db3 (a slave)</span>
+
+<span class="cm">-- Test 2: DML → should always go to master</span>
+<span class="kw">INSERT INTO</span> <span class="tb">vitals</span> (patient_id, systolic, diastolic, pulse, weight_kg, recorded_at)
+<span class="kw">VALUES</span> (<span class="num">1</span>, <span class="num">120</span>, <span class="num">80</span>, <span class="num">72</span>, <span class="num">70.5</span>, <span class="fn">NOW</span>());
+<span class="cm">-- After INSERT, check which node processed it:</span>
+<span class="kw">SELECT</span> @@wsrep_node_name; <span class="cm">-- Will be db1 (master) for the INSERT</span>
+
+<span class="cm">-- Test 3: Transaction pins to master</span>
+<span class="kw">START TRANSACTION</span>;
+<span class="kw">SELECT</span> @@wsrep_node_name; <span class="cm">-- Returns db1 (master, not a slave)</span>
+<span class="kw">UPDATE</span> <span class="tb">patients</span> <span class="kw">SET</span> city = <span class="str">'Frankfurt'</span> <span class="kw">WHERE</span> id = <span class="num">42</span>;
+<span class="kw">SELECT</span> city <span class="kw">FROM</span> <span class="tb">patients</span> <span class="kw">WHERE</span> id = <span class="num">42</span>; <span class="cm">-- Still on master, sees the update</span>
+<span class="kw">COMMIT</span>;
+
+<span class="cm">-- Test 4: Temporary table triggers sticky session</span>
+<span class="kw">CREATE TEMPORARY TABLE</span> tmp_recent_vitals <span class="kw">AS</span>
+  <span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">vitals</span> <span class="kw">WHERE</span> recorded_at > <span class="fn">NOW</span>() - <span class="kw">INTERVAL</span> <span class="num">1</span> <span class="kw">HOUR</span>;
+<span class="cm">-- Session is now STICKY to master</span>
+<span class="kw">SELECT</span> @@wsrep_node_name; <span class="cm">-- db1 (master) for all future queries this session</span>
+<span class="kw">DROP TEMPORARY TABLE</span> tmp_recent_vitals;</div>
+    </div>
+  </div>
+</div>
+
+<!-- OS/DB Example -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — Detecting Master Overload from Sticky Sessions<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout db"><div class="lbl">🚂 OS Context</div><p>An ETL job is causing unexpected master CPU spikes. Diagnose that it's using temporary tables and causing sticky sessions, then measure the routing imbalance.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label bash">BASH</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm"># 1. See which sessions are sticky and why</span>
+maxctrl list sessions --json | python3 -c "
+import json,sys
+sessions = json.load(sys.stdin)['data']
+for s in sessions:
+    attrs = s.get('attributes', {})
+    state = attrs.get('state', '')
+    if 'Master' in str(attrs):
+        print(f\"Session {s['id']}: routed to master — {state}\")
+"
+
+<span class="cm"># 2. Check per-server connection counts (imbalance reveals master stickiness)</span>
+maxctrl list servers --json | python3 -c "
+import json,sys
+servers = json.load(sys.stdin)['data']
+for s in servers:
+    name = s['id']
+    conns = s['attributes'].get('statistics',{}).get('connections',0)
+    state = s['attributes'].get('state','')
+    print(f'{name}: {conns} connections [{state}]')
+"
+
+<span class="cm"># Expected healthy output: master has fewer connections than slaves combined</span>
+<span class="cm"># Unhealthy: master has MORE connections → sticky session leak</span>
+
+<span class="cm"># 3. Find the ETL queries using temporary tables via Performance Schema</span>
+mysql -h db1 -e "
+  SELECT ps.HOST, ps.USER,
+         ess.DIGEST_TEXT,
+         ess.COUNT_STAR AS exec_count
+  FROM performance_schema.events_statements_summary_by_digest ess
+  WHERE ess.DIGEST_TEXT LIKE '%TEMPORARY%'
+  ORDER BY exec_count DESC
+  LIMIT 10;
+"
+
+<span class="cm"># 4. Measure routing split across slave servers</span>
+maxctrl show service ticketing-rw-service | grep -A 20 "servers"</div>
+    </div>
+  </div>
+</div>
+
+<!-- Pitfalls -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚠️ Common Pitfalls<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout warn"><div class="lbl">⚠️ Stored Procedures with SELECT-Only Logic</div><p>MaxScale routes all CALL statements to the master by default, even stored procedures that only do SELECTs. If you have a heavy reporting stored procedure, it will always hammer the master. Workaround: rewrite as a plain multi-statement query or use a dedicated readconnroute service for the reporting connection that only reads from slaves.</p></div>
+    <div class="callout warn"><div class="lbl">⚠️ Connection Pooling Libraries vs MaxScale</div><p>Many ORM connection pools (SQLAlchemy, HikariCP) reuse connections and may issue a <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SET SESSION</code> on connection checkout, causing that session to become sticky to master. Always test your ORM's connection initialization queries through MaxScale with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">log_info=true</code> to identify hidden stickiness sources before going to production.</p></div>
+    <div class="callout warn"><div class="lbl">⚠️ max_slave_connections Set Too Low</div><p>If <code style="font-family:'JetBrains Mono',monospace;font-size:11px">max_slave_connections</code> is set to a lower value than the application's connection pool size divided by the number of slaves, MaxScale will queue new slave connections — adding latency to reads under load. Monitor with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl show server dbN | grep "Max Connections"</code> and ensure you have headroom.</p></div>
+  </div>
+</div>
+
+<!-- Interview -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="qa-list">
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">A developer reports that after inserting a record they sometimes can't find it immediately. What MaxScale setting addresses this?</div>
+        <div class="qa-a">
+          <p>This is the classic read-after-write (read-your-writes) problem. After an INSERT on the master, the next SELECT is routed to a slave that may not have replicated the new row yet, returning 0 results. The solution is <code style="font-family:'JetBrains Mono',monospace;font-size:11px">causal_reads=fast</code> — MaxScale records the GTID of the completed write and ensures the next slave read waits until that slave has caught up to that GTID. The <code style="font-family:'JetBrains Mono',monospace;font-size:11px">fast</code> mode only tracks the GTID for the duration of the session, adding minimal overhead compared to <code style="font-family:'JetBrains Mono',monospace;font-size:11px">true</code> (strict) mode.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"causal_reads=fast — it records the write GTID and holds the next slave read until that slave has applied it. Fixes read-after-write without forcing everything to master."</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">How would you diagnose why the master server is receiving 80% of queries despite having two slaves?</div>
+        <div class="qa-a">
+          <p>Start with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl list servers</code> to see connection counts per server. If master has disproportionately more connections, check <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl list sessions --json</code> filtered for sessions routed to master — look at the query type. Common causes: application is using transactions or temporary tables (creating sticky sessions), stored procedure calls, or use of SET @variables. Enable <code style="font-family:'JetBrains Mono',monospace;font-size:11px">log_info=true</code> temporarily to see routing decisions in the log and identify which query patterns cause master routing.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"maxctrl list sessions plus log_info=true is the diagnostic combo — connection counts tell me there's an imbalance, log_info tells me which queries are causing it."</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Challenge -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🏋️ Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Trace this transaction's routing path</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">Trace exactly which MaxScale backend node (master, slave, or either) receives each statement in this sequence, given: causal_reads=fast, use_sql_variables_in=master, no active transaction before statement 1:<br><br>1. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SET @doctor_id = 5;</code><br>2. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SELECT full_name FROM doctors WHERE id = @doctor_id;</code><br>3. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SELECT * FROM patients LIMIT 10;</code><br>4. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">START TRANSACTION;</code><br>5. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SELECT * FROM visits WHERE doctor_id = 5;</code><br>6. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">COMMIT;</code><br>7. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SELECT * FROM visits WHERE doctor_id = 5;</code></p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer →</span>
+        <div class="answer">
+          <div class="callout tip"><div class="lbl">✅ Answer</div><p>1. <strong>Master</strong> — SET @variable, use_sql_variables_in=master forces it to master<br>2. <strong>Master</strong> — uses @doctor_id variable → master (variable state is connection-scoped)<br>3. <strong>Slave</strong> — autocommit SELECT, no variables, no open transaction<br>4. <strong>Master</strong> — START TRANSACTION opens a transaction; all subsequent statements go to master<br>5. <strong>Master</strong> — inside open transaction<br>6. <strong>Master</strong> — COMMIT closes transaction on master<br>7. <strong>Slave</strong> — autocommit SELECT after commit; causal_reads=fast ensures this slave has the post-COMMIT GTID before serving the query</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('l3')">← Galera Monitor</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('l5')">Next: maxctrl →</button>
+  <button class="mark-done-btn" id="done-l4" onclick="markDone('l4')">Mark complete ✓</button>
+</div>
+</div><!-- /page-l4 -->
+
+
+<!-- ═══════════════════════════════════════════════════ LESSON 5 -->
+<div id="page-l5" class="page">
+<div class="page-header">
+  <div class="page-header-top">
+    <div>
+      <div class="lesson-num">Phase 07 · Lesson 05 · 2h</div>
+      <div class="page-title">maxctrl CLI</div>
+    </div>
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+  </div>
+  <p class="page-desc">Master the <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl</code> command-line tool — the primary interface for runtime management of MaxScale. Learn to inspect, alter, drain, and recover from the command line under pressure.</p>
+</div>
+
+<div class="expand-bar">
+  <span class="expand-bar-label">Click any section to expand</span>
+  <button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚡ Why This Matters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">At 3am, you won't open a GUI. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl</code> is your instrument panel. Knowing the exact commands to drain a node, check session state, kill a runaway query, and alter a monitor parameter without restarting MaxScale is what separates a prepared DBA from one who causes extra downtime while trying to fix the original problem. Nietsch will almost certainly ask "how would you safely take this server out of rotation?"</p>
+    <div class="callout interview">
+      <div class="lbl">⚓ Interview Anchor</div>
+      <p>"My maxctrl workflow for any node intervention: first maxctrl set server db2 maintenance to stop new connections, then watch maxctrl show server db2 until Current Connections reaches 0, then perform the maintenance. Never just stop MariaDB — always drain MaxScale first."</p>
+    </div>
+  </div>
+</div>
+
+<!-- EHR Example -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🩺 EHR Example — Routine DBA Commands<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout phr"><div class="lbl">🩺 Context</div><p>Day-to-day maxctrl commands used while managing the CareMate EHR database cluster. These are the commands you run every shift and during planned maintenance.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label bash">BASH</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm">## ── INSPECTION COMMANDS ────────────────────────────────────</span>
+
+<span class="cm"># List all servers with state and connection counts</span>
+maxctrl list servers
+
+<span class="cm"># List all active client sessions</span>
+maxctrl list sessions
+
+<span class="cm"># Show detailed service stats (queries routed, connection pool)</span>
+maxctrl show service caremate-rw-service
+
+<span class="cm"># Show monitor status and last poll results</span>
+maxctrl show monitor galera-monitor
+
+<span class="cm"># Show detailed server info including Galera state</span>
+maxctrl show server db1
+
+<span class="cm"># List all filters and their stats</span>
+maxctrl list filters
+
+<span class="cm">## ── RUNTIME CHANGES (no restart required) ──────────────────</span>
+
+<span class="cm"># Change monitor interval dynamically</span>
+maxctrl alter monitor galera-monitor monitor_interval=1000ms
+
+<span class="cm"># Change max_slave_connections on the service</span>
+maxctrl alter service caremate-rw-service max_slave_connections=60
+
+<span class="cm"># Drain a server before maintenance (no new connections)</span>
+maxctrl set server db3 maintenance
+
+<span class="cm"># Check that db3 has drained (Current Connections → 0)</span>
+maxctrl show server db3 | grep -i "connections"
+
+<span class="cm"># Clear maintenance flag after work is complete</span>
+maxctrl clear server db3 maintenance
+
+<span class="cm"># Kill a specific session by ID (emergency: runaway query)</span>
+maxctrl kill session 42
+
+<span class="cm"># Reload config (hot-reloads supported dynamic parameters)</span>
+maxctrl reload config</div>
+    </div>
+  </div>
+</div>
+
+<!-- OS/DB Example -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — Emergency maxctrl Operations<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout db"><div class="lbl">🚂 OS Context</div><p>3am operations — a failing node is causing connection errors. Use maxctrl to quarantine it, verify service continuity, identify the problem sessions, and prepare for recovery.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label bash">BASH</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm"># ── SCENARIO: db4 is erroring, application seeing intermittent failures</span>
+
+<span class="cm"># 1. Check current state — identify which node is problematic</span>
+maxctrl list servers
+<span class="cm"># db4 shows high error count or wrong state</span>
+
+<span class="cm"># 2. Immediately quarantine db4 (no new connections routed to it)</span>
+maxctrl set server db4 maintenance
+<span class="cm"># Errors stop immediately — all new connections go to db1,db2,db3,db5</span>
+
+<span class="cm"># 3. List active sessions still on db4 (drain in progress)</span>
+maxctrl list sessions --json | python3 -c "
+import json, sys
+for s in json.load(sys.stdin)['data']:
+    svr = s['attributes'].get('connected_to','')
+    if 'db4' in str(svr):
+        print(s['id'], s['attributes'].get('remote',''), s['attributes'].get('state',''))
+"
+
+<span class="cm"># 4. Force-kill remaining sessions on db4 if they won't drain</span>
+<span class="cm"># (only if db4 is truly unresponsive)</span>
+maxctrl list sessions --json | python3 -c "
+import json, sys, subprocess
+for s in json.load(sys.stdin)['data']:
+    if 'db4' in str(s['attributes'].get('connected_to','')):
+        subprocess.run(['maxctrl','kill','session', s['id']])
+"
+
+<span class="cm"># 5. Verify service is healthy with 4-node cluster</span>
+maxctrl show service ticketing-rw-service | grep -E "State|Connections|Queries"
+
+<span class="cm"># 6. Check db4 MariaDB logs for root cause</span>
+ssh db4 'sudo journalctl -u mariadb --since "1 hour ago" | tail -50'
+
+<span class="cm"># 7. After fixing db4, verify it re-joins cleanly</span>
+<span class="cm"># Remove maintenance flag, wait for state=Synced</span>
+maxctrl clear server db4 maintenance
+watch -n 1 'maxctrl show server db4 | grep -E "State|Connections"'
+
+<span class="cm"># 8. Force monitor to re-check immediately</span>
+maxctrl restart monitor galera-monitor</div>
+    </div>
+  </div>
+</div>
+
+<!-- Pitfalls -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚠️ Common Pitfalls<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout warn"><div class="lbl">⚠️ maxctrl alter vs config file — persistence</div><p><code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl alter</code> changes are applied to the running MaxScale instance but NOT written back to <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxscale.cnf</code>. After a MaxScale restart, the original config file values will be used. Always update <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxscale.cnf</code> after any runtime change you want to persist, or use <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl sync config</code> (MaxScale 22+) to write runtime state back to config.</p></div>
+    <div class="callout warn"><div class="lbl">⚠️ Forgetting to drain before stopping MariaDB</div><p>Stopping MariaDB directly on a backend node without first setting it to maintenance in MaxScale causes MaxScale to route queries to a suddenly-unreachable server, resulting in connection errors for clients. Always: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl set server dbN maintenance</code> → wait for drain → then stop MariaDB. The maintenance state persists across MaxScale restarts.</p></div>
+    <div class="callout warn"><div class="lbl">⚠️ maxctrl requires MaxScale to be running</div><p>If MaxScale itself crashes, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl</code> cannot connect to its REST API and all commands fail. Have a fallback: know how to connect applications directly to the MariaDB cluster (bypassing MaxScale) via the backup connection string, and know <code style="font-family:'JetBrains Mono',monospace;font-size:11px">systemctl restart maxscale</code> to recover. MaxScale itself is not clustered by default — a second standby MaxScale instance is the HA answer.</p></div>
+  </div>
+</div>
+
+<!-- Interview -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="qa-list">
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">Walk me through safely taking db2 out of the MaxScale pool for emergency maintenance.</div>
+        <div class="qa-a">
+          <p>Step 1: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl set server db2 maintenance</code> — MaxScale immediately stops routing new connections to db2. Existing sessions finish normally. Step 2: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl show server db2</code> and monitor "Current Connections" until it reaches 0. Step 3: Perform the maintenance on db2 (OS patch, config change, etc). Step 4: Start MariaDB on db2 if it was stopped. Step 5: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl clear server db2 maintenance</code> and verify galeramon detects it as Slave, Synced within one monitor interval. Step 6: Check <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl list servers</code> to confirm normal state.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"Set maintenance → wait for zero connections → do the work → clear maintenance → verify Synced. Never skip the drain wait."</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">How do you identify which queries are currently in-flight on a specific backend node?</div>
+        <div class="qa-a">
+          <p>Use <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl list sessions --json</code> and filter by the server name. This shows the client IP, session state, and if log_info is enabled, the current query. For more detail on what the backend is actually executing, connect directly to that MariaDB node and run <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SHOW PROCESSLIST</code> — the user will be <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxscale_router</code> and the host will be the MaxScale IP, confirming those connections are routed through MaxScale.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"maxctrl list sessions gives the MaxScale view; SHOW PROCESSLIST on the backend gives the DB view. Both together tell the full story."</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Challenge -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🏋️ Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Write the maxctrl sequence for a rolling cluster upgrade</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">Write the complete <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl</code> command sequence for a zero-downtime rolling MariaDB minor version upgrade across a 3-node Galera cluster (db1=master, db2, db3). Assume the upgrade requires restarting MariaDB on each node sequentially.</p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer →</span>
+        <div class="answer">
+          <div class="callout tip"><div class="lbl">✅ Rolling Upgrade Sequence</div><p>Upgrade slaves first, then master last (to avoid double master re-election):<br><br><strong>Slave 1 (db2):</strong> <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl set server db2 maintenance</code> → wait for 0 connections → upgrade MariaDB on db2 → <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl clear server db2 maintenance</code> → verify Synced<br><br><strong>Slave 2 (db3):</strong> Same sequence for db3<br><br><strong>Master (db1):</strong> <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl set server db1 maintenance</code> → galeramon will elect db2 (lowest index among Synced) as new Master → wait for 0 connections on db1 → upgrade MariaDB on db1 → <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl clear server db1 maintenance</code> → galeramon re-elects db1 as Master (lowest index) if disable_master_failback=false → verify all three Synced</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('l4')">← Read/Write Split</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('l6')">Next: Failover & Recovery →</button>
+  <button class="mark-done-btn" id="done-l5" onclick="markDone('l5')">Mark complete ✓</button>
+</div>
+</div><!-- /page-l5 -->
+
+
+<!-- ═══════════════════════════════════════════════════ LESSON 6 -->
+<div id="page-l6" class="page">
+<div class="page-header">
+  <div class="page-header-top">
+    <div>
+      <div class="lesson-num">Phase 07 · Lesson 06 · 2h</div>
+      <div class="page-title">Failover & Recovery</div>
+    </div>
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+  </div>
+  <p class="page-desc">Understand what MaxScale can and cannot do during a Galera node failure — automatic routing failover vs manual recovery, the limits of MaxScale's power, and how to recover from worst-case scenarios.</p>
+</div>
+
+<div class="expand-bar">
+  <span class="expand-bar-label">Click any section to expand</span>
+  <button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚡ Why This Matters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">Failover is the question every senior DBA dreads because the answer is nuanced: "MaxScale handles routing failover automatically, but it cannot repair a broken Galera cluster." Understanding the boundary — where MaxScale's responsibility ends and where the DBA's manual intervention begins — is what Nietsch is really testing. Getting this wrong in an interview, or worse in production, means claiming a capability MaxScale doesn't have.</p>
+    <div class="callout interview">
+      <div class="lbl">⚓ Interview Anchor</div>
+      <p>"MaxScale handles routing failover automatically — it stops sending traffic to failed nodes within one monitor interval. But MaxScale cannot bootstrap a Galera cluster, cannot resolve split-brain, and cannot restart a MariaDB process. For those, I need to intervene directly on the DB nodes. MaxScale's job is traffic management; Galera's job is data replication; my job is everything else."</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🧠 Core Concepts — What MaxScale Can and Cannot Do<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <table class="compare-table">
+      <tr><th>Scenario</th><th>MaxScale Response</th><th>DBA Action Required?</th></tr>
+      <tr><td>Single slave node crashes</td><td class="good">Automatic — removes from pool within 1 monitor interval, routes to remaining nodes</td><td>No (for routing). Yes to repair the node.</td></tr>
+      <tr><td>Master (Primary) node crashes</td><td class="good">Automatic — elects new Master from Synced nodes (lowest wsrep_local_index)</td><td>No (for routing). Yes to repair failed node.</td></tr>
+      <tr><td>All nodes show Down</td><td class="bad">MaxScale refuses all connections — no routing possible</td><td>Yes — diagnose DB/network, may need to bootstrap</td></tr>
+      <tr><td>Split-brain (minority partition)</td><td class="good">Excludes Non-Primary Component nodes from routing</td><td>Yes — resolve network partition, may need manual bootstrap</td></tr>
+      <tr><td>Node in SST (Donor state)</td><td class="good">Excluded if available_when_donor=false</td><td>No — wait for IST/SST to complete</td></tr>
+      <tr><td>MaxScale itself crashes</td><td class="bad">All client connections lost</td><td>Yes — restart MaxScale, or fail over to standby MaxScale via VIP</td></tr>
+      <tr><td>Galera quorum loss (< majority nodes)</td><td class="bad">Cannot restore quorum — marks all nodes as non-routable</td><td>Yes — must bootstrap cluster manually</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Deep Dive -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔬 Deep Dive — Automatic vs Manual Failover Flow<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="ascii-wrap"><pre>
+  SCENARIO: db1 (Master) crashes suddenly at T=0
+
+  T=0.0s   db1 MariaDB process dies
+  T=0.5s   MaxScale galeramon poll: connection to db1 fails
+           → db1 state changes: Master,Synced → Down
+  T=0.5s   Router receives db1=Down flag
+           → New connections: no longer route to db1
+           → In-flight writes to db1: get error → client retries
+  T=0.5s   galeramon election: among remaining Synced nodes,
+           find lowest wsrep_local_index
+           → db2 (index 1) → promoted to Master
+  T=0.5s   All new write connections → db2
+           Read connections → db2, db3 (as before)
+           Application: seamless if master_failure_mode=fail_instantly
+                        + app implements retry logic
+  ─────────────────────────────────────────────────────────────────
+  MaxScale's job is done. Now the DBA's job starts:
+
+  T+2min  On-call DBA wakes up from PagerDuty
+  T+5min  SSH to db1, check journalctl -u mariadb
+  T+10min Fix root cause (OOM? disk full? kernel panic?)
+  T+15min Start MariaDB on db1:
+            systemctl start mariadb
+          Galera: db1 attempts to rejoin cluster via IST
+          wsrep_local_state: Joining → Joined → Synced
+  T+20min galeramon detects db1 as Slave,Synced,Running
+          (disable_master_failback=false) → promotes db1 back to Master
+          (or keeps db2 as Master if failback is disabled)
+  T+20min maxctrl list servers: all 3 nodes Synced ✓</pre></div>
+  </div>
+</div>
+
+<!-- EHR Example -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🩺 EHR Example — Simulated Failover Test<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout phr"><div class="lbl">🩺 Context</div><p>Quarterly DR drill for CareMate EHR. Test that MaxScale automatically re-routes to slaves when the master fails, and measure the actual failover detection time.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label bash">BASH</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm"># DR DRILL: Measure MaxScale failover detection time</span>
+
+<span class="cm"># Terminal 1: continuous query loop measuring response time</span>
+<span class="kw">while</span> true; <span class="kw">do</span>
+  START=$(date +%s%N)
+  mysql -h maxscale -P <span class="num">3306</span> -u maxscale_router -p<span class="str">'R0ut3r!S3cure'</span> \
+    -e <span class="str">"INSERT INTO vitals (patient_id,systolic,diastolic,pulse,weight_kg,recorded_at)
+        VALUES (1,120,80,72,70.5,NOW());"</span> 2>&amp;1
+  END=$(date +%s%N)
+  echo "$(date +%H:%M:%S.%3N) — $((($END-$START)/1000000))ms"
+  sleep 0.5
+<span class="kw">done</span>
+
+<span class="cm"># Terminal 2: kill the current master</span>
+<span class="cm"># First note which node is master:</span>
+maxctrl list servers | grep Master
+<span class="cm"># Output shows db1 is master</span>
+
+<span class="cm"># Simulate crash (graceful stop for DR drill; kill -9 for crash simulation)</span>
+ssh db1 'sudo systemctl stop mariadb'
+
+<span class="cm"># Observe Terminal 1: 1-2 queries will get an error, then resume</span>
+<span class="cm"># The gap (error count × 500ms) = failover detection time</span>
+<span class="cm"># With monitor_interval=2000ms, expect 1-4 errors max</span>
+
+<span class="cm"># Terminal 3: watch MaxScale react</span>
+watch -n 0.5 'maxctrl list servers'
+<span class="cm"># db1: Down (within 2 seconds)</span>
+<span class="cm"># db2: Master, Synced (auto-elected)</span>
+
+<span class="cm"># Restore db1</span>
+ssh db1 'sudo systemctl start mariadb'
+<span class="cm"># galeramon watches db1 progress: Joining → Joined → Synced</span>
+<span class="cm"># With disable_master_failback=false, db1 reclaims Master status</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- OS/DB Example -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — MaxScale HA with Keepalived<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout db"><div class="lbl">🚂 OS Context</div><p>MaxScale itself is a single point of failure unless you run two instances with a shared VIP. OS GmbH uses keepalived to provide HA for MaxScale — applications connect to the VIP, which floats between primary and standby MaxScale instances.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label conf">CONF</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm"># /etc/keepalived/keepalived.conf — on maxscale-1 (MASTER)</span>
+<span class="cm"># Two MaxScale nodes share VIP 10.10.0.100</span>
+
+vrrp_script chk_maxscale {
+    script "/bin/bash -c 'maxctrl list servers 2>/dev/null | grep -q Synced'"
+    interval 2          <span class="cm"># Check every 2 seconds</span>
+    weight -50          <span class="cm"># Drop priority by 50 if MaxScale is unhealthy</span>
+    fall 2              <span class="cm"># 2 failures before marking DOWN</span>
+    rise 1              <span class="cm"># 1 success to recover</span>
+}
+
+vrrp_instance MAXSCALE_VIP {
+    state MASTER
+    interface eth0
+    virtual_router_id 51
+    priority 100        <span class="cm"># Higher than BACKUP instance (priority 90)</span>
+    advert_int 1
+
+    authentication {
+        auth_type PASS
+        auth_pass <span class="str">"M@xVIP2024!"</span>
+    }
+
+    virtual_ipaddress {
+        10.10.0.100/24 dev eth0    <span class="cm"># The VIP applications connect to</span>
+    }
+
+    track_script {
+        chk_maxscale
+    }
+}
+
+<span class="cm"># On maxscale-2 (BACKUP): same config but state=BACKUP, priority=90</span>
+<span class="cm"># If maxscale-1 MaxScale health check fails, VIP moves to maxscale-2</span>
+<span class="cm"># Application connection string: host=10.10.0.100 port=3306</span>
+<span class="cm"># Failover time: ~3 seconds (2 checks × 1s advert + brief ARP delay)</span></div>
+    </div>
+    <div class="callout tip"><div class="lbl">✅ Best Practice</div><p>Both MaxScale instances should have identical <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxscale.cnf</code> configs, ideally managed by Ansible/Salt. When the VIP moves, the standby MaxScale has no session state from the primary — all client connections will reconnect. Design applications to handle reconnection gracefully with retry logic.</p></div>
+  </div>
+</div>
+
+<!-- 3am Scenario -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚨 3am Scenario — MaxScale Refuses All Connections<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🚨 3AM INCIDENT — MAXSCALE ACCEPTS NO CONNECTIONS</div>
+      <p><strong>Situation:</strong> 03:44. All application services showing 503. MaxScale is running. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl list servers</code> shows <strong>all three Galera nodes as Down</strong>. Direct MySQL connection to any node works fine from the MaxScale host.</p>
+      <p><strong>Immediate steps:</strong></p>
+      <ol>
+        <li><strong>Don't panic and restart MaxScale</strong> — that drops any existing sessions and won't fix a DB problem.</li>
+        <li>Connect directly to a Galera node and check cluster health: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SHOW STATUS WHERE Variable_name IN ('wsrep_cluster_size','wsrep_local_state','wsrep_connected');</code></li>
+        <li>If cluster is healthy (wsrep_cluster_size=3, wsrep_local_state=4): the problem is MaxScale→DB connectivity. Check monitor user: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">mysql -u maxscale_monitor -p'...' -e "SELECT 1;"</code> from the MaxScale host.</li>
+        <li>Check firewall changes: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">iptables -L -n -v | grep 3306</code> and check if SELinux blocked the monitor connections: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ausearch -c maxscale --start recent</code>.</li>
+        <li>If monitor user password was rotated, update it dynamically: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl alter monitor galera-monitor password='NewPass'</code> then <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl restart monitor galera-monitor</code>.</li>
+        <li><strong>Emergency bypass if MaxScale cannot be fixed immediately:</strong> update application connection string to point directly to the Galera node. This bypasses MaxScale — no read scaling, no HA routing, but restores service. Acceptable for a 15-minute emergency while fixing MaxScale.</li>
+      </ol>
+      <p><strong>Resolution:</strong> Root cause was an overnight automated certificate rotation that changed the MaxScale monitor user's authentication plugin from <code style="font-family:'JetBrains Mono',monospace;font-size:11px">mysql_native_password</code> to <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ed25519</code> — MaxScale 23.08 supports ed25519 but the service needed a config update. Fix: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl alter monitor galera-monitor password='NewEd25519Pass'</code>.</p>
+      <p><strong>Prevention:</strong> Add MaxScale monitor and router users to automation exclusion lists. Implement post-rotation validation that runs <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl list servers</code> and alerts if any node shows Down state.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Interview -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="qa-list">
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">What are the limits of MaxScale's automatic failover capability?</div>
+        <div class="qa-a">
+          <p>MaxScale handles routing failover automatically — it stops sending traffic to failed nodes, re-elects a new Master from Synced nodes, and resumes routing. What it cannot do: it cannot restart a crashed MariaDB process, cannot bootstrap a Galera cluster from a fully down state, cannot resolve a network partition causing split-brain, cannot repair data corruption, and cannot take over if MaxScale itself crashes (unless a standby MaxScale is in place with a VIP). MaxScale is a proxy — its failure domain is routing decisions, not DB recovery.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"MaxScale handles the proxy layer — traffic routing. Everything below that is Galera's job or the DBA's job. Never confuse MaxScale failover with Galera recovery."</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">MaxScale itself is a single point of failure. How do you make it highly available?</div>
+        <div class="qa-a">
+          <p>Run two MaxScale instances (active/passive) with a shared VIP managed by keepalived or Pacemaker. Applications connect to the VIP. The keepalived health check script runs <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl list servers</code> — if MaxScale is unhealthy, the VIP moves to the standby MaxScale within 3–5 seconds. Both MaxScale instances have identical configs (managed by Ansible), they both connect to all Galera backends independently. On VIP failover, all client connections reconnect to the standby MaxScale — application must implement reconnect logic.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"Two MaxScale instances, one keepalived VIP, health check via maxctrl. The VIP is the HA mechanism — MaxScale itself is stateless, so standby is ready immediately."</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">A Galera node that was the MaxScale Master comes back after a crash. What happens?</div>
+        <div class="qa-a">
+          <p>When the crashed node restarts, it attempts to rejoin the Galera cluster. Depending on how long it was down and the cluster's gcache size, it will rejoin via IST (fast — applies missing transactions from gcache) or SST (slow — full resync). During this process, galeramon tracks its wsrep_local_state: it stays in Down or Joining state until it reaches Synced (state=4). Once Synced, galeramon re-evaluates wsrep_local_index. If disable_master_failback=false, and this node has the lowest index, it gets re-elected as Master. If disable_master_failback=true, the currently elected Master keeps that role and the recovered node joins as a Slave.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"The recovered node re-enters the routing pool only when wsrep_local_state=4. Master election depends on disable_master_failback — I prefer true during recovery windows to control timing manually."</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Challenge -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🏋️ Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Design the HA architecture for OS GmbH MaxScale</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">OS GmbH needs MaxScale to achieve 99.99% availability (max ~52 minutes downtime/year). Design the complete MaxScale HA setup: how many MaxScale instances, what VIP mechanism, how does failover work, and what's the expected downtime during a MaxScale failure?</p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer →</span>
+        <div class="answer">
+          <div class="callout tip"><div class="lbl">✅ Reference Architecture</div><p><strong>2 MaxScale instances</strong> (maxscale-1 active, maxscale-2 standby) on separate physical hosts in different racks.<br><strong>VIP via keepalived</strong>: 10.10.0.100 floats between the two; applications connect only to this VIP.<br><strong>Health check script</strong>: runs <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl list servers</code> every 2 seconds; 2 consecutive failures triggers VIP failover.<br><strong>Expected failover time</strong>: ~4–6 seconds (2 checks × 2s + 1s ARP gratuitous + ~1s TCP reconnect on app side).<br><strong>Config management</strong>: Ansible role keeps both maxscale.cnf files identical; any change is deployed to both simultaneously.<br><strong>Monitoring</strong>: Both MaxScale instances export Prometheus metrics; alert if VIP moves or if any server shows Down state for >2 intervals.<br><strong>Achievable availability</strong>: With 5s failover and an estimated 2 MaxScale failures/year, downtime = 10s/year — well within 99.99% SLA.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('l5')">← maxctrl</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('l7')">Next: Interview Q&A →</button>
+  <button class="mark-done-btn" id="done-l6" onclick="markDone('l6')">Mark complete ✓</button>
+</div>
+</div><!-- /page-l6 -->
+
+
+<!-- ═══════════════════════════════════════════════════ LESSON 7 -->
+<div id="page-l7" class="page">
+<div class="page-header">
+  <div class="page-header-top">
+    <div>
+      <div class="lesson-num">Phase 07 · Lesson 07 · 1h</div>
+      <div class="page-title">Interview Q&A + 3am Scenarios</div>
+    </div>
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+  </div>
+  <p class="page-desc">Final consolidation — the toughest MaxScale interview questions from a senior DBA perspective, plus three realistic 3am on-call scenarios with full diagnostic playbooks.</p>
+</div>
+
+<div class="expand-bar">
+  <span class="expand-bar-label">Click any section to expand</span>
+  <button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button>
+</div>
+
+<!-- Advanced Interview Questions -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🎤 Advanced Interview Questions<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="qa-list">
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">MaxScale's readwritesplit is routing too many queries to master. The application team says they didn't change anything. What do you investigate?</div>
+        <div class="qa-a">
+          <p>Start with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl list servers</code> — if the number of Synced slaves has dropped (node Down or in Maintenance), MaxScale has fewer places to route reads and master gets more. If servers look fine, check <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl show service caremate-rw-service</code> for per-server query counts. Then enable <code style="font-family:'JetBrains Mono',monospace;font-size:11px">log_info=true</code> temporarily and search logs for "routed to master" entries — the surrounding context shows which query type is triggering master routing. Common suspects after "nothing changed": a new ORM version that added a SET statement on connection init, a new feature using stored procedures, an increase in transaction usage, or a new query using user variables.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"Server count first, then query pattern analysis with log_info=true. 'Nothing changed in the app' is never fully true — something changed, even if it's the ORM version."</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">Compare MaxScale readwritesplit vs ProxySQL for a Galera cluster. When would you choose one over the other?</div>
+        <div class="qa-a">
+          <p>MaxScale readwritesplit is Galera-aware via galeramon — it understands wsrep state natively and handles Galera-specific scenarios (donor exclusion, SST awareness, wsrep_local_index-based election) without custom rules. ProxySQL has no native Galera awareness — you need to write custom health check scripts or use Percona's ProxySQL Galera scripts to maintain the hostgroup membership. MaxScale has better out-of-the-box Galera support and is the natural choice when running the MariaDB Enterprise stack. ProxySQL offers more granular query routing rules and a richer admin interface, making it popular in Percona XtraDB Cluster environments. At OS GmbH with MariaDB Enterprise + Galera, MaxScale is the correct choice.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"MaxScale is Galera-native — galeramon understands wsrep state out of the box. ProxySQL needs custom scripts to achieve the same result. On a MariaDB Enterprise stack, MaxScale is the right tool."</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">A DSGVO audit requires you to log all SELECT queries touching the patients table, with the username and timestamp. How do you implement this in MaxScale without touching the application?</div>
+        <div class="qa-a">
+          <p>Use a <code style="font-family:'JetBrains Mono',monospace;font-size:11px">qlafilter</code> (Query Log All) in the MaxScale service. Configure it with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">match=patients</code> to capture only queries mentioning the patients table, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">log_type=unified</code> for a single time-ordered log, and specify a <code style="font-family:'JetBrains Mono',monospace;font-size:11px">filebase</code> path on a filesystem with appropriate access controls and rotation. The log includes: timestamp, client IP, database user, query text. Add this filter to the service stanza's <code style="font-family:'JetBrains Mono',monospace;font-size:11px">filters=</code> list. Then configure logrotate to rotate and archive the audit logs to cold storage, retaining for the GDPR-mandated period (typically 3 years in Germany for operational logs).</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"qlafilter with match=patients, log_type=unified, locked-down filebase path. Zero application changes — the audit is transparent to the Flask app and compliant with Article 30 GDPR."</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">What happens to MaxScale's routing if the entire Galera cluster loses quorum? How does MaxScale behave and what do you do?</div>
+        <div class="qa-a">
+          <p>When Galera loses quorum (fewer than majority nodes remain in the Primary Component), the surviving nodes enter Non-Primary Component state — their <code style="font-family:'JetBrains Mono',monospace;font-size:11px">wsrep_ready</code> becomes OFF. galeramon detects this and marks those nodes as non-Synced. If <em>all</em> nodes lose quorum (e.g., a full cluster partition), MaxScale marks all servers as Down and refuses all new connections — preventing split-brain writes. Existing connections get errors. The DBA must: 1) Identify why quorum was lost (network partition? simultaneous node failures?), 2) If a majority partition exists, ensure those nodes re-elect primary component (may need <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SET GLOBAL wsrep_provider_options='pc.bootstrap=YES'</code> on one node), 3) Rejoin remaining nodes. MaxScale resumes routing automatically once nodes show Synced again.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"MaxScale goes dark when quorum is lost — it's protecting you from writing to a split cluster. My job is to restore quorum; MaxScale resumes automatically the moment a node shows wsrep_local_state=4."</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">Describe the difference between MaxScale's connection pooling and persistent connections. How does connection_keepalive affect backend connections?</div>
+        <div class="qa-a">
+          <p>MaxScale maintains a pool of backend connections to each server. When a client connects to MaxScale, MaxScale either reuses an idle backend connection or opens a new one. MaxScale does not do true connection multiplexing in readwritesplit mode — one client session maps to dedicated backend connections (one per server it's connected to). <code style="font-family:'JetBrains Mono',monospace;font-size:11px">connection_keepalive</code> controls how long MaxScale keeps an idle backend connection open before closing it. Setting it to 300s means even if a Flask connection pool has been idle for 5 minutes, the backend connection stays warm — avoiding reconnect latency on the next query. Without it, MariaDB's <code style="font-family:'JetBrains Mono',monospace;font-size:11px">wait_timeout</code> may close idle connections and MaxScale has to reconnect, adding 1–3ms per first query after idle.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"connection_keepalive prevents the cold-start reconnect penalty — set it slightly less than MariaDB's wait_timeout so MaxScale closes connections before MariaDB does."</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3am Scenarios -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚨 3am Scenario 1 — causal_reads Causing Query Timeouts<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🚨 3AM — BOOKING QUERIES TIMING OUT AFTER DB NODE REPLACEMENT</div>
+      <p><strong>Situation:</strong> 02:30. After replacing a Galera node earlier today (new hardware, rejoined via SST), booking queries are timing out at 60% rate. Errors: "Lost connection to MySQL server during query". The new node (db5) shows Slave, Synced in MaxScale. causal_reads=fast is enabled.</p>
+      <p><strong>What's happening:</strong> The new node db5 just finished SST and is now Synced, but its GTID position may be slightly behind the other nodes — it's catching up on transactions it missed during SST. causal_reads=fast is routing reads to db5 but then waiting for it to apply GTIDs from recent writes, causing the wait to exceed the query timeout.</p>
+      <p><strong>Immediate steps:</strong></p>
+      <ol>
+        <li>Check db5's replication lag: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">mysql -h db5 -e "SHOW STATUS LIKE 'wsrep_local_recv_queue%';"</code> — if wsrep_local_recv_queue_avg > 0, db5 has a write backlog.</li>
+        <li>Temporarily set db5 to maintenance: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl set server db5 maintenance</code> — stops routing to it while it catches up.</li>
+        <li>Monitor db5's recv queue until it drops to 0: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">watch -n 1 "mysql -h db5 -e \"SHOW STATUS LIKE 'wsrep_local_recv_queue';\""</code></li>
+        <li>Once queue = 0, clear maintenance and verify query timeouts resolve: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl clear server db5 maintenance</code></li>
+      </ol>
+      <p><strong>Prevention:</strong> After any SST, keep the new node in maintenance mode for 5–10 minutes after reaching state=4 to allow it to fully absorb the write queue before routing traffic to it. Add a health check script that validates wsrep_local_recv_queue_avg &lt; 1 before clearing maintenance.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚨 3am Scenario 2 — MaxScale Memory Leak / High CPU<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🚨 3AM — MAXSCALE PROCESS AT 95% CPU, QUERY LATENCY SPIKING</div>
+      <p><strong>Situation:</strong> 04:15. MaxScale is running but query latency has climbed from 2ms to 800ms over the last hour. MaxScale process shows 95% CPU in <code style="font-family:'JetBrains Mono',monospace;font-size:11px">top</code>. The Galera cluster itself is healthy.</p>
+      <p><strong>Immediate steps:</strong></p>
+      <ol>
+        <li>Check active session count: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl list sessions | wc -l</code> — compare to normal baseline. A session leak (sessions accumulating without closing) causes memory and CPU growth.</li>
+        <li>Identify longest-running sessions: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl list sessions --json | python3 -c "import json,sys; [print(s['id'], s['attributes'].get('connected_since','')) for s in json.load(sys.stdin)['data']]"</code></li>
+        <li>Kill zombie sessions: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl kill session &lt;id&gt;</code> for sessions open for hours with no activity.</li>
+        <li>If CPU still high after session cleanup, check MaxScale version for known CPU bugs: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxscale --version</code> and check MariaDB JIRA.</li>
+        <li>Emergency VIP failover to standby MaxScale: update keepalived priority to force VIP to maxscale-2, then restart maxscale-1 clean.</li>
+      </ol>
+      <p><strong>Root cause:</strong> A connection pooling library was leaking connections — each Flask worker opened a MaxScale connection but never closed it on crash. Over 4 hours, 4000 zombie sessions accumulated. <strong>Fix:</strong> Set <code style="font-family:'JetBrains Mono',monospace;font-size:11px">net_write_timeout</code> and <code style="font-family:'JetBrains Mono',monospace;font-size:11px">net_read_timeout</code> in maxscale.cnf to auto-close idle sessions, and fix the Flask connection pool leak.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚨 3am Scenario 3 — Write Routing to Wrong Node<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🚨 3AM — DUPLICATE BOOKING INSERTS DETECTED</div>
+      <p><strong>Situation:</strong> 01:55. Duplicate booking records are appearing in the ticketing system. Each booking_id appears twice with slightly different timestamps. Data integrity alert fired. No application code changes today.</p>
+      <p><strong>What to suspect:</strong> If MaxScale's transaction_replay is replaying transactions that DID commit on the original master before it failed, duplicate INSERTs can occur — the original committed but MaxScale didn't receive the acknowledgement before the TCP connection dropped.</p>
+      <p><strong>Immediate steps:</strong></p>
+      <ol>
+        <li>Identify the scope: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SELECT booking_id, COUNT(*) FROM bookings GROUP BY booking_id HAVING COUNT(*) > 1;</code> — how many duplicates, over what time window?</li>
+        <li>Check the MaxScale log for transaction_replay events: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">grep -i "transaction.*replay\|replay.*transaction" /var/log/maxscale/maxscale.log | tail -50</code></li>
+        <li>Correlate duplicate timestamps with a Galera failover event (monitor log entries showing master change).</li>
+        <li>Immediately set <code style="font-family:'JetBrains Mono',monospace;font-size:11px">transaction_replay=false</code> dynamically to prevent more duplicates: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl alter service ticketing-rw-service transaction_replay=false</code></li>
+        <li>Remove duplicates in the DB (ensure your booking table has a UNIQUE constraint on the business key, not just the auto-increment ID).</li>
+      </ol>
+      <p><strong>Root cause:</strong> transaction_replay replayed a booking INSERT after a master failover, but the original INSERT had already committed on the failed master and was replicated to the new master via Galera's replication stream. Result: same booking exists twice. <strong>Fix:</strong> Add <code style="font-family:'JetBrains Mono',monospace;font-size:11px">UNIQUE(passenger_id, route_id, seat_number)</code> constraint to the bookings table to make INSERTs idempotent at the DB level, so duplicate replay fails gracefully with a duplicate-key error instead of inserting.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Final Interview -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🎤 Final Consolidation Questions<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="qa-list">
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">If you could only monitor three MaxScale metrics, what would they be and why?</div>
+        <div class="qa-a">
+          <p>1. <strong>Number of Synced servers in routing pool</strong> — if this drops below expected (3 for a 3-node cluster), the cluster is degraded. Alert threshold: &lt;2 Synced nodes. 2. <strong>Active session count</strong> — a growing session count without a corresponding increase in legitimate traffic indicates session leaks. Alert: sessions > normal baseline × 2. 3. <strong>Query routing ratio master/slave</strong> — if writes to master suddenly spike above normal, something is causing excessive master-stickiness (temp tables, stored procs, transaction explosion). Alert: master query ratio &gt; 40% (should be ~5–10% for a well-configured system with many reads).</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"Synced node count, session count, and master/slave routing ratio. Those three catch 90% of MaxScale problems before they become outages."</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">Explain the complete query path for a Flask INSERT to the CareMate database, from TCP packet to committed row.</div>
+        <div class="qa-a">
+          <p>Flask opens a TCP connection to MaxScale VIP port 3306. MaxScale Listener accepts it and passes to caremate-rw-service. The readwritesplit router queries the server state flags (set by galeramon last poll). It selects the Master (Synced, lowest wsrep_local_index). MaxScale opens (or reuses) a backend connection to db1. The INSERT statement passes through the audit-filter (qlafilter logs it). MaxScale sends the SQL to db1. InnoDB writes to the redo log (WAL), acquires row lock, inserts into buffer pool, returns OK. MaxScale receives OK and forwards to Flask. Galera then certifies and replicates the write to db2 and db3 asynchronously (within milliseconds, synchronous certification). db2 and db3 apply the write. Flask sees the response and commits.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor Phrase</div><p>"Flask → MaxScale Listener → readwritesplit (picks Master) → qlafilter logs it → MariaDB InnoDB redo log → buffer pool → OK response → Galera replicates to slaves. That's the full path — 12 hops from Python to durable row."</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick reference cheatsheet -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">📋 Quick Reference — maxctrl Cheatsheet<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label bash">BASH</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm">## maxctrl QUICK REFERENCE — phase-06-maxscale</span>
+
+<span class="cm"># ── STATUS ──────────────────────────────────────────────────</span>
+maxctrl list servers           <span class="cm"># Server states + connection counts</span>
+maxctrl list services          <span class="cm"># Service health + query counts</span>
+maxctrl list sessions          <span class="cm"># Active client sessions</span>
+maxctrl list filters           <span class="cm"># Filter instances and stats</span>
+maxctrl list monitors          <span class="cm"># Monitor instances and last result</span>
+maxctrl show server &lt;name&gt;    <span class="cm"># Detailed server info incl. Galera state</span>
+maxctrl show service &lt;name&gt;   <span class="cm"># Routing stats, config, pool info</span>
+maxctrl show monitor &lt;name&gt;   <span class="cm"># Last poll results, status per server</span>
+
+<span class="cm"># ── MAINTENANCE ─────────────────────────────────────────────</span>
+maxctrl set server db2 maintenance    <span class="cm"># Stop new connections to db2</span>
+maxctrl clear server db2 maintenance  <span class="cm"># Re-enable db2</span>
+maxctrl set server db2 drain          <span class="cm"># Same as maintenance but waits for 0 conn</span>
+
+<span class="cm"># ── RUNTIME ALTER ───────────────────────────────────────────</span>
+maxctrl alter monitor galera-monitor monitor_interval=500ms
+maxctrl alter monitor galera-monitor password=NewPassword
+maxctrl alter service rw-service master_failure_mode=fail_instantly
+maxctrl alter service rw-service max_slave_connections=100
+
+<span class="cm"># ── CONTROL ─────────────────────────────────────────────────</span>
+maxctrl restart monitor galera-monitor  <span class="cm"># Force immediate re-poll</span>
+maxctrl kill session &lt;id&gt;              <span class="cm"># Kill a specific client session</span>
+maxctrl reload config                   <span class="cm"># Hot-reload config (supported params only)</span>
+maxctrl sync config                     <span class="cm"># Write runtime state back to config file</span>
+
+<span class="cm"># ── DIAGNOSTICS ─────────────────────────────────────────────</span>
+maxctrl show maxscale                  <span class="cm"># MaxScale version, uptime, thread count</span>
+maxctrl list threads                   <span class="cm"># Worker thread stats</span>
+journalctl -u maxscale -f              <span class="cm"># Live MaxScale log tail</span>
+journalctl -u maxscale --since "1h ago" | grep -i "error\|warn\|down"</div>
+    </div>
+  </div>
+</div>
+
+<!-- Challenge -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🏋️ Final Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Explain MaxScale to Nietsch in 60 seconds</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">Pretend it's the start of your interview with Michael Nietsch. He asks: "In your own words, what is MaxScale and what problem does it solve for us at OS GmbH?" Prepare a 60-second verbal answer that covers: the core value proposition, the four components, one operational benefit, and one failure mode it handles.</p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer →</span>
+        <div class="answer">
+          <div class="callout tip"><div class="lbl">✅ Model 60-Second Answer</div><p>"MaxScale is a database-aware proxy that sits between applications and our Galera cluster. Its core job is intelligent routing — writes go to the current primary, reads are distributed across all healthy replicas, giving us read scale-out without changing application connection strings. Architecturally it has four pieces: backend Server objects, a Galera Monitor that polls wsrep state every second, a Router Service that applies routing logic based on those state flags, and a Listener that's the TCP endpoint applications connect to. Operationally, its biggest value for OS GmbH is transparent failover — when a Galera node dies, MaxScale stops routing to it within one monitor interval and re-elects a new primary from the remaining Synced nodes, without the application noticing. The failure mode it cannot handle alone is quorum loss — if the Galera cluster loses majority, MaxScale goes dark and a DBA must intervene to bootstrap the cluster. That's where keepalived gives us MaxScale HA, and that's where my on-call skills come in."</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('l6')">← Failover & Recovery</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('home')">← Back to Phase Home</button>
+  <button class="mark-done-btn" id="done-l7" onclick="markDone('l7')">Mark complete ✓</button>
+</div>
+</div><!-- /page-l7 -->
+
+
+<script>
+/* ── STATE ──────────────────────────────────────────────────────── */
+let currentPage = 'home';
+const LESSONS = ['home','l1','l2','l3','l4','l5','l6','l7'];
+let done = {};
+try { done = JSON.parse(localStorage.getItem('phase_06_done') || '{}'); } catch(e) {}
+
+/* ── NAVIGATION ─────────────────────────────────────────────────── */
+function goTo(id) {
+  document.getElementById('page-' + currentPage).classList.remove('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+  const page = document.getElementById('page-' + id);
+  if (page) {
+    page.classList.add('active');
+    page.querySelectorAll('.section-title').forEach(t => t.classList.remove('sec-open'));
+    page.querySelectorAll('.section-body').forEach(b => b.classList.remove('sec-open'));
+    page.querySelectorAll('.expand-all-btn').forEach(b => { b.textContent = 'Expand all ↓'; });
+  } else {
+    document.getElementById('page-home').classList.add('active');
+    id = 'home';
+  }
+
+  const tab = document.getElementById('tab-' + id);
+  if (tab) tab.classList.add('active');
+
+  currentPage = id;
+  /* CRITICAL: use direct assignment, NOT window.scrollTo — bypasses smooth-scroll */
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+}
+
+/* ── SECTIONS ───────────────────────────────────────────────────── */
+function togSection(titleEl) {
+  titleEl.classList.toggle('sec-open');
+  titleEl.nextElementSibling.classList.toggle('sec-open');
+}
+
+function expandAll(btn) {
+  const page = btn.closest('.page');
+  const titles = (page || document).querySelectorAll('.section-title');
+  const bodies = (page || document).querySelectorAll('.section-body');
+  const allOpen = [...bodies].every(b => b.classList.contains('sec-open'));
+  titles.forEach(t => t.classList.toggle('sec-open', !allOpen));
+  bodies.forEach(b => b.classList.toggle('sec-open', !allOpen));
+  btn.textContent = allOpen ? 'Expand all ↓' : 'Collapse all ↑';
+}
+
+/* ── Q&A ────────────────────────────────────────────────────────── */
+function togQA(qEl) {
+  qEl.classList.toggle('open');
+  qEl.nextElementSibling.classList.toggle('open');
+}
+
+/* ── CHALLENGE ──────────────────────────────────────────────────── */
+function togChallenge(headEl) {
+  const body = headEl.nextElementSibling;
+  const arrow = headEl.querySelector('.challenge-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function togAnswer(el) {
+  const answer = el.nextElementSibling;
+  answer.classList.toggle('open');
+  el.textContent = answer.classList.contains('open') ? 'Hide answer ↑' : 'Show answer →';
+}
+
+/* ── PROGRESS ───────────────────────────────────────────────────── */
+function markDone(id) {
+  done[id] = !done[id];
+  try { localStorage.setItem('phase_06_done', JSON.stringify(done)); } catch(e) {}
+  updateDoneState();
+}
+
+function updateDoneState() {
+  LESSONS.filter(l => l !== 'home').forEach(id => {
+    const btn = document.getElementById('done-' + id);
+    const tab = document.getElementById('tab-' + id);
+    if (btn) {
+      btn.classList.toggle('done', !!done[id]);
+      btn.textContent = done[id] ? 'Completed ✓' : 'Mark complete ✓';
+    }
+    if (tab) tab.classList.toggle('done-tab', !!done[id]);
+  });
+}
+
+/* ── COPY BUTTONS ───────────────────────────────────────────────── */
+function copyCode(btn) {
+  const body = btn.closest('.code-block').querySelector('.code-body');
+  navigator.clipboard.writeText(body.innerText).then(() => {
+    btn.textContent = 'copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+/* ── INIT ───────────────────────────────────────────────────────── */
+updateDoneState();
+</script>
+</body>
+</html>

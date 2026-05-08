@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linux & RedHat — DBA Foundation</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#eef2f7;--surface:#ffffff;--card:#f4f7fb;--border:#dde4ef;--border2:#c5cedf;
+  --text:#1a2440;--muted:#5a6a85;--dim:#8fa0bb;
+  --blue:#0284c7;--blueb:#e0f2fe;--blued:#0369a1;
+  --purple:#7c3aed;--purpleb:#ede9fe;
+  --green:#059669;--greenb:#d1fae5;--greend:#047857;
+  --orange:#d97706;--orangeb:#fef3c7;
+  --pink:#db2777;--pinkb:#fce7f3;
+  --yellow:#b45309;--yellowb:#fef9c3;
+  --red:#dc2626;--redb:#fee2e2;
+  --teal:#0d9488;--tealb:#ccfbf1;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;min-height:100vh}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;padding:0 24px;gap:0;box-shadow:0 1px 6px rgba(0,60,120,.06)}
+.nav-logo{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--text);padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:8px;white-space:nowrap;flex-shrink:0}
+.nav-logo span{color:var(--red)}
+.nav-tab{padding:14px 12px;font-size:11px;font-weight:600;letter-spacing:.05em;cursor:pointer;color:var(--muted);transition:color .15s;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent;user-select:none}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--text);border-bottom-color:var(--red)}
+.nav-tab.done-tab{color:var(--greend)}
+
+.page{display:none;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.page.active{display:block}
+#page-home:not(.active){display:none}
+
+.hero{padding:56px 40px 40px;max-width:1100px;margin:0 auto}
+.eyebrow{font-size:11px;letter-spacing:.2em;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:14px}
+h1{font-size:48px;font-weight:800;line-height:1;letter-spacing:-.03em;margin-bottom:14px;color:var(--text)}
+h1 span{color:var(--red)}
+.hero-sub{font-size:14px;color:var(--muted);max-width:580px;line-height:1.65;margin-bottom:36px}
+
+.hero-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:7px;max-width:1100px;margin:0 40px 40px}
+.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px 10px;cursor:pointer;transition:border-color .15s,transform .12s,box-shadow .15s;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,60,120,.04);display:flex;align-items:center;gap:10px}
+.hero-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;border-radius:10px 0 0 10px}
+.hero-card.c-red::before{background:var(--red)}
+.hero-card.c-green::before{background:var(--green)}
+.hero-card.c-blue::before{background:var(--blue)}
+.hero-card.c-purple::before{background:var(--purple)}
+.hero-card.c-orange::before{background:var(--orange)}
+.hero-card.c-teal::before{background:var(--teal)}
+.hero-card.c-yellow::before{background:var(--yellow)}
+.hero-card.c-pink::before{background:var(--pink)}
+.hero-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,60,120,.09)}
+.hero-card-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.hero-card-body{flex:1;min-width:0}
+.hero-card-num{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px}
+.hero-card-title{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.status{font-size:9px;padding:2px 7px;border-radius:99px;display:inline-block;font-weight:600;letter-spacing:.04em}
+.hero-card-arrow{font-size:13px;color:var(--dim);flex-shrink:0;font-weight:300}
+
+.page-header{margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.page-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:8px}
+.lesson-num{font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.page-title{font-size:30px;font-weight:800;letter-spacing:-.02em}
+.back-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-family:'Syne',sans-serif;color:var(--muted);cursor:pointer;transition:color .15s,border-color .15s;white-space:nowrap}
+.back-btn:hover{color:var(--text);border-color:var(--border2)}
+.page-desc{font-size:13px;color:var(--muted);line-height:1.65;max-width:680px}
+
+.section{margin-bottom:6px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface)}
+.section-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:12px 16px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;transition:background .12s;margin-bottom:0}
+.section-title:hover{background:var(--card)}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.section-chevron{font-size:11px;color:var(--dim);margin-left:4px;transition:transform .2s;flex-shrink:0}
+.section-title.sec-open{color:var(--text);background:var(--card);border-bottom:1px solid var(--border)}
+.section-title.sec-open .section-chevron{transform:rotate(180deg)}
+.section-body{display:none;padding:14px 16px 12px}
+.section-body.sec-open{display:block}
+
+.expand-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:0 2px}
+.expand-bar-label{font-size:11px;color:var(--dim)}
+.expand-all-btn{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--muted);cursor:pointer;transition:all .15s}
+.expand-all-btn:hover{color:var(--text);border-color:var(--border2)}
+
+.concepts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.concept{background:var(--surface);border-radius:10px;padding:12px 16px;border:1px solid var(--border);border-left:3px solid var(--border2)}
+.concept.green{border-left-color:var(--green)}
+.concept.blue{border-left-color:var(--blue)}
+.concept.orange{border-left-color:var(--orange)}
+.concept.purple{border-left-color:var(--purple)}
+.concept.teal{border-left-color:var(--teal)}
+.concept.red{border-left-color:var(--red)}
+.concept.yellow{border-left-color:var(--yellow)}
+.concept-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.concept-desc{font-size:12px;color:var(--muted);line-height:1.6}
+
+.code-block{background:#f8fafc;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,60,120,.04)}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--surface)}
+.code-label{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.code-label.bash{color:var(--green)}
+.code-label.output{color:var(--orange)}
+.code-label.sql{color:var(--blue)}
+.code-label.conf{color:var(--purple)}
+.copy-btn{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);background:none;border:1px solid var(--border);border-radius:5px;padding:3px 8px;cursor:pointer;transition:color .15s,border-color .15s}
+.copy-btn:hover{color:var(--text);border-color:var(--border2)}
+.copy-btn.copied{color:var(--green);border-color:var(--green)}
+.code-body{padding:16px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#334155;line-height:1.75;overflow-x:auto;white-space:pre;background:#f8fafc}
+.cm{color:#94a3b8}.kw{color:#0284c7}.fn{color:#7c3aed}.str{color:#059669}.num{color:#d97706}.op{color:#db2777}
+
+.callout{border-radius:0 10px 10px 0;padding:12px 16px;margin-bottom:16px;border:1px solid transparent;border-left-width:3px}
+.callout .lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.callout p,.callout li{font-size:12px;line-height:1.65}
+.callout ul{padding-left:16px}
+.callout li{margin-bottom:4px}
+.callout.tip{background:var(--greenb);border-color:#a7f3d0;border-left-color:var(--green)}
+.callout.tip .lbl{color:var(--green)}
+.callout.tip p,.callout.tip li{color:#065f46}
+.callout.warn{background:var(--yellowb);border-color:#fde68a;border-left-color:var(--yellow)}
+.callout.warn .lbl{color:var(--yellow)}
+.callout.warn p,.callout.warn li{color:#78350f}
+.callout.info{background:var(--blueb);border-color:#bae6fd;border-left-color:var(--blue)}
+.callout.info .lbl{color:var(--blue)}
+.callout.info p,.callout.info li{color:#075985}
+.callout.rhel{background:#fee2e2;border-color:#fca5a5;border-left-color:var(--red)}
+.callout.rhel .lbl{color:#b91c1c}
+.callout.rhel p,.callout.rhel li{color:#7f1d1d}
+.callout.scenario{background:#1e293b;color:#e2e8f0;border-left-color:#dc2626;border-left-width:4px}
+.callout.scenario .lbl{color:#f87171;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.callout.scenario p{font-size:12px;line-height:1.6;color:#e2e8f0}
+.callout.scenario ol,.callout.scenario ul{padding-left:16px}
+.callout.scenario li{font-size:12px;line-height:1.6;color:#cbd5e1;margin-bottom:4px}
+.callout.interview{background:#e0e7ff;border-color:#a5b4fc;border-left-color:#4338ca}
+.callout.interview .lbl{color:#3730a3}
+.callout.interview p{color:#312e81;font-weight:600}
+
+.qa-list{display:flex;flex-direction:column;gap:8px}
+.qa-item{border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.qa-q{padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;background:var(--bg);transition:background .12s;display:flex;justify-content:space-between;align-items:center}
+.qa-q::after{content:'▾';font-size:11px;color:var(--dim);transition:transform .2s}
+.qa-q.open::after{transform:rotate(180deg)}
+.qa-q:hover{background:var(--card)}
+.qa-a{display:none;padding:12px 14px;border-top:1px solid var(--border)}
+.qa-a.open{display:block}
+.qa-a p{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:8px}
+.qa-a code{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--card);padding:1px 5px;border-radius:3px;color:var(--purple)}
+
+.steps{display:flex;flex-direction:column;gap:12px}
+.step{display:flex;gap:14px;align-items:flex-start}
+.step-num{width:24px;height:24px;border-radius:6px;background:var(--card);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--muted);flex-shrink:0;margin-top:1px}
+.step-content{flex:1}
+.step-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.step-desc{font-size:12px;color:var(--muted);line-height:1.6}
+
+.compare-table{width:100%;border-collapse:collapse;margin-bottom:16px}
+.compare-table th{background:var(--card);padding:8px 14px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:1px solid var(--border)}
+.compare-table td{padding:8px 14px;font-size:12px;color:var(--text);border-bottom:1px solid var(--border);vertical-align:top}
+.compare-table td:first-child{font-family:'JetBrains Mono',monospace;color:var(--purple)}
+.compare-table tr:last-child td{border-bottom:none}
+
+.lesson-nav{display:flex;gap:8px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
+.lesson-nav-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-size:12px;font-family:'Syne',sans-serif;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
+.lesson-nav-btn:hover{color:var(--text);border-color:var(--border2)}
+.lesson-nav-btn.primary{background:var(--redb);border-color:var(--red);color:var(--red)}
+.lesson-nav-btn.primary:hover{background:#fca5a5;color:#991b1b}
+.mark-done-btn{margin-left:auto;background:var(--greenb);border:1px solid #a7f3d0;border-radius:8px;padding:10px 20px;font-size:12px;font-family:'Syne',sans-serif;font-weight:600;color:var(--green);cursor:pointer;transition:all .15s}
+.mark-done-btn:hover{background:#a7f3d0}
+.mark-done-btn.done{background:#a7f3d0;border-color:var(--greend);color:var(--greend)}
+
+code{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--card);padding:1px 5px;border-radius:3px;color:var(--purple)}
+
+@media(max-width:700px){
+  .page,.hero{padding:24px 16px 60px}
+  .hero-grid{grid-template-columns:1fr 1fr;margin:0 16px 28px}
+  h1{font-size:34px}
+  .page-title{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">🐧 LINUX·<span>RHEL</span></div>
+  <div class="nav-tab active" id="tab-home" onclick="goTo('home')">Start</div>
+  <div class="nav-tab" id="tab-l1" onclick="goTo('l1')">01 Filesystem</div>
+  <div class="nav-tab" id="tab-l2" onclick="goTo('l2')">02 Files & Permissions</div>
+  <div class="nav-tab" id="tab-l3" onclick="goTo('l3')">03 Users & Groups</div>
+  <div class="nav-tab" id="tab-l4" onclick="goTo('l4')">04 DNF & Packages</div>
+  <div class="nav-tab" id="tab-l5" onclick="goTo('l5')">05 systemd</div>
+  <div class="nav-tab" id="tab-l6" onclick="goTo('l6')">06 Networking</div>
+  <div class="nav-tab" id="tab-l7" onclick="goTo('l7')">07 Bash for DBAs</div>
+  <div class="nav-tab" id="tab-l8" onclick="goTo('l8')">08 SELinux</div>
+  <div class="nav-tab" id="tab-l9" onclick="goTo('l9')">09 3am Scenarios</div>
+</nav>
+
+<!-- ═══ HOME ═══════════════════════════════════════════════════════════════ -->
+<div id="page-home" class="active">
+<div class="hero">
+  <div class="eyebrow">Foundation · RedHat Enterprise Linux · DBA Edition</div>
+  <h1>Linux &<br><span>RedHat</span></h1>
+  <p class="hero-sub">The operating system that runs your database server. You will never touch a MariaDB or Galera node without first navigating the shell, editing configs, managing services, and reading logs. Every lesson uses real DBA tasks — no toy examples.</p>
+</div>
+<div class="hero-grid">
+  <div class="hero-card c-red" onclick="goTo('l1')">
+    <div class="hero-card-icon" style="background:var(--redb)">📂</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--red)">01 · 2h</div>
+      <div class="hero-card-title">Filesystem Navigation</div>
+      <div class="status" style="background:var(--redb);color:var(--red)" id="st-l1">Start here →</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-orange" onclick="goTo('l2')">
+    <div class="hero-card-icon" style="background:var(--orangeb)">🔒</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--orange)">02 · 2h</div>
+      <div class="hero-card-title">Files & Permissions</div>
+      <div class="status" style="background:var(--orangeb);color:var(--orange)" id="st-l2">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-blue" onclick="goTo('l3')">
+    <div class="hero-card-icon" style="background:var(--blueb)">👤</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--blue)">03 · 1h</div>
+      <div class="hero-card-title">Users & Groups</div>
+      <div class="status" style="background:var(--blueb);color:var(--blue)" id="st-l3">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-green" onclick="goTo('l4')">
+    <div class="hero-card-icon" style="background:var(--greenb)">📦</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--green)">04 · 1h</div>
+      <div class="hero-card-title">DNF & Packages</div>
+      <div class="status" style="background:var(--greenb);color:var(--green)" id="st-l4">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-teal" onclick="goTo('l5')">
+    <div class="hero-card-icon" style="background:var(--tealb)">⚙️</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--teal)">05 · 2h</div>
+      <div class="hero-card-title">systemd & Services</div>
+      <div class="status" style="background:var(--tealb);color:var(--teal)" id="st-l5">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-purple" onclick="goTo('l6')">
+    <div class="hero-card-icon" style="background:var(--purpleb)">🌐</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--purple)">06 · 2h</div>
+      <div class="hero-card-title">Networking</div>
+      <div class="status" style="background:var(--purpleb);color:var(--purple)" id="st-l6">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-yellow" onclick="goTo('l7')">
+    <div class="hero-card-icon" style="background:var(--yellowb)">📜</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--yellow)">07 · 3h</div>
+      <div class="hero-card-title">Bash for DBAs</div>
+      <div class="status" style="background:var(--yellowb);color:var(--yellow)" id="st-l7">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-pink" onclick="goTo('l8')">
+    <div class="hero-card-icon" style="background:var(--pinkb)">🛡️</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--pink)">08 · 2h</div>
+      <div class="hero-card-title">SELinux</div>
+      <div class="status" style="background:var(--pinkb);color:var(--pink)" id="st-l8">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-red" onclick="goTo('l9')">
+    <div class="hero-card-icon" style="background:var(--redb)">🚨</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--red)">09 · 1h</div>
+      <div class="hero-card-title">3am Scenarios + Q&A</div>
+      <div class="status" style="background:var(--redb);color:var(--red)" id="st-l9">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ LESSON 01 — FILESYSTEM ═════════════════════════════════════════════ -->
+<div id="page-l1" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--red)">Lesson 01 · ~2 hours</div>
+        <div class="page-title" style="color:var(--red)">Filesystem Navigation</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">Before you touch a database, you must be fluent in the shell. Every DBA task — editing my.cnf, reading logs, running mariabackup — starts with navigating the filesystem and knowing where everything lives.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <!-- WHERE EVERYTHING LIVES -->
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">The Linux filesystem — where everything lives<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="concepts">
+        <div class="concept red"><div class="concept-name">/etc</div><div class="concept-desc">Configuration files. MariaDB lives here at <code>/etc/my.cnf</code> or <code>/etc/my.cnf.d/</code>. MaxScale at <code>/etc/maxscale.cnf</code>. You will spend a lot of time here.</div></div>
+        <div class="concept blue"><div class="concept-name">/var/lib</div><div class="concept-desc">Application data. MariaDB data files live at <code>/var/lib/mysql/</code>. Each database is a subfolder. This is where your actual database rows are stored on disk.</div></div>
+        <div class="concept green"><div class="concept-name">/var/log</div><div class="concept-desc">Log files. MariaDB error log at <code>/var/log/mariadb/mariadb.log</code>. The first place you look at 3am when something breaks.</div></div>
+        <div class="concept orange"><div class="concept-name">/usr/bin and /usr/sbin</div><div class="concept-desc">Executables. <code>mysql</code>, <code>mysqldump</code>, <code>mariabackup</code>, <code>maxctrl</code> all live here. <code>/usr/sbin</code> = admin tools (run as root). <code>/usr/bin</code> = regular user tools.</div></div>
+        <div class="concept teal"><div class="concept-name">/tmp</div><div class="concept-desc">Temporary files. Cleared on reboot. Fine for scratch work. Never store backups here — they disappear.</div></div>
+        <div class="concept purple"><div class="concept-name">/home</div><div class="concept-desc">User home directories. Your scripts and working files go here. MariaDB itself runs as the <code>mysql</code> system user whose home is <code>/var/lib/mysql</code>.</div></div>
+      </div>
+      <div class="callout rhel"><div class="lbl">🎩 RHEL specific</div><p>On RHEL/CentOS/AlmaLinux, MariaDB config is at <code>/etc/my.cnf.d/mariadb-server.cnf</code> — not a single file. Each drop-in file in <code>/etc/my.cnf.d/</code> gets loaded. On Debian/Ubuntu it is <code>/etc/mysql/mariadb.conf.d/</code>. Know both.</p></div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION COMMANDS -->
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Core navigation commands<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Where am I right now?</span>
+pwd
+
+<span class="cm"># List files — l=long format, a=include hidden, h=human-readable sizes</span>
+ls -lah
+
+<span class="cm"># Move into a directory</span>
+cd /etc/my.cnf.d
+
+<span class="cm"># Go up one level</span>
+cd ..
+
+<span class="cm"># Go back to previous directory (like undo for cd)</span>
+cd -
+
+<span class="cm"># Go to your home directory</span>
+cd ~
+
+<span class="cm"># Jump to MariaDB data directory</span>
+cd /var/lib/mysql
+
+<span class="cm"># Jump to log directory</span>
+cd /var/log/mariadb</div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Show directory tree (install first: dnf install tree)</span>
+tree /etc/my.cnf.d
+tree /var/lib/mysql -L 1
+
+<span class="cm"># Find a file by name anywhere on the system</span>
+find / -name "my.cnf" 2>/dev/null
+
+<span class="cm"># Find files modified in the last 60 minutes (useful after an incident)</span>
+find /var/lib/mysql -mmin -60
+
+<span class="cm"># Check disk usage — critical for a DBA</span>
+df -h                        <span class="cm"># disk free per mount point</span>
+du -sh /var/lib/mysql        <span class="cm"># how much space MariaDB data uses</span>
+du -sh /var/lib/mysql/*      <span class="cm"># per-database breakdown</span></div>
+      </div>
+
+      <div class="callout tip"><div class="lbl">💡 DBA habit</div><p>Always run <code>df -h</code> before and after a backup. Running out of disk mid-backup corrupts the backup silently on some versions. Set an alert at 80% disk usage on your data volume.</p></div>
+    </div>
+  </div>
+
+  <!-- READING FILES -->
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Reading files — logs and configs<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Print entire file (dangerous on large log files)</span>
+cat /etc/my.cnf.d/mariadb-server.cnf
+
+<span class="cm"># First 20 lines of a file</span>
+head -20 /var/log/mariadb/mariadb.log
+
+<span class="cm"># Last 50 lines — what you actually want for logs</span>
+tail -50 /var/log/mariadb/mariadb.log
+
+<span class="cm"># Follow the log live as MariaDB writes to it (Ctrl+C to stop)</span>
+tail -f /var/log/mariadb/mariadb.log
+
+<span class="cm"># Search inside a file</span>
+grep "ERROR" /var/log/mariadb/mariadb.log
+grep -i "galera" /var/log/mariadb/mariadb.log    <span class="cm"># -i = case insensitive</span>
+grep -n "wsrep" /var/log/mariadb/mariadb.log     <span class="cm"># -n = show line numbers</span>
+
+<span class="cm"># Search and show 3 lines of context around each match</span>
+grep -C 3 "FATAL" /var/log/mariadb/mariadb.log
+
+<span class="cm"># Scroll through a large file (q to quit, /search to find)</span>
+less /var/log/mariadb/mariadb.log</div>
+      </div>
+      <div class="callout warn"><div class="lbl">⚠️ Never do this</div><p>Never <code>cat /var/log/mariadb/mariadb.log</code> on a busy production server — the log file can be gigabytes. Always use <code>tail -f</code> for live monitoring or <code>grep</code> for specific errors.</p></div>
+    </div>
+  </div>
+
+  <!-- EDITING FILES -->
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Editing config files with vim<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout info"><div class="lbl">ℹ️ Why vim?</div><p>vim is always available on any Linux server — no GUI, no nano sometimes, but vim is always there. You need exactly enough vim to open a file, make a change, and save it.</p></div>
+      <div class="concepts">
+        <div class="concept red"><div class="concept-name">Open a file</div><div class="concept-desc"><code>vim /etc/my.cnf.d/mariadb-server.cnf</code> — you start in Normal mode. You cannot type yet.</div></div>
+        <div class="concept blue"><div class="concept-name">Enter insert mode</div><div class="concept-desc">Press <code>i</code> — you can now type and edit. The bottom shows <code>-- INSERT --</code>.</div></div>
+        <div class="concept green"><div class="concept-name">Save and quit</div><div class="concept-desc">Press <code>Esc</code> to leave insert mode, then type <code>:wq</code> and Enter. w = write, q = quit.</div></div>
+        <div class="concept orange"><div class="concept-name">Quit without saving</div><div class="concept-desc">Press <code>Esc</code> then <code>:q!</code> — the <code>!</code> forces quit even with unsaved changes.</div></div>
+        <div class="concept purple"><div class="concept-name">Search in file</div><div class="concept-desc">In Normal mode, type <code>/innodb_buffer_pool</code> then Enter. Press <code>n</code> for next match.</div></div>
+        <div class="concept teal"><div class="concept-name">Jump to end of file</div><div class="concept-desc">In Normal mode, press <code>G</code> (capital G). Press <code>gg</code> to go back to the top.</div></div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># DBA workflow: edit a config, then restart the service</span>
+sudo vim /etc/my.cnf.d/mariadb-server.cnf
+
+<span class="cm"># After saving: validate config before restarting</span>
+mysqld --help --verbose 2>/dev/null | grep -A1 "innodb-buffer-pool-size"
+
+<span class="cm"># Then restart</span>
+sudo systemctl restart mariadb</div>
+      </div>
+      <div class="callout tip"><div class="lbl">💡 Safer alternative</div><p>If you hate vim: <code>sudo nano /etc/my.cnf.d/mariadb-server.cnf</code>. Nano shows its shortcuts at the bottom (^X = Ctrl+X to exit). Install it first: <code>sudo dnf install -y nano</code>.</p></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="mark-done-btn" id="done-l1" onclick="markDone('l1')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l2')">Next: Files & Permissions →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 02 — FILES & PERMISSIONS ════════════════════════════════════ -->
+<div id="page-l2" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--orange)">Lesson 02 · ~2 hours</div>
+        <div class="page-title" style="color:var(--orange)">Files & Permissions</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">MariaDB won't start if its data directory has wrong ownership. Galera SST will silently fail if the receiving node can't write files. Permissions are not optional knowledge — they are the most common cause of "why won't it start" incidents.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Reading permission strings<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body">ls -lah /var/lib/mysql</div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label output">output</span></div>
+        <div class="code-body">drwxr-x--x  9 mysql mysql 4.0K Apr 28 09:12 .
+-rw-rw----  1 mysql mysql  16M Apr 28 09:12 ibdata1
+-rw-rw----  1 mysql mysql 512M Apr 28 09:12 ib_logfile0</div>
+      </div>
+      <div class="concepts">
+        <div class="concept red"><div class="concept-name">d rwx r-x --x</div><div class="concept-desc">First character: <code>d</code>=directory, <code>-</code>=file, <code>l</code>=symlink. Then 3 groups of 3: owner permissions, group permissions, everyone else.</div></div>
+        <div class="concept blue"><div class="concept-name">r w x</div><div class="concept-desc"><code>r</code>=read (4), <code>w</code>=write (2), <code>x</code>=execute (1). A <code>-</code> means that permission is absent. So <code>rwx</code>=7, <code>rw-</code>=6, <code>r--</code>=4.</div></div>
+        <div class="concept green"><div class="concept-name">mysql mysql</div><div class="concept-desc">Owner user and owner group. MariaDB data files must be owned by the <code>mysql</code> user and <code>mysql</code> group. If they are owned by root, MariaDB cannot read or write them.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Changing ownership and permissions<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># chown: change owner</span>
+sudo chown mysql:mysql /var/lib/mysql/caremate_db
+
+<span class="cm"># -R = recursive (apply to everything inside)</span>
+sudo chown -R mysql:mysql /var/lib/mysql/
+
+<span class="cm"># chmod: change permissions</span>
+<span class="cm"># 750 = owner:rwx group:r-x others:---</span>
+sudo chmod 750 /var/lib/mysql
+
+<span class="cm"># 640 = owner:rw- group:r-- others:---</span>
+sudo chmod 640 /etc/my.cnf.d/mariadb-server.cnf
+
+<span class="cm"># Check who owns a running process</span>
+ps aux | grep mariadbd</div>
+      </div>
+      <div class="callout warn"><div class="lbl">⚠️ Most common DBA mistake</div><p>After manually copying data files or restoring a backup as root, the files end up owned by root instead of mysql. MariaDB then refuses to start with a cryptic permission error. Always run <code>sudo chown -R mysql:mysql /var/lib/mysql/</code> after any manual file operation on the data directory.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Symlinks and hard links<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="concepts">
+        <div class="concept blue"><div class="concept-name">Symlink (soft link)</div><div class="concept-desc">A pointer to another file or directory. Used in MariaDB to point <code>/var/lib/mysql</code> to a different disk. If the target is deleted, the symlink breaks.</div></div>
+        <div class="concept orange"><div class="concept-name">Hard link</div><div class="concept-desc">A second name for the same file data. Deleting one name leaves the other intact. Used by mariabackup internally — understanding this explains why incremental backups are efficient.</div></div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Create a symlink — useful when moving data dir to a larger disk</span>
+sudo ln -s /mnt/data/mysql /var/lib/mysql
+
+<span class="cm"># Verify it's a symlink (shows l in ls -l)</span>
+ls -lah /var/lib/mysql
+
+<span class="cm"># Check where a symlink points</span>
+readlink -f /var/lib/mysql</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">3am scenario — MariaDB won't start after backup restore<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout scenario"><div class="lbl">🚨 3am scenario</div><p>You restored a mariabackup to /var/lib/mysql. MariaDB refuses to start. The error log says "Can't create/write to file". Walk through your diagnosis:</p></div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Check the error log first</div><div class="step-desc"><code>tail -50 /var/log/mariadb/mariadb.log</code> — look for "permission denied" or "can't open".</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Check ownership</div><div class="step-desc"><code>ls -lah /var/lib/mysql/</code> — if you see "root root" instead of "mysql mysql", that's your problem.</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Fix ownership recursively</div><div class="step-desc"><code>sudo chown -R mysql:mysql /var/lib/mysql/</code></div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Check disk space</div><div class="step-desc"><code>df -h /var/lib/mysql</code> — a full disk also produces "can't write" errors that look identical.</div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">Restart and verify</div><div class="step-desc"><code>sudo systemctl start mariadb && systemctl status mariadb</code></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l1')">← Lesson 01</button>
+    <button class="mark-done-btn" id="done-l2" onclick="markDone('l2')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l3')">Next: Users & Groups →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 03 — USERS & GROUPS ═════════════════════════════════════════ -->
+<div id="page-l3" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--blue)">Lesson 03 · ~1 hour</div>
+        <div class="page-title" style="color:var(--blue)">Users & Groups</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">Linux users and MariaDB users are completely separate. A Linux system user called <code>mysql</code> runs the database process. Understanding this distinction prevents a whole class of authentication confusion.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">System users vs MariaDB users<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout info"><div class="lbl">ℹ️ Key distinction</div><p>The <code>mysql</code> Linux user owns MariaDB's files and process — it never logs into the shell. MariaDB has its own internal user system (<code>root@localhost</code>, <code>app_user@%</code>) stored in the <code>mysql</code> database. These are completely unrelated.</p></div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># See who the mysql Linux user is</span>
+id mysql
+<span class="cm"># output: uid=27(mysql) gid=27(mysql) groups=27(mysql)</span>
+
+<span class="cm"># See all users on the system</span>
+cat /etc/passwd
+
+<span class="cm"># See current Linux user</span>
+whoami
+
+<span class="cm"># Switch to root (needed for most DBA operations)</span>
+sudo -i        <span class="cm"># full root shell</span>
+sudo su -      <span class="cm"># same thing</span>
+
+<span class="cm"># Run a single command as root without switching</span>
+sudo systemctl restart mariadb</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Creating and managing Linux users<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Create a new user (for a new DBA colleague)</span>
+sudo useradd -m -s /bin/bash dba_ali
+
+<span class="cm"># Set their password</span>
+sudo passwd dba_ali
+
+<span class="cm"># Add user to the wheel group (gives sudo access on RHEL)</span>
+sudo usermod -aG wheel dba_ali
+
+<span class="cm"># Verify groups</span>
+groups dba_ali
+
+<span class="cm"># Delete a user (keep their home: -r removes it)</span>
+sudo userdel dba_ali
+
+<span class="cm"># Lock an account (disable without deleting)</span>
+sudo usermod -L dba_ali</div>
+      </div>
+      <div class="callout rhel"><div class="lbl">🎩 RHEL specific</div><p>On RHEL, the sudo group is called <code>wheel</code> — not <code>sudo</code> like on Ubuntu/Debian. Adding a user to <code>wheel</code> gives full sudo access. Verify with <code>grep wheel /etc/sudoers</code>.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">sudo and the sudoers file<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># ALWAYS use visudo to edit sudoers — it validates syntax before saving</span>
+<span class="cm"># A syntax error in /etc/sudoers can lock you out of sudo entirely</span>
+sudo visudo
+
+<span class="cm"># Grant a user passwordless sudo for just mariadb restart (production pattern)</span>
+<span class="cm"># Add this line in visudo:</span>
+<span class="cm"># dba_ali ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart mariadb</span>
+
+<span class="cm"># Check who has sudo access</span>
+sudo cat /etc/sudoers
+ls /etc/sudoers.d/</div>
+      </div>
+      <div class="callout warn"><div class="lbl">⚠️ Never edit /etc/sudoers directly</div><p>Always use <code>sudo visudo</code>. It locks the file and validates syntax before saving. Direct editing can produce a corrupt sudoers file which locks every user out of sudo, requiring console access to fix.</p></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l2')">← Lesson 02</button>
+    <button class="mark-done-btn" id="done-l3" onclick="markDone('l3')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l4')">Next: DNF & Packages →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 04 — DNF & PACKAGES ════════════════════════════════════════ -->
+<div id="page-l4" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--green)">Lesson 04 · ~1 hour</div>
+        <div class="page-title" style="color:var(--green)">DNF & Package Management</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">DNF is how you install, update, and remove software on RHEL. MariaDB, MaxScale, and every tool you use as a DBA is installed through it. You also need to understand repositories — packages don't appear by magic.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Essential DNF commands<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Update all packages (do this right after install)</span>
+sudo dnf update -y
+
+<span class="cm"># Install a package</span>
+sudo dnf install -y mariadb-server
+sudo dnf install -y nano tree wget curl
+
+<span class="cm"># Search for a package</span>
+dnf search mariadb
+dnf search maxscale
+
+<span class="cm"># Get info about a package (version, size, description)</span>
+dnf info mariadb-server
+
+<span class="cm"># Remove a package</span>
+sudo dnf remove mariadb-server
+
+<span class="cm"># List installed packages</span>
+dnf list installed
+dnf list installed | grep mariadb
+
+<span class="cm"># What package does a file belong to?</span>
+dnf provides /usr/bin/mysql</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Adding repositories — MariaDB and MaxScale<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout info"><div class="lbl">ℹ️ Why repos matter</div><p>RHEL's default repositories contain older versions of MariaDB. To get MariaDB 10.11 or 11.x (the versions Galera works best with), you must add the official MariaDB repository.</p></div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Add official MariaDB 10.11 LTS repo</span>
+curl -LsS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup \
+  | sudo bash -s -- --mariadb-server-version="mariadb-10.11"
+
+<span class="cm"># Verify the repo was added</span>
+ls /etc/yum.repos.d/
+cat /etc/yum.repos.d/mariadb.repo
+
+<span class="cm"># Now install MariaDB from the official repo</span>
+sudo dnf install -y MariaDB-server MariaDB-client
+
+<span class="cm"># List all enabled repos</span>
+dnf repolist
+
+<span class="cm"># Disable a repo temporarily</span>
+sudo dnf install --disablerepo=appstream mariadb-server</div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Add MaxScale repo (after adding MariaDB repo above)</span>
+<span class="cm"># MaxScale repo is added by the same setup script with --mariadb-maxscale-version</span>
+curl -LsS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup \
+  | sudo bash -s -- --mariadb-maxscale-version="latest"
+
+sudo dnf install -y maxscale</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">RPM — working with packages directly<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Install a downloaded .rpm file</span>
+sudo dnf install -y ./dbeaver-ce-latest-stable.x86_64.rpm
+
+<span class="cm"># List all files installed by a package</span>
+rpm -ql mariadb-server
+
+<span class="cm"># Check if a package is installed</span>
+rpm -q mariadb-server
+
+<span class="cm"># Verify package files haven't been tampered with</span>
+rpm -V mariadb-server</div>
+      </div>
+      <div class="callout rhel"><div class="lbl">🎩 RHEL vs Debian</div><p>RHEL uses <code>dnf</code> / <code>rpm</code> and <code>.rpm</code> files. Debian/Ubuntu uses <code>apt</code> / <code>dpkg</code> and <code>.deb</code> files. The job posting mentions both. The concepts are identical — only the commands differ. On Ubuntu: <code>apt update && apt install mariadb-server</code>.</p></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l3')">← Lesson 03</button>
+    <button class="mark-done-btn" id="done-l4" onclick="markDone('l4')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l5')">Next: systemd →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 05 — SYSTEMD ════════════════════════════════════════════════ -->
+<div id="page-l5" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--teal)">Lesson 05 · ~2 hours</div>
+        <div class="page-title" style="color:var(--teal)">systemd & Services</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">systemd manages every long-running process on RHEL — including MariaDB and MaxScale. Starting, stopping, monitoring, and auto-starting services on boot are daily DBA tasks. You also need to read journald logs, which replaced the old syslog.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">systemctl — controlling services<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Start, stop, restart a service</span>
+sudo systemctl start mariadb
+sudo systemctl stop mariadb
+sudo systemctl restart mariadb
+
+<span class="cm"># Reload config without full restart (not all services support this)</span>
+sudo systemctl reload mariadb
+
+<span class="cm"># Check status — first thing you do when something is wrong</span>
+systemctl status mariadb
+systemctl status maxscale
+
+<span class="cm"># Enable auto-start on boot / disable it</span>
+sudo systemctl enable mariadb
+sudo systemctl disable mariadb
+
+<span class="cm"># Enable AND start in one command</span>
+sudo systemctl enable --now mariadb
+
+<span class="cm"># Is it running right now?</span>
+systemctl is-active mariadb
+systemctl is-enabled mariadb
+
+<span class="cm"># List all running services</span>
+systemctl list-units --type=service --state=running</div>
+      </div>
+      <div class="callout tip"><div class="lbl">💡 Production pattern</div><p>Always run <code>systemctl enable --now mariadb</code> after installation — not just <code>start</code>. Without <code>enable</code>, MariaDB will not restart after a reboot, causing an outage that looks mysterious until you realize the service was never enabled.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">journalctl — reading service logs<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout info"><div class="lbl">ℹ️ Two log sources</div><p>MariaDB writes to its own log file at <code>/var/log/mariadb/mariadb.log</code> AND to the systemd journal. The journal is useful for startup errors that happen before MariaDB can open its own log file.</p></div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Show all logs for MariaDB</span>
+sudo journalctl -u mariadb
+
+<span class="cm"># Last 50 lines</span>
+sudo journalctl -u mariadb -n 50
+
+<span class="cm"># Follow live (like tail -f)</span>
+sudo journalctl -u mariadb -f
+
+<span class="cm"># Logs since last boot</span>
+sudo journalctl -u mariadb -b
+
+<span class="cm"># Logs from a time range</span>
+sudo journalctl -u mariadb --since "2025-04-28 03:00" --until "2025-04-28 04:00"
+
+<span class="cm"># See why a service failed to start</span>
+sudo journalctl -u mariadb -b --no-pager | tail -30
+
+<span class="cm"># Check all services that crashed since boot</span>
+systemctl --failed</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Service unit files — understanding MariaDB's service<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Where is MariaDB's service unit file?</span>
+systemctl cat mariadb
+
+<span class="cm"># Show full path</span>
+systemctl show mariadb --property=FragmentPath</div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label conf">unit file excerpt</span></div>
+        <div class="code-body">[Unit]
+Description=MariaDB database server
+After=network.target
+
+[Service]
+Type=notify
+User=mysql
+Group=mysql
+ExecStart=/usr/sbin/mariadbd --basedir=/usr
+LimitNOFILE=32768       <span class="cm"># max open files — important for busy DBs</span>
+Restart=on-failure      <span class="cm"># auto-restart if it crashes</span>
+
+[Install]
+WantedBy=multi-user.target</div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Override unit file without editing the original</span>
+<span class="cm"># Creates /etc/systemd/system/mariadb.service.d/override.conf</span>
+sudo systemctl edit mariadb
+
+<span class="cm"># After editing any unit file, reload daemon</span>
+sudo systemctl daemon-reload</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Podman + systemd — running containers as services<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout rhel"><div class="lbl">🎩 RHEL uses Podman not Docker</div><p>Docker requires a daemon running as root. Podman is daemonless and rootless — each container is just a process. To run Podman containers as systemd services that survive reboots, you generate a unit file.</p></div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Start your phr-db container first</span>
+podman run --name phr-db \
+  -e MYSQL_ROOT_PASSWORD=caremate123 \
+  -e MYSQL_DATABASE=caremate_db \
+  -p 3306:3306 \
+  -d mysql:8
+
+<span class="cm"># Generate a systemd unit file for it</span>
+podman generate systemd --name phr-db --files --new
+
+<span class="cm"># Install as a user service (no root needed)</span>
+mkdir -p ~/.config/systemd/user
+mv container-phr-db.service ~/.config/systemd/user/
+
+systemctl --user enable --now container-phr-db.service
+
+<span class="cm"># Allow it to run when you're not logged in</span>
+loginctl enable-linger $USER
+
+<span class="cm"># Check it</span>
+systemctl --user status container-phr-db.service</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l4')">← Lesson 04</button>
+    <button class="mark-done-btn" id="done-l5" onclick="markDone('l5')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l6')">Next: Networking →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 06 — NETWORKING ═════════════════════════════════════════════ -->
+<div id="page-l6" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--purple)">Lesson 06 · ~2 hours</div>
+        <div class="page-title" style="color:var(--purple)">Networking & Firewall</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">Galera nodes communicate on ports 3306, 4444, 4567, and 4568. MaxScale listens on 3306 or 4006. If the firewall blocks these, the cluster simply doesn't form — and the error messages are confusing. Networking is a core DBA skill.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Network diagnostics<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Show all network interfaces and IP addresses</span>
+ip addr show
+ip a              <span class="cm"># shorthand</span>
+
+<span class="cm"># Show routing table</span>
+ip route show
+
+<span class="cm"># Test connectivity to another Galera node</span>
+ping -c 4 192.168.1.102
+
+<span class="cm"># Test if a specific port is reachable (is MariaDB listening?)</span>
+nc -zv 192.168.1.102 3306
+nc -zv 192.168.1.102 4567    <span class="cm"># Galera replication port</span>
+
+<span class="cm"># What ports is this server listening on?</span>
+ss -tlnp
+ss -tlnp | grep 3306         <span class="cm"># is MariaDB listening?</span>
+ss -tlnp | grep 4006         <span class="cm"># is MaxScale listening?</span>
+
+<span class="cm"># Trace route to another node</span>
+traceroute 192.168.1.102</div>
+      </div>
+      <div class="callout tip"><div class="lbl">💡 Galera port map</div><p><code>3306</code> = MySQL/MariaDB client connections. <code>4444</code> = SST (State Snapshot Transfer — full sync). <code>4567</code> = Galera replication traffic (group communication). <code>4568</code> = IST (Incremental State Transfer). All four must be open between Galera nodes.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">firewalld — opening ports for MariaDB and Galera<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout rhel"><div class="lbl">🎩 RHEL uses firewalld</div><p>RHEL uses <code>firewalld</code> instead of raw <code>iptables</code>. It manages zones — groups of rules. By default, your network interface is in the "public" zone which blocks almost everything.</p></div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Check firewall status</span>
+sudo firewall-cmd --state
+sudo firewall-cmd --list-all
+
+<span class="cm"># Open MariaDB port (3306)</span>
+sudo firewall-cmd --add-port=3306/tcp --permanent
+
+<span class="cm"># Open all Galera ports</span>
+sudo firewall-cmd --add-port=4444/tcp --permanent   <span class="cm"># SST</span>
+sudo firewall-cmd --add-port=4567/tcp --permanent   <span class="cm"># Galera replication</span>
+sudo firewall-cmd --add-port=4567/udp --permanent   <span class="cm"># Galera multicast</span>
+sudo firewall-cmd --add-port=4568/tcp --permanent   <span class="cm"># IST</span>
+
+<span class="cm"># Open MaxScale port</span>
+sudo firewall-cmd --add-port=4006/tcp --permanent
+
+<span class="cm"># Apply all --permanent changes</span>
+sudo firewall-cmd --reload
+
+<span class="cm"># Verify ports are open</span>
+sudo firewall-cmd --list-ports
+
+<span class="cm"># Emergency: completely disable firewall (never in production)</span>
+sudo systemctl stop firewalld</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Hostname and /etc/hosts configuration<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Check current hostname</span>
+hostname
+hostnamectl
+
+<span class="cm"># Set hostname permanently (important for Galera node identification)</span>
+sudo hostnamectl set-hostname galera-node-01
+
+<span class="cm"># Edit /etc/hosts — map hostnames to IPs for Galera cluster</span>
+sudo vim /etc/hosts</div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label conf">/etc/hosts example for Galera cluster</span></div>
+        <div class="code-body">127.0.0.1   localhost
+192.168.1.101   galera-node-01
+192.168.1.102   galera-node-02
+192.168.1.103   galera-node-03</div>
+      </div>
+      <div class="callout tip"><div class="lbl">💡 Why /etc/hosts matters for Galera</div><p>Galera uses the hostname in <code>wsrep_node_address</code> and <code>wsrep_node_name</code>. If DNS is slow or unavailable, Galera falls back to <code>/etc/hosts</code>. Always populate it on all nodes — DNS failures have caused Galera split-brain scenarios in production.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">SSH — accessing remote servers<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Connect to a remote server</span>
+ssh dba_ali@192.168.1.102
+ssh dba_ali@galera-node-02
+
+<span class="cm"># Generate SSH key pair (do this once)</span>
+ssh-keygen -t ed25519 -C "dba_ali@galera-node-01"
+
+<span class="cm"># Copy your public key to a remote server (enables passwordless login)</span>
+ssh-copy-id dba_ali@galera-node-02
+
+<span class="cm"># Copy a file to remote server (backup transfer)</span>
+scp backup.tar.gz dba_ali@galera-node-02:/tmp/
+
+<span class="cm"># Copy a directory recursively</span>
+scp -r /var/lib/mysql/caremate_db dba_ali@galera-node-02:/tmp/</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l5')">← Lesson 05</button>
+    <button class="mark-done-btn" id="done-l6" onclick="markDone('l6')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l7')">Next: Bash for DBAs →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 07 — BASH FOR DBAS ══════════════════════════════════════════ -->
+<div id="page-l7" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--yellow)">Lesson 07 · ~3 hours</div>
+        <div class="page-title" style="color:var(--yellow)">Bash Scripting for DBAs</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">You will write scripts to automate backups, rotate logs, check cluster health, and alert on disk usage. These are not optional — they are the difference between a DBA who reacts to problems and one who prevents them.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Bash fundamentals<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm">#!/bin/bash
+# First line (shebang) — tells the OS this is a bash script</span>
+
+<span class="cm"># Variables — no spaces around =</span>
+DB_NAME="caremate_db"
+DB_USER="root"
+BACKUP_DIR="/var/backups/mysql"
+
+<span class="cm"># Use variables with $</span>
+echo "Backing up $DB_NAME"
+
+<span class="cm"># Command output into a variable</span>
+TODAY=$(date +%Y-%m-%d)
+DISK_USAGE=$(df -h /var/lib/mysql | awk 'NR==2 {print $5}')
+
+<span class="cm"># Arithmetic</span>
+COUNT=$((5 + 3))
+
+<span class="cm"># If statement</span>
+if [ "$DISK_USAGE" -gt 80 ]; then
+  echo "WARNING: disk at $DISK_USAGE%"
+fi
+
+<span class="cm"># For loop</span>
+for NODE in galera-node-01 galera-node-02 galera-node-03; do
+  echo "Checking $NODE..."
+  ssh $NODE "systemctl is-active mariadb"
+done</div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Make a script executable</span>
+chmod +x /usr/local/bin/check_cluster.sh
+
+<span class="cm"># Run it</span>
+/usr/local/bin/check_cluster.sh
+
+<span class="cm"># Debug mode — shows every command as it runs</span>
+bash -x /usr/local/bin/check_cluster.sh</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Real script — automated MariaDB backup with rotation<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash — /usr/local/bin/mariadb_backup.sh</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm">#!/bin/bash
+# MariaDB daily backup with 7-day rotation
+# Run via cron: 0 2 * * * /usr/local/bin/mariadb_backup.sh</span>
+
+BACKUP_DIR="/var/backups/mysql"
+LOG_FILE="/var/log/mariadb_backup.log"
+KEEP_DAYS=7
+DATE=$(date +%Y-%m-%d_%H-%M-%S)
+BACKUP_PATH="$BACKUP_DIR/full_$DATE"
+
+<span class="cm"># Create backup dir if it doesn't exist</span>
+mkdir -p "$BACKUP_DIR"
+
+echo "[$DATE] Starting backup..." >> "$LOG_FILE"
+
+<span class="cm"># Run mariabackup</span>
+mariabackup --backup \
+  --target-dir="$BACKUP_PATH" \
+  --user=root \
+  --password=caremate123 2>> "$LOG_FILE"
+
+if [ $? -eq 0 ]; then
+  echo "[$DATE] Backup succeeded: $BACKUP_PATH" >> "$LOG_FILE"
+
+  <span class="cm"># Prepare the backup (required before restore)</span>
+  mariabackup --prepare --target-dir="$BACKUP_PATH" 2>> "$LOG_FILE"
+
+  <span class="cm"># Remove backups older than KEEP_DAYS</span>
+  find "$BACKUP_DIR" -maxdepth 1 -name "full_*" -mtime +$KEEP_DAYS -exec rm -rf {} \;
+  echo "[$DATE] Rotation done. Kept last $KEEP_DAYS days." >> "$LOG_FILE"
+else
+  echo "[$DATE] BACKUP FAILED — check logs!" >> "$LOG_FILE"
+  <span class="cm"># Send alert (replace with your alerting method)</span>
+  echo "MariaDB backup failed on $(hostname)" | mail -s "BACKUP ALERT" dba@company.com
+fi</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Real script — Galera cluster health check<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash — /usr/local/bin/check_galera.sh</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm">#!/bin/bash
+# Quick Galera health check — run this before any maintenance</span>
+
+MYSQL_CMD="mysql -u root -pcaremate123 -e"
+
+echo "=== Galera Cluster Health ==="
+
+<span class="cm"># Cluster size — should equal number of nodes</span>
+SIZE=$($MYSQL_CMD "SHOW STATUS LIKE 'wsrep_cluster_size';" | awk 'NR==2 {print $2}')
+echo "Cluster size: $SIZE"
+
+<span class="cm"># This node's status</span>
+STATE=$($MYSQL_CMD "SHOW STATUS LIKE 'wsrep_local_state_comment';" | awk 'NR==2 {print $2}')
+echo "Local state: $STATE"
+
+<span class="cm"># Is this node synced?</span>
+READY=$($MYSQL_CMD "SHOW STATUS LIKE 'wsrep_ready';" | awk 'NR==2 {print $2}')
+echo "Ready: $READY"
+
+<span class="cm"># Flow control (should be 0 or very low)</span>
+FC=$($MYSQL_CMD "SHOW STATUS LIKE 'wsrep_flow_control_paused';" | awk 'NR==2 {print $2}')
+echo "Flow control paused: $FC"
+
+<span class="cm"># Alert if cluster is degraded</span>
+if [ "$SIZE" -lt 3 ]; then
+  echo "WARNING: Cluster has only $SIZE nodes — quorum may be at risk!"
+fi
+
+if [ "$STATE" != "Synced" ]; then
+  echo "WARNING: Node is not Synced — state is $STATE"
+fi</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">cron — scheduling scripts<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Edit cron jobs for the current user</span>
+crontab -e
+
+<span class="cm"># View existing cron jobs</span>
+crontab -l
+
+<span class="cm"># Cron syntax:  minute hour day month weekday command
+# Backup at 2am every day</span>
+0 2 * * * /usr/local/bin/mariadb_backup.sh
+
+<span class="cm"># Cluster health check every 5 minutes</span>
+*/5 * * * * /usr/local/bin/check_galera.sh >> /var/log/galera_health.log 2>&1
+
+<span class="cm"># Disk check every hour</span>
+0 * * * * df -h /var/lib/mysql >> /var/log/disk_usage.log
+
+<span class="cm"># System-wide cron files (run as root)</span>
+ls /etc/cron.d/
+ls /etc/cron.daily/</div>
+      </div>
+      <div class="callout tip"><div class="lbl">💡 Cron cheat sheet</div><p><code>*</code> = every. <code>*/5</code> = every 5. <code>0 2 * * *</code> = at 02:00 every day. <code>0 2 * * 0</code> = at 02:00 every Sunday. Always redirect both stdout and stderr: <code>>> /var/log/myscript.log 2>&1</code> or you'll never know if it failed.</p></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l6')">← Lesson 06</button>
+    <button class="mark-done-btn" id="done-l7" onclick="markDone('l7')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l8')">Next: SELinux →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 08 — SELINUX ════════════════════════════════════════════════ -->
+<div id="page-l8" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--pink)">Lesson 08 · ~2 hours</div>
+        <div class="page-title" style="color:var(--pink)">SELinux</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">SELinux is enabled by default on RHEL and it will silently block MariaDB from accessing files, ports, or directories that you haven't explicitly labelled. It is the single most common cause of "it works on Debian but not RHEL" problems.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">What SELinux is and why it matters<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout info"><div class="lbl">ℹ️ The concept</div><p>Normal Linux permissions say "can user X access file Y?" SELinux adds a second layer: "is process Z even allowed to access files of type T, regardless of Unix permissions?" MariaDB (the process) has an SELinux label. Your data directory has a label. If they don't match the SELinux policy, access is denied — even if chown and chmod look correct.</p></div>
+      <div class="concepts">
+        <div class="concept red"><div class="concept-name">Enforcing mode</div><div class="concept-desc">Default on RHEL production. SELinux actively blocks policy violations. An unexpected denial = MariaDB refuses to start or can't write files.</div></div>
+        <div class="concept orange"><div class="concept-name">Permissive mode</div><div class="concept-desc">SELinux logs violations but does not block them. Used for debugging and building new policies. Safe for a dev VM, never for production.</div></div>
+        <div class="concept blue"><div class="concept-name">Disabled mode</div><div class="concept-desc">SELinux completely off. Requires reboot. Never disable in production. If you're disabling SELinux to fix a problem, you're not fixing the problem.</div></div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Check current SELinux mode</span>
+getenforce
+sestatus
+
+<span class="cm"># Temporarily switch to permissive (survives until reboot)</span>
+sudo setenforce 0    <span class="cm"># 0=permissive, 1=enforcing</span>
+
+<span class="cm"># Permanently change mode — edit this file</span>
+sudo vim /etc/selinux/config
+<span class="cm"># Change SELINUX=enforcing to SELINUX=permissive (requires reboot)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">SELinux contexts — fixing MariaDB data directory labels<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout warn"><div class="lbl">⚠️ Most common scenario</div><p>You moved the MariaDB data directory to a new disk. Now MariaDB won't start even though chown and chmod are correct. The new path doesn't have the right SELinux context (label). MariaDB expects files labelled <code>mysqld_db_t</code>.</p></div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># See SELinux context of files (-Z flag)</span>
+ls -laZ /var/lib/mysql
+<span class="cm"># should show: system_u:object_r:mysqld_db_t:s0</span>
+
+ls -laZ /mnt/newdisk/mysql
+<span class="cm"># shows: system_u:object_r:unlabeled_t:s0  &lt;-- this is the problem</span>
+
+<span class="cm"># Fix: tell SELinux this new path should have the mysql data context</span>
+sudo semanage fcontext -a -t mysqld_db_t "/mnt/newdisk/mysql(/.*)?"
+
+<span class="cm"># Apply the context to existing files</span>
+sudo restorecon -Rv /mnt/newdisk/mysql
+
+<span class="cm"># Verify</span>
+ls -laZ /mnt/newdisk/mysql</div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># Allow MariaDB to use a non-standard port</span>
+sudo semanage port -a -t mysqld_port_t -p tcp 3307
+
+<span class="cm"># Check what ports MariaDB is allowed to use</span>
+semanage port -l | grep mysqld</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Diagnosing SELinux denials with audit2why<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm"># SELinux denials are logged to the audit log</span>
+sudo tail -50 /var/log/audit/audit.log | grep denied
+
+<span class="cm"># audit2why explains a denial in plain English</span>
+sudo audit2why < /var/log/audit/audit.log
+
+<span class="cm"># audit2allow generates a policy module to fix it</span>
+sudo audit2allow -a -M my_mariadb_fix
+sudo semodule -i my_mariadb_fix.pp
+
+<span class="cm"># Install tools if missing</span>
+sudo dnf install -y policycoreutils-python-utils</div>
+      </div>
+      <div class="callout tip"><div class="lbl">💡 Diagnosis workflow</div><p>When MariaDB fails on RHEL and permissions look correct: (1) temporarily set <code>setenforce 0</code>, (2) try starting MariaDB, (3) if it works now, SELinux is the problem, (4) check <code>/var/log/audit/audit.log</code> for denials, (5) use <code>audit2why</code> to understand them, (6) fix contexts with <code>semanage fcontext</code> + <code>restorecon</code>, (7) set <code>setenforce 1</code> again.</p></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l7')">← Lesson 07</button>
+    <button class="mark-done-btn" id="done-l8" onclick="markDone('l8')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l9')">Next: 3am Scenarios →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 09 — 3AM SCENARIOS + Q&A ════════════════════════════════════ -->
+<div id="page-l9" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--red)">Lesson 09 · ~1 hour</div>
+        <div class="page-title" style="color:var(--red)">3am Scenarios & Interview Q&A</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">Real incidents follow patterns. Practice these before the interview — they test not just knowledge but systematic thinking under pressure.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">3am scenario — MariaDB refuses to start on RHEL<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout scenario"><div class="lbl">🚨 3am scenario</div><p>You get paged. MariaDB is down on a RHEL production server. <code>systemctl status mariadb</code> shows "failed". Walk through your exact steps.</p></div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Read the systemd status</div><div class="step-desc"><code>systemctl status mariadb -l</code> — the <code>-l</code> flag shows the full error without truncation.</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Read the journal</div><div class="step-desc"><code>sudo journalctl -u mariadb -b --no-pager | tail -50</code> — covers startup errors before the MariaDB log opens.</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Read MariaDB's own error log</div><div class="step-desc"><code>sudo tail -100 /var/log/mariadb/mariadb.log</code></div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Check disk</div><div class="step-desc"><code>df -h /var/lib/mysql</code> — a full disk causes cryptic errors. This takes 2 seconds to rule out.</div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">Check permissions</div><div class="step-desc"><code>ls -laZ /var/lib/mysql</code> — ownership should be mysql:mysql and SELinux context should be mysqld_db_t.</div></div></div>
+        <div class="step"><div class="step-num">6</div><div class="step-content"><div class="step-title">Check SELinux</div><div class="step-desc"><code>sudo tail -20 /var/log/audit/audit.log | grep denied</code> — if you see denials, SELinux is blocking it.</div></div></div>
+        <div class="step"><div class="step-num">7</div><div class="step-content"><div class="step-title">Check config syntax</div><div class="step-desc"><code>mysqld --help --verbose 2>&1 | head -5</code> — a syntax error in my.cnf produces an immediate parse error here.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">3am scenario — disk filling up on the data volume<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout scenario"><div class="lbl">🚨 3am scenario</div><p>Monitoring alerts: /var/lib/mysql is at 95% disk. Writes will fail at 100%. You have maybe 30 minutes.</p></div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Find what's using space</div><div class="step-desc"><code>du -sh /var/lib/mysql/* | sort -rh | head -20</code> — identifies the largest databases or files.</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Check binary logs</div><div class="step-desc">Binary logs are often the culprit. <code>ls -lah /var/lib/mysql/mysql-bin.*</code>. They accumulate if not purged.</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Purge old binary logs safely</div><div class="step-desc">In MariaDB: <code>PURGE BINARY LOGS BEFORE DATE_SUB(NOW(), INTERVAL 3 DAY);</code> — never delete the files directly.</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Check for large temporary files</div><div class="step-desc"><code>find /tmp /var/tmp -size +500M 2>/dev/null</code></div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">Longer term: add a volume or move data dir</div><div class="step-desc">Create a symlink from /var/lib/mysql to a larger mount point, update SELinux context, restart MariaDB.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">3am scenario — Galera node won't rejoin after RHEL reboot<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout scenario"><div class="lbl">🚨 3am scenario</div><p>A Galera node was rebooted for a kernel update. It won't rejoin the cluster. The other two nodes are healthy. The error log shows "failed to reach primary component".</p></div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Check the other nodes first</div><div class="step-desc">SSH to a healthy node. <code>mysql -e "SHOW STATUS LIKE 'wsrep_cluster_size';"</code> — should show 2 (the two healthy nodes).</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Check firewall on the rebooted node</div><div class="step-desc"><code>sudo firewall-cmd --list-ports</code> — after reboot, firewall rules are restored from permanent config. Verify Galera ports 4567, 4568, 4444 are still open.</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Check SELinux denials</div><div class="step-desc"><code>sudo audit2why < /var/log/audit/audit.log</code> — a kernel update can reset SELinux policy.</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Check network connectivity</div><div class="step-desc"><code>nc -zv galera-node-01 4567</code> from the rebooted node — can it reach the cluster?</div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">Restart MariaDB on the rebooted node</div><div class="step-desc"><code>sudo systemctl restart mariadb</code> — if the node was cleanly shut down, it should trigger IST and sync without SST.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Interview Q&A — Linux for DBAs<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="qa-list">
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What is the difference between Podman and Docker on RHEL?</div>
+          <div class="qa-a"><p>Docker requires a daemon running as root, which is a security risk. Podman is daemonless — each container is a direct child process of the user who started it. On RHEL, Podman is the default and preferred tool. Commands are nearly identical (mostly a 1:1 swap of <code>docker</code> for <code>podman</code>). The main operational difference: Podman containers need a systemd unit file generated via <code>podman generate systemd</code> to survive reboots, whereas Docker has <code>--restart always</code>.</p></div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">MariaDB won't start on RHEL even though permissions look correct. What do you check?</div>
+          <div class="qa-a"><p>SELinux. Normal Unix permissions and SELinux contexts are independent. Check <code>ls -laZ /var/lib/mysql</code> — the SELinux type must be <code>mysqld_db_t</code>. If you moved the data directory, the new path won't have this label automatically. Fix with <code>semanage fcontext -a -t mysqld_db_t "/new/path(/.*)?"</code> then <code>restorecon -Rv /new/path</code>. Also check <code>/var/log/audit/audit.log</code> for denied entries and use <code>audit2why</code> to interpret them.</p></div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">How do you make a service start automatically after a reboot on RHEL?</div>
+          <div class="qa-a"><p><code>sudo systemctl enable mariadb</code> — this creates a symlink in the appropriate systemd target directory so the service starts at boot. <code>systemctl start</code> alone only starts it for the current session. Best practice: use <code>sudo systemctl enable --now mariadb</code> which enables and starts in one command. Verify with <code>systemctl is-enabled mariadb</code>.</p></div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">How do you open Galera cluster ports on RHEL's firewall?</div>
+          <div class="qa-a"><p>RHEL uses <code>firewalld</code>. Open ports with <code>sudo firewall-cmd --add-port=4567/tcp --permanent</code> for each required port (3306, 4444, 4567/tcp, 4567/udp, 4568). Then <code>sudo firewall-cmd --reload</code> to apply. The <code>--permanent</code> flag is critical — without it, rules disappear on the next reload or reboot. Verify with <code>sudo firewall-cmd --list-ports</code>.</p></div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What is the difference between dnf and apt?</div>
+          <div class="qa-a"><p>Both are package managers — <code>dnf</code> is for RHEL/CentOS/Fedora, <code>apt</code> is for Debian/Ubuntu. They manage <code>.rpm</code> and <code>.deb</code> packages respectively. The concepts are identical: update package lists, install, remove, search. The syntax differs: <code>dnf install mariadb-server</code> vs <code>apt install mariadb-server</code>. Repository files live in <code>/etc/yum.repos.d/</code> on RHEL and <code>/etc/apt/sources.list.d/</code> on Debian.</p></div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">A MariaDB backup script is failing silently. How would you debug it?</div>
+          <div class="qa-a"><p>First, check if cron is even running the script: <code>grep CRON /var/log/cron</code>. Then run the script manually in debug mode: <code>bash -x /usr/local/bin/mariadb_backup.sh</code> — this prints every command before executing it. Check the script's exit codes with <code>echo $?</code> after each command. Make sure cron output is redirected to a log: <code>0 2 * * * /usr/local/bin/mariadb_backup.sh >> /var/log/backup.log 2>&1</code>. The <code>2>&1</code> redirects stderr alongside stdout — without it, error messages are silently discarded.</p></div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">How do you find which process is using port 3306?</div>
+          <div class="qa-a"><p><code>ss -tlnp | grep 3306</code> — shows the process name and PID. Or <code>lsof -i :3306</code> if <code>lsof</code> is installed. This is useful when MariaDB fails to start with "address already in use" — another MariaDB instance or a different service might have grabbed the port.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Quick reference card — commands you must know cold<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <table class="compare-table">
+        <tr><th>Task</th><th>Command</th></tr>
+        <tr><td>Check disk space</td><td>df -h /var/lib/mysql</td></tr>
+        <tr><td>Follow MariaDB log</td><td>tail -f /var/log/mariadb/mariadb.log</td></tr>
+        <tr><td>Check service status</td><td>systemctl status mariadb</td></tr>
+        <tr><td>Restart MariaDB</td><td>sudo systemctl restart mariadb</td></tr>
+        <tr><td>Enable on boot</td><td>sudo systemctl enable --now mariadb</td></tr>
+        <tr><td>See what's using port 3306</td><td>ss -tlnp | grep 3306</td></tr>
+        <tr><td>Fix data dir ownership</td><td>sudo chown -R mysql:mysql /var/lib/mysql/</td></tr>
+        <tr><td>Fix SELinux context</td><td>sudo restorecon -Rv /var/lib/mysql</td></tr>
+        <tr><td>Open firewall port</td><td>sudo firewall-cmd --add-port=3306/tcp --permanent && sudo firewall-cmd --reload</td></tr>
+        <tr><td>See SELinux denials</td><td>sudo audit2why &lt; /var/log/audit/audit.log</td></tr>
+        <tr><td>Check Galera cluster size</td><td>mysql -e "SHOW STATUS LIKE 'wsrep_cluster_size';"</td></tr>
+        <tr><td>Test port reachability</td><td>nc -zv galera-node-02 4567</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l8')">← Lesson 08</button>
+    <button class="mark-done-btn" id="done-l9" onclick="markDone('l9')">Mark complete ✓</button>
+  </div>
+</div>
+
+<script>
+function togSection(titleEl){
+  titleEl.classList.toggle('sec-open');
+  titleEl.nextElementSibling.classList.toggle('sec-open');
+}
+
+function expandAll(btn){
+  const page = btn.closest('.page');
+  const isExpanding = btn.textContent.includes('↓');
+  page.querySelectorAll('.section-title').forEach(t=>{
+    t.classList.toggle('sec-open', isExpanding);
+  });
+  page.querySelectorAll('.section-body').forEach(b=>{
+    b.classList.toggle('sec-open', isExpanding);
+  });
+  btn.textContent = isExpanding ? 'Collapse all ↑' : 'Expand all ↓';
+}
+
+const PHASE_KEY = 'phase_00_linux_done';
+let done = {};
+try { done = JSON.parse(localStorage.getItem(PHASE_KEY)||'{}'); } catch(e){}
+function save(){ try{localStorage.setItem(PHASE_KEY,JSON.stringify(done));}catch(e){}}
+
+const LESSONS = ['l1','l2','l3','l4','l5','l6','l7','l8','l9'];
+const STATUS_LABELS = {
+  'l1':['Start here →','Complete ✓'],
+  'l2':['Not started','Complete ✓'],
+  'l3':['Not started','Complete ✓'],
+  'l4':['Not started','Complete ✓'],
+  'l5':['Not started','Complete ✓'],
+  'l6':['Not started','Complete ✓'],
+  'l7':['Not started','Complete ✓'],
+  'l8':['Not started','Complete ✓'],
+  'l9':['Not started','Complete ✓'],
+};
+
+function updateHomeCards(){
+  LESSONS.forEach(id=>{
+    const el = document.getElementById('st-'+id);
+    if(!el) return;
+    const isDone = !!done[id];
+    el.textContent = isDone ? STATUS_LABELS[id][1] : STATUS_LABELS[id][0];
+    if(isDone){ el.style.background='var(--greenb)'; el.style.color='var(--green)'; }
+    const tab = document.getElementById('tab-'+id);
+    if(tab) tab.classList.toggle('done-tab', isDone);
+  });
+}
+
+function markDone(id){
+  done[id] = !done[id];
+  save();
+  updateHomeCards();
+  const btn = document.getElementById('done-'+id);
+  if(btn){
+    btn.classList.toggle('done', !!done[id]);
+    btn.textContent = done[id] ? 'Completed ✓' : 'Mark complete ✓';
+  }
+}
+
+function restoreDoneButtons(){
+  LESSONS.forEach(id=>{
+    const btn = document.getElementById('done-'+id);
+    if(btn && done[id]){
+      btn.classList.add('done');
+      btn.textContent = 'Completed ✓';
+    }
+  });
+}
+
+let currentPage = 'home';
+
+function goTo(id){
+  document.getElementById('page-'+currentPage).classList.remove('active');
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  const page = document.getElementById('page-'+id);
+  if(page){
+    page.classList.add('active');
+    page.querySelectorAll('.section-title').forEach(t=>t.classList.remove('sec-open'));
+    page.querySelectorAll('.section-body').forEach(b=>b.classList.remove('sec-open'));
+    page.querySelectorAll('.expand-all-btn').forEach(b=>{ b.textContent='Expand all ↓'; });
+    page.querySelectorAll('.qa-q').forEach(q=>q.classList.remove('open'));
+    page.querySelectorAll('.qa-a').forEach(a=>a.classList.remove('open'));
+  } else {
+    document.getElementById('page-home').classList.add('active');
+    id = 'home';
+  }
+  const tab = document.getElementById('tab-'+(id==='home'?'home':id));
+  if(tab) tab.classList.add('active');
+  currentPage = id;
+  requestAnimationFrame(()=>{
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  });
+}
+
+function togQA(qEl){
+  qEl.classList.toggle('open');
+  qEl.nextElementSibling.classList.toggle('open');
+}
+
+function copyCode(btn){
+  const body = btn.closest('.code-block').querySelector('.code-body');
+  const text = body.innerText || body.textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent='copied!';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='copy'; btn.classList.remove('copied'); }, 1800);
+  }).catch(()=>{
+    btn.textContent='select + copy';
+    setTimeout(()=>{ btn.textContent='copy'; }, 2000);
+  });
+}
+
+updateHomeCards();
+restoreDoneButtons();
+</script>
+</body>
+</html>

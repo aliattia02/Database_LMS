@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 06 — Galera Cluster · ANÜ MariaDB Interview Prep</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#eef2f7;--surface:#ffffff;--card:#f4f7fb;--border:#dde4ef;--border2:#c5cedf;
+  --text:#1a2440;--muted:#5a6a85;--dim:#8fa0bb;
+  --blue:#0284c7;--blueb:#e0f2fe;--blued:#0369a1;
+  --purple:#7c3aed;--purpleb:#ede9fe;
+  --green:#059669;--greenb:#d1fae5;--greend:#047857;
+  --orange:#d97706;--orangeb:#fef3c7;
+  --pink:#db2777;--pinkb:#fce7f3;
+  --yellow:#b45309;--yellowb:#fef9c3;
+  --red:#dc2626;--redb:#fee2e2;
+  --teal:#0d9488;--tealb:#ccfbf1;
+  --phase:#7c3aed;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;min-height:100vh}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;padding:0 24px;gap:0;box-shadow:0 1px 6px rgba(0,60,120,.06)}
+.nav-logo{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--text);padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:8px;white-space:nowrap;flex-shrink:0}
+.nav-logo span{color:var(--phase)}
+.nav-tab{padding:14px 12px;font-size:11px;font-weight:600;letter-spacing:.05em;cursor:pointer;color:var(--muted);transition:color .15s;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent;user-select:none}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--text);border-bottom-color:var(--phase)}
+.nav-tab.done-tab{color:var(--greend)}
+.nav-tab.done-tab.active{color:var(--text)}
+
+/* LAYOUT */
+.page{display:none;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.page.active{display:block}
+#page-home:not(.active){display:none}
+
+/* HERO */
+.hero{padding:56px 40px 40px;max-width:1100px;margin:0 auto}
+.eyebrow{font-size:11px;letter-spacing:.2em;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:14px}
+h1{font-size:48px;font-weight:800;line-height:1;letter-spacing:-.03em;margin-bottom:14px;color:var(--text)}
+h1 span{color:var(--phase)}
+.hero-sub{font-size:14px;color:var(--muted);max-width:600px;line-height:1.65;margin-bottom:36px}
+.weight-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;letter-spacing:.06em;margin-bottom:24px;background:#fce7f3;color:#9d174d;border:1px solid #f9a8d4}
+.weight-badge.critical{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
+
+/* HERO LESSON GRID */
+.hero-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:7px;max-width:1100px;margin:0 40px 40px}
+.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px 10px;cursor:pointer;transition:border-color .15s,transform .12s,box-shadow .15s;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,60,120,.04);display:flex;align-items:center;gap:10px}
+.hero-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;border-radius:10px 0 0 10px;background:var(--phase)}
+.hero-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,60,120,.09)}
+.hero-card-icon{width:30px;height:30px;border-radius:7px;background:var(--purpleb);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.hero-card-body{flex:1;min-width:0}
+.hero-card-num{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;color:var(--phase)}
+.hero-card-title{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.status{font-size:9px;padding:2px 7px;border-radius:99px;display:inline-block;font-weight:600;letter-spacing:.04em;background:var(--purpleb);color:var(--phase)}
+.hero-card-arrow{font-size:13px;color:var(--dim);flex-shrink:0;font-weight:300}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.page-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:8px}
+.lesson-num{font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;color:var(--phase)}
+.page-title{font-size:30px;font-weight:800;letter-spacing:-.02em;color:var(--phase)}
+.back-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-family:'Syne',sans-serif;color:var(--muted);cursor:pointer;transition:color .15s,border-color .15s;white-space:nowrap}
+.back-btn:hover{color:var(--text);border-color:var(--border2)}
+.page-desc{font-size:13px;color:var(--muted);line-height:1.65;max-width:680px}
+
+/* SECTIONS */
+.section{margin-bottom:6px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface)}
+.section-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:12px 16px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;transition:background .12s;margin-bottom:0}
+.section-title:hover{background:var(--card)}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.section-chevron{font-size:11px;color:var(--dim);margin-left:4px;transition:transform .2s;flex-shrink:0}
+.section-title.sec-open{color:var(--text);background:var(--card);border-bottom:1px solid var(--border)}
+.section-title.sec-open .section-chevron{transform:rotate(180deg)}
+.section-body{display:none;padding:14px 16px 12px}
+.section-body.sec-open{display:block}
+
+/* EXPAND BAR */
+.expand-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:0 2px}
+.expand-bar-label{font-size:11px;color:var(--dim)}
+.expand-all-btn{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--muted);cursor:pointer;transition:all .15s}
+.expand-all-btn:hover{color:var(--text);border-color:var(--border2)}
+
+/* CONCEPTS */
+.concepts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.concept{background:var(--surface);border-radius:10px;padding:12px 16px;border:1px solid var(--border);border-left:3px solid var(--border2)}
+.concept.green{border-left-color:var(--green)}.concept.blue{border-left-color:var(--blue)}
+.concept.orange{border-left-color:var(--orange)}.concept.purple{border-left-color:var(--purple)}
+.concept.teal{border-left-color:var(--teal)}.concept.yellow{border-left-color:var(--yellow)}
+.concept.red{border-left-color:var(--red)}
+.concept-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.concept-desc{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* CODE BLOCKS */
+.code-block{background:#f8fafc;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,60,120,.04)}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--surface)}
+.code-label{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.code-label.sql{color:var(--blue)}.code-label.bash{color:var(--green)}.code-label.conf{color:var(--orange)}
+.code-label.output{color:var(--orange)}
+.copy-btn{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);background:none;border:1px solid var(--border);border-radius:5px;padding:3px 8px;cursor:pointer;transition:color .15s,border-color .15s}
+.copy-btn:hover{color:var(--text);border-color:var(--border2)}
+.copy-btn.copied{color:var(--green);border-color:var(--green)}
+.code-body{padding:16px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#334155;line-height:1.75;overflow-x:auto;white-space:pre;background:#f8fafc}
+.kw{color:#0284c7}.fn{color:#7c3aed}.str{color:#059669}.cm{color:#94a3b8}.num{color:#d97706}.op{color:#db2777}.tp{color:#b45309}.tb{color:#0d9488}
+
+/* EXAMPLE BADGES */
+.example-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.04em}
+.example-badge.ehr{background:#ccfbf1;color:#0d9488}
+.example-badge.db{background:#fee2e2;color:#EC0016}
+.example-badge.diatwin{background:#ede9fe;color:#5b21b6}
+
+/* CALLOUTS */
+.callout{border-radius:0 10px 10px 0;padding:12px 16px;margin-bottom:16px;border:1px solid transparent;border-left-width:3px}
+.callout .lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.callout p,.callout li{font-size:12px;line-height:1.65}
+.callout ul,.callout ol{padding-left:16px}
+.callout li{margin-bottom:4px}
+.callout.tip{background:var(--greenb);border-color:#a7f3d0;border-left-color:var(--green)}
+.callout.tip .lbl{color:var(--green)}.callout.tip p,.callout.tip li{color:#065f46}
+.callout.warn{background:var(--yellowb);border-color:#fde68a;border-left-color:var(--yellow)}
+.callout.warn .lbl{color:var(--yellow)}.callout.warn p,.callout.warn li{color:#78350f}
+.callout.info{background:var(--blueb);border-color:#bae6fd;border-left-color:var(--blue)}
+.callout.info .lbl{color:var(--blue)}.callout.info p,.callout.info li{color:#075985}
+.callout.phr{background:var(--tealb);border-color:#99f6e4;border-left-color:var(--teal)}
+.callout.phr .lbl{color:var(--teal)}.callout.phr p,.callout.phr li{color:#134e4a}
+.callout.db{background:#fee2e2;border-color:#fca5a5;border-left-color:#EC0016}
+.callout.db .lbl{color:#b91c1c}.callout.db p,.callout.db li{color:#7f1d1d}
+.callout.diatwin{background:#ede9fe;border-color:#c4b5fd;border-left-color:#7c3aed}
+.callout.diatwin .lbl{color:#5b21b6}.callout.diatwin p,.callout.diatwin li{color:#3b0764}
+.callout.interview{background:#e0e7ff;border-color:#a5b4fc;border-left-color:#4338ca}
+.callout.interview .lbl{color:#3730a3}.callout.interview p{color:#312e81;font-weight:600}
+.callout.scenario{background:#1e293b;color:#e2e8f0;border-left-color:#dc2626;border-left-width:4px}
+.callout.scenario .lbl{color:#f87171;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.callout.scenario p{font-size:12px;line-height:1.6;color:#e2e8f0}
+.callout.scenario ol,.callout.scenario ul{padding-left:16px}
+.callout.scenario li{font-size:12px;line-height:1.6;color:#cbd5e1;margin-bottom:4px}
+
+/* INTERVIEW Q&A */
+.qa-list{display:flex;flex-direction:column;gap:8px}
+.qa-item{border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.qa-q{padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;background:var(--bg);transition:background .12s;display:flex;justify-content:space-between;align-items:center}
+.qa-q::after{content:'▾';font-size:11px;color:var(--dim);transition:transform .2s}
+.qa-q.open::after{transform:rotate(180deg)}
+.qa-q:hover{background:var(--card)}
+.qa-a{display:none;padding:12px 14px;border-top:1px solid var(--border)}
+.qa-a.open{display:block}
+.qa-a p{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:8px}
+
+/* CHALLENGE */
+.challenge{background:var(--surface);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.challenge-head{padding:12px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .12s}
+.challenge-head:hover{background:var(--card)}
+.challenge-head-left{display:flex;align-items:center;gap:10px}
+.challenge-badge{font-size:10px;font-weight:700;letter-spacing:.08em;background:var(--yellowb);color:var(--yellow);border:1px solid #fde68a;border-radius:99px;padding:2px 8px}
+.challenge-title{font-size:13px;font-weight:600;color:var(--text)}
+.challenge-arrow{font-size:12px;color:var(--muted);transition:transform .2s}
+.challenge-arrow.open{transform:rotate(180deg)}
+.challenge-body{display:none;padding:16px;border-top:1px solid var(--border)}
+.challenge-body.open{display:block}
+.challenge-q{font-size:13px;color:var(--text);margin-bottom:12px;line-height:1.6}
+.answer-toggle{font-size:11px;color:var(--muted);cursor:pointer;text-decoration:underline;margin-bottom:8px;display:inline-block}
+.answer-toggle:hover{color:var(--text)}
+.answer{display:none}
+.answer.open{display:block}
+
+/* WSREP STATE TABLE */
+.wsrep-table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:12px}
+.wsrep-table th{background:var(--card);padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:2px solid var(--border)}
+.wsrep-table td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.wsrep-table tr:last-child td{border-bottom:none}
+.wsrep-table td:first-child{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--phase);font-size:14px}
+.wsrep-table .state-joining{background:#fef3c7}
+.wsrep-table .state-donor{background:#fce7f3}
+.wsrep-table .state-joined{background:#e0e7ff}
+.wsrep-table .state-synced{background:#d1fae5}
+
+/* LESSON NAV */
+.lesson-nav{display:flex;gap:8px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
+.lesson-nav-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-size:12px;font-family:'Syne',sans-serif;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
+.lesson-nav-btn:hover{color:var(--text);border-color:var(--border2)}
+.lesson-nav-btn.primary{background:var(--purpleb);border-color:var(--purple);color:var(--purple)}
+.lesson-nav-btn.primary:hover{background:#d8b4fe;color:#6d28d9}
+.mark-done-btn{margin-left:auto;background:var(--greenb);border:1px solid #a7f3d0;border-radius:8px;padding:10px 20px;font-size:12px;font-family:'Syne',sans-serif;font-weight:600;color:var(--green);cursor:pointer;transition:all .15s}
+.mark-done-btn:hover{background:#a7f3d0}
+.mark-done-btn.done{background:#a7f3d0;border-color:var(--greend);color:var(--greend)}
+
+/* ASCII DIAGRAM */
+.diagram{background:#f1f5f9;border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#334155;line-height:1.8;overflow-x:auto;margin-bottom:16px}
+
+@media(max-width:700px){
+  .page,.hero{padding:24px 16px 60px}
+  .hero-grid{grid-template-columns:1fr 1fr;margin:0 16px 28px}
+  h1{font-size:32px}
+  .page-title{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">🔵 Galera·<span>CLUSTER</span></div>
+  <div class="nav-tab active" id="tab-home" onclick="goTo('home')">Start</div>
+  <div class="nav-tab" id="tab-l1" onclick="goTo('l1')">01 Architecture</div>
+  <div class="nav-tab" id="tab-l2" onclick="goTo('l2')">02 wsrep Vars</div>
+  <div class="nav-tab" id="tab-l3" onclick="goTo('l3')">03 SST vs IST</div>
+  <div class="nav-tab" id="tab-l4" onclick="goTo('l4')">04 Quorum</div>
+  <div class="nav-tab" id="tab-l5" onclick="goTo('l5')">05 Flow Control</div>
+  <div class="nav-tab" id="tab-l6" onclick="goTo('l6')">06 Monitoring</div>
+  <div class="nav-tab" id="tab-l7" onclick="goTo('l7')">07 Q&A + 3am</div>
+</nav>
+
+<!-- ═══ HOME ══════════════════════════════════════════════════════════════════ -->
+<div id="page-home" class="active">
+<div class="hero">
+  <div class="eyebrow">Phase 06 · CRITICAL · Michael Nietsch's primary focus</div>
+  <h1>Galera<br><span>Cluster</span></h1>
+  <div class="weight-badge critical">⚠ CRITICAL — Primary interview focus</div>
+  <p class="hero-sub">Galera is the core HA technology at operational services. Michael Nietsch expects DBA-level depth: certification-based replication mechanics, SST/IST recovery, quorum theory, flow control diagnosis, and live incident response. Every lesson here is interview-critical.</p>
+</div>
+<div class="hero-grid">
+  <div class="hero-card" onclick="goTo('l1')">
+    <div class="hero-card-icon">🏗️</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num">01 · 3h</div>
+      <div class="hero-card-title">Architecture & Replication</div>
+      <div class="status" id="st-l1">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card" onclick="goTo('l2')">
+    <div class="hero-card-icon">🔧</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num">02 · 2h</div>
+      <div class="hero-card-title">wsrep Variables</div>
+      <div class="status" id="st-l2">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card" onclick="goTo('l3')">
+    <div class="hero-card-icon">📦</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num">03 · 3h</div>
+      <div class="hero-card-title">SST vs IST</div>
+      <div class="status" id="st-l3">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card" onclick="goTo('l4')">
+    <div class="hero-card-icon">🗳️</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num">04 · 4h</div>
+      <div class="hero-card-title">Quorum & Split-Brain</div>
+      <div class="status" id="st-l4">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card" onclick="goTo('l5')">
+    <div class="hero-card-icon">🚦</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num">05 · 2h</div>
+      <div class="hero-card-title">Flow Control</div>
+      <div class="status" id="st-l5">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card" onclick="goTo('l6')">
+    <div class="hero-card-icon">📊</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num">06 · 2h</div>
+      <div class="hero-card-title">Monitoring & Alerting</div>
+      <div class="status" id="st-l6">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card" onclick="goTo('l7')">
+    <div class="hero-card-icon">🎤</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num">07 · 1h</div>
+      <div class="hero-card-title">Interview Q&A + 3am</div>
+      <div class="status" id="st-l7">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ LESSON 1: Architecture ════════════════════════════════════════════════ -->
+<div id="page-l1" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num">Lesson 01 · ~3 hours</div>
+        <div class="page-title">Architecture & Certification-Based Replication</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">The wsrep protocol and write-set certification model — why Galera is fundamentally different from traditional async replication. This is the foundation every other lesson builds on.</p>
+  </div>
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+<!-- Async replication primer — replaced with prerequisite block -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⏪ Traditional async replication in 90 seconds<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout warn" style="border-left-color:#b91c1c;background:#fee2e2;border-color:#fca5a5">
+      <div class="lbl" style="color:#b91c1c">🚧 Prerequisite — Complete Phase 05b (Traditional Replication) First</div>
+      <p style="color:#7f1d1d;font-weight:600;margin-bottom:8px">This lesson assumes you can already describe the async replication pipeline from memory: binary log events, the IO thread, the relay log, the SQL thread, GTID tracking, and the conditions under which data loss occurs. These are covered in depth in Phase 05b (10 hours).</p>
+      <p style="color:#7f1d1d">If you have not completed Phase 05b, stop here and do that first. The Galera concepts in this lesson — write-set certification, commit latency, SST/IST — are defined in contrast to the async model. Without that baseline the comparisons have no anchor.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Why this matters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <p style="font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:12px">Galera is not replication in the MySQL sense. It is a synchronous multi-master replication plugin that replaces the binlog-based async model entirely. Nietsch will probe whether you understand the <em>certification</em> model — why Galera can have multiple writable nodes simultaneously without split-brain, and what the cost of that synchrony is. Fraport's KRITIS gate systems cannot tolerate replication lag — this is exactly why Galera is used.</p>
+    <div class="callout interview">
+      <div class="lbl">⚓ Interview anchor</div>
+      <p>Galera uses optimistic locking via write-set certification — transactions commit locally first, then the write-set is broadcast and certified against other nodes' concurrent transactions; there are no distributed locks during execution.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Core concepts<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="concepts">
+      <div class="concept purple">
+        <div class="concept-name">Write-Set — the unit of replication</div>
+        <div class="concept-desc">A write-set is a binary package containing the transaction's SQL changes (row images) plus metadata about which rows were read (the "keys"). It is created at COMMIT time and broadcast to all cluster members simultaneously via the wsrep API. <br><br>
+        <strong>🩺 CareMate:</strong> An INSERT into vitals generates a write-set containing the new row plus the PK key of the patient row it references. <strong>🚂 OS/DB:</strong> A Fraport booking INSERT generates a write-set certified against concurrent seat_number updates on the same route.</div>
+      </div>
+      <div class="concept blue">
+        <div class="concept-name">Certification — conflict detection without locks</div>
+        <div class="concept-desc">Every node independently certifies each incoming write-set against its own record of recent concurrent write-sets. If two write-sets modified the same row concurrently, certification fails and the later transaction is rolled back. This is <em>optimistic</em> concurrency: no global locks, conflicts detected at commit. <br><br>
+        <strong>🚂 OS/DB:</strong> Two agents book the last available seat simultaneously — one write-set certifies, one is rejected with deadlock-equivalent error.</div>
+      </div>
+      <div class="concept green">
+        <div class="concept-name">Synchronous multi-master — what "synchronous" actually means</div>
+        <div class="concept-desc">Galera is synchronous at the <em>write-set delivery</em> level, not the <em>apply</em> level. COMMIT returns only after the write-set is certified and acknowledged by all nodes — but application to the storage engine may lag slightly (local apply queue). This is called <em>virtually synchronous</em>. <br><br>
+        <strong>🩺 CareMate:</strong> If node1 accepts a vitals INSERT, all other nodes have certified it before the COMMIT returns to Flask — no reading stale data on failover.</div>
+      </div>
+      <div class="concept orange">
+        <div class="concept-name">wsrep API — the Galera plugin interface</div>
+        <div class="concept-desc">The wsrep (Write-Set REPlication) API is the interface between MariaDB and the Galera library (galera.so). MariaDB calls wsrep hooks at key points: pre_commit, post_commit, apply. The library handles all group communication (GCS), certification, and state transfer. wsrep_provider in my.cnf points to the galera.so library path.</div>
+      </div>
+      <div class="concept red">
+        <div class="concept-name">Group Communication System (GCS) — the underlying protocol</div>
+        <div class="concept-desc">Galera uses its own GCS layer (based on Totem protocol) for reliable ordered multicast. GCS ensures all nodes receive write-sets in the same total order — this ordering is the foundation of deterministic certification. The GCS also handles membership changes (node join/leave) and quorum votes.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🩺 EHR Example — verifying cluster membership<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+<div class="code-block">
+  <div class="code-header">
+    <div style="display:flex;align-items:center;gap:8px"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-body"><span class="cm">-- Before any write from CareMate Flask app, verify the cluster is healthy
+-- Run on the node your app connects to</span>
+<span class="kw">SHOW</span> STATUS <span class="kw">LIKE</span> <span class="str">'wsrep_cluster_size'</span>;
+<span class="cm">-- Expected: 3 (all nodes present)</span>
+<span class="cm">-- If < 3: a node is down — reads still work, writes still work, but risk is elevated</span>
+
+<span class="kw">SHOW</span> STATUS <span class="kw">LIKE</span> <span class="str">'wsrep_local_state_comment'</span>;
+<span class="cm">-- Expected: Synced
+-- Joining → SST/IST in progress, do NOT write to this node
+-- Donor/Desynced → sending SST, writes paused on this node</span>
+
+<span class="kw">SHOW</span> STATUS <span class="kw">LIKE</span> <span class="str">'wsrep_ready'</span>;
+<span class="cm">-- ON = this node is ready to accept queries
+-- OFF = do not send queries here</span>
+
+<span class="cm">-- Check that replication is actually flowing</span>
+<span class="kw">SHOW</span> STATUS <span class="kw">LIKE</span> <span class="str">'wsrep_last_committed'</span>;
+<span class="cm">-- This seqno (sequence number) should be incrementing on all nodes</span></div>
+</div>
+    <div class="callout phr">
+      <div class="lbl">🩺 CareMate production note</div>
+      <p>CareMate's Flask health-check endpoint calls these STATUS queries every 30 seconds. If wsrep_ready=OFF or wsrep_cluster_size &lt; 3, the load balancer is notified via a 503 response and that node is removed from rotation — exactly the job MaxScale's GaleraMonitor automates in production.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — architecture diagram and cluster init<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="diagram">Client apps (Flask / JDBC / Python)
+        ↓
+  MaxScale :4006 (ReadWriteSplit router)
+        ↓              ↓              ↓
+  ┌─────────┐   ┌─────────┐   ┌─────────┐
+  │  node1  │──▶│  node2  │──▶│  node3  │
+  │ FRA-DB1 │   │ FRA-DB2 │   │ FRA-DB3 │
+  │ Synced  │   │ Synced  │   │ Synced  │
+  └─────────┘   └─────────┘   └─────────┘
+       ◀── wsrep write-set broadcast (all directions) ──▶
+       ◀── GCS / Totem reliable multicast              ──▶
+
+  Every COMMIT: write-set sent to all nodes → certified → applied
+  No master: any node accepts writes simultaneously</div>
+<div class="code-block">
+  <div class="code-header">
+    <div style="display:flex;align-items:center;gap:8px"><span class="code-label bash">BASH</span><span class="example-badge db">🚂 OS/DB</span></div>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-body"><span class="cm"># Bootstrap the FIRST node (only ever run on one node, only once)
+# Sets wsrep_new_cluster — starts a new Primary Component</span>
+galera_new_cluster
+<span class="cm"># OR: mysqld_safe --wsrep-new-cluster &amp;  (older syntax)</span>
+
+<span class="cm"># On node2 and node3: start normally — they will SST from node1</span>
+systemctl start mariadb
+
+<span class="cm"># Verify cluster formed (run on any node after all three are up)</span>
+mysql -e <span class="str">"SHOW STATUS LIKE 'wsrep_%';"</span> | grep -E <span class="str">'cluster_size|local_state|ready|connected'</span>
+<span class="cm"># wsrep_cluster_size     | 3
+# wsrep_local_state_comment | Synced
+# wsrep_ready            | ON
+# wsrep_connected        | ON</span></div>
+</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Deep dive — write-set lifecycle<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="diagram">Transaction begins on node1
+  → DML executes (reads keys + writes rows locally, no locks on other nodes)
+  → COMMIT issued by application
+  → wsrep pre-commit hook fires:
+      1. Write-set assembled: {keys read} + {row changes}
+      2. Write-set assigned seqno (sequence number) by GCS
+      3. Write-set broadcast to ALL nodes simultaneously
+  → Each node CERTIFIES the write-set:
+      Compare keys in write-set against keys of all concurrent write-sets
+      since the last certified seqno this transaction depended on
+      PASS → write-set queued for apply
+      FAIL → node1 rolls back its transaction, app receives deadlock error
+  → node1 applies its own write-set (commits to InnoDB)
+  → node2, node3 apply write-set in background (apply queue)
+  → COMMIT returns to application on node1</div>
+    <div class="callout info">
+      <div class="lbl">Key implication</div>
+      <p>The certification step is where Galera catches conflicts that would cause inconsistency. If two nodes write to the same row concurrently, <em>only one</em> will certify — the other rolls back. This is deterministic: all nodes reach the same certification decision independently because they all have the same write-set history.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Common pitfalls<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout warn">
+      <div class="lbl">Pitfall: Writing to multiple nodes simultaneously without coordination</div>
+      <p>Galera allows writes to any node, but certification conflicts increase when the same rows are modified on different nodes. <strong>Result:</strong> frequent deadlock-equivalent errors returned to the application. <strong>Detect:</strong> monitor wsrep_local_cert_failures (should be near zero). <strong>Prevent:</strong> use MaxScale ReadWriteSplit to route all writes to a single "primary" node by default; allow multi-master writes only for explicitly sharded workloads.</p>
+    </div>
+    <div class="callout warn">
+      <div class="lbl">Pitfall: Large transactions — MyISAM tables or non-transactional DDL</div>
+      <p>MyISAM tables are not supported in Galera — they don't have row-level locking or transactions, so write-sets cannot be assembled reliably. <strong>Result:</strong> MyISAM writes on one node are not replicated. <strong>Detect:</strong> CHECK TABLE engine=MyISAM. <strong>Prevent:</strong> enforce wsrep_replicate_myisam=OFF (default) and migrate all tables to InnoDB before cluster setup.</p>
+    </div>
+    <div class="callout warn">
+      <div class="lbl">Pitfall: wsrep_on=OFF disables replication silently</div>
+      <p>Setting wsrep_on=OFF on a session or globally tells Galera to skip write-set certification for that session's transactions. The transaction commits locally but is NOT replicated. <strong>Result:</strong> silent data divergence between nodes — the cluster will not detect this until an SST is triggered. <strong>Prevent:</strong> never set wsrep_on=OFF in production; this is only for disaster recovery procedures when you know exactly what you're doing.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔴 3am Scenario — node silently diverged<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🔴 3am Scenario — node3 data diverged, cluster size still 3</div>
+      <p><strong>Situation:</strong> Fraport monitoring shows wsrep_cluster_size=3 and all nodes Synced. But a data validation job reports that node3's bookings count is 847 lower than node1 and node2.</p>
+      <ol>
+        <li>Confirm divergence: run <code>SELECT COUNT(*) FROM bookings</code> on all three nodes. If node3 differs, it has diverged.</li>
+        <li>Check node3 error log for <code>ERROR ... Node consistency compromised</code> or certification failure floods.</li>
+        <li>Check <code>SHOW STATUS LIKE 'wsrep_local_cert_failures'</code> on node3 — a high value suggests it's been rejecting write-sets.</li>
+        <li>Check if wsrep_on was ever disabled on node3: <code>SELECT @@wsrep_on</code>. If someone ran SET GLOBAL wsrep_on=OFF, transactions bypassed replication.</li>
+        <li><strong>Resolution:</strong> Remove node3 from MaxScale pool: <code>maxctrl set server node3 drain</code>. Then force an SST: stop MariaDB on node3, delete grastate.dat, restart — it will SST from a Synced donor and resync from scratch.</li>
+        <li><strong>Prevention:</strong> Add a Prometheus alert on wsrep_local_cert_failures &gt; 10/min. Never allow wsrep_on=OFF in production my.cnf.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="qa-list">
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">What is a write-set in Galera and how does certification work?</div>
+        <div class="qa-a">
+          <p>A write-set is a binary package created at COMMIT time containing the row-level changes of the transaction plus the primary keys of rows that were read (the "key set"). It is broadcast to all cluster members via the GCS. Each node independently certifies the write-set by checking whether any of its keys conflict with keys from concurrent write-sets that have been applied since this transaction's snapshot. If no conflict: the write-set is queued for apply and the originating node's COMMIT returns. If conflict: the later transaction is rolled back and the application receives a deadlock-equivalent error. Certification is deterministic — every node makes the same decision from the same write-set history.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>Write-sets contain row changes + key set; certification is per-node, deterministic conflict detection at commit time — no global locks during execution.</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">How is Galera replication different from MariaDB async replication?</div>
+        <div class="qa-a">
+          <p>Traditional async replication: the primary commits locally, writes to binlog, replica reads binlog and applies events — there is a lag between primary commit and replica apply, and the replica may serve stale reads. Galera: the write-set must be certified by all nodes before COMMIT returns to the application. There is no lag at the certification level (though apply queues may have brief delays). Galera is multi-master — any node can accept writes simultaneously. Async replication is single-master (or semi-sync with one standby). The tradeoff: Galera adds network latency to every COMMIT (the certification round-trip); async replication commits locally without network involvement.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>Galera: synchronous certification before COMMIT, multi-master, no replication lag — but adds network RTT to every write. Async: zero write overhead, but stale reads and data loss on failover.</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">Can Galera have two "primary" nodes simultaneously? What prevents split-brain?</div>
+        <div class="qa-a">
+          <p>Yes — Galera has no designated primary; all Synced nodes accept writes simultaneously. Split-brain prevention comes from the quorum mechanism: a group of nodes only forms a Primary Component (and continues accepting writes) if it has a strict majority of the configured cluster nodes. With 3 nodes, quorum requires 2. If a network partition splits the cluster into a 1-node partition and a 2-node partition, only the 2-node side continues as Primary Component — the 1-node side transitions to a non-primary state and rejects writes. This is enforced by the GCS layer automatically.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>Split-brain is prevented by quorum: only a partition with strict majority (≥N/2+1) continues as Primary Component and accepts writes.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Explain what happens when two nodes write to the same row concurrently</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">On a 3-node Galera cluster, node1 and node2 simultaneously receive an UPDATE to bookings WHERE id=500 (setting different seat numbers). Walk through the certification process and explain which transaction wins and how.</p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+        <div class="answer">
+          <div class="callout tip">
+            <div class="lbl">Answer</div>
+            <p>Both transactions execute locally without locks. At COMMIT time, both generate a write-set with key=bookings:500. The GCS assigns seqnos — say node1's write-set gets seqno 101, node2's gets seqno 102. Both write-sets are broadcast to all nodes. Certification: node1 certifies seqno 101 first (no conflict yet), applies it. Seqno 102 arrives — certification checks: does seqno 102's key (bookings:500) conflict with any write-set between 102's snapshot and its seqno? Yes — seqno 101 also touched bookings:500. Seqno 102 fails certification. node2 rolls back its transaction and returns a deadlock error (ER_LOCK_DEADLOCK) to the application. node1's write wins because it got the lower seqno. The decision is identical on all three nodes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="mark-done-btn" id="done-l1" onclick="markDone('l1')">Mark complete ✓</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('l2')">Next: wsrep Variables →</button>
+</div>
+</div>
+
+<!-- ═══ LESSON 2: wsrep Variables ════════════════════════════════════════════ -->
+<div id="page-l2" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num">Lesson 02 · ~2 hours</div>
+        <div class="page-title">wsrep Variables — 10 You Must Know Cold</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">Nietsch will ask you to interpret SHOW STATUS output live. Know these values by reflex — what they mean, what range is healthy, and what action each bad value requires.</p>
+  </div>
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Why this matters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <p style="font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:12px">In a Fraport 3am incident, you don't have time to look up what wsrep_local_recv_queue means. These variables are your diagnostic instruments. A Senior DBA at OS is expected to read a SHOW STATUS output and immediately know which numbers are alarming and what to do next.</p>
+    <div class="callout interview">
+      <div class="lbl">⚓ Interview anchor</div>
+      <p>wsrep_local_recv_queue &gt; 0 sustained means this node is falling behind the cluster — it's applying write-sets slower than they arrive. wsrep_flow_control_paused approaching 1.0 means the cluster is nearly halted waiting for this node.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">wsrep state values — memorise this table<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <table class="wsrep-table">
+      <tr><th>Value</th><th>Comment / Name</th><th>Meaning</th><th>DBA Action</th></tr>
+      <tr class="state-joining"><td>1</td><td>Joining</td><td>Receiving SST or IST — node is catching up</td><td>Wait. Do NOT route writes here. Do NOT restart.</td></tr>
+      <tr class="state-donor"><td>2</td><td>Donor / Desynced</td><td>Sending SST to a joining node. Writes paused or degraded.</td><td>Normal but degraded. Check donor performance. Ensure other 2 nodes are Synced.</td></tr>
+      <tr class="state-joined"><td>3</td><td>Joined</td><td>SST complete, node applying the write-set queue to catch up</td><td>Wait — node will transition to Synced shortly. Monitor recv_queue draining.</td></tr>
+      <tr class="state-synced"><td>4</td><td>Synced</td><td>Healthy, fully in sync with the cluster</td><td>Normal operation. Route reads and writes here.</td></tr>
+    </table>
+    <div class="callout warn">
+      <div class="lbl">Pitfall: State 1 (Joining) and routing writes</div>
+      <p>MaxScale's GaleraMonitor monitors wsrep_local_state. It automatically removes nodes with state ≠ Synced from the write pool. If you bypass MaxScale and write directly to a Joining node, those writes will be lost when the SST completes — SST wipes the joiner's data and replaces it with the donor's snapshot.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">The 10 variables — reference card<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+<div class="code-block">
+  <div class="code-header">
+    <div style="display:flex;align-items:center;gap:8px"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-body"><span class="cm">-- Run on any node to get the full wsrep status snapshot
+-- Pipe through grep in production scripts</span>
+<span class="kw">SHOW</span> STATUS <span class="kw">LIKE</span> <span class="str">'wsrep_%'</span>;
+
+<span class="cm">-- ─── THE 10 YOU MUST KNOW ────────────────────────────────────────────────────
+-- 1. wsrep_cluster_size         | 3          ← must be 3; if < 3 a node is down
+-- 2. wsrep_cluster_status       | Primary    ← 'Non-primary' = quorum lost, reject writes
+-- 3. wsrep_connected            | ON         ← OFF = network problem to other nodes
+-- 4. wsrep_ready                | ON         ← OFF = this node not accepting queries
+-- 5. wsrep_local_state_comment  | Synced     ← see state table: 1/2/3/4
+-- 6. wsrep_local_recv_queue     | 0          ← >0 sustained = node falling behind
+-- 7. wsrep_local_recv_queue_avg | 0.00       ← rolling avg; >0.5 = chronic slowness
+-- 8. wsrep_flow_control_paused  | 0.000000   ← fraction of time cluster paused for this node
+--                                              >0.10 = problem; >0.50 = critical
+-- 9. wsrep_local_cert_failures  | 0          ← certification conflicts; >0 = contention
+-- 10. wsrep_last_committed      | 84729341   ← seqno; compare across nodes for lag check
+-- ─────────────────────────────────────────────────────────────────────────────</span>
+
+<span class="cm">-- Quick health check query (pipe into monitoring script)</span>
+<span class="kw">SELECT</span>
+  <span class="fn">VARIABLE_NAME</span>,
+  <span class="fn">VARIABLE_VALUE</span>
+<span class="kw">FROM</span> information_schema.GLOBAL_STATUS
+<span class="kw">WHERE</span> <span class="fn">VARIABLE_NAME</span> <span class="kw">IN</span> (
+  <span class="str">'wsrep_cluster_size'</span>, <span class="str">'wsrep_cluster_status'</span>, <span class="str">'wsrep_ready'</span>,
+  <span class="str">'wsrep_local_state_comment'</span>, <span class="str">'wsrep_flow_control_paused'</span>,
+  <span class="str">'wsrep_local_recv_queue'</span>, <span class="str">'wsrep_local_cert_failures'</span>
+);</div>
+</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — shell monitoring script<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout db">
+      <div class="lbl">🚂 OS/DB — used in Fraport nightly health-check cron</div>
+      <p>This Bash snippet checks all three nodes from the DBA monitoring host. It fires an alert to the on-call rotation if any value is outside normal range — exactly what you'd run as part of the Rufbereitschaft toolchain.</p>
+    </div>
+<div class="code-block">
+  <div class="code-header">
+    <div style="display:flex;align-items:center;gap:8px"><span class="code-label bash">BASH</span><span class="example-badge db">🚂 OS/DB</span></div>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-body"><span class="cm">#!/bin/bash
+# wsrep-check.sh — run from monitoring host every 60s via cron
+set -euo pipefail
+NODES=(fra-db1.os.internal fra-db2.os.internal fra-db3.os.internal)
+ALERT_EMAIL="dba-oncall@os.internal"
+FAIL=0
+
+for NODE in "${NODES[@]}"; do
+  SIZE=$(mysql -h"$NODE" -umonitor -p"$PASS" -sNe \
+    "SELECT VARIABLE_VALUE FROM information_schema.GLOBAL_STATUS
+     WHERE VARIABLE_NAME='wsrep_cluster_size'")
+  STATE=$(mysql -h"$NODE" -umonitor -p"$PASS" -sNe \
+    "SELECT VARIABLE_VALUE FROM information_schema.GLOBAL_STATUS
+     WHERE VARIABLE_NAME='wsrep_local_state_comment'")
+  FC=$(mysql -h"$NODE" -umonitor -p"$PASS" -sNe \
+    "SELECT VARIABLE_VALUE FROM information_schema.GLOBAL_STATUS
+     WHERE VARIABLE_NAME='wsrep_flow_control_paused'")
+
+  [[ "$SIZE" -lt 3 ]]         && echo "ALERT: $NODE cluster_size=$SIZE" && FAIL=1
+  [[ "$STATE" != "Synced" ]]  && echo "ALERT: $NODE state=$STATE"       && FAIL=1
+  # Compare FC as float: alert if > 0.10
+  python3 -c "import sys; sys.exit(0 if float('$FC') < 0.10 else 1)" \
+    || { echo "ALERT: $NODE flow_control_paused=$FC"; FAIL=1; }
+done
+
+[[ $FAIL -eq 1 ]] && mail -s "[GALERA ALERT] $(hostname -f)" "$ALERT_EMAIL" < /tmp/galera-alert.log</span></div>
+</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔴 3am Scenario — node2 showing wsrep_ready=OFF<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🔴 3am Scenario — VW portal reports DB connection errors on node2</div>
+      <p><strong>Situation:</strong> MaxScale has already flagged node2 as Down. You SSH in and run SHOW STATUS — wsrep_ready=OFF, wsrep_connected=ON, wsrep_local_state_comment=Joined.</p>
+      <ol>
+        <li>State=Joined, ready=OFF: node2 is applying its write-set queue from an IST — it's almost there. DO NOT restart.</li>
+        <li>Watch the recv_queue drain: <code>watch -n2 "mysql -e \"SHOW STATUS LIKE 'wsrep_local_recv_queue'\""</code></li>
+        <li>Check the error log for IST progress: <code>journalctl -u mariadb -f | grep -i 'IST\|recv\|Synced'</code></li>
+        <li>ETA: Check wsrep_last_committed on node2 vs node1. The gap tells you how many write-sets remain.</li>
+        <li>When node2 reaches state=4 (Synced), wsrep_ready flips to ON automatically. MaxScale's GaleraMonitor will re-add it to the pool within the next poll interval (default 1s).</li>
+        <li><strong>Action required:</strong> None — monitor and wait. Only escalate if state stays at Joined for more than 15 minutes (possible IST failure → may need manual SST).</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="qa-list">
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">A Galera node shows wsrep_local_state_comment = Joining. MaxScale has already removed it from the pool. The other two nodes are Synced. Is the cluster at risk? What do you do?</div>
+        <div class="qa-a">
+          <p>The cluster is not at immediate risk — the two Synced nodes form a quorum (2 of 3) and continue processing writes normally. The Joining node is receiving a state transfer (SST or IST) and will rejoin automatically when complete. Action: confirm the donor node (state=2, Donor/Desynced) is not experiencing excessive load — SST via mariabackup is CPU/IO intensive. Monitor wsrep_local_recv_queue on the joining node; it will drop to 0 when IST completes. Do not restart the joining node — that would abort the transfer and restart from scratch. Alert if the join takes more than 30 minutes.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>Joining = state transfer in progress, not a failure. 2 Synced nodes = quorum intact. Action is monitor and wait, not restart.</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">wsrep_flow_control_paused = 0.35 on node2 at 09:00. What does this mean and what do you do?</div>
+        <div class="qa-a">
+          <p>wsrep_flow_control_paused is the fraction of the last monitoring interval (default 1 second) during which the cluster was paused waiting for node2 to catch up. 0.35 means the entire cluster was effectively 35% slower than it would be without node2's slowness. This is a significant degradation — at Fraport's peak check-in window, 35% slower means gate assignment queries are backing up. Investigation: check node2's disk I/O (iostat), CPU, and the slow query log. The cause is usually a slow disk on the apply thread, a large transaction being applied, or a hardware issue. Short-term fix: drain node2 from MaxScale to stop it receiving new write-sets while you diagnose.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>flow_control_paused=0.35 means the cluster lost 35% of throughput waiting for one node — drain it from the pool and diagnose its disk/CPU before the 09:00 peak hour hits.</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">How do you check replication lag between Galera nodes without using Seconds_Behind_Master?</div>
+        <div class="qa-a">
+          <p>Seconds_Behind_Master is an async replication concept — it has no meaning in Galera. To check lag, compare wsrep_last_committed across all nodes: <code>SELECT @@hostname, VARIABLE_VALUE FROM information_schema.GLOBAL_STATUS WHERE VARIABLE_NAME='wsrep_last_committed'</code>. If all nodes show the same seqno (or within 1-2), they are in sync. A node with a significantly lower seqno is behind — check its wsrep_local_recv_queue to see how many write-sets are queued waiting to apply. For a more automated check, the Prometheus wsrep exporter exposes wsrep_last_committed as a gauge per node.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>Galera lag = seqno delta between nodes via wsrep_last_committed — Seconds_Behind_Master is an async-only metric that means nothing in Galera.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Read this SHOW STATUS output and give a diagnosis</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">node2 output: wsrep_cluster_size=3, wsrep_cluster_status=Primary, wsrep_local_state_comment=Synced, wsrep_local_recv_queue=0, wsrep_flow_control_paused=0.72, wsrep_local_cert_failures=0. What is the problem, what is the severity, and what is your next action?</p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+        <div class="answer">
+          <div class="callout tip">
+            <div class="lbl">Answer</div>
+            <p><strong>Problem:</strong> flow_control_paused=0.72 — the cluster spent 72% of the last second paused waiting for node2, even though node2 shows state=Synced. This is a contradiction: Synced but causing flow control. Possible cause: node2 has a slow disk apply thread — it's Synced (finished its queue) but frequently falling behind and triggering FC pauses. <strong>Severity:</strong> Critical — the cluster is running at 28% of normal throughput. At Fraport peak hours this would cause visible latency on gate systems. <strong>Next action:</strong> (1) Drain node2: <code>maxctrl set server node2 drain</code>. (2) Check node2 iostat and slow query log. (3) Look for large transactions or a full disk. Do not restart the cluster.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('l1')">← Lesson 01</button>
+  <button class="mark-done-btn" id="done-l2" onclick="markDone('l2')">Mark complete ✓</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('l3')">Next: SST vs IST →</button>
+</div>
+</div>
+
+<!-- ═══ LESSON 3: SST vs IST ══════════════════════════════════════════════════ -->
+<div id="page-l3" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num">Lesson 03 · ~3 hours</div>
+        <div class="page-title">SST vs IST — State Transfers</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">State Snapshot Transfer (SST) and Incremental State Transfer (IST) are how nodes rejoin a cluster. Understanding when each triggers and how to control them is essential DBA knowledge — an SST at the wrong moment can take a donor node offline during peak hours.</p>
+  </div>
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Why this matters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout interview">
+      <div class="lbl">⚓ Interview anchor</div>
+      <p>IST is preferred — it transfers only the missing write-sets from gcache. SST transfers the entire data directory — it's a full backup/restore operation that makes the donor a Donor/Desynced node (state 2) for the duration. Always size gcache large enough to cover your expected node-down window to favour IST over SST.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Core concepts — SST vs IST decision<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="concepts">
+      <div class="concept blue">
+        <div class="concept-name">IST (Incremental State Transfer) — the fast path</div>
+        <div class="concept-desc">IST sends only the write-sets the joining node missed, directly from gcache. It is triggered when: (a) the joiner's grastate.dat has a valid seqno, AND (b) the donor's gcache still contains all write-sets since that seqno. IST is fast (seconds to minutes) and does NOT desynch the donor. <strong>🩺 CareMate:</strong> A node restarted after a 10-minute maintenance window — gcache contains the missing 600 write-sets, IST completes in 30 seconds.</div>
+      </div>
+      <div class="concept red">
+        <div class="concept-name">SST (State Snapshot Transfer) — the full resync</div>
+        <div class="concept-desc">SST is triggered when IST is not possible: the joiner's grastate.dat is invalid (seqno=-1), or the donor's gcache doesn't go back far enough. SST transfers the entire data directory — effectively a live backup/restore. Duration: proportional to database size. During SST, the donor enters state=2 (Donor/Desynced) and may have degraded write performance. <strong>🚂 OS/DB:</strong> At Fraport with a 500GB database, SST via mariabackup takes 45-90 minutes.</div>
+      </div>
+      <div class="concept green">
+        <div class="concept-name">gcache — the write-set ring buffer</div>
+        <div class="concept-desc">gcache (Galera cache) is an on-disk ring buffer that stores recent write-sets. Its size (wsrep_provider_options="gcache.size=2G") determines how far back IST can go. If gcache runs out of space, old write-sets are evicted — if the joiner needs those evicted write-sets, SST is triggered instead. Size gcache to cover your longest expected node-down window × peak write rate. A 2GB gcache covering 4 hours at 128MB/h peak gives you IST for anything under 4 hours of downtime.</div>
+      </div>
+      <div class="concept orange">
+        <div class="concept-name">mariabackup SST method — the correct choice</div>
+        <div class="concept-desc">wsrep_sst_method=mariabackup is the recommended SST method. It uses MariaDB Backup (a fork of Percona XtraBackup) to take a hot backup without locking the donor. The alternative, mysqldump, is far slower and locks tables. The donor runs mariabackup --backup during SST; the joiner receives the stream and restores it. Both donor and joiner must have mariabackup installed.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🩺 EHR Example — grastate.dat and IST trigger<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+<div class="code-block">
+  <div class="code-header">
+    <div style="display:flex;align-items:center;gap:8px"><span class="code-label bash">BASH</span><span class="example-badge ehr">🩺 EHR</span></div>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-body"><span class="cm"># grastate.dat is written by Galera on clean shutdown
+# It tells the joining node where it left off (seqno)</span>
+cat /var/lib/mysql/grastate.dat
+<span class="cm"># # GALERA saved state
+# version: 2.1
+# uuid:    6b2a8d1c-4f3e-11ed-9b2a-000c2900adf5
+# seqno:   84729341
+# safe_to_bootstrap: 0</span>
+
+<span class="cm"># seqno > -1 → this node has a valid position → IST POSSIBLE (if gcache covers it)
+# seqno = -1 → dirty shutdown or crash → IST IMPOSSIBLE → SST will be triggered</span>
+
+<span class="cm"># Check gcache size configured on donor nodes</span>
+mysql -e "SHOW VARIABLES LIKE 'wsrep_provider_options';" | grep gcache
+<span class="cm"># gcache.size = 2147483648  (2GB)</span>
+
+<span class="cm"># To force IST (never force SST unless necessary):
+# Just start the node normally — Galera will negotiate IST automatically
+systemctl start mariadb</span>
+
+<span class="cm"># Monitor join progress in real time</span>
+journalctl -u mariadb -f | grep -E <span class="str">'IST|SST|Synced|Joined|state'</span></div>
+</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — my.cnf SST configuration<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+<div class="code-block">
+  <div class="code-header">
+    <div style="display:flex;align-items:center;gap:8px"><span class="code-label conf">CNF</span><span class="example-badge db">🚂 OS/DB</span></div>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-body"><span class="cm"># /etc/mysql/conf.d/galera.cnf — OS production Galera node configuration</span>
+[mysqld]
+<span class="cm"># Galera plugin path (varies by installation)</span>
+wsrep_on=ON
+wsrep_provider=/usr/lib/galera/libgalera_smm.so
+
+<span class="cm"># Cluster identity — ALL nodes must have the same cluster name</span>
+wsrep_cluster_name=<span class="str">"os_fra_cluster"</span>
+wsrep_cluster_address=<span class="str">"gcomm://fra-db1.os.internal,fra-db2.os.internal,fra-db3.os.internal"</span>
+
+<span class="cm"># Node identity</span>
+wsrep_node_address=<span class="str">"fra-db1.os.internal"</span>
+wsrep_node_name=<span class="str">"fra-db1"</span>
+
+<span class="cm"># SST method — mariabackup is mandatory for production (no table locks)</span>
+wsrep_sst_method=mariabackup
+wsrep_sst_auth=<span class="str">"sst_user:sst_password"</span>   <span class="cm"># dedicated SST user, not root</span>
+
+<span class="cm"># gcache: 4GB covers ~8 hours at our peak write rate of 512MB/h
+# This means IST succeeds for any node down less than 8 hours</span>
+wsrep_provider_options=<span class="str">"gcache.size=4294967296"</span>   <span class="cm"># 4GB in bytes</span>
+
+<span class="cm"># Apply threads: use nCPU/2 — parallelises write-set apply on the joiner</span>
+wsrep_slave_threads=8
+
+<span class="cm"># Binary log must be in ROW format for Galera</span>
+binlog_format=ROW
+log_bin=ON
+
+<span class="cm"># InnoDB settings required by Galera</span>
+innodb_autoinc_lock_mode=2   <span class="cm"># required for multi-master AUTO_INCREMENT safety</span>
+innodb_flush_log_at_trx_commit=0  <span class="cm"># can be 0 for Galera (crash safety via wsrep)</span></div>
+</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Common pitfalls<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout warn">
+      <div class="lbl">Pitfall: gcache too small → constant SSTs</div>
+      <p>If gcache evicts write-sets faster than nodes can be restarted, every node restart triggers a full SST instead of a fast IST. <strong>Detect:</strong> Check mariadb error log — "IST sender limit reached" or "State transfer required" with a full SST. <strong>Fix:</strong> Increase gcache.size in wsrep_provider_options. Calculate: peak_write_rate_bytes/hour × expected_maintenance_window_hours × 1.5 safety margin.</p>
+    </div>
+    <div class="callout warn">
+      <div class="lbl">Pitfall: SST during peak hours takes the donor offline</div>
+      <p>When SST is triggered during Fraport's 06:00-09:00 check-in window, the donor enters Donor/Desynced state — writes may be throttled or paused depending on wsrep_desync configuration. <strong>Prevent:</strong> Schedule node maintenance in the 23:00-05:00 low-traffic window. Set wsrep_sst_donor to a specific node to prevent the primary writer from being chosen as donor: <code>SET GLOBAL wsrep_sst_donor='fra-db3'</code>.</p>
+    </div>
+    <div class="callout warn">
+      <div class="lbl">Pitfall: Wrong SST user permissions</div>
+      <p>The SST user (wsrep_sst_auth) needs RELOAD, PROCESS, LOCK TABLES, REPLICATION CLIENT privileges plus filesystem access for mariabackup. Missing privileges cause SST to fail silently — the joining node stays in state=1 indefinitely. <strong>Detect:</strong> grep the error log for "ERROR SST" or mariabackup errors. <strong>Fix:</strong> GRANT the correct privileges and re-attempt join.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔴 3am Scenario — SST stuck, donor degraded<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🔴 3am Scenario — SST in progress for 3 hours, donor at 100% IO</div>
+      <p><strong>Situation:</strong> node2 was restarted after a kernel update. grastate.dat had seqno=-1 (dirty shutdown). SST started via mariabackup. Three hours later: node1 (donor) is at 100% disk IO, MaxScale shows only node3 as available for writes. It's 05:45 — Fraport check-in opens at 06:00.</p>
+      <ol>
+        <li>Confirm SST status: <code>SHOW STATUS LIKE 'wsrep_local_state_comment'</code> on node2 → state=1 (Joining).</li>
+        <li>Check SST progress: <code>ps aux | grep mariabackup</code> on node1 — look for bytes transferred rate.</li>
+        <li>Immediately set node1 as non-donor to prevent it being chosen again if something restarts: <code>SET GLOBAL wsrep_desync=ON</code> on node3 (to protect node3 from becoming donor too).</li>
+        <li>Check node3's load — it is the only active write node. Ensure MaxScale is routing all writes to node3 only.</li>
+        <li>If node2 SST completes before 06:00 (check estimated ETA from mariabackup progress), wait. If ETA is past 06:00, consider aborting: stop node2, let node1 recover, restart SST in the 08:00 lull.</li>
+        <li>To abort SST: <code>systemctl stop mariadb</code> on node2. mariabackup on node1 will detect the disconnect and stop. node1 returns to Synced state within seconds.</li>
+        <li><strong>Prevention:</strong> Always use clean shutdown (<code>mysqladmin shutdown</code>) to preserve grastate.dat seqno and enable IST. Schedule kernel updates for 01:00-03:00 maintenance window.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="qa-list">
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">When does Galera choose IST over SST? What can prevent IST from being used?</div>
+        <div class="qa-a">
+          <p>IST is used when two conditions are met: (1) the joining node has a valid seqno in grastate.dat (not -1), meaning it knows where it last left off; and (2) the donor's gcache contains all write-sets from that seqno to the current seqno. If either condition fails — seqno is -1 (dirty crash), or gcache was too small and evicted the needed write-sets — SST is triggered instead. A node that crashes without a clean shutdown will have seqno=-1 written to grastate.dat by Galera on restart. The implication: always stop MariaDB cleanly (mysqladmin shutdown or systemctl stop mariadb) to preserve the seqno for IST eligibility.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>IST requires valid seqno in grastate.dat AND gcache coverage. Clean shutdown preserves seqno; crash forces SST. Size gcache for your longest maintenance window.</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">Why is wsrep_sst_method=mysqldump dangerous in production?</div>
+        <div class="qa-a">
+          <p>mysqldump SST acquires a global read lock (FLUSH TABLES WITH READ LOCK) on the donor for the entire duration of the dump — which can be hours on large databases. This blocks all writes to the donor node during SST, effectively taking it out of write service. With mariabackup, the hot backup runs without global locks — only a brief lock at the end for consistent position. mysqldump is acceptable only for tiny databases (&lt;1GB) in test environments. Any Galera cluster used for KRITIS workloads must use mariabackup.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>mysqldump SST holds FTWRL on the donor for the entire transfer duration — on a 500GB Fraport database that's hours of write-blocked donor. mariabackup hot-copies without locking.</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">How do you calculate the correct gcache.size for a production cluster?</div>
+        <div class="qa-a">
+          <p>Formula: peak_write_throughput_bytes_per_second × maximum_expected_downtime_seconds × safety_factor (1.5–2x). Example: OS cluster doing 50MB/s writes at peak, and the SLA allows 4-hour maintenance windows: 50MB/s × 14400s × 2 = 1,440,000MB ≈ 1.4TB. That's impractical, so you either reduce the maintenance window or accept that long outages will SST. In practice, most OS clusters use 2-4GB gcache (covering 1-3 hours at typical write rates) and schedule all maintenance for low-traffic windows (&lt;4h). Monitor gcache utilisation with wsrep_provider_options status output.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>gcache.size = peak_write_rate × max_downtime × 2. Under-sized gcache = every restart triggers SST. Monitor gcache ring-buffer utilisation to validate sizing.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Plan a rolling restart without triggering SST</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">You need to apply an OS package update to all 3 Galera nodes. The database is 800GB. gcache.size is 2GB. Peak write rate is 100MB/min. Each node takes 8 minutes to stop, update, and start. What is your procedure to avoid SST?</p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+        <div class="answer">
+          <div class="callout tip">
+            <div class="lbl">Answer</div>
+            <p><strong>Check:</strong> gcache covers 2GB / 100MB/min = 20 minutes. Each node down for 8 minutes → IST possible (8 &lt; 20). <strong>Procedure:</strong> (1) Schedule during low-traffic (23:00-03:00). (2) Stop node3 cleanly: <code>mysqladmin -u root -p shutdown</code>. (3) Apply update. (4) Start node3 and wait for state=Synced — IST should complete in ~1 minute. (5) Repeat for node2, then node1 (last, since node1 is likely the MaxScale primary). (6) Never restart two nodes simultaneously — always wait for each to reach Synced before touching the next. <strong>If gcache were too small:</strong> You'd need to either increase gcache.size and restart, or accept SST and schedule a longer maintenance window with mariabackup.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('l2')">← Lesson 02</button>
+  <button class="mark-done-btn" id="done-l3" onclick="markDone('l3')">Mark complete ✓</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('l4')">Next: Quorum & Split-Brain →</button>
+</div>
+</div>
+
+<!-- ═══ LESSON 4: Quorum & Split-Brain ════════════════════════════════════════ -->
+<div id="page-l4" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num">Lesson 04 · ~4 hours</div>
+        <div class="page-title">Quorum, Split-Brain & Recovery</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">This is the hardest lesson — and the most critical for the interview. grastate.dat, safe_to_bootstrap, and the quorum recovery procedure are 3am knowledge that separates a DBA from a developer with database access.</p>
+  </div>
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Why this matters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <p style="font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:12px">When all three nodes are down simultaneously — power failure, datacenter outage — the cluster cannot restart automatically. Someone must manually determine which node has the most recent data, set safe_to_bootstrap=1 on that node, and bootstrap from it. Doing this wrong means bootstrapping from a stale node and losing committed transactions. Doing it right recovers the cluster in minutes.</p>
+    <div class="callout interview">
+      <div class="lbl">⚓ Interview anchor</div>
+      <p>Never bootstrap from a node with safe_to_bootstrap=0. Find the node with the highest seqno in grastate.dat — that node last committed data. Set safe_to_bootstrap=1 ONLY on that node, bootstrap it, then start the others normally.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Core concepts<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="concepts">
+      <div class="concept red">
+        <div class="concept-name">Quorum — why 3 nodes, not 2</div>
+        <div class="concept-desc">Quorum requires a strict majority: ⌊N/2⌋+1. With 3 nodes, quorum=2. A 2-node cluster has quorum=2 — if one node goes down, the remaining node has exactly 1 of 2 = no majority → the cluster goes non-primary and rejects writes entirely. Three nodes allow one failure while maintaining quorum. For cross-datacenter setups, 3 nodes in 3 DCs provides both HA and geographic redundancy. <br><br><strong>🚂 OS/DB:</strong> Fraport runs node1+node2 in Frankfurt DC1, node3 in Frankfurt DC2 as an arbiter-like setup. Any single DC failure leaves 2 nodes with quorum.</div>
+      </div>
+      <div class="concept purple">
+        <div class="concept-name">grastate.dat — the cluster position file</div>
+        <div class="concept-desc">Written by Galera on clean shutdown. Contains the cluster UUID, the node's last committed seqno, and safe_to_bootstrap flag. The seqno identifies exactly where in the write-set history this node last was. On dirty crash, seqno=-1 is written (or the file may be stale). On cluster-wide power failure, all nodes will have their last clean seqno in this file — the highest seqno wins.</div>
+      </div>
+      <div class="concept orange">
+        <div class="concept-name">safe_to_bootstrap — the safety interlock</div>
+        <div class="concept-desc">Galera sets safe_to_bootstrap=1 only on the last node to leave the cluster (the node that processed the most recent write-sets). This prevents accidentally bootstrapping from a stale node. If you manually set safe_to_bootstrap=1 on the wrong node and bootstrap, you create a new cluster with older data — all subsequent joins will overwrite their data with this stale snapshot.</div>
+      </div>
+      <div class="concept blue">
+        <div class="concept-name">pc.weight — arbiter and split-brain prevention</div>
+        <div class="concept-desc">wsrep_provider_options="pc.weight=2" assigns a node a weight of 2 votes in quorum calculations. Useful in a 2+1 datacenter setup where DC1 has 2 nodes (each weight=1, total=2) and DC2 has 1 node (weight=2). If the WAN link drops, DC2 has 2 votes — it can maintain quorum alone and continue writes. The DC1 side (2 nodes, 2 votes = 50%) goes non-primary and stops writes.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🩺 EHR — reading grastate.dat across nodes<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+<div class="code-block">
+  <div class="code-header">
+    <div style="display:flex;align-items:center;gap:8px"><span class="code-label bash">BASH</span><span class="example-badge ehr">🩺 EHR</span></div>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-body"><span class="cm"># After all 3 nodes are down — check grastate.dat on each
+# Run these from a monitoring host that can SSH to all nodes</span>
+
+for NODE in caremate-db1 caremate-db2 caremate-db3; do
+  echo <span class="str">"=== $NODE ==="</span>
+  ssh <span class="str">"$NODE"</span> <span class="str">"cat /var/lib/mysql/grastate.dat"</span>
+  echo
+done
+
+<span class="cm"># Expected output — seqno is the key number:
+# === caremate-db1 ===
+# uuid:    6b2a8d1c-...
+# seqno:   84729341        ← HIGHEST → bootstrap from here
+# safe_to_bootstrap: 1    ← Galera set this because it was last to leave
+
+# === caremate-db2 ===
+# seqno:   84729339        ← slightly behind
+# safe_to_bootstrap: 0
+
+# === caremate-db3 ===
+# seqno:   84729340        ← also behind
+# safe_to_bootstrap: 0</span>
+
+<span class="cm"># safe_to_bootstrap=1 is already set on db1 (highest seqno) — bootstrap from it</span>
+ssh caremate-db1 <span class="str">"galera_new_cluster"</span>
+
+<span class="cm"># Wait for db1 to be in Primary state, then start db2 and db3 normally</span>
+ssh caremate-db1 <span class="str">"mysql -e \"SHOW STATUS LIKE 'wsrep_cluster_status'\""</span>
+<span class="cm"># wsrep_cluster_status | Primary  ← now safe to start the other nodes</span>
+ssh caremate-db2 <span class="str">"systemctl start mariadb"</span>
+ssh caremate-db3 <span class="str">"systemctl start mariadb"</span></div>
+</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — forced bootstrap after power failure<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+<div class="code-block">
+  <div class="code-header">
+    <div style="display:flex;align-items:center;gap:8px"><span class="code-label bash">BASH</span><span class="example-badge db">🚂 OS/DB</span></div>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-body"><span class="cm"># SCENARIO: UPS failure took down all 3 Fraport DB nodes simultaneously.
+# grastate.dat is present on all nodes but safe_to_bootstrap=0 on all
+# (happens when cluster crashes simultaneously — no node was last to leave)</span>
+
+<span class="cm"># Step 1: Find the node with the highest seqno manually</span>
+for NODE in fra-db1 fra-db2 fra-db3; do
+  SEQNO=$(ssh <span class="str">"$NODE"</span> <span class="str">"grep seqno /var/lib/mysql/grastate.dat | awk '{print \$2}'"</span>)
+  echo <span class="str">"$NODE: seqno=$SEQNO"</span>
+done
+<span class="cm"># fra-db1: seqno=84729341  ← highest
+# fra-db2: seqno=84729340
+# fra-db3: seqno=84729338</span>
+
+<span class="cm"># Step 2: MANUALLY set safe_to_bootstrap=1 on the node with highest seqno
+# WARNING: Only do this after confirming the seqno comparison above</span>
+ssh fra-db1 <span class="str">"sed -i 's/safe_to_bootstrap: 0/safe_to_bootstrap: 1/' /var/lib/mysql/grastate.dat"</span>
+ssh fra-db1 <span class="str">"cat /var/lib/mysql/grastate.dat"</span>  <span class="cm"># verify the edit</span>
+
+<span class="cm"># Step 3: Bootstrap from fra-db1</span>
+ssh fra-db1 <span class="str">"galera_new_cluster"</span>
+
+<span class="cm"># Step 4: Verify fra-db1 is Primary, then join the others</span>
+ssh fra-db1 <span class="str">"mysql -e \"SHOW STATUS LIKE 'wsrep_%'\""</span> | grep -E <span class="str">'status|size'</span>
+ssh fra-db2 <span class="str">"systemctl start mariadb"</span>  <span class="cm"># will IST from fra-db1</span>
+ssh fra-db3 <span class="str">"systemctl start mariadb"</span>
+
+<span class="cm"># Step 5: Verify full cluster restored</span>
+mysql -h fra-db1 -e <span class="str">"SHOW STATUS LIKE 'wsrep_cluster_size'"</span>
+<span class="cm"># wsrep_cluster_size | 3  ← success</span></div>
+</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Common pitfalls<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout warn">
+      <div class="lbl">Pitfall: Bootstrapping from the wrong node</div>
+      <p>If you bootstrap fra-db2 (seqno=84729340) instead of fra-db1 (84729341), the cluster forms with fra-db1's most recent 1 write-set missing. When fra-db1 joins, it will SST and overwrite its data from fra-db2's older snapshot — losing that write-set permanently. <strong>Rule:</strong> always find the highest seqno before bootstrapping. Even a 1-seqno difference matters for KRITIS data integrity.</p>
+    </div>
+    <div class="callout warn">
+      <div class="lbl">Pitfall: Running galera_new_cluster on a running cluster</div>
+      <p>If you accidentally run <code>galera_new_cluster</code> on a node that is part of a running cluster, it starts a NEW cluster with just that single node. The other two nodes are now in a different cluster — they continue serving queries but are isolated. All writes on both "clusters" diverge. <strong>Detect:</strong> wsrep_cluster_uuid will differ between nodes. <strong>Never</strong> run galera_new_cluster unless you have confirmed all other nodes are down and the cluster UUID you're bootstrapping matches.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔴 3am Scenario A — all 3 nodes down after power failure<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🔴 3am Scenario A — Fraport datacenter UPS failure, all DB nodes down</div>
+      <p><strong>Situation:</strong> 03:17. PagerDuty fires. All three Fraport DB nodes are unreachable. Fraport's booking and gate systems are down. This is a P1 incident.</p>
+      <ol>
+        <li>SSH to all three nodes as soon as power is restored. Confirm MariaDB is stopped on all three.</li>
+        <li>Read grastate.dat seqno on each: <code>grep seqno /var/lib/mysql/grastate.dat</code>. Record all three values.</li>
+        <li>The node with the highest seqno had the most recent data — this is your bootstrap candidate.</li>
+        <li>If safe_to_bootstrap=1 is already set on the highest-seqno node → proceed directly. If all show 0 (simultaneous crash) → manually set it: <code>sed -i 's/safe_to_bootstrap: 0/safe_to_bootstrap: 1/' /var/lib/mysql/grastate.dat</code> on the chosen node only.</li>
+        <li>Bootstrap: <code>galera_new_cluster</code> on the chosen node. Wait for wsrep_cluster_status=Primary.</li>
+        <li>Start the other two nodes normally: <code>systemctl start mariadb</code>. They will IST or SST from the bootstrap node.</li>
+        <li>When all three show wsrep_cluster_size=3 and Synced, notify MaxScale (it may have already detected recovery) and confirm application traffic is flowing.</li>
+        <li><strong>Total expected recovery time:</strong> 5-15 minutes from nodes-up to cluster-healthy.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="qa-list">
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">All three Galera nodes are down. You restart them all simultaneously. What happens and why?</div>
+        <div class="qa-a">
+          <p>All three nodes try to form a new Primary Component, but none of them will succeed without bootstrapping because each node is trying to connect to the others via gcomm:// and none is the designated primary. They deadlock on membership negotiation — each waits for others to form the group. The cluster never starts. The solution: never restart all nodes simultaneously. Always bootstrap one node first (galera_new_cluster on the highest seqno node), confirm it reaches Primary status, then start the others one by one.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>Simultaneous restart = membership deadlock — nobody bootstraps. Always bootstrap one node first (highest seqno), wait for Primary, then start the others.</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">Network split: 2 nodes in Frankfurt, 1 node in Berlin. The WAN link drops. What does each side see?</div>
+        <div class="qa-a">
+          <p>Frankfurt side (2 nodes): has 2 of 3 = quorum (majority). Both nodes continue as Primary Component and accept reads and writes. Berlin side (1 node): has 1 of 3 = no majority. It transitions to Non-primary state (wsrep_cluster_status=Non-primary) and rejects all write queries. MaxScale on the Frankfurt side continues routing writes normally. When the WAN link recovers, the Berlin node detects the Primary Component and initiates IST to catch up on the write-sets it missed. Data on Frankfurt is authoritative — Berlin was stopped for the duration.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>Network split: 2-node Frankfurt side has quorum → continues writes. 1-node Berlin side goes Non-primary → rejects writes. Recovery is automatic when link restores — Berlin ISTs to catch up.</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">What is safe_to_bootstrap and what happens if you set it to 1 on the wrong node?</div>
+        <div class="qa-a">
+          <p>safe_to_bootstrap=1 in grastate.dat tells galera_new_cluster that this node is safe to use as the cluster seed — it was the last node to commit transactions before the cluster shut down. If you set it on a node with a lower seqno than the true last-committer, you bootstrap a cluster based on older data. When the other nodes join, they have a higher seqno than the bootstrap node — Galera detects the inconsistency and forces SST on them, replacing their data with the bootstrap node's older snapshot. You've just lost the transactions that happened between the stale node's seqno and the true last seqno. For KRITIS: this means lost Fraport booking or gate assignment records — a P1 data integrity incident.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>Wrong safe_to_bootstrap node = bootstrap from stale data, other nodes SST and overwrite their more recent data — permanent data loss at KRITIS severity.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Diagnose and recover a non-primary cluster</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">SHOW STATUS shows wsrep_cluster_status=Non-primary and wsrep_cluster_size=1 on the only running node (fra-db1). The other two nodes are offline due to a network partition. MaxScale is refusing to route writes. What are your immediate steps?</p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+        <div class="answer">
+          <div class="callout tip">
+            <div class="lbl">Answer</div>
+            <p><strong>Do NOT bootstrap</strong> — the other nodes may still be running on the other side of the partition writing data. First: (1) Confirm fra-db2 and fra-db3 are truly offline, not just partitioned. If they're running in a separate partition accepting writes, any unilateral bootstrap here creates a split-brain. (2) If truly offline: check if fra-db1 should be primary. If fra-db1 was the last Synced node: set wsrep_provider_options="pc.bootstrap=YES" on fra-db1 — this forces it into Primary state without a full restart: <code>SET GLOBAL wsrep_provider_options="pc.bootstrap=YES"</code>. (3) Verify: wsrep_cluster_status flips to Primary. MaxScale detects this within 1 poll interval and restores write routing. (4) Start fra-db2 and fra-db3 when network restores — they will IST.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('l3')">← Lesson 03</button>
+  <button class="mark-done-btn" id="done-l4" onclick="markDone('l4')">Mark complete ✓</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('l5')">Next: Flow Control →</button>
+</div>
+</div>
+
+<!-- ═══ LESSON 5: Flow Control ════════════════════════════════════════════════ -->
+<div id="page-l5" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num">Lesson 05 · ~2 hours</div>
+        <div class="page-title">Flow Control — Diagnosing a Slow Node</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">Flow control is Galera's backpressure mechanism. When one node falls behind applying write-sets, it sends FC_PAUSE messages that slow down the entire cluster. Understanding the cause and fix is essential for any OS production DBA role.</p>
+  </div>
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Why this matters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout interview">
+      <div class="lbl">⚓ Interview anchor</div>
+      <p>Flow control affects the entire cluster — one slow node degrades write throughput for all. wsrep_flow_control_paused near 1.0 means the cluster is nearly halted. Diagnosis: find why the slow node can't keep up (disk, CPU, large transaction, misconfigured wsrep_slave_threads). Immediate mitigation: drain the slow node from MaxScale to stop new write-sets arriving while you fix the root cause.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Core concepts<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="concepts">
+      <div class="concept red">
+        <div class="concept-name">Flow control mechanism</div>
+        <div class="concept-desc">When a node's apply queue (wsrep_local_recv_queue) exceeds gcs.fc_limit (default: 16 write-sets), it sends FC_PAUSE messages to the GCS. All nodes pause sending new write-sets until the queue drains below gcs.fc_factor (default: 1). This creates a cluster-wide pause — every committing transaction waits. <strong>💉 DiaTwin:</strong> A burst of 10,000 glucose sensor readings arriving simultaneously can fill the recv_queue on a slow cloud node, triggering FC and delaying confirmations to all devices.</div>
+      </div>
+      <div class="concept orange">
+        <div class="concept-name">wsrep_flow_control_paused — the key metric</div>
+        <div class="concept-desc">The fraction of the last second the cluster spent paused due to flow control from this node. Values: 0.0 = no FC (healthy), 0.01-0.09 = mild (monitor), 0.10-0.50 = significant (diagnose), &gt;0.50 = critical (immediate action), 1.0 = cluster completely halted. This metric is per-node — the node generating the highest value is the bottleneck.</div>
+      </div>
+      <div class="concept blue">
+        <div class="concept-name">wsrep_slave_threads — parallelising apply</div>
+        <div class="concept-desc">Galera can apply write-sets in parallel using multiple apply threads. wsrep_slave_threads=8 (recommended: nCPU/2) allows 8 write-sets to apply simultaneously on the joiner/replica node. The default of 1 is a common bottleneck on write-heavy clusters. Increasing this reduces the recv_queue and therefore reduces flow control events. Requires MariaDB 10.4+ for optimal parallel apply.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🩺 EHR + 💉 DiaTwin — diagnosing flow control<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout diatwin">
+      <div class="lbl">💉 DiaTwin — glucose sensor burst scenario</div>
+      <p>DiaTwin's nightly batch: 10,000 CGM (Continuous Glucose Monitor) devices sync simultaneously at 02:00. Each sync INSERTs 288 glucose readings (one per 5 minutes for the past day). That's 2,880,000 INSERTs in a short window. On the cloud DB node with slower NVMe, this overwhelms the apply thread and triggers flow control for the entire cluster — delaying all other CareMate operations on shared infrastructure.</p>
+    </div>
+<div class="code-block">
+  <div class="code-header">
+    <div style="display:flex;align-items:center;gap:8px"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-body"><span class="cm">-- Step 1: Identify which node is causing flow control
+-- Run on all nodes, compare wsrep_flow_control_paused</span>
+<span class="kw">SELECT</span> @@hostname, VARIABLE_VALUE
+<span class="kw">FROM</span> information_schema.GLOBAL_STATUS
+<span class="kw">WHERE</span> VARIABLE_NAME = <span class="str">'wsrep_flow_control_paused'</span>;
+<span class="cm">-- Node with highest value is the bottleneck</span>
+
+<span class="cm">-- Step 2: Check the receive queue depth on the bottleneck node</span>
+<span class="kw">SHOW</span> STATUS <span class="kw">LIKE</span> <span class="str">'wsrep_local_recv_queue%'</span>;
+<span class="cm">-- wsrep_local_recv_queue     | 284    ← 284 write-sets waiting to apply
+-- wsrep_local_recv_queue_avg | 47.3   ← averaging 47 queued</span>
+
+<span class="cm">-- Step 3: Check apply thread count</span>
+<span class="kw">SHOW</span> VARIABLES <span class="kw">LIKE</span> <span class="str">'wsrep_slave_threads'</span>;
+<span class="cm">-- wsrep_slave_threads | 1   ← PROBLEM: single-threaded apply on a 16-core node</span>
+
+<span class="cm">-- Step 4: Increase apply threads (online, no restart needed)</span>
+<span class="kw">SET</span> <span class="kw">GLOBAL</span> wsrep_slave_threads = <span class="num">8</span>;
+<span class="cm">-- Monitor: recv_queue should start draining</span>
+
+<span class="cm">-- Step 5: Watch recv_queue drain in real time</span>
+<span class="kw">SHOW</span> STATUS <span class="kw">LIKE</span> <span class="str">'wsrep_local_recv_queue'</span>;</div>
+</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — Scenario B full diagnosis<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout db">
+      <div class="lbl">🚂 OS/DB — wsrep_flow_control_paused = 0.87 at 08:45</div>
+      <p>VW shift change at 09:00 — 800 supplier accounts log in simultaneously. The cluster is at 87% FC-paused. This is the required Scenario B from the interview spec.</p>
+    </div>
+<div class="code-block">
+  <div class="code-header">
+    <div style="display:flex;align-items:center;gap:8px"><span class="code-label bash">BASH</span><span class="example-badge db">🚂 OS/DB</span></div>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-body"><span class="cm">## Scenario B Step-by-Step: FC = 0.87, cluster nearly halted</span>
+
+<span class="cm"># 1. Identify the slow node</span>
+for N in fra-db1 fra-db2 fra-db3; do
+  FC=$(mysql -h$N -e "SHOW STATUS LIKE 'wsrep_flow_control_paused'" | awk 'NR==2{print $2}')
+  echo "$N: FC_paused=$FC"
+done
+<span class="cm"># fra-db3: FC_paused=0.8732  ← fra-db3 is the bottleneck</span>
+
+<span class="cm"># 2. Drain fra-db3 from MaxScale immediately</span>
+maxctrl set server fra-db3 drain
+<span class="cm"># This stops new client connections to fra-db3. Existing writes to fra-db1/fra-db2
+# are no longer slowed by fra-db3's recv_queue backpressure.</span>
+
+<span class="cm"># 3. Diagnose fra-db3 — disk IO first</span>
+ssh fra-db3 <span class="str">"iostat -x 1 5 | grep -E 'Device|sda|nvme'"</span>
+<span class="cm"># Look for: %util near 100%, await > 20ms → disk saturation</span>
+
+<span class="cm"># 4. Check wsrep_slave_threads</span>
+mysql -h fra-db3 -e <span class="str">"SHOW VARIABLES LIKE 'wsrep_slave_threads'"</span>
+<span class="cm"># wsrep_slave_threads | 2  → increase it</span>
+mysql -h fra-db3 -e <span class="str">"SET GLOBAL wsrep_slave_threads=12"</span>
+
+<span class="cm"># 5. Check for large transaction being applied</span>
+mysql -h fra-db3 -e <span class="str">"SELECT trx_id, trx_state, trx_rows_modified, trx_query
+  FROM information_schema.INNODB_TRX \G"</span>
+<span class="cm"># Look for a long-running transaction with many rows_modified → bulk operation</span>
+
+<span class="cm"># 6. Monitor recovery</span>
+watch -n2 <span class="str">"mysql -h fra-db3 -e \"SHOW STATUS LIKE 'wsrep_local_recv_queue'\""</span>
+<span class="cm"># Queue should drain. When 0 sustained → re-add to MaxScale pool</span>
+maxctrl clear server fra-db3 drain</span></div>
+</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔴 3am Scenario B — flow_control_paused = 0.87<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🔴 3am Scenario B — cluster nearly halted by flow control</div>
+      <p><strong>Situation:</strong> 08:47. PagerDuty fires: "Galera cluster write throughput dropped 85%." wsrep_flow_control_paused=0.87 on fra-db3. Fraport gate assignment system reports delayed responses. VW shift change in 13 minutes.</p>
+      <ol>
+        <li>Immediately drain fra-db3: <code>maxctrl set server fra-db3 drain</code>. This is the fastest relief — removes fra-db3 as a factor in FC.</li>
+        <li>Confirm cluster throughput recovers: <code>SHOW STATUS LIKE 'wsrep_flow_control_paused'</code> on fra-db1 and fra-db2 should drop toward 0.</li>
+        <li>On fra-db3: check <code>iostat -x 1 3</code> — disk %util near 100% is the most common cause.</li>
+        <li>Check wsrep_slave_threads: <code>SHOW VARIABLES LIKE 'wsrep_slave_threads'</code>. If 1 or 2, increase: <code>SET GLOBAL wsrep_slave_threads=12</code>.</li>
+        <li>Check for a runaway transaction: <code>SELECT * FROM information_schema.INNODB_TRX\G</code> — large trx_rows_modified indicates a bulk operation flooding the apply queue.</li>
+        <li>If disk is the issue: check for competing processes (<code>iotop</code>), check for InnoDB checkpoint storm (<code>SHOW ENGINE INNODB STATUS\G</code> → Log section).</li>
+        <li>Once recv_queue drains to 0 sustained, re-add fra-db3: <code>maxctrl clear server fra-db3 drain</code>.</li>
+        <li><strong>Root cause follow-up:</strong> Add wsrep_slave_threads=12 to my.cnf permanently. Add disk alerting for fra-db3. Investigate if the 08:45 workload spike is from VW login storm — implement connection throttling at the application layer.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="qa-list">
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">A Galera node has wsrep_flow_control_paused = 0.87. Walk through your diagnosis and first actions.</div>
+        <div class="qa-a">
+          <p>0.87 is critical — the cluster is losing 87% of write throughput. Immediate action: drain the slow node from MaxScale (<code>maxctrl set server nodeX drain</code>) to stop making it worse. Then diagnose: (1) Check disk: iostat -x — %util near 100% or high await means disk saturation. (2) Check wsrep_slave_threads — if 1, increase to nCPU/2. (3) Check for large transactions in INNODB_TRX. (4) Check CPU with top — an apply thread CPU-bound would show the MariaDB process at high CPU. After diagnosis and fix, monitor wsrep_local_recv_queue — when it drains to 0 sustainably, re-add to the pool.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>FC=0.87 → immediate drain from MaxScale → diagnose disk/CPU/threads → fix → watch recv_queue drain → re-add. Speed matters: VW shift change can't wait 30 minutes.</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">What is gcs.fc_limit and when would you change it?</div>
+        <div class="qa-a">
+          <p>gcs.fc_limit (default: 16) is the threshold of queued write-sets in the receive queue at which a node starts sending FC_PAUSE messages. Raising it (e.g., to 128) gives a slow node more buffer before triggering flow control — useful if your workload has spiky write bursts that temporarily exceed apply capacity. However, raising fc_limit also means a slow node can fall further behind before anyone notices, potentially requiring a longer IST to catch up after a restart. The correct fix is almost always to improve apply throughput (more wsrep_slave_threads, faster disk) rather than raising fc_limit to mask the problem.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>Raising gcs.fc_limit is a band-aid — the real fix is more apply threads or faster disk. Higher fc_limit just delays the FC alarm while the apply lag grows.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Calculate the DiaTwin sensor batch impact</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">DiaTwin has 50,000 CGM devices syncing every night. Each sync INSERTs 288 glucose readings. The Galera cluster apply thread can process 50,000 write-sets/minute. How long will the apply queue take to drain if all devices sync simultaneously? What wsrep_slave_threads setting would bring this under 2 minutes?</p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+        <div class="answer">
+          <div class="callout tip">
+            <div class="lbl">Answer</div>
+            <p><strong>Total write-sets:</strong> 50,000 devices × 288 readings = 14,400,000 write-sets. At 50,000/min with 1 apply thread: 14,400,000 / 50,000 = 288 minutes (nearly 5 hours). Unacceptable. <strong>To drain in &lt;2 minutes:</strong> 14,400,000 / 2 min = 7,200,000 write-sets/min needed. With parallel apply scaling linearly: 7,200,000 / 50,000 = 144 threads needed. That's unrealistic — the real fix is to stagger device syncs over a 4-hour window (midnight to 04:00) rather than simultaneously, reducing peak load by 120x. Alternatively, use a separate write node dedicated to DiaTwin batch imports and limit its Galera write-set rate via MaxScale throttling.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('l4')">← Lesson 04</button>
+  <button class="mark-done-btn" id="done-l5" onclick="markDone('l5')">Mark complete ✓</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('l6')">Next: Monitoring →</button>
+</div>
+</div>
+
+<!-- ═══ LESSON 6: Monitoring ══════════════════════════════════════════════════ -->
+<div id="page-l6" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num">Lesson 06 · ~2 hours</div>
+        <div class="page-title">Monitoring & Alerting</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">Production Galera monitoring at OS means knowing which metrics to expose, which thresholds to page on, and what the Prometheus wsrep exporter outputs. This lesson gives you the specific numbers to mention in the interview.</p>
+  </div>
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Why this matters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout interview">
+      <div class="lbl">⚓ Interview anchor</div>
+      <p>At OS, monitoring is not optional — KRITIS infrastructure requires demonstrable observability. The three metrics to page on immediately: wsrep_cluster_size &lt; 3, wsrep_cluster_status ≠ Primary, and wsrep_flow_control_paused &gt; 0.10 sustained for &gt;60 seconds.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Key thresholds — what to alert on<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="concepts">
+      <div class="concept red">
+        <div class="concept-name">Page immediately (P1)</div>
+        <div class="concept-desc">
+          <strong>wsrep_cluster_size &lt; 3</strong> — a node has left the cluster. Every write is now unprotected against a second failure.<br>
+          <strong>wsrep_cluster_status ≠ 'Primary'</strong> — quorum lost; cluster rejecting writes.<br>
+          <strong>wsrep_local_state_comment = 'Non-primary'</strong> — this specific node is disconnected from the Primary Component.<br>
+          <strong>wsrep_connected = OFF</strong> — this node lost GCS connection entirely.
+        </div>
+      </div>
+      <div class="concept orange">
+        <div class="concept-name">Alert (P2 — investigate within 30 min)</div>
+        <div class="concept-desc">
+          <strong>wsrep_flow_control_paused &gt; 0.10 for &gt;60s</strong> — a node is chronically slow; cluster throughput degraded by &gt;10%.<br>
+          <strong>wsrep_local_recv_queue_avg &gt; 5</strong> — persistent apply backlog on this node.<br>
+          <strong>wsrep_local_cert_failures rate &gt; 10/min</strong> — high write contention, clients getting deadlock errors.<br>
+          <strong>wsrep_local_state_comment = 'Donor/Desynced' for &gt;30 min</strong> — SST is taking too long.
+        </div>
+      </div>
+      <div class="concept green">
+        <div class="concept-name">Watch (P3 — investigate at next business hours)</div>
+        <div class="concept-desc">
+          <strong>wsrep_local_state_comment = 'Joining' or 'Joined'</strong> — IST/SST in progress, normal but monitor.<br>
+          <strong>wsrep_flow_control_paused &gt; 0.01 sustained</strong> — early warning of a slow node.<br>
+          <strong>wsrep_last_committed divergence between nodes &gt; 100</strong> — apply lag building up.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🩺 EHR — Prometheus mysqld_exporter wsrep metrics<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+<div class="code-block">
+  <div class="code-header">
+    <div style="display:flex;align-items:center;gap:8px"><span class="code-label bash">BASH</span><span class="example-badge ehr">🩺 EHR</span></div>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-body"><span class="cm"># mysqld_exporter exposes wsrep metrics with the mysql_global_status_ prefix
+# Prometheus scrape target: http://caremate-db1:9104/metrics
+
+# Key metric names exposed by mysqld_exporter:</span>
+mysql_global_status_wsrep_cluster_size
+mysql_global_status_wsrep_cluster_status         <span class="cm"># 1=Primary, 0=Non-primary</span>
+mysql_global_status_wsrep_connected              <span class="cm"># 1=ON, 0=OFF</span>
+mysql_global_status_wsrep_ready                  <span class="cm"># 1=ON, 0=OFF</span>
+mysql_global_status_wsrep_local_recv_queue
+mysql_global_status_wsrep_local_recv_queue_avg
+mysql_global_status_wsrep_flow_control_paused    <span class="cm"># float 0.0-1.0</span>
+mysql_global_status_wsrep_local_cert_failures
+mysql_global_status_wsrep_last_committed         <span class="cm"># seqno gauge — use rate() for commit rate</span></div>
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <div style="display:flex;align-items:center;gap:8px"><span class="code-label bash">BASH</span><span class="example-badge ehr">🩺 EHR</span></div>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-body"><span class="cm"># Prometheus alerting rules for CareMate Galera cluster
+# /etc/prometheus/rules/galera.yml</span>
+groups:
+  - name: galera
+    rules:
+      - alert: GaleraNodeDown
+        expr: mysql_global_status_wsrep_cluster_size{job=<span class="str">"mariadb"</span>} < <span class="num">3</span>
+        for: 1m
+        labels: { severity: critical }
+        annotations:
+          summary: <span class="str">"Galera cluster size {{ $value }} < 3"</span>
+
+      - alert: GaleraNotPrimary
+        expr: mysql_global_status_wsrep_cluster_status{job=<span class="str">"mariadb"</span>} == <span class="num">0</span>
+        for: 0m
+        labels: { severity: critical }
+        annotations:
+          summary: <span class="str">"Galera node {{ $labels.instance }} Non-primary — writes rejected"</span>
+
+      - alert: GaleraFlowControlHigh
+        expr: mysql_global_status_wsrep_flow_control_paused{job=<span class="str">"mariadb"</span>} > <span class="num">0.10</span>
+        for: 60s
+        labels: { severity: warning }
+        annotations:
+          summary: <span class="str">"Galera FC paused {{ $value | humanizePercentage }} on {{ $labels.instance }}"</span></div>
+</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚂 OS/DB — complete Grafana panel list<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+<div class="code-block">
+  <div class="code-header">
+    <div style="display:flex;align-items:center;gap:8px"><span class="code-label bash">BASH</span><span class="example-badge db">🚂 OS/DB</span></div>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-body"><span class="cm"># Galera Grafana Dashboard — OS production panels (PromQL)
+
+# Panel 1: Cluster size (stat panel — red if < 3)
+mysql_global_status_wsrep_cluster_size
+
+# Panel 2: Node state (table — per-node state_comment)
+mysql_global_status_wsrep_local_state_comment
+
+# Panel 3: Flow control paused (gauge 0-100%) — per node, last 5m avg
+avg_over_time(mysql_global_status_wsrep_flow_control_paused[5m]) * 100
+
+# Panel 4: Receive queue depth (time series per node)
+mysql_global_status_wsrep_local_recv_queue
+
+# Panel 5: Write-set commit rate (transactions/sec)
+rate(mysql_global_status_wsrep_last_committed[1m])
+
+# Panel 6: Cert failures rate (conflicts/min)
+rate(mysql_global_status_wsrep_local_cert_failures[1m]) * 60
+
+# Panel 7: Cluster throughput vs FC paused (overlay — shows correlation)
+rate(mysql_global_status_wsrep_last_committed[1m])
+mysql_global_status_wsrep_flow_control_paused</span></div>
+</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔴 3am Scenario — alert storm, identify the root cause<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🔴 3am Scenario — GaleraNodeDown + GaleraFlowControlHigh simultaneously</div>
+      <p><strong>Situation:</strong> 02:35. Two PagerDuty alerts fire simultaneously: GaleraNodeDown (size=2) and GaleraFlowControlHigh on fra-db1 (FC=0.65). fra-db3 is offline.</p>
+      <ol>
+        <li>Two alerts at once: fra-db3 is down AND fra-db1 is FC-paused. Clarify the relationship: did fra-db3 go down because of FC, or is fra-db1's FC caused by fra-db3's departure?</li>
+        <li>Check fra-db3: SSH in. Is MariaDB running? If yes, check wsrep_connected — it may have lost network. If no, check journalctl for the crash cause.</li>
+        <li>On fra-db1: FC=0.65 with a 2-node cluster may be a temporary spike as fra-db1 is now receiving writes that were previously spread across 3 nodes — the 2-node cluster has 50% more write load per node.</li>
+        <li>If fra-db3 crashed (OOM, disk full, kernel bug): restart it. It will IST if gcache covers the downtime. Monitor wsrep_local_recv_queue on fra-db3 as it rejoins.</li>
+        <li>Once fra-db3 rejoins and cluster_size=3, check if fra-db1's FC normalises (it usually does as load redistributes).</li>
+        <li>If fra-db1 FC remains high after fra-db3 rejoins → separate problem. Return to the FC diagnosis procedure (disk, threads, large txn).</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="qa-list">
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">What three wsrep metrics would you page on-call for immediately, and what are the thresholds?</div>
+        <div class="qa-a">
+          <p>1. wsrep_cluster_size &lt; 3 — any node absence reduces redundancy and quorum margin. Alert for=1m to avoid false positives from transient restarts. 2. wsrep_cluster_status ≠ Primary (value=0 in Prometheus) — quorum lost, writes rejected by this node. Alert for=0m (immediate). 3. wsrep_flow_control_paused &gt; 0.10 for &gt;60s — sustained FC pausing is causing visible cluster degradation, not just a brief spike. These three cover the critical failure modes: membership loss, quorum loss, and throughput degradation.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>Page on: cluster_size &lt; 3 (node loss), cluster_status=Non-primary (quorum lost), flow_control_paused &gt; 0.10 for 60s (throughput degraded &gt;10%).</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">How do you expose wsrep metrics to Prometheus at OS?</div>
+        <div class="qa-a">
+          <p>Use the Prometheus mysqld_exporter with the --collect.global_status flag enabled (it's on by default). Configure it as a scrape target for each Galera node: host:9104. The exporter reads SHOW GLOBAL STATUS and exposes all wsrep_ variables with the prefix mysql_global_status_. For wsrep_cluster_status (a string value Primary/Non-primary), the exporter converts it to 1/0 numerically. The exporter also needs the wsrep_* variables enabled in the MariaDB user granted to the exporter (PROCESS and REPLICATION CLIENT privileges minimum).</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>mysqld_exporter scrapes SHOW GLOBAL STATUS → exposes mysql_global_status_wsrep_* metrics. wsrep_cluster_status is converted to 1=Primary/0=Non-primary numerically.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Write a Prometheus alert for seqno lag between nodes</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">Write a PromQL alerting rule that fires when any Galera node's wsrep_last_committed seqno is more than 1000 behind the maximum seqno across all nodes in the job="mariadb" group.</p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+        <div class="answer">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label bash">PROMQL</span></div>
+            <div class="code-body">- alert: GaleraReplicationLag
+  expr: |
+    (max by (job) (mysql_global_status_wsrep_last_committed{job="mariadb"})
+     - mysql_global_status_wsrep_last_committed{job="mariadb"}) > 1000
+  for: 30s
+  labels:
+    severity: warning
+  annotations:
+    summary: "Node {{ $labels.instance }} is {{ $value }} write-sets behind cluster leader"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('l5')">← Lesson 05</button>
+  <button class="mark-done-btn" id="done-l6" onclick="markDone('l6')">Mark complete ✓</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('l7')">Next: Interview Q&A + 3am →</button>
+</div>
+</div>
+
+<!-- ═══ LESSON 7: Interview Q&A + 3am Scenarios ══════════════════════════════ -->
+<div id="page-l7" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num">Lesson 07 · ~1 hour</div>
+        <div class="page-title">Interview Q&A + 3am Scenarios</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">The three required scenarios from the interview spec, plus the synthesis questions Nietsch is most likely to ask. Run through every scenario aloud before the interview — timing and sequencing is what makes the answer credible.</p>
+  </div>
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔴 Scenario A — all 3 nodes down, power failure recovery<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🔴 Scenario A — Complete cluster down after Fraport UPS failure</div>
+      <p><strong>Trigger:</strong> All three Fraport DB nodes unreachable. Power restored. It's 03:17, gate systems open at 05:30.</p>
+      <ol>
+        <li><strong>SSH to all three nodes.</strong> Confirm MariaDB is stopped. Do not start anything yet.</li>
+        <li><strong>Read grastate.dat seqno on all three:</strong> <code>for n in db1 db2 db3; do ssh $n "grep seqno /var/lib/mysql/grastate.dat"; done</code></li>
+        <li><strong>Identify the bootstrap candidate:</strong> highest seqno = most recent data = bootstrap here.</li>
+        <li><strong>Check safe_to_bootstrap:</strong> If the highest-seqno node has safe_to_bootstrap=1 → proceed. If all show 0 (simultaneous crash) → manually set it on the highest-seqno node: <code>sed -i 's/safe_to_bootstrap: 0/safe_to_bootstrap: 1/' /var/lib/mysql/grastate.dat</code></li>
+        <li><strong>Bootstrap:</strong> <code>galera_new_cluster</code> on the chosen node. Wait for Primary status: <code>SHOW STATUS LIKE 'wsrep_cluster_status'</code></li>
+        <li><strong>Start the other two:</strong> <code>systemctl start mariadb</code> one at a time. They will IST (if gcache covers the downtime) or SST.</li>
+        <li><strong>Confirm recovery:</strong> wsrep_cluster_size=3 on all nodes. Notify MaxScale and application teams.</li>
+        <li><strong>Expected time:</strong> 5-15 minutes from power-up to full cluster. SST adds 45-90 min if gcache insufficient.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔴 Scenario B — wsrep_flow_control_paused = 0.87<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🔴 Scenario B — Cluster nearly halted, 13 minutes to VW shift change</div>
+      <p><strong>Trigger:</strong> 08:47. Prometheus fires GaleraFlowControlHigh on fra-db3 (FC=0.87). Cluster throughput dropped 87%. VW shift change login storm starts at 09:00.</p>
+      <ol>
+        <li><strong>Drain fra-db3 immediately:</strong> <code>maxctrl set server fra-db3 drain</code>. This stops fra-db3 receiving new write-sets — removes it from the FC feedback loop. Cluster throughput should recover within seconds.</li>
+        <li><strong>Confirm recovery on fra-db1/db2:</strong> <code>SHOW STATUS LIKE 'wsrep_flow_control_paused'</code> should drop toward 0.</li>
+        <li><strong>Diagnose fra-db3 — disk first:</strong> <code>iostat -x 1 5</code> — %util near 100% confirms disk saturation as the cause.</li>
+        <li><strong>Check wsrep_slave_threads on fra-db3:</strong> <code>SHOW VARIABLES LIKE 'wsrep_slave_threads'</code>. If low (1-2), increase: <code>SET GLOBAL wsrep_slave_threads=12</code></li>
+        <li><strong>Check for large transaction:</strong> <code>SELECT trx_id, trx_rows_modified FROM information_schema.INNODB_TRX\G</code></li>
+        <li><strong>Watch recv_queue drain:</strong> <code>watch -n2 "mysql -e \"SHOW STATUS LIKE 'wsrep_local_recv_queue'\""</code></li>
+        <li><strong>Re-add when queue = 0 sustained:</strong> <code>maxctrl clear server fra-db3 drain</code></li>
+        <li><strong>Post-incident:</strong> Add wsrep_slave_threads=12 to my.cnf. Investigate VW login storm — stagger logins or add connection pooling.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔴 Scenario C — network split, 2 nodes Frankfurt / 1 node Berlin<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🔴 Scenario C — WAN link drops: Frankfurt ↔ Berlin partition</div>
+      <p><strong>Trigger:</strong> 03:45. WAN link between Fraport DC (fra-db1, fra-db2) and Berlin DC (fra-db3) drops. All three nodes were running and Synced.</p>
+      <p><strong>What each side sees:</strong></p>
+      <ul>
+        <li><strong>Frankfurt (fra-db1 + fra-db2, 2 nodes):</strong> Has 2 of 3 votes = quorum. wsrep_cluster_status remains Primary. wsrep_cluster_size drops to 2 (fra-db3 lost). Continues accepting reads and writes normally. fra-db3 transitions to wsrep_local_state=0 (disconnected) on the Frankfurt view.</li>
+        <li><strong>Berlin (fra-db3, 1 node):</strong> Has 1 of 3 votes = no quorum. wsrep_cluster_status flips to Non-primary. wsrep_ready flips to OFF. fra-db3 rejects all write queries and notifies MaxScale via wsrep_ready=OFF.</li>
+        <li><strong>MaxScale (located in Frankfurt):</strong> GaleraMonitor polls fra-db3 — sees wsrep_ready=OFF. Removes fra-db3 from the write pool within 1 poll interval. Continues routing all writes to fra-db1 and fra-db2.</li>
+      </ul>
+      <p><strong>DBA actions during split:</strong></p>
+      <ol>
+        <li>Confirm the split is network, not node failure: SSH to fra-db3 via management network (separate from DB network) succeeds → MariaDB is running, network is partitioned.</li>
+        <li>Do NOT try to bootstrap fra-db3 — it would create a separate cluster with old data.</li>
+        <li>GaleraNodeDown alert fires (cluster_size=2). Notify app teams that fra-db3 is temporarily unavailable but cluster is operational with 2 nodes.</li>
+        <li>Escalate to network team to restore the WAN link.</li>
+      </ol>
+      <p><strong>When WAN link restores:</strong></p>
+      <ol>
+        <li>fra-db3 detects the Primary Component on the Frankfurt side and initiates IST to catch up on the write-sets it missed during the partition.</li>
+        <li>IST completes, fra-db3 returns to state=Synced. MaxScale re-adds it to the pool.</li>
+        <li>Cluster returns to wsrep_cluster_size=3. No data loss — Frankfurt side was authoritative throughout.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🎤 Synthesis Interview Questions<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="qa-list">
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">You're setting up a new Galera cluster for a KRITIS client. Walk through the key my.cnf decisions you'd make and why.</div>
+        <div class="qa-a">
+          <p>Key decisions: (1) wsrep_sst_method=mariabackup — never mysqldump for production. (2) gcache.size: peak_write_rate × maintenance_window × 2. For a 100GB/day write workload with 4h maintenance windows: 100GB/24h × 4h × 2 = 33GB gcache. (3) wsrep_slave_threads=nCPU/2 — parallelise apply from the start. (4) innodb_autoinc_lock_mode=2 — required for Galera multi-master AUTO_INCREMENT. (5) binlog_format=ROW — required. (6) wsrep_cluster_address listing all 3 nodes — use internal hostnames not IPs for easier node replacement. (7) Dedicated SST user with minimal required privileges. (8) wsrep_node_name matching server hostname for easy MaxScale correlation in logs.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>mariabackup SST, right-sized gcache, nCPU/2 slave threads, innodb_autoinc_lock_mode=2 — these four decisions determine whether a Galera cluster runs smoothly or constantly fights SSTs and flow control.</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">A developer says "Galera is eventually consistent." How do you respond?</div>
+        <div class="qa-a">
+          <p>That's incorrect — Galera is virtually synchronous. Writes are not acknowledged to the client until the write-set has been certified by all nodes, meaning at COMMIT time all nodes have agreed on the transaction. There is no read-your-writes lag from the writing client's perspective. What is eventually consistent is the apply queue on non-originating nodes — a node that has certified a write-set may not have applied it to InnoDB yet, so a read on another node could theoretically return stale data in the brief apply window. This is called "causal reads" and can be addressed with wsrep_sync_wait if needed. But Galera is definitively not eventually consistent in the NoSQL/Dynamo sense.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>Galera is virtually synchronous — COMMIT waits for certification on all nodes. Apply queue lag is milliseconds, not seconds. "Eventually consistent" is wrong terminology for Galera.</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">What are the limitations of Galera that an experienced DBA should know before deploying it?</div>
+        <div class="qa-a">
+          <p>Key limitations: (1) Write scalability doesn't scale linearly — every write is replicated to all nodes, so more nodes = more certification overhead, not more write capacity. (2) Large transactions are dangerous — they generate huge write-sets that cause long certification pauses across the cluster. Transactions must be kept small. (3) DDL (ALTER TABLE) is replicated with Total Order Isolation (TOI) — a schema change blocks all writes on all nodes during execution. Use online schema change tools (pt-online-schema-change, gh-ost) for large table alterations. (4) No MyISAM support. (5) LOAD DATA INFILE requires wsrep_load_data_splitting=ON to avoid one giant transaction. (6) Explicit table locks (LOCK TABLES) are not replicated. (7) AUTO_INCREMENT requires innodb_autoinc_lock_mode=2 — values may have gaps.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>Galera limitations: write throughput doesn't scale with nodes, large transactions dangerous, DDL uses TOI (blocking), no MyISAM, AUTO_INCREMENT gaps. Know these before deploying.</p></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">How does Galera handle DDL — ALTER TABLE — and what is the risk?</div>
+        <div class="qa-a">
+          <p>By default, Galera uses Total Order Isolation (TOI) for DDL: the ALTER TABLE is replicated to all nodes and executed in the same total order as all other write-sets. During TOI, all concurrent write-sets on all nodes are blocked until the DDL completes. On a small table this is milliseconds. On a 500M-row bookings table this is minutes to hours — a cluster-wide outage. The safer alternative is wsrep_OSU_method=RSU (Rolling Schema Upgrade): the DDL runs locally on one node at a time without blocking the cluster. RSU requires the old and new schema to be compatible for the duration of the upgrade. For KRITIS tables, always use pt-online-schema-change or gh-ost in combination with RSU to achieve zero-downtime schema changes.</p>
+          <div class="callout interview"><div class="lbl">⚓ Anchor</div><p>TOI = DDL blocks entire cluster (safe but blocking). RSU = rolling per-node DDL (non-blocking but requires schema compatibility). Use pt-osc/gh-ost for large production tables.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">Quick-reference cheat sheet<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+<div class="code-block">
+  <div class="code-header">
+    <div style="display:flex;align-items:center;gap:8px"><span class="code-label sql">SQL</span><span class="example-badge db">🚂 OS/DB</span></div>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-body"><span class="cm">-- ── CLUSTER HEALTH ────────────────────────────────────────────────────────────
+SHOW STATUS LIKE 'wsrep_%';              -- full snapshot
+-- cluster_size=3, status=Primary, ready=ON, local_state=Synced → all healthy
+
+-- ── STATE TRANSITIONS ─────────────────────────────────────────────────────────
+-- 1=Joining (SST/IST)  2=Donor/Desynced  3=Joined (applying)  4=Synced
+
+-- ── FLOW CONTROL DIAGNOSIS ────────────────────────────────────────────────────
+SHOW STATUS LIKE 'wsrep_flow_control_paused';   -- > 0.10 = problem
+SHOW STATUS LIKE 'wsrep_local_recv_queue%';     -- > 0 = apply backlog
+SET GLOBAL wsrep_slave_threads = 12;            -- increase apply parallelism
+
+-- ── DRAIN SLOW NODE ───────────────────────────────────────────────────────────</span>
+maxctrl set server fra-db3 drain
+maxctrl clear server fra-db3 drain
+maxctrl list servers
+
+<span class="cm">-- ── RECOVERY FROM FULL OUTAGE ────────────────────────────────────────────────
+-- 1. Find highest seqno: grep seqno /var/lib/mysql/grastate.dat (on all nodes)
+-- 2. Set safe_to_bootstrap=1 on that node (if needed)
+-- 3. galera_new_cluster on bootstrap node
+-- 4. systemctl start mariadb on other nodes (one at a time)
+-- 5. Verify: SHOW STATUS LIKE 'wsrep_cluster_size'  → 3
+
+-- ── NETWORK SPLIT RECOVERY ───────────────────────────────────────────────────
+-- Majority side continues as Primary — do nothing, wait for link
+-- Minority side Non-primary — do NOT bootstrap, wait
+-- When link restores: minority node ISTs automatically
+
+-- ── FORCE PRIMARY (single node, quorum lost but other nodes truly offline) ───
+SET GLOBAL wsrep_provider_options="pc.bootstrap=YES";</span></div>
+</div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('l6')">← Lesson 06</button>
+  <button class="mark-done-btn" id="done-l7" onclick="markDone('l7')">Mark complete ✓</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('home')">← Back to Overview</button>
+</div>
+</div>
+
+<script>
+// ─── STATE ────────────────────────────────────────────────────────────────────
+const PHASE_KEY = 'phase_07_done';
+const LESSONS   = ['l1','l2','l3','l4','l5','l6','l7'];
+let done = {};
+try { done = JSON.parse(localStorage.getItem(PHASE_KEY) || '{}'); } catch(e) {}
+function save() { try { localStorage.setItem(PHASE_KEY, JSON.stringify(done)); } catch(e) {} }
+
+// ─── NAVIGATION ──────────────────────────────────────────────────────────────
+let currentPage = 'home';
+
+function goTo(id) {
+  document.getElementById('page-' + currentPage).classList.remove('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+  const page = document.getElementById('page-' + id);
+  if (page) {
+    page.classList.add('active');
+    page.querySelectorAll('.section-title').forEach(t => t.classList.remove('sec-open'));
+    page.querySelectorAll('.section-body').forEach(b => b.classList.remove('sec-open'));
+    page.querySelectorAll('.expand-all-btn').forEach(b => { b.textContent = 'Expand all ↓'; });
+    page.querySelectorAll('.qa-q').forEach(q => q.classList.remove('open'));
+    page.querySelectorAll('.qa-a').forEach(a => a.classList.remove('open'));
+  } else {
+    document.getElementById('page-home').classList.add('active');
+    id = 'home';
+  }
+
+  const tab = document.getElementById('tab-' + id);
+  if (tab) tab.classList.add('active');
+  currentPage = id;
+
+  requestAnimationFrame(() => {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  });
+}
+
+// ─── SECTION TOGGLE ──────────────────────────────────────────────────────────
+function togSection(titleEl) {
+  titleEl.classList.toggle('sec-open');
+  titleEl.nextElementSibling.classList.toggle('sec-open');
+}
+
+function expandAll(btn) {
+  const page = btn.closest('.page') || document.getElementById('page-' + currentPage);
+  const titles = page.querySelectorAll('.section-title');
+  const bodies  = page.querySelectorAll('.section-body');
+  const allOpen = [...bodies].every(b => b.classList.contains('sec-open'));
+  titles.forEach(t => t.classList.toggle('sec-open', !allOpen));
+  bodies.forEach(b => b.classList.toggle('sec-open', !allOpen));
+  btn.textContent = allOpen ? 'Expand all ↓' : 'Collapse all ↑';
+}
+
+// ─── Q&A TOGGLE ──────────────────────────────────────────────────────────────
+function togQA(qEl) {
+  qEl.classList.toggle('open');
+  qEl.nextElementSibling.classList.toggle('open');
+}
+
+// ─── CHALLENGE TOGGLES ───────────────────────────────────────────────────────
+function togChallenge(head) {
+  const body  = head.nextElementSibling;
+  const arrow = head.querySelector('.challenge-arrow');
+  body.classList.toggle('open');
+  if (arrow) arrow.classList.toggle('open');
+}
+
+function togAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  answer.classList.toggle('open');
+  btn.textContent = answer.classList.contains('open') ? 'Hide answer ↑' : 'Show answer ↓';
+}
+
+// ─── COPY CODE ───────────────────────────────────────────────────────────────
+function copyCode(btn) {
+  const body = btn.closest('.code-block').querySelector('.code-body');
+  const text = body.innerText || body.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1800);
+  }).catch(() => {
+    btn.textContent = 'select + copy';
+    setTimeout(() => { btn.textContent = 'copy'; }, 2000);
+  });
+}
+
+// ─── PROGRESS ────────────────────────────────────────────────────────────────
+function markDone(id) {
+  done[id] = !done[id];
+  save();
+  updateDoneState();
+}
+
+function updateDoneState() {
+  LESSONS.forEach(id => {
+    const btn  = document.getElementById('done-' + id);
+    const tab  = document.getElementById('tab-' + id);
+    const card = document.getElementById('st-' + id);
+    if (btn) {
+      btn.classList.toggle('done', !!done[id]);
+      btn.textContent = done[id] ? 'Completed ✓' : 'Mark complete ✓';
+    }
+    if (tab) tab.classList.toggle('done-tab', !!done[id]);
+    if (card) {
+      card.textContent = done[id] ? 'Complete ✓' : 'Not started';
+      if (done[id]) { card.style.background = 'var(--greenb)'; card.style.color = 'var(--green)'; }
+    }
+  });
+}
+
+updateDoneState();
+</script>
+</body>
+</html>
