@@ -417,6 +417,15 @@
       }
     }
 
+    function isLMSProgressKey(key) {
+      return (
+        LMS_SYNC_KEYS.has(key) ||
+        /^phase_\d+_done$/.test(key) ||
+        /^phase_\d+_[a-z]+_done$/.test(key) ||
+        key.startsWith('lms_')
+      );
+    }
+
     function completionFor(module) {
       if (!module.progressKey || !module.totalUnits) return 0;
       const state = safeParseStorage(module.progressKey);
@@ -512,7 +521,7 @@
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (!key) continue;
-        if (LMS_SYNC_KEYS.has(key) || /^phase_\d+_done$/.test(key) || /^phase_\d+_[a-z]+_done$/.test(key) || key.startsWith('lms_')) {
+        if (isLMSProgressKey(key)) {
           keysToRemove.push(key);
         }
       }
