@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DB·MASTERY — Learning Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sb-bg:#0f172a;
+  --sb-surface:#1e293b;
+  --sb-border:#334155;
+  --sb-text:#f1f5f9;
+  --sb-muted:#94a3b8;
+  --sb-hover:rgba(255,255,255,.05);
+  --sb-active-bg:rgba(255,255,255,.08);
+  --sb-logo-accent:#38bdf8;
+  --green:#059669;--greenb:#d1fae5;
+  --red:#dc2626;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Syne',sans-serif}
+
+/* ── SHELL ──────────────────────────────────────────────────────────────── */
+.lms-shell{display:flex;height:100vh}
+
+/* ── SIDEBAR ────────────────────────────────────────────────────────────── */
+.sidebar{
+  width:240px;min-width:240px;height:100vh;
+  background:var(--sb-bg);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  box-shadow:2px 0 12px rgba(0,0,0,.35);
+  z-index:10;
+}
+
+/* logo block */
+.sb-logo{
+  padding:22px 20px 18px;
+  border-bottom:1px solid var(--sb-border);
+  flex-shrink:0;
+}
+.sb-logo-title{
+  font-size:20px;font-weight:800;letter-spacing:-.02em;
+  color:var(--sb-text);line-height:1;margin-bottom:5px;
+}
+.sb-logo-title span{color:var(--sb-logo-accent)}
+.sb-logo-sub{
+  font-size:10px;font-weight:500;letter-spacing:.08em;
+  color:var(--sb-muted);text-transform:uppercase;
+  font-family:'JetBrains Mono',monospace;
+  margin-bottom:10px;
+}
+.sb-dashboard-btn{
+  width:100%;padding:6px 10px;
+  background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);
+  border-radius:7px;font-size:11px;font-weight:600;font-family:'Syne',sans-serif;
+  color:#7dd3fc;cursor:pointer;text-align:left;
+  transition:background .15s,border-color .15s;
+  letter-spacing:.01em;
+}
+.sb-dashboard-btn:hover{background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.35)}
+
+/* nav list */
+.sb-nav{
+  flex:1;overflow-y:auto;padding:10px 0;
+  scrollbar-width:thin;scrollbar-color:var(--sb-border) transparent;
+}
+.sb-nav::-webkit-scrollbar{width:4px}
+.sb-nav::-webkit-scrollbar-thumb{background:var(--sb-border);border-radius:99px}
+
+.sb-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 14px 9px 16px;
+  cursor:pointer;
+  border-left:3px solid transparent;
+  transition:background .12s,border-color .12s;
+  position:relative;
+}
+.sb-item:hover{background:var(--sb-hover)}
+.sb-item.active{
+  background:var(--sb-active-bg);
+  border-left-color:var(--item-color, #38bdf8);
+}
+
+.sb-badge{
+  flex-shrink:0;
+  width:28px;height:28px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;
+  background:color-mix(in srgb, var(--item-color, #38bdf8) 15%, transparent);
+  color:var(--item-color, #38bdf8);
+  border:1px solid color-mix(in srgb, var(--item-color, #38bdf8) 30%, transparent);
+}
+
+.sb-info{flex:1;min-width:0}
+.sb-title{
+  font-size:12px;font-weight:700;color:var(--sb-text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  line-height:1.2;margin-bottom:2px;
+}
+.sb-sub{
+  font-size:10px;color:var(--sb-muted);
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:.03em;
+}
+
+.sb-pct{
+  flex-shrink:0;
+  font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;
+  padding:2px 7px;border-radius:99px;
+  background:color-mix(in srgb, var(--item-color, #38bdf8) 15%, transparent);
+  color:var(--item-color, #38bdf8);
+  border:1px solid color-mix(in srgb, var(--item-color, #38bdf8) 25%, transparent);
+  min-width:36px;text-align:center;
+}
+.sb-pct.done-pill{
+  background:color-mix(in srgb, #059669 20%, transparent);
+  color:#34d399;border-color:color-mix(in srgb, #059669 35%, transparent);
+}
+.sb-pct.zero-pill{
+  background:rgba(255,255,255,.05);color:var(--sb-muted);border-color:var(--sb-border);
+}
+
+/* overall progress */
+.sb-footer{
+  padding:14px 16px;
+  border-top:1px solid var(--sb-border);
+  flex-shrink:0;
+}
+.sb-overall-label{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:6px;
+}
+.sb-overall-text{
+  font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--sb-muted);font-family:'JetBrains Mono',monospace;
+}
+.sb-overall-pct{
+  font-size:11px;font-weight:700;
+  color:var(--sb-text);font-family:'JetBrains Mono',monospace;
+}
+.sb-progress-track{
+  background:rgba(255,255,255,.08);border-radius:99px;height:5px;
+  overflow:hidden;margin-bottom:12px;
+}
+.sb-progress-fill{
+  height:5px;border-radius:99px;
+  background:linear-gradient(90deg,#0284c7,#059669);
+  transition:width .5s ease;
+}
+.sb-reset-btn{
+  width:100%;padding:8px;
+  background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.25);
+  border-radius:8px;
+  font-size:11px;font-weight:700;font-family:'Syne',sans-serif;
+  color:#f87171;cursor:pointer;
+  transition:background .15s,border-color .15s;
+  letter-spacing:.02em;
+}
+.sb-reset-btn:hover{background:rgba(220,38,38,.22);border-color:rgba(220,38,38,.4)}
+
+/* ── MAIN CONTENT ───────────────────────────────────────────────────────── */
+.content{flex:1;height:100vh;overflow:hidden;display:flex;flex-direction:column;background:#eef2f7}
+
+/* welcome screen */
+.welcome{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:16px;padding:40px;text-align:center;
+}
+.welcome-logo{
+  font-size:48px;font-weight:800;letter-spacing:-.04em;color:#1a2332;margin-bottom:4px;
+}
+.welcome-logo span{color:#0284c7}
+.welcome-sub{font-size:15px;color:#5a6a85;max-width:440px;line-height:1.6}
+.welcome-hint{
+  font-size:12px;color:#94a3b8;
+  font-family:'JetBrains Mono',monospace;letter-spacing:.05em;
+}
+
+#phase-frame{
+  flex:1;width:100%;border:none;display:none;
+  background:#eef2f7;
+}
+#phase-frame.visible{display:block}
+.welcome.hidden{display:none}
+
+/* ── RESET CONFIRM MODAL ────────────────────────────────────────────────── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);
+  display:flex;align-items:center;justify-content:center;
+  z-index:1000;opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{
+  background:#1e293b;border:1px solid #334155;border-radius:16px;
+  padding:28px 32px;max-width:360px;width:90%;
+  box-shadow:0 24px 64px rgba(0,0,0,.5);
+  transform:translateY(-10px);transition:transform .2s;
+}
+.modal-overlay.open .modal-box{transform:translateY(0)}
+.modal-title{font-size:16px;font-weight:800;color:#f1f5f9;margin-bottom:8px}
+.modal-desc{font-size:13px;color:#94a3b8;line-height:1.55;margin-bottom:20px}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end}
+.modal-cancel{
+  padding:8px 16px;background:rgba(255,255,255,.06);border:1px solid #334155;
+  border-radius:8px;font-size:12px;font-weight:700;font-family:'Syne',sans-serif;
+  color:#94a3b8;cursor:pointer;transition:background .15s;
+}
+.modal-cancel:hover{background:rgba(255,255,255,.1)}
+.modal-confirm{
+  padding:8px 16px;background:rgba(220,38,38,.2);border:1px solid rgba(220,38,38,.4);
+  border-radius:8px;font-size:12px;font-weight:700;font-family:'Syne',sans-serif;
+  color:#f87171;cursor:pointer;transition:background .15s;
+}
+.modal-confirm:hover{background:rgba(220,38,38,.35)}
+</style>
+</head>
+<body>
+
+<div class="lms-shell">
+
+  <!-- ═══ SIDEBAR ══════════════════════════════════════════════════════════ -->
+  <aside class="sidebar">
+
+    <div class="sb-logo">
+      <div class="sb-logo-title">DB·<span>MASTERY</span></div>
+      <div class="sb-logo-sub">MariaDB / Galera / MaxScale</div>
+      <button class="sb-dashboard-btn" onclick="loadDashboard()">📋 Course Syllabus</button>
+    </div>
+
+    <nav class="sb-nav" id="sb-nav">
+      <!-- rendered by JS -->
+    </nav>
+
+    <div class="sb-footer">
+      <div class="sb-overall-label">
+        <span class="sb-overall-text">Overall Progress</span>
+        <span class="sb-overall-pct" id="overall-pct">0%</span>
+      </div>
+      <div class="sb-progress-track">
+        <div class="sb-progress-fill" id="overall-fill" style="width:0%"></div>
+      </div>
+      <button class="sb-reset-btn" onclick="openResetModal()">↺ Reset All Progress</button>
+    </div>
+
+  </aside>
+
+  <!-- ═══ MAIN CONTENT ════════════════════════════════════════════════════ -->
+  <main class="content">
+    <div class="welcome" id="welcome-screen">
+      <div class="welcome-logo">DB·<span>MASTERY</span></div>
+      <div class="welcome-sub">Your complete MariaDB interview preparation system. Select a module from the sidebar to begin.</div>
+      <div class="welcome-hint">← choose a module to start</div>
+    </div>
+    <iframe id="phase-frame" title="Phase content" allowfullscreen></iframe>
+  </main>
+
+</div>
+
+<!-- ═══ RESET CONFIRM MODAL ══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="reset-modal">
+  <div class="modal-box">
+    <div class="modal-title">Reset all progress?</div>
+    <div class="modal-desc">This will permanently clear completion data for all 9 modules. Your study content is not affected — only the checkmarks and completion badges will be reset.</div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeResetModal()">Cancel</button>
+      <button class="modal-confirm" onclick="confirmReset()">Reset everything</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── MODULE REGISTRY ──────────────────────────────────────────────────────────
+// lsKey: localStorage key used by each phase file
+// total: number of trackable lesson items (excluding 'home' pseudo-item)
+// trackAll: if true, count all keys including non-'home' ones
+const MODULES = [
+  {
+    id: 'ph00-overview', file: 'phase-00-db-overview.html',
+    badge: '00a', title: 'DB Overview', sub: 'The Big Picture',
+    color: '#0d9488', lsKey: null, total: 0
+  },
+  {
+    id: 'ph00-linux', file: 'phase-00-linux-redhat.html',
+    badge: '00b', title: 'Linux & RedHat', sub: 'DBA Foundation',
+    color: '#64748b', lsKey: 'phase_00_linux_done', total: 9
+  },
+  {
+    id: 'ph01', file: 'phase-01-sql-mysql.html',
+    badge: '01', title: 'SQL & MySQL', sub: 'Core Track',
+    color: '#0284c7', lsKey: 'phase_01_done', total: 12
+  },
+  {
+    id: 'ph02', file: 'phase-02-db-design.html',
+    badge: '02', title: 'Database Design', sub: 'Modeling & ERDs',
+    color: '#7c3aed', lsKey: 'phase_02_done', total: 5
+  },
+  {
+    id: 'ph03', file: 'phase-03-advanced-sql.html',
+    badge: '03', title: 'Advanced SQL', sub: 'Deep Queries',
+    color: '#059669', lsKey: 'phase_03_done', total: 6
+  },
+  {
+    id: 'ph04', file: 'phase-04-db-internals.html',
+    badge: '04', title: 'DB Internals', sub: 'Under the Hood',
+    color: '#ea580c', lsKey: 'phase_04_done', total: 5
+  },
+  {
+    id: 'ph05', file: 'phase-05-mariadb-admin.html',
+    badge: '05', title: 'MariaDB Admin', sub: 'Administration',
+    color: '#db2777', lsKey: 'phase_05_done', total: 8
+  },
+  {
+    id: 'ph06', file: 'phase-06-Galera.html',
+    badge: '06', title: 'Galera Cluster', sub: 'HA & Clustering',
+    color: '#b45309', lsKey: 'phase_07_done', total: 7
+  },
+  {
+    id: 'ph07', file: 'phase-07-maxscale.html',
+    badge: '07', title: 'MaxScale', sub: 'Load Balancing',
+    color: '#2563eb', lsKey: 'phase_06_done', total: 7
+  }
+];
+
+// All localStorage keys used across all phases (for reset)
+const ALL_LS_KEYS = [
+  'phase_00_linux_done',
+  'phase_01_done',
+  'phase_02_done',
+  'phase_03_done',
+  'phase_04_done',
+  'phase_05_done',
+  'phase_06_done',
+  'phase_07_done'
+];
+
+// ─── PROGRESS HELPERS ─────────────────────────────────────────────────────────
+function getModulePct(mod) {
+  if (!mod.lsKey || mod.total === 0) return -1; // -1 = no tracking
+  let stored = {};
+  try { stored = JSON.parse(localStorage.getItem(mod.lsKey) || '{}'); } catch(e) {}
+  const doneCount = Object.entries(stored)
+    .filter(([k, v]) => k !== 'home' && !!v).length;
+  return Math.round(Math.min(doneCount, mod.total) / mod.total * 100);
+}
+
+function getOverallPct() {
+  let totalItems = 0, doneItems = 0;
+  MODULES.forEach(mod => {
+    if (!mod.lsKey || mod.total === 0) return;
+    let stored = {};
+    try { stored = JSON.parse(localStorage.getItem(mod.lsKey) || '{}'); } catch(e) {}
+    const doneCount = Object.entries(stored)
+      .filter(([k, v]) => k !== 'home' && !!v).length;
+    totalItems += mod.total;
+    doneItems += Math.min(doneCount, mod.total);
+  });
+  return totalItems === 0 ? 0 : Math.round(doneItems / totalItems * 100);
+}
+
+// ─── SIDEBAR RENDER ───────────────────────────────────────────────────────────
+let activeModId = null;
+
+function renderNav() {
+  const nav = document.getElementById('sb-nav');
+  nav.innerHTML = '';
+  MODULES.forEach(mod => {
+    const pct = getModulePct(mod);
+    const item = document.createElement('div');
+    item.className = 'sb-item' + (mod.id === activeModId ? ' active' : '');
+    item.style.setProperty('--item-color', mod.color);
+    item.dataset.id = mod.id;
+
+    let pctHtml = '';
+    if (pct === -1) {
+      pctHtml = `<span class="sb-pct zero-pill">—</span>`;
+    } else if (pct === 100) {
+      pctHtml = `<span class="sb-pct done-pill">✓</span>`;
+    } else if (pct === 0) {
+      pctHtml = `<span class="sb-pct zero-pill">0%</span>`;
+    } else {
+      pctHtml = `<span class="sb-pct">${pct}%</span>`;
+    }
+
+    item.innerHTML = `
+      <div class="sb-badge">${mod.badge}</div>
+      <div class="sb-info">
+        <div class="sb-title">${mod.title}</div>
+        <div class="sb-sub">${mod.sub}</div>
+      </div>
+      ${pctHtml}
+    `;
+    item.addEventListener('click', () => loadModule(mod.id));
+    nav.appendChild(item);
+  });
+}
+
+function renderOverallProgress() {
+  const pct = getOverallPct();
+  document.getElementById('overall-pct').textContent = pct + '%';
+  document.getElementById('overall-fill').style.width = pct + '%';
+}
+
+function refreshSidebar() {
+  renderNav();
+  renderOverallProgress();
+}
+
+// ─── MODULE LOADING ───────────────────────────────────────────────────────────
+const frame = document.getElementById('phase-frame');
+const welcome = document.getElementById('welcome-screen');
+
+function loadModule(id) {
+  const mod = MODULES.find(m => m.id === id);
+  if (!mod) return;
+  activeModId = id;
+
+  welcome.classList.add('hidden');
+  frame.classList.add('visible');
+  frame.src = mod.file;
+
+  renderNav(); // update active state immediately
+}
+
+function loadDashboard() {
+  activeModId = null;
+  welcome.classList.add('hidden');
+  frame.classList.add('visible');
+  frame.src = 'db-masterplan-v2.html';
+  renderNav();
+}
+
+frame.addEventListener('load', () => {
+  // give the iframe's scripts a moment to restore state from localStorage
+  setTimeout(refreshSidebar, 150);
+});
+
+// ─── POLLING ─────────────────────────────────────────────────────────────────
+// Refresh progress every 4 seconds to pick up completions marked inside the iframe
+setInterval(refreshSidebar, 4000);
+
+// ─── RESET MODAL ─────────────────────────────────────────────────────────────
+function openResetModal() {
+  document.getElementById('reset-modal').classList.add('open');
+}
+function closeResetModal() {
+  document.getElementById('reset-modal').classList.remove('open');
+}
+function confirmReset() {
+  ALL_LS_KEYS.forEach(k => localStorage.removeItem(k));
+  // if there's a live iframe, also clear its localStorage (same origin)
+  // already handled since it's the same origin localStorage
+  closeResetModal();
+  // reload the iframe to reflect cleared state
+  if (frame.src) {
+    const currentSrc = frame.src;
+    frame.src = '';
+    setTimeout(() => { frame.src = currentSrc; }, 50);
+  }
+  refreshSidebar();
+}
+
+// close modal on overlay click
+document.getElementById('reset-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeResetModal();
+});
+
+// ─── KEYBOARD ────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeResetModal();
+});
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+refreshSidebar();
+</script>
+</body>
+</html>
