@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DB·MASTERY LMS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#eef2f7;
+      --surface:#ffffff;
+      --card:#f7f9fd;
+      --border:#dbe3ef;
+      --border2:#c3cfdf;
+      --text:#1a2332;
+      --muted:#5a6a85;
+      --dim:#e5ebf4;
+      --accent:#2563eb;
+      --accent-soft:#dbeafe;
+      --success:#059669;
+      --success-soft:#d1fae5;
+      --danger:#dc2626;
+      --danger-soft:#fee2e2;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .lms {
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+    }
+
+    .sidebar {
+      width: 240px;
+      min-width: 240px;
+      max-width: 240px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .brand {
+      padding: 22px 18px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-title {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .brand-sub {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .module-nav {
+      padding: 10px 0;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .module-item {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      border-left: 3px solid transparent;
+      padding: 10px 10px 10px 12px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 8px;
+      text-align: left;
+      cursor: pointer;
+      color: var(--text);
+      transition: background .15s, border-color .15s;
+    }
+
+    .module-item:hover { background: #f8fbff; }
+
+    .module-item.active {
+      border-left-color: var(--accent);
+      background: #f2f7ff;
+    }
+
+    .module-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      border: 1px solid var(--border2);
+      background: #fff;
+      border-radius: 999px;
+      padding: 2px 7px;
+      white-space: nowrap;
+    }
+
+    .module-title {
+      min-width: 0;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .module-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      border: 1px solid var(--border2);
+      border-radius: 999px;
+      background: var(--card);
+      padding: 2px 6px;
+      min-width: 42px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .sidebar-bottom {
+      border-top: 1px solid var(--border);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+      background: var(--surface);
+    }
+
+    .overall-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .overall-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .overall-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border2);
+      background: var(--dim);
+      overflow: hidden;
+    }
+
+    .overall-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #38bdf8, var(--success));
+      transition: width .2s;
+    }
+
+    .reset-btn {
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      background: var(--danger-soft);
+      color: var(--danger);
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'Syne', sans-serif;
+      cursor: pointer;
+      padding: 8px 10px;
+      transition: filter .12s;
+    }
+
+    .reset-btn:hover { filter: brightness(.98); }
+
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .main-top {
+      height: 42px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 14px;
+      font-size: 12px;
+      color: var(--muted);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .main-title {
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .main-path {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 48%;
+      text-align: right;
+    }
+
+    .viewer-wrap {
+      flex: 1;
+      min-height: 0;
+      background: #fff;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #fff;
+    }
+
+    @media (max-width: 960px) {
+      .sidebar {
+        width: 220px;
+        min-width: 220px;
+        max-width: 220px;
+      }
+      .module-title { font-size: 11px; }
+    }
+
+    @media (max-width: 780px) {
+      .lms { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        min-height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .module-nav {
+        max-height: 280px;
+      }
+      .main { min-height: calc(100vh - 300px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="lms">
+    <aside class="sidebar">
+      <header class="brand">
+        <div class="brand-title">DB·MASTERY</div>
+        <div class="brand-sub">MariaDB / Galera / MaxScale</div>
+      </header>
+
+      <nav class="module-nav" id="module-nav" aria-label="Course modules"></nav>
+
+      <div class="sidebar-bottom">
+        <div class="overall-head">
+          <span>Overall Progress</span>
+          <span class="overall-value" id="overall-value">0%</span>
+        </div>
+        <div class="overall-track" aria-hidden="true">
+          <div class="overall-fill" id="overall-fill"></div>
+        </div>
+        <button id="reset-progress" class="reset-btn" type="button">Reset All Progress</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="main-top">
+        <div class="main-title" id="main-title">Loading module…</div>
+        <div class="main-path" id="main-path"></div>
+      </div>
+      <div class="viewer-wrap">
+        <iframe id="module-frame" title="DB Mastery module content" loading="eager"></iframe>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const LMS_SELECTED_KEY = 'lms_shell_active_module';
+    const LMS_SYNC_KEYS = new Set([
+      'db_done',
+      'phase_00_linux_done',
+      'phase_01_done',
+      'phase_02_done',
+      'phase_03_done',
+      'phase_04_done',
+      'phase_05_done',
+      'phase_06_done',
+      'phase_07_done'
+    ]);
+
+    const MODULES = [
+      {
+        id: 'masterplan',
+        badge: 'PLAN',
+        title: 'Course Masterplan',
+        progressKey: 'db_done',
+        totalUnits: 0,
+        candidates: ['db-masterplan-v2.html', 'db-masterplan-v2%20(1).html', '../db-masterplan-v2.html', '../db-masterplan-v2%20(1).html']
+      },
+      {
+        id: 'phase-00',
+        badge: 'P00',
+        title: 'Databases Overview',
+        totalUnits: 0,
+        candidates: ['phase-00-db-overview.html', '../phase-00-db-overview.html']
+      },
+      {
+        id: 'phase-01',
+        badge: 'P01',
+        title: 'SQL & MySQL',
+        progressKey: 'phase_01_done',
+        totalUnits: 12,
+        candidates: ['phase-01-sql-mysql.html', '../phase-01-sql-mysql.html']
+      },
+      {
+        id: 'phase-02',
+        badge: 'P02',
+        title: 'Database Design',
+        progressKey: 'phase_02_done',
+        totalUnits: 5,
+        candidates: ['phase-02-db-design.html', '../phase-02-db-design.html']
+      },
+      {
+        id: 'phase-03',
+        badge: 'P03',
+        title: 'Advanced SQL',
+        progressKey: 'phase_03_done',
+        totalUnits: 6,
+        candidates: ['phase-03-advanced-sql.html', '../phase-03-advanced-sql.html']
+      },
+      {
+        id: 'phase-04',
+        badge: 'P04',
+        title: 'Database Internals',
+        progressKey: 'phase_04_done',
+        totalUnits: 5,
+        candidates: ['phase-04-db-internals.html', '../phase-04-db-internals.html']
+      },
+      {
+        id: 'phase-05',
+        badge: 'P05',
+        title: 'MariaDB Administration',
+        progressKey: 'phase_05_done',
+        totalUnits: 8,
+        candidates: ['phase-05-mariadb-admin.html', '../phase-05-mariadb-admin.html']
+      },
+      {
+        id: 'phase-06',
+        badge: 'P06',
+        title: 'Galera Cluster',
+        progressKey: 'phase_07_done',
+        totalUnits: 7,
+        candidates: ['phase-06-Galera.html', '../phase-06-Galera.html']
+      },
+      {
+        id: 'phase-07',
+        badge: 'P07',
+        title: 'MaxScale',
+        progressKey: 'phase_06_done',
+        totalUnits: 7,
+        candidates: ['phase-07-maxscale.html', '../phase-07-maxscale.html']
+      }
+    ];
+
+    const navEl = document.getElementById('module-nav');
+    const frameEl = document.getElementById('module-frame');
+    const mainTitleEl = document.getElementById('main-title');
+    const mainPathEl = document.getElementById('main-path');
+    const overallValueEl = document.getElementById('overall-value');
+    const overallFillEl = document.getElementById('overall-fill');
+
+    let activeModuleId = null;
+
+    function safeParseStorage(key) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return {};
+        const value = JSON.parse(raw);
+        return value && typeof value === 'object' ? value : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function completionFor(module) {
+      if (!module.progressKey || !module.totalUnits) return 0;
+      const state = safeParseStorage(module.progressKey);
+      const completed = Object.values(state).filter(Boolean).length;
+      const pct = Math.round((completed / module.totalUnits) * 100);
+      return Math.max(0, Math.min(100, pct));
+    }
+
+    function aggregateCompletion() {
+      const tracked = MODULES.filter(m => m.progressKey && m.totalUnits > 0);
+      if (!tracked.length) return 0;
+
+      const totals = tracked.reduce((acc, m) => {
+        const state = safeParseStorage(m.progressKey);
+        acc.done += Object.values(state).filter(Boolean).length;
+        acc.total += m.totalUnits;
+        return acc;
+      }, { done: 0, total: 0 });
+
+      if (!totals.total) return 0;
+      return Math.max(0, Math.min(100, Math.round((totals.done / totals.total) * 100)));
+    }
+
+    async function resolveModulePath(module) {
+      for (const candidate of module.candidates) {
+        try {
+          const res = await fetch(candidate, { method: 'HEAD', cache: 'no-store' });
+          if (res.ok) return candidate;
+        } catch {
+          // continue
+        }
+      }
+      return module.candidates[0];
+    }
+
+    function drawNav() {
+      navEl.innerHTML = '';
+      for (const module of MODULES) {
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'module-item' + (module.id === activeModuleId ? ' active' : '');
+        item.dataset.moduleId = module.id;
+
+        const badge = document.createElement('span');
+        badge.className = 'module-badge';
+        badge.textContent = module.badge;
+
+        const title = document.createElement('span');
+        title.className = 'module-title';
+        title.textContent = module.title;
+
+        const pill = document.createElement('span');
+        pill.className = 'module-pill';
+        pill.textContent = completionFor(module) + '%';
+
+        item.append(badge, title, pill);
+        item.addEventListener('click', () => loadModule(module.id));
+        navEl.appendChild(item);
+      }
+
+      const overall = aggregateCompletion();
+      overallValueEl.textContent = overall + '%';
+      overallFillEl.style.width = overall + '%';
+    }
+
+    function moduleFromLocation() {
+      const hash = (window.location.hash || '').replace(/^#/, '');
+      if (hash) {
+        const byHash = MODULES.find(m => m.id === hash);
+        if (byHash) return byHash.id;
+      }
+      const saved = localStorage.getItem(LMS_SELECTED_KEY);
+      if (saved && MODULES.some(m => m.id === saved)) return saved;
+      return MODULES[0].id;
+    }
+
+    async function loadModule(moduleId) {
+      const module = MODULES.find(m => m.id === moduleId) || MODULES[0];
+      const path = await resolveModulePath(module);
+
+      activeModuleId = module.id;
+      localStorage.setItem(LMS_SELECTED_KEY, module.id);
+      window.history.replaceState(null, '', '#' + module.id);
+
+      mainTitleEl.textContent = module.title;
+      mainPathEl.textContent = path;
+      frameEl.src = path;
+      drawNav();
+    }
+
+    function resetProgress() {
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key) continue;
+        if (LMS_SYNC_KEYS.has(key) || /^phase_\d+_done$/.test(key) || /^phase_\d+_[a-z]+_done$/.test(key) || key.startsWith('lms_')) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(k => localStorage.removeItem(k));
+      drawNav();
+      if (activeModuleId) loadModule(activeModuleId);
+    }
+
+    document.getElementById('reset-progress').addEventListener('click', resetProgress);
+
+    window.addEventListener('storage', drawNav);
+    setInterval(drawNav, 1200);
+
+    loadModule(moduleFromLocation());
+  </script>
+</body>
+</html>
