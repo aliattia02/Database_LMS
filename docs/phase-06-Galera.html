@@ -1793,10 +1793,20 @@ SET GLOBAL wsrep_provider_options="pc.bootstrap=YES";</span></div>
 
 <script>
 // ─── STATE ────────────────────────────────────────────────────────────────────
-const PHASE_KEY = 'phase_07_done';
+const PHASE_KEY = 'phase_06_done';
+const LEGACY_PHASE_KEY = 'phase_07_done';
 const LESSONS   = ['l1','l2','l3','l4','l5','l6','l7'];
 let done = {};
-try { done = JSON.parse(localStorage.getItem(PHASE_KEY) || '{}'); } catch(e) {}
+try {
+  done = JSON.parse(localStorage.getItem(PHASE_KEY) || '{}');
+  if (Object.keys(done).length === 0) {
+    const legacyDone = JSON.parse(localStorage.getItem(LEGACY_PHASE_KEY) || '{}');
+    if (Object.keys(legacyDone).length > 0) {
+      done = legacyDone;
+      localStorage.setItem(PHASE_KEY, JSON.stringify(done));
+    }
+  }
+} catch(e) {}
 function save() { try { localStorage.setItem(PHASE_KEY, JSON.stringify(done)); } catch(e) {} }
 
 // ─── NAVIGATION ──────────────────────────────────────────────────────────────

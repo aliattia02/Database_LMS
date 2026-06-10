@@ -62,14 +62,14 @@ export const LMS_CONFIG = {
           title: 'Galera Cluster',
           subtitle: 'High availability and replication',
           route: 'phase-06-Galera.html',
-          progress: { type: 'checklist', storageKey: 'phase_07_done', total: 7, ignoreKeys: ['home'] }
+          progress: { type: 'checklist', storageKey: 'phase_06_done', total: 7, ignoreKeys: ['home'] }
         },
         {
           id: 'db-maxscale',
           title: 'MaxScale',
           subtitle: 'Traffic control and scaling',
           route: 'phase-07-maxscale.html',
-          progress: { type: 'checklist', storageKey: 'phase_06_done', total: 7, ignoreKeys: ['home'] }
+          progress: { type: 'checklist', storageKey: 'phase_07_done', total: 7, ignoreKeys: ['home'] }
         }
       ]
     },

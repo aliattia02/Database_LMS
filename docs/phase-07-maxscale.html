@@ -2088,8 +2088,19 @@ journalctl -u maxscale --since "1h ago" | grep -i "error\|warn\|down"</div>
 /* ── STATE ──────────────────────────────────────────────────────── */
 let currentPage = 'home';
 const LESSONS = ['home','l1','l2','l3','l4','l5','l6','l7'];
+const PHASE_KEY = 'phase_07_done';
+const LEGACY_PHASE_KEY = 'phase_06_done';
 let done = {};
-try { done = JSON.parse(localStorage.getItem('phase_06_done') || '{}'); } catch(e) {}
+try {
+  done = JSON.parse(localStorage.getItem(PHASE_KEY) || '{}');
+  if (Object.keys(done).length === 0) {
+    const legacyDone = JSON.parse(localStorage.getItem(LEGACY_PHASE_KEY) || '{}');
+    if (Object.keys(legacyDone).length > 0) {
+      done = legacyDone;
+      localStorage.setItem(PHASE_KEY, JSON.stringify(done));
+    }
+  }
+} catch(e) {}
 
 /* ── NAVIGATION ─────────────────────────────────────────────────── */
 function goTo(id) {
@@ -2155,7 +2166,7 @@ function togAnswer(el) {
 /* ── PROGRESS ───────────────────────────────────────────────────── */
 function markDone(id) {
   done[id] = !done[id];
-  try { localStorage.setItem('phase_06_done', JSON.stringify(done)); } catch(e) {}
+  try { localStorage.setItem(PHASE_KEY, JSON.stringify(done)); } catch(e) {}
   updateDoneState();
 }
 
