@@ -11,6 +11,9 @@ const moduleSubtitle = document.getElementById('active-module-subtitle');
 const welcome = document.getElementById('welcome');
 const frame = document.getElementById('lesson-frame');
 const resetButton = document.getElementById('reset-progress');
+const IFRAME_RELOAD_DELAY = 50;
+const PROGRESS_UPDATE_DELAY = 150;
+const PROGRESS_POLL_INTERVAL = 3000;
 
 let activeModuleId = LMS_CONFIG.modules[0]?.id ?? null;
 let activeLessonId = null;
@@ -137,7 +140,7 @@ function resetAllProgress() {
     const src = frame.src;
     frame.src = '';
     // Small delay ensures the iframe unloads before reloading the current lesson.
-    setTimeout(() => { frame.src = src; }, 50);
+    setTimeout(() => { frame.src = src; }, IFRAME_RELOAD_DELAY);
   }
 }
 
@@ -151,11 +154,11 @@ function render() {
 }
 
 frame.addEventListener('load', () =>
-  // 150ms delay lets lesson scripts restore localStorage state before recounting progress.
-  setTimeout(renderProgressBars, 150)
+  // Delay lets lesson scripts restore localStorage state before recounting progress.
+  setTimeout(renderProgressBars, PROGRESS_UPDATE_DELAY)
 );
 resetButton.addEventListener('click', resetAllProgress);
 // Polling keeps sidebar progress in sync when lessons update inside the iframe.
-setInterval(renderProgressBars, 3000);
+setInterval(renderProgressBars, PROGRESS_POLL_INTERVAL);
 
 render();
