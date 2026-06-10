@@ -151,7 +151,7 @@ function render() {
 }
 
 frame.addEventListener('load', () =>
-  // Delay lets lesson scripts restore their localStorage state before recounting progress.
+  // 150ms delay lets lesson scripts restore localStorage state before recounting progress.
   setTimeout(renderProgressBars, 150)
 );
 resetButton.addEventListener('click', resetAllProgress);
