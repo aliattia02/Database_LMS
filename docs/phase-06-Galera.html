@@ -1795,6 +1795,7 @@ SET GLOBAL wsrep_provider_options="pc.bootstrap=YES";</span></div>
 // ─── STATE ────────────────────────────────────────────────────────────────────
 const PHASE_KEY = 'phase_06_done';
 const LEGACY_PHASE_KEY = 'phase_07_done';
+// Legacy key preserves progress created before the Galera/MaxScale key correction.
 const LESSONS   = ['l1','l2','l3','l4','l5','l6','l7'];
 let done = {};
 try {

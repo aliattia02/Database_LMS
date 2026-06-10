@@ -136,6 +136,7 @@ function resetAllProgress() {
   if (frame.src) {
     const src = frame.src;
     frame.src = '';
+    // Small delay ensures the iframe unloads before reloading the current lesson.
     setTimeout(() => { frame.src = src; }, 50);
   }
 }
@@ -149,8 +150,12 @@ function render() {
   updateTheme(mod);
 }
 
-frame.addEventListener('load', () => setTimeout(renderProgressBars, 150));
+frame.addEventListener('load', () =>
+  // Delay lets lesson scripts restore their localStorage state before recounting progress.
+  setTimeout(renderProgressBars, 150)
+);
 resetButton.addEventListener('click', resetAllProgress);
+// Polling keeps sidebar progress in sync when lessons update inside the iframe.
 setInterval(renderProgressBars, 3000);
 
 render();

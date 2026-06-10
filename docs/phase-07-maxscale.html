@@ -2090,6 +2090,7 @@ let currentPage = 'home';
 const LESSONS = ['home','l1','l2','l3','l4','l5','l6','l7'];
 const PHASE_KEY = 'phase_07_done';
 const LEGACY_PHASE_KEY = 'phase_06_done';
+// Legacy key preserves progress created before the Galera/MaxScale key correction.
 let done = {};
 try {
   done = JSON.parse(localStorage.getItem(PHASE_KEY) || '{}');
