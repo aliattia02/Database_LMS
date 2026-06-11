@@ -35,9 +35,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-
 .nav-tab.done-tab.active{background:var(--phase);color:#fff}
 
 /* ── LAYOUT ──────────────────────────────────────────────────────────────── */
-.page{display:none;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.page{display:block;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
 .page.active{display:block}
-#page-home:not(.active){display:none}
 
 /* ── HERO ────────────────────────────────────────────────────────────────── */
 .hero{padding:52px 40px 36px;max-width:1100px;margin:0 auto}
@@ -222,78 +221,7 @@ h1 span{color:var(--phase)}
 <body>
 
 <!-- ═══════════════════════════════════════════════════════════════════════ NAV -->
-<nav>
-  <div class="nav-logo">🔬 DB·<span>INTERNALS</span></div>
-  <div class="nav-tab active" id="tab-home" onclick="goTo('home')">Home</div>
-  <div class="nav-tab" id="tab-l1" onclick="goTo('l1')">01</div>
-  <div class="nav-tab" id="tab-l2" onclick="goTo('l2')">02</div>
-  <div class="nav-tab" id="tab-l3" onclick="goTo('l3')">03</div>
-  <div class="nav-tab" id="tab-l4" onclick="goTo('l4')">04</div>
-  <div class="nav-tab" id="tab-l5" onclick="goTo('l5')">05</div>
-</nav>
-
 <!-- ═══════════════════════════════════════════════════════════════════════ HOME -->
-<div id="page-home" class="page active">
-<div class="hero">
-  <div class="phase-pill"><span class="phase-pill-dot"></span><span class="phase-pill-text">Phase 04 · Database Internals · Interview Weight: MEDIUM · 13h</span></div>
-  <h1>Database<br><span>Internals</span></h1>
-  <p class="hero-sub">What separates an administrator from a developer. When Nietsch asks "how does InnoDB handle a crash?" or "why is the history list length rising?" — these are the answers. Pages, MVCC, WAL, and the anatomy of every deadlock your pager has ever woken you for.</p>
-  <div class="hero-chips">
-    <div class="hero-chip">⏱ <strong>13 hours total</strong></div>
-    <div class="hero-chip">📋 <strong>5 lessons</strong></div>
-    <div class="hero-chip">🎯 <strong>MEDIUM priority</strong></div>
-    <div class="hero-chip">🗄️ <strong>MariaDB / InnoDB</strong></div>
-  </div>
-</div>
-<div class="hero-grid">
-  <div class="hero-card c-orange" onclick="goTo('l1')">
-    <div class="hero-card-icon" style="background:var(--phaseb)">📦</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--phase)">01 · 3h</div>
-      <div class="hero-card-title">Storage &amp; InnoDB Architecture</div>
-      <div class="status" style="background:var(--phaseb);color:var(--phased)" id="st-l1">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-blue" onclick="goTo('l2')">
-    <div class="hero-card-icon" style="background:var(--blueb)">🔄</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--blue)">02 · 3h</div>
-      <div class="hero-card-title">MVCC &amp; Concurrency Control</div>
-      <div class="status" style="background:var(--blueb);color:var(--blued)" id="st-l2">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-purple" onclick="goTo('l3')">
-    <div class="hero-card-icon" style="background:var(--purpleb)">📝</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--purple)">03 · 3h</div>
-      <div class="hero-card-title">WAL, Binlog &amp; Crash Recovery</div>
-      <div class="status" style="background:var(--purpleb);color:var(--purple)" id="st-l3">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-teal" onclick="goTo('l4')">
-    <div class="hero-card-icon" style="background:var(--tealb)">🔒</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--teal)">04 · 3h</div>
-      <div class="hero-card-title">Locking, Deadlocks &amp; Gap Locks</div>
-      <div class="status" style="background:var(--tealb);color:var(--teal)" id="st-l4">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-green" onclick="goTo('l5')">
-    <div class="hero-card-icon" style="background:var(--greenb)">🎤</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--green)">05 · 1h</div>
-      <div class="hero-card-title">Interview Q&amp;A + Scenarios</div>
-      <div class="status" style="background:var(--greenb);color:var(--greend)" id="st-l5">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-</div>
-</div>
-
 <!-- ═══════════════════════════════════════════════════════════════════════
      LESSON 1 — Storage: Pages, Tablespaces & InnoDB Architecture
 ════════════════════════════════════════════════════════════════════════ -->
@@ -304,7 +232,6 @@ h1 span{color:var(--phase)}
       <div class="lesson-num">Phase 04 · Lesson 01 · 3h</div>
       <div class="page-title">Storage: Pages, Tablespaces &amp; InnoDB Architecture</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">InnoDB doesn't think in rows — it thinks in 16KB pages. Understanding pages, the buffer pool, tablespaces, and the clustered index is the difference between guessing why a query is slow and knowing. This is the foundation every other internal concept builds on.</p>
 </div>
@@ -510,8 +437,8 @@ h1 span{color:var(--phase)}
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('home')">← Home</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('l2')">Next: MVCC →</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Home</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: MVCC →</button>
   <button class="mark-done-btn" id="done-l1" onclick="markDone('l1')">Mark complete ✓</button>
 </div>
 </div>
@@ -526,7 +453,6 @@ h1 span{color:var(--phase)}
       <div class="lesson-num">Phase 04 · Lesson 02 · 3h</div>
       <div class="page-title">MVCC &amp; Concurrency Control</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">Multi-Version Concurrency Control is why MariaDB reads never block writes. Instead of locking rows for reads, InnoDB keeps old versions in the undo log and serves them to readers via snapshot isolation. When Nietsch asks about the "history list length" alarm — this is the mechanism behind it.</p>
 </div>
@@ -724,8 +650,8 @@ A SELECT in transaction with read_view trx_min=1045 sees:
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l1')">← Storage Architecture</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('l3')">Next: WAL & Crash Recovery →</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Storage Architecture</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: WAL & Crash Recovery →</button>
   <button class="mark-done-btn" id="done-l2" onclick="markDone('l2')">Mark complete ✓</button>
 </div>
 </div>
@@ -740,7 +666,6 @@ A SELECT in transaction with read_view trx_min=1045 sees:
       <div class="lesson-num">Phase 04 · Lesson 03 · 3h</div>
       <div class="page-title">WAL, Binlog &amp; Crash Recovery</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">How MariaDB guarantees your data survives a power cut. The Write-Ahead Log (InnoDB redo log) is the engine-level durability guarantee. The binary log is the server-level replay log for replication and PITR. Understanding both — and especially the single variable that controls the trade-off between safety and speed — is core OS GmbH interview material.</p>
 </div>
@@ -957,8 +882,8 @@ innodb_log_buffer_size          = 64M  <span class="cm"># in-memory buffer befor
 <div class="callout phr" style="margin-bottom:18px"><div class="lbl">⏩ Forward Reference — Phase 05, Lessons 03 &amp; 04</div><p>The operational application of these concepts — taking consistent backups with mariabackup, reading the binlog with mysqlbinlog, and executing a full point-in-time recovery — is covered in Phase 05, Lessons 03 and 04.</p></div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l2')">← MVCC</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('l4')">Next: Locking & Deadlocks →</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← MVCC</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Locking & Deadlocks →</button>
   <button class="mark-done-btn" id="done-l3" onclick="markDone('l3')">Mark complete ✓</button>
 </div>
 </div>
@@ -973,7 +898,6 @@ innodb_log_buffer_size          = 64M  <span class="cm"># in-memory buffer befor
       <div class="lesson-num">Phase 04 · Lesson 04 · 3h</div>
       <div class="page-title">Locking: Row Locks, Table Locks &amp; Deadlocks</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">Deadlocks are inevitable on any sufficiently concurrent system. What matters is detecting them fast, understanding their anatomy, and designing the application to minimise them. On OS GmbH's ticketing infrastructure, a deadlock that cascades across MaxScale connections can take down a booking service. This lesson covers the full locking hierarchy — from shared row locks to gap locks — and gives you the diagnostic queries to resolve them under pressure.</p>
 </div>
@@ -1204,8 +1128,8 @@ RESOLUTION: InnoDB rolls back Transaction 2 (fewer undo records)
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l3')">← WAL &amp; Crash Recovery</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('l5')">Next: Interview Q&A →</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← WAL &amp; Crash Recovery</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Interview Q&A →</button>
   <button class="mark-done-btn" id="done-l4" onclick="markDone('l4')">Mark complete ✓</button>
 </div>
 </div>
@@ -1220,7 +1144,6 @@ RESOLUTION: InnoDB rolls back Transaction 2 (fewer undo records)
       <div class="lesson-num">Phase 04 · Lesson 05 · 1h</div>
       <div class="page-title">Interview Q&amp;A &amp; Phase Summary</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">Michael Nietsch's internals questions are designed to separate people who've administered MariaDB from people who understand it. These are the questions that trip up candidates who only know the commands but not the mechanisms. Practise until the anchor phrases are automatic.</p>
 </div>
@@ -1355,8 +1278,8 @@ RESOLUTION: InnoDB rolls back Transaction 2 (fewer undo records)
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l4')">← Locking &amp; Deadlocks</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('home')">↑ Phase Home</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Locking &amp; Deadlocks</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">↑ Phase Home</button>
   <button class="mark-done-btn" id="done-l5" onclick="markDone('l5')">Mark complete ✓</button>
 </div>
 </div>

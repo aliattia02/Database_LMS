@@ -35,9 +35,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-
 .nav-tab.done-tab.active{background:var(--phase);color:#fff}
 
 /* ── LAYOUT ──────────────────────────────────────────────────────────────── */
-.page{display:none;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.page{display:block;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
 .page.active{display:block}
-#page-home:not(.active){display:none}
 
 /* ── HERO ────────────────────────────────────────────────────────────────── */
 .hero{padding:52px 40px 36px;max-width:1100px;margin:0 auto}
@@ -220,100 +219,7 @@ h1 span{color:var(--phase)}
 <body>
 
 <!-- ═══════════════════════════════════════════════════ NAV -->
-<nav>
-  <div class="nav-logo">⚡ MAX<span>SCALE</span></div>
-  <div class="nav-tab active" id="tab-home" onclick="goTo('home')">Home</div>
-  <div class="nav-tab" id="tab-l1" onclick="goTo('l1')">01</div>
-  <div class="nav-tab" id="tab-l2" onclick="goTo('l2')">02</div>
-  <div class="nav-tab" id="tab-l3" onclick="goTo('l3')">03</div>
-  <div class="nav-tab" id="tab-l4" onclick="goTo('l4')">04</div>
-  <div class="nav-tab" id="tab-l5" onclick="goTo('l5')">05</div>
-  <div class="nav-tab" id="tab-l6" onclick="goTo('l6')">06</div>
-  <div class="nav-tab" id="tab-l7" onclick="goTo('l7')">07</div>
-</nav>
-
 <!-- ═══════════════════════════════════════════════════ HOME -->
-<div id="page-home" class="page active">
-<div class="hero">
-  <div class="phase-pill"><span class="phase-pill-dot"></span><span class="phase-pill-text">Phase 07 · MaxScale · Interview Weight: CRITICAL · 17h</span></div>
-  <h1>MaxScale<br><span>Proxy Layer</span></h1>
-  <p class="hero-sub">MaxScale is MariaDB's enterprise database proxy — the traffic controller sitting between your application and Galera Cluster. At OS GmbH, MaxScale is the single point of truth for read/write routing, failover, connection pooling and health monitoring. Nicht zu kennen ist keine Option.</p>
-  <div class="hero-chips">
-    <div class="hero-chip"><strong>Phase</strong> 07 / 09</div>
-    <div class="hero-chip"><strong>Weight</strong> CRITICAL</div>
-    <div class="hero-chip"><strong>Interviewer</strong> Michael Nietsch</div>
-    <div class="hero-chip"><strong>Total</strong> 17h</div>
-    <div class="hero-chip"><strong>Stack</strong> MaxScale 23.x + Galera</div>
-  </div>
-</div>
-<div class="hero-grid">
-  <div class="hero-card" onclick="goTo('l1')">
-    <div class="hero-card-icon">🏗️</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num">01 · 2h</div>
-      <div class="hero-card-title">Architecture & Installation</div>
-      <span class="status critical">CRITICAL</span>
-    </div>
-    <div class="hero-card-arrow">→</div>
-  </div>
-  <div class="hero-card" onclick="goTo('l2')">
-    <div class="hero-card-icon">⚙️</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num">02 · 3h</div>
-      <div class="hero-card-title">maxscale.cnf Deep Dive</div>
-      <span class="status critical">CRITICAL</span>
-    </div>
-    <div class="hero-card-arrow">→</div>
-  </div>
-  <div class="hero-card" onclick="goTo('l3')">
-    <div class="hero-card-icon">🔭</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num">03 · 3h</div>
-      <div class="hero-card-title">Galera Monitor</div>
-      <span class="status critical">CRITICAL</span>
-    </div>
-    <div class="hero-card-arrow">→</div>
-  </div>
-  <div class="hero-card" onclick="goTo('l4')">
-    <div class="hero-card-icon">↔️</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num">04 · 2h</div>
-      <div class="hero-card-title">Read/Write Split Router</div>
-      <span class="status critical">CRITICAL</span>
-    </div>
-    <div class="hero-card-arrow">→</div>
-  </div>
-  <div class="hero-card" onclick="goTo('l5')">
-    <div class="hero-card-icon">🖥️</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num">05 · 2h</div>
-      <div class="hero-card-title">maxctrl CLI</div>
-      <span class="status critical">CRITICAL</span>
-    </div>
-    <div class="hero-card-arrow">→</div>
-  </div>
-  <div class="hero-card" onclick="goTo('l6')">
-    <div class="hero-card-icon">🔁</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num">06 · 2h</div>
-      <div class="hero-card-title">Failover & Recovery</div>
-      <span class="status critical">CRITICAL</span>
-    </div>
-    <div class="hero-card-arrow">→</div>
-  </div>
-  <div class="hero-card" onclick="goTo('l7')">
-    <div class="hero-card-icon">🎤</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num">07 · 1h</div>
-      <div class="hero-card-title">Interview Q&A + 3am Scenarios</div>
-      <span class="status critical">CRITICAL</span>
-    </div>
-    <div class="hero-card-arrow">→</div>
-  </div>
-</div>
-</div><!-- /page-home -->
-
-
 <!-- ═══════════════════════════════════════════════════ LESSON 1 -->
 <div id="page-l1" class="page">
 <div class="page-header">
@@ -322,7 +228,6 @@ h1 span{color:var(--phase)}
       <div class="lesson-num">Phase 07 · Lesson 01 · 2h</div>
       <div class="page-title">Architecture & Installation</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">Understand MaxScale's four-component model — servers, monitors, routers, and listeners — and how they assemble into a functioning proxy. Covers installation on RHEL/Rocky, service management, and verifying a healthy startup.</p>
 </div>
@@ -572,8 +477,8 @@ mysql -h <span class="num">127.0.0.1</span> -P <span class="num">3306</span> -u 
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('home')">← Home</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('l2')">Next: maxscale.cnf →</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Home</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: maxscale.cnf →</button>
   <button class="mark-done-btn" id="done-l1" onclick="markDone('l1')">Mark complete ✓</button>
 </div>
 </div><!-- /page-l1 -->
@@ -587,7 +492,6 @@ mysql -h <span class="num">127.0.0.1</span> -P <span class="num">3306</span> -u 
       <div class="lesson-num">Phase 07 · Lesson 02 · 3h</div>
       <div class="page-title">maxscale.cnf Deep Dive</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">A complete, production-ready <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxscale.cnf</code> for a three-node Galera cluster with readwritesplit, covering every parameter you'll be asked about — monitor intervals, connection pooling, retry logic, and filter configuration.</p>
 </div>
@@ -930,8 +834,8 @@ port=3308</div>
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l1')">← Architecture</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('l3')">Next: Galera Monitor →</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Architecture</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Galera Monitor →</button>
   <button class="mark-done-btn" id="done-l2" onclick="markDone('l2')">Mark complete ✓</button>
 </div>
 </div><!-- /page-l2 -->
@@ -945,7 +849,6 @@ port=3308</div>
       <div class="lesson-num">Phase 07 · Lesson 03 · 3h</div>
       <div class="page-title">Galera Monitor</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">Deep dive into <code style="font-family:'JetBrains Mono',monospace;font-size:11px">galeramon</code> — how it detects Galera node state, elects a primary, handles wsrep_local_index, responds to split-brain, and controls failback behavior.</p>
 </div>
@@ -1195,8 +1098,8 @@ ss -tlnp | grep <span class="num">3306</span></div>
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l2')">← maxscale.cnf</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('l4')">Next: Read/Write Split →</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← maxscale.cnf</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Read/Write Split →</button>
   <button class="mark-done-btn" id="done-l3" onclick="markDone('l3')">Mark complete ✓</button>
 </div>
 </div><!-- /page-l3 -->
@@ -1210,7 +1113,6 @@ ss -tlnp | grep <span class="num">3306</span></div>
       <div class="lesson-num">Phase 07 · Lesson 04 · 2h</div>
       <div class="page-title">Read/Write Split Router</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">The readwritesplit router is MaxScale's most powerful module. Understand routing rules, transaction boundaries, sticky sessions, and the edge cases that catch operators off guard.</p>
 </div>
@@ -1411,8 +1313,8 @@ maxctrl show service ticketing-rw-service | grep -A 20 "servers"</div>
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l3')">← Galera Monitor</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('l5')">Next: maxctrl →</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Galera Monitor</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: maxctrl →</button>
   <button class="mark-done-btn" id="done-l4" onclick="markDone('l4')">Mark complete ✓</button>
 </div>
 </div><!-- /page-l4 -->
@@ -1426,7 +1328,6 @@ maxctrl show service ticketing-rw-service | grep -A 20 "servers"</div>
       <div class="lesson-num">Phase 07 · Lesson 05 · 2h</div>
       <div class="page-title">maxctrl CLI</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">Master the <code style="font-family:'JetBrains Mono',monospace;font-size:11px">maxctrl</code> command-line tool — the primary interface for runtime management of MaxScale. Learn to inspect, alter, drain, and recover from the command line under pressure.</p>
 </div>
@@ -1606,8 +1507,8 @@ maxctrl restart monitor galera-monitor</div>
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l4')">← Read/Write Split</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('l6')">Next: Failover & Recovery →</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Read/Write Split</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Failover & Recovery →</button>
   <button class="mark-done-btn" id="done-l5" onclick="markDone('l5')">Mark complete ✓</button>
 </div>
 </div><!-- /page-l5 -->
@@ -1621,7 +1522,6 @@ maxctrl restart monitor galera-monitor</div>
       <div class="lesson-num">Phase 07 · Lesson 06 · 2h</div>
       <div class="page-title">Failover & Recovery</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">Understand what MaxScale can and cannot do during a Galera node failure — automatic routing failover vs manual recovery, the limits of MaxScale's power, and how to recover from worst-case scenarios.</p>
 </div>
@@ -1861,8 +1761,8 @@ vrrp_instance MAXSCALE_VIP {
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l5')">← maxctrl</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('l7')">Next: Interview Q&A →</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← maxctrl</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Interview Q&A →</button>
   <button class="mark-done-btn" id="done-l6" onclick="markDone('l6')">Mark complete ✓</button>
 </div>
 </div><!-- /page-l6 -->
@@ -1876,7 +1776,6 @@ vrrp_instance MAXSCALE_VIP {
       <div class="lesson-num">Phase 07 · Lesson 07 · 1h</div>
       <div class="page-title">Interview Q&A + 3am Scenarios</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">Final consolidation — the toughest MaxScale interview questions from a senior DBA perspective, plus three realistic 3am on-call scenarios with full diagnostic playbooks.</p>
 </div>
@@ -2077,8 +1976,8 @@ journalctl -u maxscale --since "1h ago" | grep -i "error\|warn\|down"</div>
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l6')">← Failover & Recovery</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('home')">← Back to Phase Home</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Failover & Recovery</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Back to Phase Home</button>
   <button class="mark-done-btn" id="done-l7" onclick="markDone('l7')">Mark complete ✓</button>
 </div>
 </div><!-- /page-l7 -->

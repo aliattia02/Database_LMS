@@ -23,45 +23,9 @@
 html{scroll-behavior:auto}
 body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;min-height:100vh}
 
-/* NAV */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;padding:0 24px;gap:0;box-shadow:0 1px 6px rgba(0,60,120,.06)}
-.nav-logo{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--text);padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:8px;white-space:nowrap;flex-shrink:0}
-.nav-logo span{color:var(--phase)}
-.nav-tab{padding:14px 12px;font-size:11px;font-weight:600;letter-spacing:.05em;cursor:pointer;color:var(--muted);transition:color .15s;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent;user-select:none}
-.nav-tab:hover{color:var(--text)}
-.nav-tab.active{color:var(--text);border-bottom-color:var(--phase)}
-.nav-tab.done-tab{color:var(--greend)}
-.nav-tab.done-tab.active{color:var(--text);border-bottom-color:var(--phase)}
-
 /* LAYOUT */
-.page{display:none;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.page{display:block;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
 .page.active{display:block}
-#page-home:not(.active){display:none}
-
-/* HERO */
-.hero{padding:56px 40px 40px;max-width:1100px;margin:0 auto}
-.eyebrow{font-size:11px;letter-spacing:.2em;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:14px}
-h1{font-size:48px;font-weight:800;line-height:1;letter-spacing:-.03em;margin-bottom:14px;color:var(--text)}
-h1 span{color:var(--phase)}
-.hero-sub{font-size:14px;color:var(--muted);max-width:600px;line-height:1.65;margin-bottom:36px}
-
-/* HERO GRID */
-.hero-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:7px;max-width:1100px;margin:0 40px 40px}
-.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px 10px;cursor:pointer;transition:border-color .15s,transform .12s,box-shadow .15s;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,60,120,.04);display:flex;align-items:center;gap:10px}
-.hero-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;border-radius:10px 0 0 10px}
-.hero-card.c-purple::before{background:var(--purple)}
-.hero-card.c-blue::before{background:var(--blue)}
-.hero-card.c-green::before{background:var(--green)}
-.hero-card.c-orange::before{background:var(--orange)}
-.hero-card.c-teal::before{background:var(--teal)}
-.hero-card.c-indigo::before{background:var(--indigo)}
-.hero-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,60,120,.09)}
-.hero-card-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
-.hero-card-body{flex:1;min-width:0}
-.hero-card-num{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px}
-.hero-card-title{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
-.status{font-size:9px;padding:2px 7px;border-radius:99px;display:inline-block;font-weight:600;letter-spacing:.04em}
-.hero-card-arrow{font-size:13px;color:var(--dim);flex-shrink:0;font-weight:300}
 
 /* PAGE HEADER */
 .page-header{margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
@@ -223,76 +187,6 @@ h1 span{color:var(--phase)}
 </head>
 <body>
 
-<nav>
-  <div class="nav-logo">📐 DB·<span>DESIGN</span></div>
-  <div class="nav-tab active" id="tab-home" onclick="goTo('home')">Home</div>
-  <div class="nav-tab" id="tab-l1" onclick="goTo('l1')">01</div>
-  <div class="nav-tab" id="tab-l2" onclick="goTo('l2')">02</div>
-  <div class="nav-tab" id="tab-l3" onclick="goTo('l3')">03</div>
-  <div class="nav-tab" id="tab-l4" onclick="goTo('l4')">04</div>
-  <div class="nav-tab" id="tab-l5" onclick="goTo('l5')">05</div>
-</nav>
-
-<!-- ═══ HOME ══════════════════════════════════════════════════════════════════ -->
-<div id="page-home" class="page active">
-<div class="hero">
-  <div class="eyebrow">Phase 02 · Database Design · Interview Weight: LOW · 12h total</div>
-  <h1>Database<br><span>Design</span></h1>
-  <p class="hero-sub">The difference between a schema that works and one that scales. Good design is invisible — bad design causes years of pain. Master normalization, relationships, index strategy, and real-world patterns using Morafek CareMate EHR and Deutsche Bahn operational tables.</p>
-  <div class="callout info" style="margin-top:16px">
-    <div class="lbl">🔧 Engine note</div>
-    <p>The <code>CREATE TABLE</code> examples in this phase are engine-agnostic — normalization rules, constraint syntax, and relationship patterns apply equally to MySQL and MariaDB. Phase 01 uses <strong>MySQL 8</strong>; Phase 03 explicitly adopts <strong>MariaDB 10.11+</strong> and includes a compatibility diff table covering the points where the two engines diverge.</p>
-  </div>
-</div>
-<div class="hero-grid">
-  <div class="hero-card c-purple" onclick="goTo('l1')">
-    <div class="hero-card-icon" style="background:var(--purpleb)">📊</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--purple)">01 · 4h</div>
-      <div class="hero-card-title">Normalization 1NF→3NF</div>
-      <div class="status" style="background:var(--purpleb);color:var(--purple)" id="st-l1">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-blue" onclick="goTo('l2')">
-    <div class="hero-card-icon" style="background:var(--blueb)">🔗</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--blue)">02 · 3h</div>
-      <div class="hero-card-title">Keys, Constraints & Relationships</div>
-      <div class="status" style="background:var(--blueb);color:var(--blue)" id="st-l2">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-orange" onclick="goTo('l3')">
-    <div class="hero-card-icon" style="background:var(--orangeb)">⚡</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--orange)">03 · 3h</div>
-      <div class="hero-card-title">Index Design Strategy</div>
-      <div class="status" style="background:var(--orangeb);color:var(--orange)" id="st-l3">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-teal" onclick="goTo('l4')">
-    <div class="hero-card-icon" style="background:var(--tealb)">🏗️</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--teal)">04 · 2h</div>
-      <div class="hero-card-title">Schema Design Patterns</div>
-      <div class="status" style="background:var(--tealb);color:var(--teal)" id="st-l4">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-indigo" onclick="goTo('l5')">
-    <div class="hero-card-icon" style="background:var(--indigob)">🎤</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--indigo)">05 · 1h</div>
-      <div class="hero-card-title">Interview Q&amp;A</div>
-      <div class="status" style="background:var(--indigob);color:var(--indigo)" id="st-l5">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-</div>
-</div>
-
 <!-- ═══ LESSON 1: NORMALIZATION ══════════════════════════════════════════════ -->
 <div id="page-l1" class="page">
   <div class="page-header">
@@ -301,7 +195,6 @@ h1 span{color:var(--phase)}
         <div class="lesson-num" style="color:var(--phase)">Phase 02 · Lesson 01 · 4h</div>
         <div class="page-title">Normalization — 1NF → 3NF</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Normalization is the systematic process of structuring a database to reduce redundancy and improve data integrity. Understanding the normal forms tells an interviewer you can reason about schema correctness — not just write CREATE TABLE.</p>
   </div>
@@ -607,9 +500,9 @@ h1 span{color:var(--phase)}
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('home')">← Home</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Home</button>
     <button class="mark-done-btn" id="done-l1" onclick="markDone('l1')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l2')">Next: Keys & Relationships →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Keys & Relationships →</button>
   </div>
 </div>
 
@@ -621,7 +514,6 @@ h1 span{color:var(--phase)}
         <div class="lesson-num" style="color:var(--phase)">Phase 02 · Lesson 02 · 3h</div>
         <div class="page-title">Keys, Constraints &amp; Relationships</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Constraints are the database enforcing your business rules automatically — so your application code doesn't have to. Understanding primary keys, foreign keys, and referential integrity is critical for any DBA role.</p>
   </div>
@@ -928,9 +820,9 @@ h1 span{color:var(--phase)}
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l1')">← Normalization</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Normalization</button>
     <button class="mark-done-btn" id="done-l2" onclick="markDone('l2')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l3')">Next: Index Design →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Index Design →</button>
   </div>
 </div>
 
@@ -942,7 +834,6 @@ h1 span{color:var(--phase)}
         <div class="lesson-num" style="color:var(--phase)">Phase 02 · Lesson 03 · 3h</div>
         <div class="page-title">Index Design Strategy</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Indexes are the single most impactful performance tool in a DBA's toolkit. The right index turns a 5-second query into 4ms. The wrong index silently slows down every write. This lesson teaches you how to think about indexes strategically.</p>
   </div>
@@ -1213,9 +1104,9 @@ h1 span{color:var(--phase)}
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l2')">← Keys & Relationships</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Keys & Relationships</button>
     <button class="mark-done-btn" id="done-l3" onclick="markDone('l3')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l4')">Next: Schema Patterns →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Schema Patterns →</button>
   </div>
 </div>
 
@@ -1227,7 +1118,6 @@ h1 span{color:var(--phase)}
         <div class="lesson-num" style="color:var(--phase)">Phase 02 · Lesson 04 · 2h</div>
         <div class="page-title">Schema Design Patterns</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Beyond normalization, experienced designers use recurring patterns to solve common problems. Soft deletes, audit trails, and status state machines appear in virtually every production system — including CareMate and OS railway operations.</p>
   </div>
@@ -1488,9 +1378,9 @@ h1 span{color:var(--phase)}
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l3')">← Index Design</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Index Design</button>
     <button class="mark-done-btn" id="done-l4" onclick="markDone('l4')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l5')">Next: Interview Q&amp;A →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Interview Q&amp;A →</button>
   </div>
 </div>
 
@@ -1502,7 +1392,6 @@ h1 span{color:var(--phase)}
         <div class="lesson-num" style="color:var(--phase)">Phase 02 · Lesson 05 · 1h</div>
         <div class="page-title">Interview Q&amp;A — Database Design</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Rapid-fire Q&A review for the Phase 02 topics. These are questions a senior DBA like Michael Nietsch might ask to probe design reasoning — not just syntax knowledge. Practice answering out loud.</p>
   </div>
@@ -1574,9 +1463,9 @@ h1 span{color:var(--phase)}
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l4')">← Schema Patterns</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Schema Patterns</button>
     <button class="mark-done-btn" id="done-l5" onclick="markDone('l5')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('home')">↑ Phase Home</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">↑ Phase Home</button>
   </div>
 </div>
 

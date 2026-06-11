@@ -23,31 +23,9 @@
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;min-height:100vh}
 
-/* NAV */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;padding:0 24px;gap:0;box-shadow:0 1px 6px rgba(0,60,120,.06)}
-.nav-logo{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--text);padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:8px;white-space:nowrap;flex-shrink:0}
-.nav-logo span{color:var(--teal)}
-.nav-tab{padding:14px 13px;font-size:11px;font-weight:600;letter-spacing:.05em;cursor:pointer;color:var(--muted);transition:color .15s;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent;user-select:none}
-.nav-tab:hover{color:var(--text)}
-.nav-tab.active{color:var(--text);border-bottom-color:var(--teal)}
-
 /* LAYOUT */
-.page{display:none;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.page{display:block;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
 .page.active{display:block}
-
-/* HERO */
-.hero{padding:56px 40px 16px;max-width:1100px;margin:0 auto}
-.eyebrow{font-size:11px;letter-spacing:.2em;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:14px}
-h1{font-size:48px;font-weight:800;line-height:1;letter-spacing:-.03em;margin-bottom:14px;color:var(--text)}
-h1 span{color:var(--teal)}
-.hero-sub{font-size:14px;color:var(--muted);max-width:600px;line-height:1.65;margin-bottom:36px}
-.hero-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;max-width:1100px;margin:0 40px 48px}
-.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;cursor:pointer;transition:border-color .15s,transform .1s,box-shadow .15s;display:flex;align-items:center;gap:14px;box-shadow:0 1px 4px rgba(0,60,120,.05)}
-.hero-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,60,120,.1)}
-.hero-card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.hero-card-num{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
-.hero-card-title{font-size:14px;font-weight:700;color:var(--text)}
-.hero-card-arrow{margin-left:auto;color:var(--dim);font-size:18px}
 
 /* PAGE HEADER */
 .page-header{margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
@@ -158,71 +136,6 @@ h1 span{color:var(--teal)}
 </head>
 <body>
 
-<nav>
-  <div class="nav-logo">🗄️ DB·<span>MASTERY</span></div>
-  <div class="nav-tab active" id="tab-home" onclick="goTo('home')">Overview</div>
-  <div class="nav-tab" id="tab-what" onclick="goTo('what')">01 What Is a DB</div>
-  <div class="nav-tab" id="tab-relational" onclick="goTo('relational')">02 Relational (SQL)</div>
-  <div class="nav-tab" id="tab-nosql" onclick="goTo('nosql')">03 NoSQL Types</div>
-  <div class="nav-tab" id="tab-compare" onclick="goTo('compare')">04 SQL vs NoSQL</div>
-  <div class="nav-tab" id="tab-engines" onclick="goTo('engines')">05 DB Engines</div>
-  <div class="nav-tab" id="tab-choose" onclick="goTo('choose')">06 Choose Your DB</div>
-</nav>
-
-<!-- ═══ HOME ══════════════════════════════════════════════════════════════════ -->
-<div id="page-home" class="page active">
-  <div class="hero">
-    <div class="eyebrow">Intro · Before the Track Starts</div>
-    <h1>Databases —<br>The <span>Big Picture</span></h1>
-    <div class="hero-sub">Before writing a single line of SQL or touching MariaDB, understand the landscape. What is a database? Why are there so many types? When do you use SQL versus NoSQL? This is the map — read it once, and everything else will make sense.</div>
-  </div>
-
-  <div class="hero-grid">
-    <div class="hero-card" onclick="goTo('what')">
-      <div class="hero-card-icon" style="background:var(--tealb)">🗄️</div>
-      <div><div class="hero-card-num" style="color:var(--teal)">01 · Foundation</div><div class="hero-card-title">What Is a Database?</div></div>
-      <div class="hero-card-arrow">›</div>
-    </div>
-    <div class="hero-card" onclick="goTo('relational')">
-      <div class="hero-card-icon" style="background:var(--blueb)">📊</div>
-      <div><div class="hero-card-num" style="color:var(--blue)">02 · Core Track</div><div class="hero-card-title">Relational / SQL</div></div>
-      <div class="hero-card-arrow">›</div>
-    </div>
-    <div class="hero-card" onclick="goTo('nosql')">
-      <div class="hero-card-icon" style="background:var(--purpleb)">🌐</div>
-      <div><div class="hero-card-num" style="color:var(--purple)">03 · Awareness</div><div class="hero-card-title">NoSQL Types</div></div>
-      <div class="hero-card-arrow">›</div>
-    </div>
-    <div class="hero-card" onclick="goTo('compare')">
-      <div class="hero-card-icon" style="background:var(--orangeb)">⚖️</div>
-      <div><div class="hero-card-num" style="color:var(--orange)">04 · Decision</div><div class="hero-card-title">SQL vs NoSQL</div></div>
-      <div class="hero-card-arrow">›</div>
-    </div>
-    <div class="hero-card" onclick="goTo('engines')">
-      <div class="hero-card-icon" style="background:var(--greenb)">⚙️</div>
-      <div><div class="hero-card-num" style="color:var(--green)">05 · Market</div><div class="hero-card-title">DB Engines</div></div>
-      <div class="hero-card-arrow">›</div>
-    </div>
-    <div class="hero-card" onclick="goTo('choose')">
-      <div class="hero-card-icon" style="background:var(--pinkb)">🎯</div>
-      <div><div class="hero-card-num" style="color:var(--pink)">06 · Practical</div><div class="hero-card-title">Choose Your DB</div></div>
-      <div class="hero-card-arrow">›</div>
-    </div>
-  </div>
-
-  <!-- Quick orientation callout -->
-  <div style="max-width:1100px;margin:0 40px 40px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
-    <div class="callout info" style="margin-bottom:0">
-      <div class="lbl">📌 Why This File Exists</div>
-      <p>Most database courses throw you into SQL commands on day one. That's backwards. Knowing <em>why</em> relational databases exist, what alternatives look like, and when each fits — that context turns syntax into understanding. Read this once. It pays off for the entire track.</p>
-    </div>
-    <div class="callout tip" style="margin-bottom:0">
-      <div class="lbl">🗺️ Where This Fits In The Track</div>
-      <p>This is <strong>Phase 00 — General Knowledge</strong>. After this: Phase 00-L (Linux/RedHat), Phase 01 (SQL & MySQL hands-on), Phase 02 (DB Design), Phase 03 (Advanced SQL), Phase 04 (DB Internals).</p>
-    </div>
-  </div>
-</div>
-
 <!-- ═══ 01 WHAT IS A DATABASE ═════════════════════════════════════════════════ -->
 <div id="page-what" class="page">
   <div class="page-header">
@@ -231,7 +144,6 @@ h1 span{color:var(--teal)}
         <div class="lesson-num" style="color:var(--teal)">Section 01 · Foundation</div>
         <div class="page-title" style="color:var(--teal)">What Is a Database?</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← Overview</button>
     </div>
     <div class="page-desc">A database is an organised collection of data that can be stored, retrieved, and modified efficiently. But that definition fits a lot of things — including a spreadsheet. So what makes a database different?</div>
   </div>
@@ -292,7 +204,6 @@ h1 span{color:var(--teal)}
         <div class="lesson-num" style="color:var(--blue)">Section 02 · Core Track</div>
         <div class="page-title" style="color:var(--blue)">Relational Databases &amp; SQL</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← Overview</button>
     </div>
     <div class="page-desc">Relational databases organise data into tables with rows and columns. They are linked by keys and queried with SQL. This is the dominant database model — it runs banks, hospitals, e-commerce, and almost every enterprise system on earth.</div>
   </div>
@@ -414,7 +325,6 @@ h1 span{color:var(--teal)}
         <div class="lesson-num" style="color:var(--purple)">Section 03 · Awareness</div>
         <div class="page-title" style="color:var(--purple)">NoSQL Database Types</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← Overview</button>
     </div>
     <div class="page-desc">"NoSQL" means "Not Only SQL" — it's not one thing but a family of very different database models, each designed for a specific kind of problem. You need to know they exist and what each is good at, even if this track focuses on SQL.</div>
   </div>
@@ -556,7 +466,6 @@ flights:    id, number, departure
         <div class="lesson-num" style="color:var(--orange)">Section 04 · Decision</div>
         <div class="page-title" style="color:var(--orange)">SQL vs NoSQL</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← Overview</button>
     </div>
     <div class="page-desc">The most common interview question in database discussions. The honest answer is: it depends on the problem. Here's how to think through the decision systematically.</div>
   </div>
@@ -661,7 +570,6 @@ flights:    id, number, departure
         <div class="lesson-num" style="color:var(--green)">Section 05 · Market</div>
         <div class="page-title" style="color:var(--green)">Database Engines</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← Overview</button>
     </div>
     <div class="page-desc">The major database products — who made them, what they're good at, and how they relate to each other. Focus is on the SQL family since that's your track, with enough NoSQL awareness to have an intelligent conversation.</div>
   </div>
@@ -750,7 +658,6 @@ flights:    id, number, departure
         <div class="lesson-num" style="color:var(--pink)">Section 06 · Practical</div>
         <div class="page-title" style="color:var(--pink)">Choose Your Database</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← Overview</button>
     </div>
     <div class="page-desc">A practical decision framework. These are the questions you ask when starting any project. There is rarely one objectively correct answer — but there are clearly wrong choices. Here's how to avoid them.</div>
   </div>

@@ -22,41 +22,9 @@
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;min-height:100vh}
 
-/* NAV */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;padding:0 24px;gap:0;box-shadow:0 1px 6px rgba(0,60,120,.06)}
-.nav-logo{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--text);padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:8px;white-space:nowrap;flex-shrink:0}
-.nav-logo span{color:var(--teal)}
-.nav-tab{padding:14px 12px;font-size:11px;font-weight:600;letter-spacing:.05em;cursor:pointer;color:var(--muted);transition:color .15s;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent;user-select:none}
-.nav-tab:hover{color:var(--text)}
-.nav-tab.active{color:var(--text);border-bottom-color:var(--teal)}
-.nav-tab.done-tab{color:var(--greend)}
-.nav-tab.done-tab.active{color:var(--text)}
-
 /* LAYOUT */
-.page{display:none;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.page{display:block;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
 .page.active{display:block}
-#page-home:not(.active){display:none}
-
-/* HERO */
-.hero{padding:56px 40px 40px;max-width:1100px;margin:0 auto}
-.eyebrow{font-size:11px;letter-spacing:.2em;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:14px}
-h1{font-size:48px;font-weight:800;line-height:1;letter-spacing:-.03em;margin-bottom:14px;color:var(--text)}
-h1 span{color:var(--teal)}
-.hero-sub{font-size:14px;color:var(--muted);max-width:580px;line-height:1.65;margin-bottom:36px}
-.hero-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;max-width:1100px;margin:0 40px 48px}
-.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;cursor:pointer;transition:border-color .15s,transform .1s,box-shadow .15s;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,60,120,.05)}
-/* hero-card top-bar removed — using left border now */
-.hero-card.c-green::before{background:var(--green)}
-.hero-card.c-blue::before{background:var(--blue)}
-.hero-card.c-purple::before{background:var(--purple)}
-.hero-card.c-orange::before{background:var(--orange)}
-.hero-card.c-pink::before{background:var(--pink)}
-.hero-card.c-teal::before{background:var(--teal)}
-.hero-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,60,120,.1)}
-.hero-card-num{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
-.hero-card-title{font-size:15px;font-weight:700;margin-bottom:4px;color:var(--text)}
-.hero-card-sub{font-size:11px;color:var(--muted);line-height:1.4}
-.hero-card .status{font-size:10px;padding:2px 8px;border-radius:99px;margin-top:10px;display:inline-block;font-weight:600;letter-spacing:.05em}
 
 /* PAGE HEADER */
 .page-header{margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
@@ -257,143 +225,6 @@ h1 span{color:var(--teal)}
 </head>
 <body>
 
-<nav>
-  <div class="nav-logo">🩺 SQL·<span>CAREMATE</span></div>
-  <div class="nav-tab active" id="tab-home" onclick="goTo('home')">Start</div>
-  <div class="nav-tab" id="tab-setup" onclick="goTo('setup')">00 Setup</div>
-  <div class="nav-tab" id="tab-l1" onclick="goTo('l1')">01 First Table</div>
-  <div class="nav-tab" id="tab-l2" onclick="goTo('l2')">02 SELECT</div>
-  <div class="nav-tab" id="tab-l3" onclick="goTo('l3')">03 Filter & Sort</div>
-  <div class="nav-tab" id="tab-l4" onclick="goTo('l4')">04 Update & Delete</div>
-  <div class="nav-tab" id="tab-l5" onclick="goTo('l5')">05 Aggregate</div>
-  <div class="nav-tab" id="tab-l6" onclick="goTo('l6')">06 Multiple Tables</div>
-  <div class="nav-tab" id="tab-l7" onclick="goTo('l7')">07 JOINs</div>
-  <div class="nav-tab" id="tab-l8" onclick="goTo('l8')">08 Indexes</div>
-  <div class="nav-tab" id="tab-l9" onclick="goTo('l9')" style="border-left:1px solid var(--border);margin-left:8px;padding-left:20px">09 Data Types</div>
-  <div class="nav-tab" id="tab-l10" onclick="goTo('l10')">10 Attrs &amp; Constraints</div>
-  <div class="nav-tab" id="tab-log" onclick="goTo('log')" style="border-left:1px solid var(--border);margin-left:8px;padding-left:20px;color:var(--green)">📋 Ali's Log</div>
-</nav>
-
-<!-- ═══ HOME ══════════════════════════════════════════════════════════════════ -->
-<div id="page-home" class="active">
-<div class="hero">
-  <div class="eyebrow">Hands-on · MySQL · Morafek CareMate Edition</div>
-  <h1>SQL from<br><span>Scratch</span></h1>
-  <p class="hero-sub">You know MongoDB. Now learn SQL — the language powering every relational database. Every lesson uses real <strong>Morafek CareMate PHR</strong> data: patients, vitals, visits, and doctors. No slides — only things you type and run.</p>
-</div>
-<div class="hero-grid">
-  <div class="hero-card c-teal" onclick="goTo('setup')">
-    <div class="hero-card-icon" style="background:var(--tealb)">⚙️</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--teal)">00 · ~10 min</div>
-      <div class="hero-card-title">Setup</div>
-      <div class="status" style="background:var(--tealb);color:var(--teal)" id="st-setup">Start here →</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-blue" onclick="goTo('l1')">
-    <div class="hero-card-icon" style="background:var(--blueb)">🗄️</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--blue)">01 · ~30 min</div>
-      <div class="hero-card-title">First Table</div>
-      <div class="status" style="background:var(--blueb);color:var(--blue)" id="st-l1">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-purple" onclick="goTo('l2')">
-    <div class="hero-card-icon" style="background:var(--purpleb)">🔍</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--purple)">02 · ~30 min</div>
-      <div class="hero-card-title">SELECT</div>
-      <div class="status" style="background:var(--purpleb);color:var(--purple)" id="st-l2">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-orange" onclick="goTo('l3')">
-    <div class="hero-card-icon" style="background:var(--orangeb)">🔎</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--orange)">03 · ~45 min</div>
-      <div class="hero-card-title">Filter & Sort</div>
-      <div class="status" style="background:var(--orangeb);color:var(--orange)" id="st-l3">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-pink" onclick="goTo('l4')">
-    <div class="hero-card-icon" style="background:var(--pinkb)">✏️</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--pink)">04 · ~30 min</div>
-      <div class="hero-card-title">Update & Delete</div>
-      <div class="status" style="background:var(--pinkb);color:var(--pink)" id="st-l4">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-teal" onclick="goTo('l5')">
-    <div class="hero-card-icon" style="background:var(--tealb)">📊</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--teal)">05 · ~45 min</div>
-      <div class="hero-card-title">Aggregations</div>
-      <div class="status" style="background:var(--tealb);color:var(--teal)" id="st-l5">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-green" onclick="goTo('l6')">
-    <div class="hero-card-icon" style="background:var(--greenb)">🔗</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--green)">06 · ~45 min</div>
-      <div class="hero-card-title">Multi-Tables</div>
-      <div class="status" style="background:var(--greenb);color:var(--green)" id="st-l6">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-blue" onclick="goTo('l7')">
-    <div class="hero-card-icon" style="background:var(--blueb)">🤝</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--blue)">07 · ~60 min</div>
-      <div class="hero-card-title">JOINs</div>
-      <div class="status" style="background:var(--blueb);color:var(--blue)" id="st-l7">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-purple" onclick="goTo('l8')">
-    <div class="hero-card-icon" style="background:var(--purpleb)">⚡</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--purple)">08 · ~30 min</div>
-      <div class="hero-card-title">Indexes</div>
-      <div class="status" style="background:var(--purpleb);color:var(--purple)" id="st-l8">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <!-- Reference & Log cards -->
-  <div class="hero-card c-teal" onclick="goTo('l9')" style="border:2px dashed var(--border2)">
-    <div class="hero-card-icon" style="background:var(--tealb)">🗂️</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--teal)">09 · Reference</div>
-      <div class="hero-card-title">Data Types</div>
-      <div class="status" style="background:var(--tealb);color:var(--teal)" id="st-l9">Reference card</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-blue" onclick="goTo('l10')" style="border:2px dashed var(--border2)">
-    <div class="hero-card-icon" style="background:var(--blueb)">⚙️</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--blue)">10 · Reference</div>
-      <div class="hero-card-title">Attrs &amp; Constraints</div>
-      <div class="status" style="background:var(--blueb);color:var(--blue)" id="st-l10">Reference card</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-green" onclick="goTo('log')" style="border:2px dashed var(--border2)">
-    <div class="hero-card-icon" style="background:var(--greenb)">📋</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--green)">Ali · Session Log</div>
-      <div class="hero-card-title">Training Progress</div>
-      <div class="status" style="background:var(--greenb);color:var(--green)" id="st-log">Session 1 ✓</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-</div>
-</div>
-
 <!-- ═══ SETUP ═════════════════════════════════════════════════════════════════ -->
 <div id="page-setup" class="page">
   <div class="page-header">
@@ -402,7 +233,6 @@ h1 span{color:var(--teal)}
         <div class="lesson-num" style="color:var(--teal)">Lesson 00 · Setup</div>
         <div class="page-title" style="color:var(--teal)">Install & Connect</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Get MySQL running and connected in DBeaver. Takes about 10 minutes. You only do this once — then you build the Morafek CareMate database for all lessons.</p>
   </div>
@@ -588,7 +418,7 @@ sudo reboot</div>
 
 <div class="lesson-nav">
     <button class="mark-done-btn" id="done-setup" onclick="markDone('setup')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l1')">Next: First Table →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: First Table →</button>
   </div>
 </div>
 
@@ -600,7 +430,6 @@ sudo reboot</div>
         <div class="lesson-num" style="color:var(--blue)">Lesson 01 · ~30 min</div>
         <div class="page-title" style="color:var(--blue)">Your First Table</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">CREATE TABLE defines the structure. INSERT puts data in. You'll build two PHR tables — <code>patients</code> and <code>vitals</code> — that you'll use for all 8 lessons.</p>
   </div>
@@ -846,9 +675,9 @@ sudo reboot</div>
   </div>
 </div>
 <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('setup')">← Setup</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Setup</button>
     <button class="mark-done-btn" id="done-l1" onclick="markDone('l1')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l2')">Next: SELECT →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: SELECT →</button>
   </div>
 </div>
 
@@ -860,7 +689,6 @@ sudo reboot</div>
         <div class="lesson-num" style="color:var(--purple)">Lesson 02 · ~30 min</div>
         <div class="page-title" style="color:var(--purple)">Reading Data: SELECT</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">SELECT is the most-used SQL command — you'll write it hundreds of times a day. Learn to read all columns, specific columns, rename them, and compute derived values like pulse pressure.</p>
   </div>
@@ -1048,9 +876,9 @@ sudo reboot</div>
   </div>
 </div>
 <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l1')">← Lesson 01</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 01</button>
     <button class="mark-done-btn" id="done-l2" onclick="markDone('l2')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l3')">Next: Filter & Sort →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Filter & Sort →</button>
   </div>
 </div>
 
@@ -1062,7 +890,6 @@ sudo reboot</div>
         <div class="lesson-num" style="color:var(--orange)">Lesson 03 · ~45 min</div>
         <div class="page-title" style="color:var(--orange)">Filter & Sort</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">WHERE filters which rows you get back. ORDER BY sorts them. LIMIT caps how many. These three let you answer "find me all patients with high blood pressure" or "show the 5 most recent vitals".</p>
   </div>
@@ -1292,9 +1119,9 @@ sudo reboot</div>
   </div>
 </div>
 <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l2')">← Lesson 02</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 02</button>
     <button class="mark-done-btn" id="done-l3" onclick="markDone('l3')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l4')">Next: Update & Delete →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Update & Delete →</button>
   </div>
 </div>
 
@@ -1306,7 +1133,6 @@ sudo reboot</div>
         <div class="lesson-num" style="color:var(--pink)">Lesson 04 · ~30 min</div>
         <div class="page-title" style="color:var(--pink)">Changing Data</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">UPDATE changes existing rows. DELETE removes them. Two of the most dangerous commands in SQL — a missing WHERE clause can wipe or corrupt every row in a table.</p>
   </div>
@@ -1502,9 +1328,9 @@ sudo reboot</div>
   </div>
 </div>
 <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l3')">← Lesson 03</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 03</button>
     <button class="mark-done-btn" id="done-l4" onclick="markDone('l4')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l5')">Next: Aggregations →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Aggregations →</button>
   </div>
 </div>
 
@@ -1516,7 +1342,6 @@ sudo reboot</div>
         <div class="lesson-num" style="color:var(--teal)">Lesson 05 · ~45 min</div>
         <div class="page-title" style="color:var(--teal)">Aggregations</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Aggregate functions answer "how many / what's the average / what's the max" questions. With GROUP BY you can break these down per patient, per city, or per blood type — the building blocks of any health dashboard.</p>
   </div>
@@ -1751,9 +1576,9 @@ sudo reboot</div>
   </div>
 </div>
 <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l4')">← Lesson 04</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 04</button>
     <button class="mark-done-btn" id="done-l5" onclick="markDone('l5')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l6')">Next: Multiple Tables →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Multiple Tables →</button>
   </div>
 </div>
 
@@ -1765,7 +1590,6 @@ sudo reboot</div>
         <div class="lesson-num" style="color:var(--green)">Lesson 06 · ~45 min</div>
         <div class="page-title" style="color:var(--green)">Multiple Tables</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Real PHR databases always have multiple tables. This lesson creates the <code>doctors</code> and <code>visits</code> tables that connect to patients — mirroring Morafek's actual data model.</p>
   </div>
@@ -1956,9 +1780,9 @@ sudo reboot</div>
   </div>
 </div>
 <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l5')">← Lesson 05</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 05</button>
     <button class="mark-done-btn" id="done-l6" onclick="markDone('l6')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l7')">Next: JOINs →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: JOINs →</button>
   </div>
 </div>
 
@@ -1970,7 +1794,6 @@ sudo reboot</div>
         <div class="lesson-num" style="color:var(--blue)">Lesson 07 · ~60 min</div>
         <div class="page-title" style="color:var(--blue)">JOINs</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">JOINs combine rows from multiple tables into one result. This is the most important SQL skill. In Morafek, you JOIN patients + visits + doctors to see who visited whom, when, and why.</p>
   </div>
@@ -2226,9 +2049,9 @@ sudo reboot</div>
   </div>
 </div>
 <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l6')">← Lesson 06</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 06</button>
     <button class="mark-done-btn" id="done-l7" onclick="markDone('l7')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l8')">Next: Indexes →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Indexes →</button>
   </div>
 </div>
 
@@ -2240,7 +2063,6 @@ sudo reboot</div>
         <div class="lesson-num" style="color:var(--purple)">Lesson 08 · ~30 min</div>
         <div class="page-title" style="color:var(--purple)">Indexes</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Without indexes, MySQL reads every single row to find data. With the right index, it jumps directly. This is why fetching "all vitals for patient 1" from a million-row vitals table can go from 10 seconds to 10 milliseconds.</p>
   </div>
@@ -2456,7 +2278,7 @@ sudo reboot</div>
   </div>
 </div>
 <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l7')">← Lesson 07</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 07</button>
     <button class="mark-done-btn" id="done-l8" onclick="markDone('l8')">Mark complete ✓</button>
   </div>
 </div>
@@ -2469,9 +2291,9 @@ function togSection(titleEl){
   titleEl.nextElementSibling.classList.toggle('sec-open');
 }
 function expandAll(btn){
-  const page = btn.closest('.page') || btn.closest('[id^=page]');
-  const titles = (page || document).querySelectorAll('.section-title');
-  const bodies  = (page || document).querySelectorAll('.section-body');
+  const page = btn.closest('.page') || document.body;
+  const titles = page.querySelectorAll('.section-title');
+  const bodies  = page.querySelectorAll('.section-body');
   const allOpen = [...bodies].every(b=>b.classList.contains('sec-open'));
   titles.forEach(t => t.classList.toggle('sec-open', !allOpen));
   bodies.forEach(b => b.classList.toggle('sec-open', !allOpen));
@@ -2482,45 +2304,13 @@ function expandAll(btn){
 const PHASE_KEY = 'phase_01_done';
 let done = {};
 try { done = JSON.parse(localStorage.getItem(PHASE_KEY)||'{}'); } catch(e){}
-function save(){ try{localStorage.setItem(PHASE_KEY,JSON.stringify(done));}catch(e){}}
+function save(){ try{localStorage.setItem(PHASE_KEY,JSON.stringify(done));}catch(e){} }
 
 const LESSONS = ['setup','l1','l2','l3','l4','l5','l6','l7','l8','l9','l10','log'];
-const STATUS_LABELS = {
-  'setup':['Start here →','Complete ✓'],
-  'l1':['Not started','Complete ✓'],
-  'l2':['Not started','Complete ✓'],
-  'l3':['Not started','Complete ✓'],
-  'l4':['Not started','Complete ✓'],
-  'l5':['Not started','Complete ✓'],
-  'l6':['Not started','Complete ✓'],
-  'l7':['Not started','Complete ✓'],
-  'l8':['Not started','Complete ✓'],
-  'l9':['Reference card','Reviewed ✓'],
-  'l10':['Reference card','Reviewed ✓'],
-  'log':['Session 1 ✓','Session 1 ✓'],
-};
-
-function updateHomeCards(){
-  LESSONS.forEach(id=>{
-    const el = document.getElementById('st-'+id);
-    if(!el) return;
-    const isDone = !!done[id];
-    el.textContent = isDone ? STATUS_LABELS[id][1] : STATUS_LABELS[id][0];
-    if(isDone){
-      el.style.background='var(--greenb)';
-      el.style.color='var(--green)';
-    }
-    const tab = document.getElementById('tab-'+id);
-    if(tab){
-      tab.classList.toggle('done-tab', isDone);
-    }
-  });
-}
 
 function markDone(id){
   done[id] = !done[id];
   save();
-  updateHomeCards();
   const btn = document.getElementById('done-'+id);
   if(btn){
     btn.classList.toggle('done', !!done[id]);
@@ -2538,57 +2328,22 @@ function restoreDoneButtons(){
   });
 }
 
-// ─── NAVIGATION ───────────────────────────────────────────────────────────────
-let currentPage = 'home';
-
-function goTo(id){
-  document.getElementById('page-'+currentPage).classList.remove('active');
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-
-  const page = document.getElementById('page-'+id);
-  if(page){
-    page.classList.add('active');
-    // collapse all sections on entry so user sees overview
-    page.querySelectorAll('.section-title').forEach(t=>t.classList.remove('sec-open'));
-    page.querySelectorAll('.section-body').forEach(b=>b.classList.remove('sec-open'));
-    page.querySelectorAll('.expand-all-btn').forEach(b=>{ b.textContent='Expand all ↓'; });
-    // collapse Q&A accordions on navigation
-    page.querySelectorAll('.qa-q').forEach(q=>q.classList.remove('open'));
-    page.querySelectorAll('.qa-a').forEach(a=>a.classList.remove('open'));
-  } else {
-    document.getElementById('page-home').classList.add('active');
-    id = 'home';
-  }
-
-  const tab = document.getElementById('tab-'+(id==='home'?'home':id));
-  if(tab) tab.classList.add('active');
-
-  currentPage = id;
-  requestAnimationFrame(()=>{
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  });
-}
-
 // ─── INTERACTIVE COMPONENTS ───────────────────────────────────────────────────
 function togQA(qEl){
   qEl.classList.toggle('open');
   qEl.nextElementSibling.classList.toggle('open');
 }
-
 function togChallenge(head){
   const body = head.nextElementSibling;
   const arrow = head.querySelector('.challenge-arrow');
   body.classList.toggle('open');
   arrow.classList.toggle('open');
 }
-
 function togAnswer(btn){
   const answer = btn.nextElementSibling;
   answer.classList.toggle('open');
   btn.textContent = answer.classList.contains('open') ? 'Hide answer ↑' : 'Show answer ↓';
 }
-
 function copyCode(btn){
   const body = btn.closest('.code-block').querySelector('.code-body');
   const text = body.innerText || body.textContent;
@@ -2602,7 +2357,6 @@ function copyCode(btn){
   });
 }
 
-updateHomeCards();
 restoreDoneButtons();
 </script>
 
@@ -2614,7 +2368,6 @@ restoreDoneButtons();
         <div class="lesson-num" style="color:var(--teal)">Lesson 09 · Reference Card</div>
         <div class="page-title" style="color:var(--teal)">Data Types</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <div class="page-desc">Choosing the right column type is the first decision you make in every table. Wrong types waste space, cause silent data corruption, and break queries. This card covers every type you will actually use — illustrated with the Flight System domain.</div>
   </div>
@@ -2785,7 +2538,6 @@ is_direct      <span class="tp">TINYINT(1)</span> <span class="kw">NOT NULL DEFA
         <div class="lesson-num" style="color:var(--blue)">Lesson 10 · Reference Card</div>
         <div class="page-title" style="color:var(--blue)">Attributes, Constraints &amp; Functions</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <div class="page-desc">Column modifiers, table-level rules, and built-in value generators. These are the tools that enforce data quality at the database layer — so your app never has to.</div>
   </div>
@@ -2941,7 +2693,6 @@ created_at <span class="tp">TIMESTAMP</span>   <span class="kw">DEFAULT CURRENT_
         <div class="lesson-num" style="color:var(--green)">Training Log · PostgreSQL → MariaDB</div>
         <div class="page-title" style="color:var(--green)">Ali's Progress</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← Home</button>
     </div>
     <div class="page-desc">Session-by-session record of topics covered, concepts learned, and corrections made. Background: Excel power user, JSON conceptual knowledge, zero SQL experience at start.</div>
   </div>
@@ -3065,9 +2816,6 @@ created_at <span class="tp">TIMESTAMP</span>   <span class="kw">DEFAULT CURRENT_
 
 </div>
 
-<script>
-updateHomeCards();
-restoreDoneButtons();
-</script>
+
 </body>
 </html>

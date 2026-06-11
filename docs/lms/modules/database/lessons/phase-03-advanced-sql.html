@@ -41,9 +41,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-
 /* ══════════════════════════════════════════════════════════════════════════
    LAYOUT
 ══════════════════════════════════════════════════════════════════════════ */
-.page{display:none;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.page{display:block;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
 .page.active{display:block}
-#page-home:not(.active){display:none}
 
 /* ══════════════════════════════════════════════════════════════════════════
    HERO — pill badge + meta chips (different structure from Phase 02)
@@ -257,90 +256,9 @@ h1 span{color:var(--phase)}
 <!-- ═══════════════════════════════════════════════════════════════════════
      NAV
 ════════════════════════════════════════════════════════════════════════ -->
-<nav>
-  <div class="nav-logo">🧠 SQL·<span>PRO</span></div>
-  <div class="nav-tab active" id="tab-home" onclick="goTo('home')">Home</div>
-  <div class="nav-tab" id="tab-l1" onclick="goTo('l1')">01</div>
-  <div class="nav-tab" id="tab-l2" onclick="goTo('l2')">02</div>
-  <div class="nav-tab" id="tab-l3" onclick="goTo('l3')">03</div>
-  <div class="nav-tab" id="tab-l4" onclick="goTo('l4')">04</div>
-  <div class="nav-tab" id="tab-l5" onclick="goTo('l5')">05</div>
-  <div class="nav-tab" id="tab-l6" onclick="goTo('l6')">06</div>
-</nav>
-
 <!-- ═══════════════════════════════════════════════════════════════════════
      HOME
 ════════════════════════════════════════════════════════════════════════ -->
-<div id="page-home" class="page active">
-<div class="hero">
-  <div class="phase-pill"><span class="phase-pill-dot"></span><span class="phase-pill-text">Phase 03 · Advanced SQL · Interview Weight: MEDIUM · 16h</span></div>
-  <h1>Advanced<br><span>SQL</span></h1>
-  <p class="hero-sub">The queries that separate juniors from seniors. Window functions, CTEs, EXPLAIN-driven optimization, transaction isolation, and stored routines — mastered through Morafek CareMate EHR and Deutsche Bahn operational data.</p>
-  <div class="hero-chips">
-    <div class="hero-chip">⏱ <strong>16 hours total</strong></div>
-    <div class="hero-chip">📋 <strong>6 lessons</strong></div>
-    <div class="hero-chip">🎯 <strong>MEDIUM priority</strong></div>
-    <div class="hero-chip">🗄️ <strong>MariaDB 10.11+</strong></div>
-  </div>
-</div>
-<div class="hero-grid">
-  <div class="hero-card c-green" onclick="goTo('l1')">
-    <div class="hero-card-icon" style="background:var(--greenb)">📊</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--green)">01 · 5h</div>
-      <div class="hero-card-title">Window Functions</div>
-      <div class="status" style="background:var(--greenb);color:var(--greend)" id="st-l1">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-blue" onclick="goTo('l2')">
-    <div class="hero-card-icon" style="background:var(--blueb)">🔄</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--blue)">02 · 3h</div>
-      <div class="hero-card-title">CTEs &amp; Recursive Queries</div>
-      <div class="status" style="background:var(--blueb);color:var(--blued)" id="st-l2">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-orange" onclick="goTo('l3')">
-    <div class="hero-card-icon" style="background:var(--orangeb)">🔍</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--orange)">03 · 3h</div>
-      <div class="hero-card-title">EXPLAIN &amp; Query Optimization</div>
-      <div class="status" style="background:var(--orangeb);color:var(--yellow)" id="st-l3">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-purple" onclick="goTo('l4')">
-    <div class="hero-card-icon" style="background:var(--purpleb)">🔐</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--purple)">04 · 3h</div>
-      <div class="hero-card-title">Transactions &amp; MVCC</div>
-      <div class="status" style="background:var(--purpleb);color:var(--purple)" id="st-l4">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-teal" onclick="goTo('l5')">
-    <div class="hero-card-icon" style="background:var(--tealb)">📦</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--teal)">05 · 2h</div>
-      <div class="hero-card-title">Stored Routines, Views &amp; Events</div>
-      <div class="status" style="background:var(--tealb);color:var(--teal)" id="st-l5">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-indigo" onclick="goTo('l6')">
-    <div class="hero-card-icon" style="background:var(--indigob)">🎤</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--indigo)">06 · 1h</div>
-      <div class="hero-card-title">Interview Q&amp;A Review</div>
-      <div class="status" style="background:var(--indigob);color:var(--indigo)" id="st-l6">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-</div>
-</div>
-
 <!-- ═══════════════════════════════════════════════════════════════════════
      LESSON 1 — WINDOW FUNCTIONS
 ════════════════════════════════════════════════════════════════════════ -->
@@ -351,7 +269,6 @@ h1 span{color:var(--phase)}
         <div class="lesson-num" style="color:var(--phase)">Phase 03 · Lesson 01 · 5h</div>
         <div class="page-title">Window Functions</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD, SUM OVER, PARTITION BY, and FRAME clauses — the single most impactful SQL feature to learn after JOINs. They appear in virtually every analytics query in a professional environment.</p>
   </div>
@@ -636,9 +553,9 @@ ranked <span class="kw">AS</span> (
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('home')">↑ Phase Home</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">↑ Phase Home</button>
     <button class="mark-done-btn" id="done-l1" onclick="markDone('l1')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l2')">Next: CTEs &amp; Recursive →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: CTEs &amp; Recursive →</button>
   </div>
 </div>
 
@@ -652,7 +569,6 @@ ranked <span class="kw">AS</span> (
         <div class="lesson-num" style="color:var(--phase)">Phase 03 · Lesson 02 · 3h</div>
         <div class="page-title">CTEs &amp; Recursive Queries</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">WITH clause, multiple CTEs, recursive CTE for hierarchy traversal — the tool that turns unreadable 12-level subqueries into readable, maintainable pipelines. Essential for org-chart and referral-chain queries.</p>
   </div>
@@ -868,9 +784,9 @@ ranked <span class="kw">AS</span> (
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l1')">← Window Functions</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Window Functions</button>
     <button class="mark-done-btn" id="done-l2" onclick="markDone('l2')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l3')">Next: EXPLAIN &amp; Optimization →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: EXPLAIN &amp; Optimization →</button>
   </div>
 </div>
 
@@ -884,7 +800,6 @@ ranked <span class="kw">AS</span> (
         <div class="lesson-num" style="color:var(--phase)">Phase 03 · Lesson 03 · 3h</div>
         <div class="page-title">EXPLAIN &amp; Query Optimization</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Reading EXPLAIN output, identifying table scans, understanding join types, and applying indexes and query rewrites to eliminate performance bottlenecks. The most practical DBA skill in day-to-day operations.</p>
   </div>
@@ -1109,9 +1024,9 @@ ranked <span class="kw">AS</span> (
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l2')">← CTEs &amp; Recursive</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← CTEs &amp; Recursive</button>
     <button class="mark-done-btn" id="done-l3" onclick="markDone('l3')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l4')">Next: Transactions &amp; MVCC →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Transactions &amp; MVCC →</button>
   </div>
 </div>
 
@@ -1125,7 +1040,6 @@ ranked <span class="kw">AS</span> (
         <div class="lesson-num" style="color:var(--phase)">Phase 03 · Lesson 04 · 3h</div>
         <div class="page-title">Transactions &amp; MVCC</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">ACID guarantees, isolation levels, MVCC snapshot reads, deadlock anatomy, and long-running transaction hazards. Understanding this layer is essential for diagnosing the class of bugs that only appear under concurrent load.</p>
   </div>
@@ -1345,9 +1259,9 @@ ranked <span class="kw">AS</span> (
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l3')">← EXPLAIN &amp; Optimization</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← EXPLAIN &amp; Optimization</button>
     <button class="mark-done-btn" id="done-l4" onclick="markDone('l4')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l5')">Next: Stored Routines →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Stored Routines →</button>
   </div>
 </div>
 
@@ -1361,7 +1275,6 @@ ranked <span class="kw">AS</span> (
         <div class="lesson-num" style="color:var(--phase)">Phase 03 · Lesson 05 · 2h</div>
         <div class="page-title">Stored Routines, Views &amp; Events</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Stored procedures, functions, triggers, views, and the event scheduler — the database-side automation layer. Know when to use them and when not to: the debate over business logic in the DB is a real interview topic.</p>
   </div>
@@ -1587,9 +1500,9 @@ ranked <span class="kw">AS</span> (
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l4')">← Transactions &amp; MVCC</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Transactions &amp; MVCC</button>
     <button class="mark-done-btn" id="done-l5" onclick="markDone('l5')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l6')">Next: Interview Q&amp;A →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Interview Q&amp;A →</button>
   </div>
 </div>
 
@@ -1603,7 +1516,6 @@ ranked <span class="kw">AS</span> (
         <div class="lesson-num" style="color:var(--phase)">Phase 03 · Lesson 06 · 1h</div>
         <div class="page-title">Interview Q&amp;A — Advanced SQL Review</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Rapid-fire review across all Phase 03 topics. Michael Nietsch will probe SQL reasoning — not just syntax. Answer these out loud, timing yourself to under 90 seconds per answer.</p>
   </div>
@@ -1697,9 +1609,9 @@ ranked <span class="kw">AS</span> (
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l5')">← Stored Routines</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Stored Routines</button>
     <button class="mark-done-btn" id="done-l6" onclick="markDone('l6')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('home')">↑ Phase Home</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">↑ Phase Home</button>
   </div>
 </div>
 

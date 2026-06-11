@@ -5,70 +5,77 @@ export const LMS_CONFIG = {
     {
       id: 'database',
       title: 'Database Engineering',
-      subtitle: 'Existing DB track migrated as module pack',
+      subtitle: 'SQL, MariaDB, Galera, MaxScale',
       theme: { accent: '#2563eb', accentSoft: '#dbeafe' },
       lessons: [
+        {
+          id: 'db-masterplan',
+          title: 'Masterplan',
+          subtitle: 'Full track overview',
+          route: 'lms/modules/database/lessons/db-masterplan-v2.html',
+          progress: { type: 'untracked', total: 0 }
+        },
         {
           id: 'db-overview',
           title: 'DB Overview',
           subtitle: 'Big picture and roadmap',
-          route: 'phase-00-db-overview.html',
+          route: 'lms/modules/database/lessons/phase-00-db-overview.html',
           progress: { type: 'untracked', total: 0 }
         },
         {
           id: 'db-linux',
           title: 'Linux & RedHat',
           subtitle: 'DBA foundation',
-          route: 'phase-00-linux-redhat.html',
+          route: 'lms/modules/database/lessons/phase-00-linux-redhat.html',
           progress: { type: 'checklist', storageKey: 'phase_00_linux_done', total: 9, ignoreKeys: ['home'] }
         },
         {
           id: 'db-sql-mysql',
           title: 'SQL & MySQL',
           subtitle: 'Core SQL track',
-          route: 'phase-01-sql-mysql.html',
+          route: 'lms/modules/database/lessons/phase-01-sql-mysql.html',
           progress: { type: 'checklist', storageKey: 'phase_01_done', total: 12, ignoreKeys: ['home'] }
         },
         {
           id: 'db-design',
           title: 'Database Design',
           subtitle: 'Modeling and ERDs',
-          route: 'phase-02-db-design.html',
+          route: 'lms/modules/database/lessons/phase-02-db-design.html',
           progress: { type: 'checklist', storageKey: 'phase_02_done', total: 5, ignoreKeys: ['home'] }
         },
         {
           id: 'db-advanced-sql',
           title: 'Advanced SQL',
           subtitle: 'Complex query patterns',
-          route: 'phase-03-advanced-sql.html',
+          route: 'lms/modules/database/lessons/phase-03-advanced-sql.html',
           progress: { type: 'checklist', storageKey: 'phase_03_done', total: 6, ignoreKeys: ['home'] }
         },
         {
           id: 'db-internals',
           title: 'DB Internals',
           subtitle: 'Storage and engine internals',
-          route: 'phase-04-db-internals.html',
+          route: 'lms/modules/database/lessons/phase-04-db-internals.html',
           progress: { type: 'checklist', storageKey: 'phase_04_done', total: 5, ignoreKeys: ['home'] }
         },
         {
           id: 'db-admin',
           title: 'MariaDB Admin',
           subtitle: 'Operations and production workflows',
-          route: 'phase-05-mariadb-admin.html',
+          route: 'lms/modules/database/lessons/phase-05-mariadb-admin.html',
           progress: { type: 'checklist', storageKey: 'phase_05_done', total: 8, ignoreKeys: ['home'] }
         },
         {
           id: 'db-galera',
           title: 'Galera Cluster',
           subtitle: 'High availability and replication',
-          route: 'phase-06-Galera.html',
+          route: 'lms/modules/database/lessons/phase-06-Galera.html',
           progress: { type: 'checklist', storageKey: 'phase_06_done', total: 7, ignoreKeys: ['home'] }
         },
         {
           id: 'db-maxscale',
           title: 'MaxScale',
           subtitle: 'Traffic control and scaling',
-          route: 'phase-07-maxscale.html',
+          route: 'lms/modules/database/lessons/phase-07-maxscale.html',
           progress: { type: 'checklist', storageKey: 'phase_07_done', total: 7, ignoreKeys: ['home'] }
         }
       ]

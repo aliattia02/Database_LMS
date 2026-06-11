@@ -30,9 +30,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-
 .nav-tab.active{color:var(--text);border-bottom-color:var(--red)}
 .nav-tab.done-tab{color:var(--greend)}
 
-.page{display:none;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.page{display:block;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
 .page.active{display:block}
-#page-home:not(.active){display:none}
 
 .hero{padding:56px 40px 40px;max-width:1100px;margin:0 auto}
 .eyebrow{font-size:11px;letter-spacing:.2em;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:14px}
@@ -178,112 +177,6 @@ code{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--card
 </head>
 <body>
 
-<nav>
-  <div class="nav-logo">🐧 LINUX·<span>RHEL</span></div>
-  <div class="nav-tab active" id="tab-home" onclick="goTo('home')">Start</div>
-  <div class="nav-tab" id="tab-l1" onclick="goTo('l1')">01 Filesystem</div>
-  <div class="nav-tab" id="tab-l2" onclick="goTo('l2')">02 Files & Permissions</div>
-  <div class="nav-tab" id="tab-l3" onclick="goTo('l3')">03 Users & Groups</div>
-  <div class="nav-tab" id="tab-l4" onclick="goTo('l4')">04 DNF & Packages</div>
-  <div class="nav-tab" id="tab-l5" onclick="goTo('l5')">05 systemd</div>
-  <div class="nav-tab" id="tab-l6" onclick="goTo('l6')">06 Networking</div>
-  <div class="nav-tab" id="tab-l7" onclick="goTo('l7')">07 Bash for DBAs</div>
-  <div class="nav-tab" id="tab-l8" onclick="goTo('l8')">08 SELinux</div>
-  <div class="nav-tab" id="tab-l9" onclick="goTo('l9')">09 3am Scenarios</div>
-</nav>
-
-<!-- ═══ HOME ═══════════════════════════════════════════════════════════════ -->
-<div id="page-home" class="active">
-<div class="hero">
-  <div class="eyebrow">Foundation · RedHat Enterprise Linux · DBA Edition</div>
-  <h1>Linux &<br><span>RedHat</span></h1>
-  <p class="hero-sub">The operating system that runs your database server. You will never touch a MariaDB or Galera node without first navigating the shell, editing configs, managing services, and reading logs. Every lesson uses real DBA tasks — no toy examples.</p>
-</div>
-<div class="hero-grid">
-  <div class="hero-card c-red" onclick="goTo('l1')">
-    <div class="hero-card-icon" style="background:var(--redb)">📂</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--red)">01 · 2h</div>
-      <div class="hero-card-title">Filesystem Navigation</div>
-      <div class="status" style="background:var(--redb);color:var(--red)" id="st-l1">Start here →</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-orange" onclick="goTo('l2')">
-    <div class="hero-card-icon" style="background:var(--orangeb)">🔒</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--orange)">02 · 2h</div>
-      <div class="hero-card-title">Files & Permissions</div>
-      <div class="status" style="background:var(--orangeb);color:var(--orange)" id="st-l2">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-blue" onclick="goTo('l3')">
-    <div class="hero-card-icon" style="background:var(--blueb)">👤</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--blue)">03 · 1h</div>
-      <div class="hero-card-title">Users & Groups</div>
-      <div class="status" style="background:var(--blueb);color:var(--blue)" id="st-l3">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-green" onclick="goTo('l4')">
-    <div class="hero-card-icon" style="background:var(--greenb)">📦</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--green)">04 · 1h</div>
-      <div class="hero-card-title">DNF & Packages</div>
-      <div class="status" style="background:var(--greenb);color:var(--green)" id="st-l4">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-teal" onclick="goTo('l5')">
-    <div class="hero-card-icon" style="background:var(--tealb)">⚙️</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--teal)">05 · 2h</div>
-      <div class="hero-card-title">systemd & Services</div>
-      <div class="status" style="background:var(--tealb);color:var(--teal)" id="st-l5">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-purple" onclick="goTo('l6')">
-    <div class="hero-card-icon" style="background:var(--purpleb)">🌐</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--purple)">06 · 2h</div>
-      <div class="hero-card-title">Networking</div>
-      <div class="status" style="background:var(--purpleb);color:var(--purple)" id="st-l6">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-yellow" onclick="goTo('l7')">
-    <div class="hero-card-icon" style="background:var(--yellowb)">📜</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--yellow)">07 · 3h</div>
-      <div class="hero-card-title">Bash for DBAs</div>
-      <div class="status" style="background:var(--yellowb);color:var(--yellow)" id="st-l7">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-pink" onclick="goTo('l8')">
-    <div class="hero-card-icon" style="background:var(--pinkb)">🛡️</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--pink)">08 · 2h</div>
-      <div class="hero-card-title">SELinux</div>
-      <div class="status" style="background:var(--pinkb);color:var(--pink)" id="st-l8">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-red" onclick="goTo('l9')">
-    <div class="hero-card-icon" style="background:var(--redb)">🚨</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--red)">09 · 1h</div>
-      <div class="hero-card-title">3am Scenarios + Q&A</div>
-      <div class="status" style="background:var(--redb);color:var(--red)" id="st-l9">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-</div>
-</div>
-
 <!-- ═══ LESSON 01 — FILESYSTEM ═════════════════════════════════════════════ -->
 <div id="page-l1" class="page">
   <div class="page-header">
@@ -292,7 +185,6 @@ code{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--card
         <div class="lesson-num" style="color:var(--red)">Lesson 01 · ~2 hours</div>
         <div class="page-title" style="color:var(--red)">Filesystem Navigation</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Before you touch a database, you must be fluent in the shell. Every DBA task — editing my.cnf, reading logs, running mariabackup — starts with navigating the filesystem and knowing where everything lives.</p>
   </div>
@@ -431,7 +323,7 @@ sudo systemctl restart mariadb</div>
 
   <div class="lesson-nav">
     <button class="mark-done-btn" id="done-l1" onclick="markDone('l1')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l2')">Next: Files & Permissions →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Files & Permissions →</button>
   </div>
 </div>
 
@@ -443,7 +335,6 @@ sudo systemctl restart mariadb</div>
         <div class="lesson-num" style="color:var(--orange)">Lesson 02 · ~2 hours</div>
         <div class="page-title" style="color:var(--orange)">Files & Permissions</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">MariaDB won't start if its data directory has wrong ownership. Galera SST will silently fail if the receiving node can't write files. Permissions are not optional knowledge — they are the most common cause of "why won't it start" incidents.</p>
   </div>
@@ -532,9 +423,9 @@ readlink -f /var/lib/mysql</div>
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l1')">← Lesson 01</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 01</button>
     <button class="mark-done-btn" id="done-l2" onclick="markDone('l2')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l3')">Next: Users & Groups →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Users & Groups →</button>
   </div>
 </div>
 
@@ -546,7 +437,6 @@ readlink -f /var/lib/mysql</div>
         <div class="lesson-num" style="color:var(--blue)">Lesson 03 · ~1 hour</div>
         <div class="page-title" style="color:var(--blue)">Users & Groups</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Linux users and MariaDB users are completely separate. A Linux system user called <code>mysql</code> runs the database process. Understanding this distinction prevents a whole class of authentication confusion.</p>
   </div>
@@ -628,9 +518,9 @@ ls /etc/sudoers.d/</div>
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l2')">← Lesson 02</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 02</button>
     <button class="mark-done-btn" id="done-l3" onclick="markDone('l3')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l4')">Next: DNF & Packages →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: DNF & Packages →</button>
   </div>
 </div>
 
@@ -642,7 +532,6 @@ ls /etc/sudoers.d/</div>
         <div class="lesson-num" style="color:var(--green)">Lesson 04 · ~1 hour</div>
         <div class="page-title" style="color:var(--green)">DNF & Package Management</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">DNF is how you install, update, and remove software on RHEL. MariaDB, MaxScale, and every tool you use as a DBA is installed through it. You also need to understand repositories — packages don't appear by magic.</p>
   </div>
@@ -738,9 +627,9 @@ rpm -V mariadb-server</div>
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l3')">← Lesson 03</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 03</button>
     <button class="mark-done-btn" id="done-l4" onclick="markDone('l4')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l5')">Next: systemd →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: systemd →</button>
   </div>
 </div>
 
@@ -752,7 +641,6 @@ rpm -V mariadb-server</div>
         <div class="lesson-num" style="color:var(--teal)">Lesson 05 · ~2 hours</div>
         <div class="page-title" style="color:var(--teal)">systemd & Services</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">systemd manages every long-running process on RHEL — including MariaDB and MaxScale. Starting, stopping, monitoring, and auto-starting services on boot are daily DBA tasks. You also need to read journald logs, which replaced the old syslog.</p>
   </div>
@@ -896,9 +784,9 @@ systemctl --user status container-phr-db.service</div>
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l4')">← Lesson 04</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 04</button>
     <button class="mark-done-btn" id="done-l5" onclick="markDone('l5')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l6')">Next: Networking →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Networking →</button>
   </div>
 </div>
 
@@ -910,7 +798,6 @@ systemctl --user status container-phr-db.service</div>
         <div class="lesson-num" style="color:var(--purple)">Lesson 06 · ~2 hours</div>
         <div class="page-title" style="color:var(--purple)">Networking & Firewall</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Galera nodes communicate on ports 3306, 4444, 4567, and 4568. MaxScale listens on 3306 or 4006. If the firewall blocks these, the cluster simply doesn't form — and the error messages are confusing. Networking is a core DBA skill.</p>
   </div>
@@ -1033,9 +920,9 @@ scp -r /var/lib/mysql/caremate_db dba_ali@galera-node-02:/tmp/</div>
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l5')">← Lesson 05</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 05</button>
     <button class="mark-done-btn" id="done-l6" onclick="markDone('l6')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l7')">Next: Bash for DBAs →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Bash for DBAs →</button>
   </div>
 </div>
 
@@ -1047,7 +934,6 @@ scp -r /var/lib/mysql/caremate_db dba_ali@galera-node-02:/tmp/</div>
         <div class="lesson-num" style="color:var(--yellow)">Lesson 07 · ~3 hours</div>
         <div class="page-title" style="color:var(--yellow)">Bash Scripting for DBAs</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">You will write scripts to automate backups, rotate logs, check cluster health, and alert on disk usage. These are not optional — they are the difference between a DBA who reacts to problems and one who prevents them.</p>
   </div>
@@ -1216,9 +1102,9 @@ ls /etc/cron.daily/</div>
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l6')">← Lesson 06</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 06</button>
     <button class="mark-done-btn" id="done-l7" onclick="markDone('l7')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l8')">Next: SELinux →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: SELinux →</button>
   </div>
 </div>
 
@@ -1230,7 +1116,6 @@ ls /etc/cron.daily/</div>
         <div class="lesson-num" style="color:var(--pink)">Lesson 08 · ~2 hours</div>
         <div class="page-title" style="color:var(--pink)">SELinux</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">SELinux is enabled by default on RHEL and it will silently block MariaDB from accessing files, ports, or directories that you haven't explicitly labelled. It is the single most common cause of "it works on Debian but not RHEL" problems.</p>
   </div>
@@ -1318,9 +1203,9 @@ sudo dnf install -y policycoreutils-python-utils</div>
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l7')">← Lesson 07</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 07</button>
     <button class="mark-done-btn" id="done-l8" onclick="markDone('l8')">Mark complete ✓</button>
-    <button class="lesson-nav-btn primary" onclick="goTo('l9')">Next: 3am Scenarios →</button>
+    <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: 3am Scenarios →</button>
   </div>
 </div>
 
@@ -1332,7 +1217,6 @@ sudo dnf install -y policycoreutils-python-utils</div>
         <div class="lesson-num" style="color:var(--red)">Lesson 09 · ~1 hour</div>
         <div class="page-title" style="color:var(--red)">3am Scenarios & Interview Q&A</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Real incidents follow patterns. Practice these before the interview — they test not just knowledge but systematic thinking under pressure.</p>
   </div>
@@ -1441,7 +1325,7 @@ sudo dnf install -y policycoreutils-python-utils</div>
   </div>
 
   <div class="lesson-nav">
-    <button class="lesson-nav-btn" onclick="goTo('l8')">← Lesson 08</button>
+    <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 08</button>
     <button class="mark-done-btn" id="done-l9" onclick="markDone('l9')">Mark complete ✓</button>
   </div>
 </div>

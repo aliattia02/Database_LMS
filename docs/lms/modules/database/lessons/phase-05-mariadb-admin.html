@@ -35,9 +35,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-
 .nav-tab.done-tab.active{background:var(--phase);color:#fff}
 
 /* ── LAYOUT ───────────────────────────────────────────────────────────────── */
-.page{display:none;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.page{display:block;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
 .page.active{display:block}
-#page-home:not(.active){display:none}
 
 /* ── HERO ─────────────────────────────────────────────────────────────────── */
 .hero{padding:52px 40px 36px;max-width:1100px;margin:0 auto}
@@ -224,110 +223,7 @@ h1 span{color:var(--phase)}
 <body>
 
 <!-- ═══════════════════════════════════════════════════════════════════════ NAV -->
-<nav>
-  <div class="nav-logo">⚙️ DB·<span>ADMIN</span></div>
-  <div class="nav-tab active" id="tab-home" onclick="goTo('home')">Home</div>
-  <div class="nav-tab" id="tab-l1" onclick="goTo('l1')">01</div>
-  <div class="nav-tab" id="tab-l2" onclick="goTo('l2')">02</div>
-  <div class="nav-tab" id="tab-l3" onclick="goTo('l3')">03</div>
-  <div class="nav-tab" id="tab-l4" onclick="goTo('l4')">04</div>
-  <div class="nav-tab" id="tab-l5" onclick="goTo('l5')">05</div>
-  <div class="nav-tab" id="tab-l6" onclick="goTo('l6')">06</div>
-  <div class="nav-tab" id="tab-l7" onclick="goTo('l7')">07</div>
-  <div class="nav-tab" id="tab-l8" onclick="goTo('l8')">08</div>
-</nav>
-
 <!-- ═══════════════════════════════════════════════════════════════════════ HOME -->
-<div id="page-home" class="page active">
-<div class="hero">
-  <div class="phase-pill"><span class="phase-pill-dot"></span><span class="phase-pill-text">Phase 05 · MariaDB Administration · Interview Weight: HIGH · 18h</span></div>
-  <h1>MariaDB<br><span>Administration</span></h1>
-  <p class="hero-sub">Master day-to-day MariaDB operations: from tuning <code style="font-family:'JetBrains Mono',monospace;font-size:12px">my.cnf</code> and hardening access control, to executing point-in-time recovery under pressure at 3am. This is the operational core of the OS GmbH DBA role.</p>
-  <div class="hero-chips">
-    <div class="hero-chip"><strong>Phase</strong> 05 / 09</div>
-    <div class="hero-chip"><strong>Weight</strong> HIGH</div>
-    <div class="hero-chip"><strong>Color</strong> #db2777</div>
-    <div class="hero-chip"><strong>Total</strong> 18h</div>
-    <div class="hero-chip"><strong>Lessons</strong> 8</div>
-    <div class="hero-chip"><strong>Focus</strong> MariaDB Admin</div>
-  </div>
-</div>
-<div class="hero-grid">
-  <div class="hero-card c-pink" onclick="goTo('l1')">
-    <div class="hero-card-icon" style="background:#fdf2f8">⚙️</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--phase)">01 · 3h</div>
-      <div class="hero-card-title">my.cnf Deep Dive</div>
-      <span class="status" id="st-l1" style="background:var(--phaseb);color:var(--phased)">Not started</span>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-blue" onclick="goTo('l2')">
-    <div class="hero-card-icon" style="background:#e0f2fe">🔐</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--blue)">02 · 2h</div>
-      <div class="hero-card-title">Users, Roles & Security</div>
-      <span class="status" id="st-l2" style="background:var(--phaseb);color:var(--phased)">Not started</span>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-green" onclick="goTo('l3')">
-    <div class="hero-card-icon" style="background:#d1fae5">💾</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--green)">03 · 4h</div>
-      <div class="hero-card-title">Backup with mariabackup</div>
-      <span class="status" id="st-l3" style="background:var(--phaseb);color:var(--phased)">Not started</span>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-purple" onclick="goTo('l4')">
-    <div class="hero-card-icon" style="background:#ede9fe">📜</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--purple)">04 · 3h</div>
-      <div class="hero-card-title">Binary Log & PITR</div>
-      <span class="status" id="st-l4" style="background:var(--phaseb);color:var(--phased)">Not started</span>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-teal" onclick="goTo('l5')">
-    <div class="hero-card-icon" style="background:#ccfbf1">🐢</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--teal)">05 · 3h</div>
-      <div class="hero-card-title">Slow Query Analysis</div>
-      <span class="status" id="st-l5" style="background:var(--phaseb);color:var(--phased)">Not started</span>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-orange" onclick="goTo('l6')">
-    <div class="hero-card-icon" style="background:#fef3c7">🔥</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--orange)">06 · 2h</div>
-      <div class="hero-card-title">SHOW ENGINE INNODB STATUS</div>
-      <span class="status" id="st-l6" style="background:var(--phaseb);color:var(--phased)">Not started</span>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-pink" onclick="goTo('l7')">
-    <div class="hero-card-icon" style="background:#fdf2f8">🎤</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--phase)">07 · 1h</div>
-      <div class="hero-card-title">Interview Q&A + 3am Scenarios</div>
-      <span class="status" id="st-l7" style="background:var(--phaseb);color:var(--phased)">Not started</span>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card c-teal" onclick="goTo('l8')">
-    <div class="hero-card-icon" style="background:#ccfbf1">🔄</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num" style="color:var(--teal)">08 · 2h</div>
-      <div class="hero-card-title">Zero-Downtime Schema Changes</div>
-      <span class="status" id="st-l8" style="background:var(--phaseb);color:var(--phased)">Not started</span>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-</div>
-</div>
-
 <!-- ═══════════════════════════════════════════════════════════════════════════
      LESSON 1 — my.cnf Deep Dive
 ════════════════════════════════════════════════════════════════════════════ -->
@@ -338,7 +234,6 @@ h1 span{color:var(--phase)}
       <div class="lesson-num">Phase 05 · Lesson 01 · 3h</div>
       <div class="page-title">my.cnf Deep Dive</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">InnoDB buffer pool sizing, connection pool tuning, binary log configuration, and the critical variables Michael Nietsch expects you to know cold. Every setting here has a direct operational consequence.</p>
 </div>
@@ -593,8 +488,8 @@ long_query_time              = <span class="num">0.5</span>           <span clas
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn primary" onclick="goTo('home')">↑ Phase Home</button>
-  <button class="lesson-nav-btn" onclick="goTo('l2')">Users & Security →</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">↑ Phase Home</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Users & Security →</button>
   <button class="mark-done-btn" id="done-l1" onclick="markDone('l1')">Mark complete ✓</button>
 </div>
 </div>
@@ -609,7 +504,6 @@ long_query_time              = <span class="num">0.5</span>           <span clas
       <div class="lesson-num">Phase 05 · Lesson 02 · 2h</div>
       <div class="page-title">Users, Roles & Security</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">Creating users with the ed25519 authentication plugin, granting least-privilege access using roles, auditing privileges, and hardening MariaDB against common attack vectors. DSGVO compliance requires strict access control on CareMate patient data.</p>
 </div>
@@ -934,9 +828,9 @@ Fields: <strong>timestamp, server_host, user, client_ip, connection_id, query_id
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l1')">← my.cnf Deep Dive</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('home')">↑ Phase Home</button>
-  <button class="lesson-nav-btn" onclick="goTo('l3')">Backup →</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← my.cnf Deep Dive</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">↑ Phase Home</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Backup →</button>
   <button class="mark-done-btn" id="done-l2" onclick="markDone('l2')">Mark complete ✓</button>
 </div>
 </div>
@@ -951,7 +845,6 @@ Fields: <strong>timestamp, server_host, user, client_ip, connection_id, query_id
       <div class="lesson-num">Phase 05 · Lesson 03 · 4h</div>
       <div class="page-title">Backup with mariabackup</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">mariabackup (the MariaDB fork of Percona XtraBackup) performs hot physical backups without locking tables. Master full + incremental backup strategy, the prepare phase, and complete restore + PITR procedures.</p>
 </div>
@@ -1316,9 +1209,9 @@ done
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l2')">← Users & Security</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('home')">↑ Phase Home</button>
-  <button class="lesson-nav-btn" onclick="goTo('l4')">Binary Log & PITR →</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Users & Security</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">↑ Phase Home</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Binary Log & PITR →</button>
   <button class="mark-done-btn" id="done-l3" onclick="markDone('l3')">Mark complete ✓</button>
 </div>
 </div>
@@ -1333,7 +1226,6 @@ done
       <div class="lesson-num">Phase 05 · Lesson 04 · 3h</div>
       <div class="page-title">Binary Log & Point-in-Time Recovery</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">The binary log is MariaDB's change data feed — powering replication, auditing, and PITR. Master mysqlbinlog decoding, positional vs. timestamp-based recovery, and the exact PITR workflow under incident conditions.</p>
 </div>
@@ -1537,9 +1429,9 @@ mysqlbinlog \
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l3')">← Backup</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('home')">↑ Phase Home</button>
-  <button class="lesson-nav-btn" onclick="goTo('l5')">Slow Queries →</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Backup</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">↑ Phase Home</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Slow Queries →</button>
   <button class="mark-done-btn" id="done-l4" onclick="markDone('l4')">Mark complete ✓</button>
 </div>
 </div>
@@ -1554,7 +1446,6 @@ mysqlbinlog \
       <div class="lesson-num">Phase 05 · Lesson 05 · 3h</div>
       <div class="page-title">Slow Query Analysis</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">Enable and tune the slow query log, use pt-query-digest to find the worst offenders, and leverage Performance Schema for live query diagnosis. The essential toolkit for any on-call DBA facing unexplained latency spikes.</p>
 </div>
@@ -1766,9 +1657,9 @@ pt-query-digest \
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l4')">← Binary Log & PITR</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('home')">↑ Phase Home</button>
-  <button class="lesson-nav-btn" onclick="goTo('l6')">InnoDB Status →</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Binary Log & PITR</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">↑ Phase Home</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">InnoDB Status →</button>
   <button class="mark-done-btn" id="done-l5" onclick="markDone('l5')">Mark complete ✓</button>
 </div>
 </div>
@@ -1783,7 +1674,6 @@ pt-query-digest \
       <div class="lesson-num">Phase 05 · Lesson 06 · 2h</div>
       <div class="page-title">Reading SHOW ENGINE INNODB STATUS</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">SHOW ENGINE INNODB STATUS is the most information-dense diagnostic command in MariaDB. Learn to read each section under pressure: transactions, lock waits, deadlocks, buffer pool state, I/O, and semaphores. This is the first command Michael Nietsch will expect you to run in a 3am incident.</p>
 </div>
@@ -2057,9 +1947,9 @@ OUTFILE=<span class="str">"/tmp/innodb_status_$(date +%Y%m%d_%H%M%S).txt"</span>
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l5')">← Slow Queries</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('home')">↑ Phase Home</button>
-  <button class="lesson-nav-btn" onclick="goTo('l7')">Interview Q&amp;A →</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Slow Queries</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">↑ Phase Home</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Interview Q&amp;A →</button>
   <button class="mark-done-btn" id="done-l6" onclick="markDone('l6')">Mark complete ✓</button>
 </div>
 </div>
@@ -2074,7 +1964,6 @@ OUTFILE=<span class="str">"/tmp/innodb_status_$(date +%Y%m%d_%H%M%S).txt"</span>
       <div class="lesson-num">Phase 05 · Lesson 07 · 1h</div>
       <div class="page-title">Interview Q&amp;A + 3am Scenarios</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">Consolidated high-priority interview questions and complex 3am incident scenarios for MariaDB Administration. Simulate Michael Nietsch's interview style — operational, scenario-based, no trivial definitions.</p>
 </div>
@@ -2214,9 +2103,9 @@ DISK_PCT=$(df /var/lib/mysql | awk 'NR==2{print $5}' | tr -d <span class="str">'
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l6')">← InnoDB Status</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('home')">↑ Phase Home</button>
-  <button class="lesson-nav-btn" onclick="goTo('l8')">Zero-Downtime DDL →</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← InnoDB Status</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">↑ Phase Home</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Zero-Downtime DDL →</button>
   <button class="mark-done-btn" id="done-l7" onclick="markDone('l7')">Mark complete ✓</button>
 </div>
 </div>
@@ -2231,7 +2120,6 @@ DISK_PCT=$(df /var/lib/mysql | awk 'NR==2{print $5}' | tr -d <span class="str">'
       <div class="lesson-num">Phase 05 · Lesson 08 · 2h</div>
       <div class="page-title">Zero-Downtime Schema Changes</div>
     </div>
-    <button class="back-btn" onclick="goTo('home')">← Back</button>
   </div>
   <p class="page-desc">ALTER TABLE on a large InnoDB table can block writes for 20–40 minutes and stall an entire Galera cluster. Master pt-online-schema-change, gh-ost, and Galera DDL modes to evolve your schema on live 24/7 systems without downtime.</p>
 </div>
@@ -2343,8 +2231,8 @@ SET SESSION wsrep_OSU_method = 'TOI';  -- restore default</pre>
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l7')">← Interview Q&A</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('home')">↑ Phase Home</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Interview Q&A</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">↑ Phase Home</button>
   <button class="mark-done-btn" id="done-l8" onclick="markDone('l8')">Mark complete ✓</button>
 </div>
 </div>

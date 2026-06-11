@@ -23,41 +23,9 @@
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;min-height:100vh}
 
-/* NAV */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;padding:0 24px;gap:0;box-shadow:0 1px 6px rgba(0,60,120,.06)}
-.nav-logo{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--text);padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:8px;white-space:nowrap;flex-shrink:0}
-.nav-logo span{color:var(--phase)}
-.nav-tab{padding:14px 12px;font-size:11px;font-weight:600;letter-spacing:.05em;cursor:pointer;color:var(--muted);transition:color .15s;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent;user-select:none}
-.nav-tab:hover{color:var(--text)}
-.nav-tab.active{color:var(--text);border-bottom-color:var(--phase)}
-.nav-tab.done-tab{color:var(--greend)}
-.nav-tab.done-tab.active{color:var(--text)}
-
 /* LAYOUT */
-.page{display:none;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.page{display:block;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
 .page.active{display:block}
-#page-home:not(.active){display:none}
-
-/* HERO */
-.hero{padding:56px 40px 40px;max-width:1100px;margin:0 auto}
-.eyebrow{font-size:11px;letter-spacing:.2em;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:14px}
-h1{font-size:48px;font-weight:800;line-height:1;letter-spacing:-.03em;margin-bottom:14px;color:var(--text)}
-h1 span{color:var(--phase)}
-.hero-sub{font-size:14px;color:var(--muted);max-width:600px;line-height:1.65;margin-bottom:36px}
-.weight-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;letter-spacing:.06em;margin-bottom:24px;background:#fce7f3;color:#9d174d;border:1px solid #f9a8d4}
-.weight-badge.critical{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
-
-/* HERO LESSON GRID */
-.hero-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:7px;max-width:1100px;margin:0 40px 40px}
-.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px 10px;cursor:pointer;transition:border-color .15s,transform .12s,box-shadow .15s;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,60,120,.04);display:flex;align-items:center;gap:10px}
-.hero-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;border-radius:10px 0 0 10px;background:var(--phase)}
-.hero-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,60,120,.09)}
-.hero-card-icon{width:30px;height:30px;border-radius:7px;background:var(--purpleb);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
-.hero-card-body{flex:1;min-width:0}
-.hero-card-num{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;color:var(--phase)}
-.hero-card-title{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
-.status{font-size:9px;padding:2px 7px;border-radius:99px;display:inline-block;font-weight:600;letter-spacing:.04em;background:var(--purpleb);color:var(--phase)}
-.hero-card-arrow{font-size:13px;color:var(--dim);flex-shrink:0;font-weight:300}
 
 /* PAGE HEADER */
 .page-header{margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
@@ -201,93 +169,6 @@ h1 span{color:var(--phase)}
 </head>
 <body>
 
-<nav>
-  <div class="nav-logo">🔵 Galera·<span>CLUSTER</span></div>
-  <div class="nav-tab active" id="tab-home" onclick="goTo('home')">Start</div>
-  <div class="nav-tab" id="tab-l1" onclick="goTo('l1')">01 Architecture</div>
-  <div class="nav-tab" id="tab-l2" onclick="goTo('l2')">02 wsrep Vars</div>
-  <div class="nav-tab" id="tab-l3" onclick="goTo('l3')">03 SST vs IST</div>
-  <div class="nav-tab" id="tab-l4" onclick="goTo('l4')">04 Quorum</div>
-  <div class="nav-tab" id="tab-l5" onclick="goTo('l5')">05 Flow Control</div>
-  <div class="nav-tab" id="tab-l6" onclick="goTo('l6')">06 Monitoring</div>
-  <div class="nav-tab" id="tab-l7" onclick="goTo('l7')">07 Q&A + 3am</div>
-</nav>
-
-<!-- ═══ HOME ══════════════════════════════════════════════════════════════════ -->
-<div id="page-home" class="active">
-<div class="hero">
-  <div class="eyebrow">Phase 06 · CRITICAL · Michael Nietsch's primary focus</div>
-  <h1>Galera<br><span>Cluster</span></h1>
-  <div class="weight-badge critical">⚠ CRITICAL — Primary interview focus</div>
-  <p class="hero-sub">Galera is the core HA technology at operational services. Michael Nietsch expects DBA-level depth: certification-based replication mechanics, SST/IST recovery, quorum theory, flow control diagnosis, and live incident response. Every lesson here is interview-critical.</p>
-</div>
-<div class="hero-grid">
-  <div class="hero-card" onclick="goTo('l1')">
-    <div class="hero-card-icon">🏗️</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num">01 · 3h</div>
-      <div class="hero-card-title">Architecture & Replication</div>
-      <div class="status" id="st-l1">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card" onclick="goTo('l2')">
-    <div class="hero-card-icon">🔧</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num">02 · 2h</div>
-      <div class="hero-card-title">wsrep Variables</div>
-      <div class="status" id="st-l2">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card" onclick="goTo('l3')">
-    <div class="hero-card-icon">📦</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num">03 · 3h</div>
-      <div class="hero-card-title">SST vs IST</div>
-      <div class="status" id="st-l3">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card" onclick="goTo('l4')">
-    <div class="hero-card-icon">🗳️</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num">04 · 4h</div>
-      <div class="hero-card-title">Quorum & Split-Brain</div>
-      <div class="status" id="st-l4">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card" onclick="goTo('l5')">
-    <div class="hero-card-icon">🚦</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num">05 · 2h</div>
-      <div class="hero-card-title">Flow Control</div>
-      <div class="status" id="st-l5">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card" onclick="goTo('l6')">
-    <div class="hero-card-icon">📊</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num">06 · 2h</div>
-      <div class="hero-card-title">Monitoring & Alerting</div>
-      <div class="status" id="st-l6">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-  <div class="hero-card" onclick="goTo('l7')">
-    <div class="hero-card-icon">🎤</div>
-    <div class="hero-card-body">
-      <div class="hero-card-num">07 · 1h</div>
-      <div class="hero-card-title">Interview Q&A + 3am</div>
-      <div class="status" id="st-l7">Not started</div>
-    </div>
-    <div class="hero-card-arrow">›</div>
-  </div>
-</div>
-</div>
-
 <!-- ═══ LESSON 1: Architecture ════════════════════════════════════════════════ -->
 <div id="page-l1" class="page">
   <div class="page-header">
@@ -296,7 +177,6 @@ h1 span{color:var(--phase)}
         <div class="lesson-num">Lesson 01 · ~3 hours</div>
         <div class="page-title">Architecture & Certification-Based Replication</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">The wsrep protocol and write-set certification model — why Galera is fundamentally different from traditional async replication. This is the foundation every other lesson builds on.</p>
   </div>
@@ -544,7 +424,7 @@ mysql -e <span class="str">"SHOW STATUS LIKE 'wsrep_%';"</span> | grep -E <span 
 
 <div class="lesson-nav">
   <button class="mark-done-btn" id="done-l1" onclick="markDone('l1')">Mark complete ✓</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('l2')">Next: wsrep Variables →</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: wsrep Variables →</button>
 </div>
 </div>
 
@@ -556,7 +436,6 @@ mysql -e <span class="str">"SHOW STATUS LIKE 'wsrep_%';"</span> | grep -E <span 
         <div class="lesson-num">Lesson 02 · ~2 hours</div>
         <div class="page-title">wsrep Variables — 10 You Must Know Cold</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Nietsch will ask you to interpret SHOW STATUS output live. Know these values by reflex — what they mean, what range is healthy, and what action each bad value requires.</p>
   </div>
@@ -742,9 +621,9 @@ done
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l1')">← Lesson 01</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 01</button>
   <button class="mark-done-btn" id="done-l2" onclick="markDone('l2')">Mark complete ✓</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('l3')">Next: SST vs IST →</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: SST vs IST →</button>
 </div>
 </div>
 
@@ -756,7 +635,6 @@ done
         <div class="lesson-num">Lesson 03 · ~3 hours</div>
         <div class="page-title">SST vs IST — State Transfers</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">State Snapshot Transfer (SST) and Incremental State Transfer (IST) are how nodes rejoin a cluster. Understanding when each triggers and how to control them is essential DBA knowledge — an SST at the wrong moment can take a donor node offline during peak hours.</p>
   </div>
@@ -963,9 +841,9 @@ innodb_flush_log_at_trx_commit=0  <span class="cm"># can be 0 for Galera (crash 
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l2')">← Lesson 02</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 02</button>
   <button class="mark-done-btn" id="done-l3" onclick="markDone('l3')">Mark complete ✓</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('l4')">Next: Quorum & Split-Brain →</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Quorum & Split-Brain →</button>
 </div>
 </div>
 
@@ -977,7 +855,6 @@ innodb_flush_log_at_trx_commit=0  <span class="cm"># can be 0 for Galera (crash 
         <div class="lesson-num">Lesson 04 · ~4 hours</div>
         <div class="page-title">Quorum, Split-Brain & Recovery</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">This is the hardest lesson — and the most critical for the interview. grastate.dat, safe_to_bootstrap, and the quorum recovery procedure are 3am knowledge that separates a DBA from a developer with database access.</p>
   </div>
@@ -1188,9 +1065,9 @@ mysql -h fra-db1 -e <span class="str">"SHOW STATUS LIKE 'wsrep_cluster_size'"</s
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l3')">← Lesson 03</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 03</button>
   <button class="mark-done-btn" id="done-l4" onclick="markDone('l4')">Mark complete ✓</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('l5')">Next: Flow Control →</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Flow Control →</button>
 </div>
 </div>
 
@@ -1202,7 +1079,6 @@ mysql -h fra-db1 -e <span class="str">"SHOW STATUS LIKE 'wsrep_cluster_size'"</s
         <div class="lesson-num">Lesson 05 · ~2 hours</div>
         <div class="page-title">Flow Control — Diagnosing a Slow Node</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Flow control is Galera's backpressure mechanism. When one node falls behind applying write-sets, it sends FC_PAUSE messages that slow down the entire cluster. Understanding the cause and fix is essential for any OS production DBA role.</p>
   </div>
@@ -1389,9 +1265,9 @@ maxctrl clear server fra-db3 drain</span></div>
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l4')">← Lesson 04</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 04</button>
   <button class="mark-done-btn" id="done-l5" onclick="markDone('l5')">Mark complete ✓</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('l6')">Next: Monitoring →</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Monitoring →</button>
 </div>
 </div>
 
@@ -1403,7 +1279,6 @@ maxctrl clear server fra-db3 drain</span></div>
         <div class="lesson-num">Lesson 06 · ~2 hours</div>
         <div class="page-title">Monitoring & Alerting</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">Production Galera monitoring at OS means knowing which metrics to expose, which thresholds to page on, and what the Prometheus wsrep exporter outputs. This lesson gives you the specific numbers to mention in the interview.</p>
   </div>
@@ -1616,9 +1491,9 @@ mysql_global_status_wsrep_flow_control_paused</span></div>
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l5')">← Lesson 05</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 05</button>
   <button class="mark-done-btn" id="done-l6" onclick="markDone('l6')">Mark complete ✓</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('l7')">Next: Interview Q&A + 3am →</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">Next: Interview Q&A + 3am →</button>
 </div>
 </div>
 
@@ -1630,7 +1505,6 @@ mysql_global_status_wsrep_flow_control_paused</span></div>
         <div class="lesson-num">Lesson 07 · ~1 hour</div>
         <div class="page-title">Interview Q&A + 3am Scenarios</div>
       </div>
-      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
     </div>
     <p class="page-desc">The three required scenarios from the interview spec, plus the synthesis questions Nietsch is most likely to ask. Run through every scenario aloud before the interview — timing and sequencing is what makes the answer credible.</p>
   </div>
@@ -1785,9 +1659,9 @@ SET GLOBAL wsrep_provider_options="pc.bootstrap=YES";</span></div>
 </div>
 
 <div class="lesson-nav">
-  <button class="lesson-nav-btn" onclick="goTo('l6')">← Lesson 06</button>
+  <button class="lesson-nav-btn" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Lesson 06</button>
   <button class="mark-done-btn" id="done-l7" onclick="markDone('l7')">Mark complete ✓</button>
-  <button class="lesson-nav-btn primary" onclick="goTo('home')">← Back to Overview</button>
+  <button class="lesson-nav-btn primary" onclick="window.scrollTo(0,0)" title="Use the LMS sidebar to navigate">← Back to Overview</button>
 </div>
 </div>
 
