@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 03 — Advanced SQL · DB·MASTERY</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── ROOT: same light palette, green phase accent ───────────────────────── */
+:root {
+  --bg:#eef2f7;--surface:#ffffff;--card:#f4f7fb;--border:#dde4ef;--border2:#c5cedf;
+  --text:#1a2440;--muted:#5a6a85;--dim:#8fa0bb;
+  --phase:#059669;--phaseb:#d1fae5;--phased:#047857;
+  --blue:#0284c7;--blueb:#e0f2fe;--blued:#0369a1;
+  --purple:#7c3aed;--purpleb:#ede9fe;
+  --green:#059669;--greenb:#d1fae5;--greend:#047857;
+  --orange:#d97706;--orangeb:#fef3c7;
+  --yellow:#b45309;--yellowb:#fef9c3;
+  --red:#dc2626;--redb:#fee2e2;
+  --teal:#0d9488;--tealb:#ccfbf1;
+  --indigo:#4338ca;--indigob:#e0e7ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+/* ── Body: Inter for prose — different from Phase 02's Syne-everywhere ── */
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;min-height:100vh}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   NAV — pill active tabs vs Phase 02's bottom-underline tabs
+══════════════════════════════════════════════════════════════════════════ */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;padding:0 20px;gap:0;box-shadow:0 1px 6px rgba(0,60,120,.06)}
+.nav-logo{font-family:'Syne',sans-serif;font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--text);padding:14px 18px 14px 0;border-right:1px solid var(--border);margin-right:10px;white-space:nowrap;flex-shrink:0}
+.nav-logo span{color:var(--phase)}
+/* PILL style — key visual difference from Phase 02 */
+.nav-tab{padding:6px 13px;margin:6px 2px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.03em;cursor:pointer;color:var(--muted);transition:all .15s;white-space:nowrap;flex-shrink:0;border-radius:99px;user-select:none}
+.nav-tab:hover{background:var(--phaseb);color:var(--phased)}
+.nav-tab.active{background:var(--phase);color:#fff;font-weight:700}
+.nav-tab.done-tab{color:var(--greend)}
+.nav-tab.done-tab.active{background:var(--phase);color:#fff}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════════════════════════════════════ */
+.page{display:none;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.page.active{display:block}
+#page-home:not(.active){display:none}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HERO — pill badge + meta chips (different structure from Phase 02)
+══════════════════════════════════════════════════════════════════════════ */
+.hero{padding:52px 40px 36px;max-width:1100px;margin:0 auto}
+.phase-pill{display:inline-flex;align-items:center;gap:7px;background:var(--phaseb);border:1.5px solid var(--phase);border-radius:99px;padding:4px 14px 4px 8px;margin-bottom:18px}
+.phase-pill-dot{width:7px;height:7px;background:var(--phase);border-radius:50%;flex-shrink:0}
+.phase-pill-text{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.12em;color:var(--phased);text-transform:uppercase}
+/* Headings stay Syne — keeps DNA consistency but body is Inter */
+h1{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;line-height:1;letter-spacing:-.03em;margin-bottom:12px;color:var(--text)}
+h1 span{color:var(--phase)}
+.hero-sub{font-size:13.5px;color:var(--muted);max-width:620px;line-height:1.75;margin-bottom:24px}
+.hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:36px}
+.hero-chip{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)}
+.hero-chip strong{color:var(--text);font-weight:600}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HERO GRID — TOP accent bar (Phase 02 uses LEFT bar)
+══════════════════════════════════════════════════════════════════════════ */
+.hero-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:7px;max-width:1100px;margin:0 40px 40px}
+.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px 10px;cursor:pointer;transition:border-color .15s,transform .12s,box-shadow .15s;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,60,120,.04);display:flex;align-items:center;gap:10px}
+.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:10px 10px 0 0}
+.hero-card.c-green::before{background:var(--green)}
+.hero-card.c-blue::before{background:var(--blue)}
+.hero-card.c-purple::before{background:var(--purple)}
+.hero-card.c-orange::before{background:var(--orange)}
+.hero-card.c-teal::before{background:var(--teal)}
+.hero-card.c-indigo::before{background:var(--indigo)}
+.hero-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,60,120,.09)}
+.hero-card-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.hero-card-body{flex:1;min-width:0}
+.hero-card-num{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px}
+.hero-card-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.status{font-size:9px;padding:2px 7px;border-radius:99px;display:inline-block;font-weight:600;letter-spacing:.04em}
+.hero-card-arrow{font-size:13px;color:var(--dim);flex-shrink:0}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PAGE HEADER — slightly different spacing + thicker bottom border
+══════════════════════════════════════════════════════════════════════════ */
+.page-header{margin-bottom:28px;padding-bottom:18px;border-bottom:2px solid var(--border)}
+.page-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:8px}
+.lesson-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.page-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.02em}
+.back-btn{background:var(--card);border:1px solid var(--border);border-radius:99px;padding:7px 16px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.back-btn:hover{color:var(--text);border-color:var(--border2);background:var(--phaseb)}
+.page-desc{font-size:13px;color:var(--muted);line-height:1.7;max-width:680px}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   COLLAPSIBLE SECTIONS — left accent strip when open (vs Phase 02's color text only)
+══════════════════════════════════════════════════════════════════════════ */
+.section{margin-bottom:6px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface)}
+.section-title{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:12px 16px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;transition:all .12s;border-left:3px solid transparent}
+.section-title:hover{background:var(--card);color:var(--text)}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.section-chevron{font-size:11px;color:var(--dim);margin-left:4px;transition:transform .2s;flex-shrink:0}
+.section-title.sec-open{color:var(--phase);background:var(--phaseb);border-left-color:var(--phase);border-bottom:1px solid var(--border)}
+.section-title.sec-open .section-chevron{transform:rotate(180deg)}
+.section-body{display:none;padding:14px 16px 12px}
+.section-body.sec-open{display:block}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   EXPAND BAR
+══════════════════════════════════════════════════════════════════════════ */
+.expand-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:0 2px}
+.expand-bar-label{font-size:11px;color:var(--dim)}
+.expand-all-btn{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;background:var(--card);border:1px solid var(--border);border-radius:99px;padding:4px 12px;color:var(--muted);cursor:pointer;transition:all .15s}
+.expand-all-btn:hover{color:var(--phase);border-color:var(--phase);background:var(--phaseb)}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CONCEPT CARDS — TOP border accent (Phase 02 uses LEFT border)
+══════════════════════════════════════════════════════════════════════════ */
+.concepts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.concept{background:var(--card);border-radius:10px;padding:13px 16px;border:1px solid var(--border);border-top:3px solid var(--border2)}
+.concept.purple{border-top-color:var(--purple)}
+.concept.blue{border-top-color:var(--blue)}
+.concept.green{border-top-color:var(--green)}
+.concept.orange{border-top-color:var(--orange)}
+.concept.teal{border-top-color:var(--teal)}
+.concept.yellow{border-top-color:var(--yellow)}
+.concept.indigo{border-top-color:var(--indigo)}
+.concept-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px}
+.concept-desc{font-family:'Inter',sans-serif;font-size:12px;color:var(--muted);line-height:1.65}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CODE BLOCKS — light theme, left accent strip on header
+══════════════════════════════════════════════════════════════════════════ */
+.code-block{background:#f8fafc;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,60,120,.04)}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--surface);gap:8px;flex-wrap:wrap;border-left:3px solid var(--phase)}
+.code-header-left{display:flex;align-items:center;gap:8px}
+.code-label{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.code-label.sql{color:var(--blue)}
+.code-label.bash{color:var(--green)}
+.code-label.output{color:var(--orange)}
+.code-label.conf{color:var(--purple)}
+.copy-btn{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);background:none;border:1px solid var(--border);border-radius:99px;padding:3px 10px;cursor:pointer;transition:all .15s}
+.copy-btn:hover{color:var(--text);border-color:var(--border2)}
+.copy-btn.copied{color:var(--green);border-color:var(--green)}
+.code-body{padding:16px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#334155;line-height:1.8;overflow-x:auto;white-space:pre;background:#f8fafc}
+/* Same syntax colours as Phase 02 */
+.kw{color:#0284c7}.fn{color:#7c3aed}.str{color:#059669}.cm{color:#94a3b8}.num{color:#d97706}.op{color:#db2777}.tp{color:#b45309}.tb{color:#0d9488}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   EXAMPLE BADGES
+══════════════════════════════════════════════════════════════════════════ */
+.example-badge{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.04em}
+.example-badge.ehr{background:#ccfbf1;color:#0d9488}
+.example-badge.db{background:#fee2e2;color:#EC0016}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CALLOUTS — rounder right corners than Phase 02
+══════════════════════════════════════════════════════════════════════════ */
+.callout{border-radius:0 12px 12px 0;padding:13px 16px;margin-bottom:14px;border:1px solid transparent;border-left-width:4px}
+.callout .lbl{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.callout p,.callout li{font-family:'Inter',sans-serif;font-size:12px;line-height:1.7}
+.callout ul{padding-left:16px}
+.callout li{margin-bottom:4px}
+.callout.tip{background:var(--greenb);border-color:#a7f3d0;border-left-color:var(--green)}
+.callout.tip .lbl{color:var(--greend)}
+.callout.tip p,.callout.tip li{color:#065f46}
+.callout.warn{background:var(--yellowb);border-color:#fde68a;border-left-color:var(--yellow)}
+.callout.warn .lbl{color:var(--yellow)}
+.callout.warn p,.callout.warn li{color:#78350f}
+.callout.info{background:var(--blueb);border-color:#bae6fd;border-left-color:var(--blue)}
+.callout.info .lbl{color:var(--blue)}
+.callout.info p,.callout.info li{color:#075985}
+.callout.phr{background:var(--tealb);border-color:#99f6e4;border-left-color:var(--teal)}
+.callout.phr .lbl{color:var(--teal)}
+.callout.phr p,.callout.phr li{color:#134e4a}
+.callout.db{background:#fee2e2;border-color:#fca5a5;border-left-color:#EC0016}
+.callout.db .lbl{color:#b91c1c}
+.callout.db p,.callout.db li{color:#7f1d1d}
+.callout.interview{background:var(--indigob);border-color:#a5b4fc;border-left-color:var(--indigo)}
+.callout.interview .lbl{color:#3730a3}
+.callout.interview p{color:#312e81;font-weight:700}
+.callout.scenario{background:#1e293b;color:#e2e8f0;border-left-color:#dc2626;border-left-width:4px}
+.callout.scenario .lbl{color:#f87171;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.callout.scenario p{font-family:'Inter',sans-serif;font-size:12px;line-height:1.65;color:#e2e8f0}
+.callout.scenario ol,.callout.scenario ul{padding-left:16px}
+.callout.scenario li{font-family:'Inter',sans-serif;font-size:12px;line-height:1.6;color:#cbd5e1;margin-bottom:4px}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   INTERVIEW Q&A
+══════════════════════════════════════════════════════════════════════════ */
+.qa-list{display:flex;flex-direction:column;gap:8px}
+.qa-item{border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.qa-q{padding:11px 14px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:var(--card);transition:background .12s;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.qa-q::after{content:'▾';font-size:11px;color:var(--dim);transition:transform .2s;flex-shrink:0}
+.qa-q.open::after{transform:rotate(180deg)}
+.qa-q:hover{background:var(--phaseb)}
+.qa-a{display:none;padding:13px 14px;border-top:1px solid var(--border)}
+.qa-a.open{display:block}
+.qa-a p{font-family:'Inter',sans-serif;font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:8px}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CHALLENGE
+══════════════════════════════════════════════════════════════════════════ */
+.challenge{background:var(--surface);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,60,120,.05)}
+.challenge-head{padding:12px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .12s;background:var(--phaseb)}
+.challenge-head:hover{background:#a7f3d0}
+.challenge-head-left{display:flex;align-items:center;gap:10px}
+.challenge-badge{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;background:var(--phase);color:#fff;border-radius:99px;padding:2px 9px}
+.challenge-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--phased)}
+.challenge-arrow{font-size:12px;color:var(--phased);transition:transform .2s}
+.challenge-arrow.open{transform:rotate(180deg)}
+.challenge-body{display:none;padding:16px;border-top:1px solid var(--border)}
+.challenge-body.open{display:block}
+.challenge-q{font-family:'Inter',sans-serif;font-size:13px;color:var(--text);margin-bottom:12px;line-height:1.65}
+.answer-toggle{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--phase);cursor:pointer;text-decoration:underline;margin-bottom:8px;display:inline-block}
+.answer-toggle:hover{color:var(--phased)}
+.answer{display:none}
+.answer.open{display:block}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   COMPARE TABLE
+══════════════════════════════════════════════════════════════════════════ */
+.compare-table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:12px;font-family:'Inter',sans-serif}
+.compare-table th{background:var(--card);padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:2px solid var(--border)}
+.compare-table td{padding:9px 12px;color:var(--text);border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table .mono{font-family:'JetBrains Mono',monospace;color:var(--purple);font-size:11px}
+.compare-table .good{color:var(--green);font-weight:700}
+.compare-table .bad{color:var(--red);font-weight:700}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LESSON NAV
+══════════════════════════════════════════════════════════════════════════ */
+.lesson-nav{display:flex;gap:8px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border);flex-wrap:wrap}
+.lesson-nav-btn{background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:10px 20px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
+.lesson-nav-btn:hover{color:var(--text);border-color:var(--border2)}
+.lesson-nav-btn.primary{background:var(--phaseb);border-color:var(--phase);color:var(--phased)}
+.lesson-nav-btn.primary:hover{background:var(--greenb)}
+.mark-done-btn{margin-left:auto;background:var(--greenb);border:1px solid #a7f3d0;border-radius:99px;padding:10px 20px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:var(--greend);cursor:pointer;transition:all .15s}
+.mark-done-btn:hover{background:#a7f3d0}
+.mark-done-btn.done{background:var(--phase);border-color:var(--phased);color:#fff}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════════════════════ */
+@media(max-width:700px){
+  .page,.hero{padding:24px 16px 60px}
+  .hero-grid{margin:0 16px 28px;grid-template-columns:1fr 1fr}
+  h1{font-size:34px}
+  .page-title{font-size:22px}
+  .lesson-nav{flex-direction:column}
+  .mark-done-btn{margin-left:0}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     NAV
+════════════════════════════════════════════════════════════════════════ -->
+<nav>
+  <div class="nav-logo">🧠 SQL·<span>PRO</span></div>
+  <div class="nav-tab active" id="tab-home" onclick="goTo('home')">Home</div>
+  <div class="nav-tab" id="tab-l1" onclick="goTo('l1')">01</div>
+  <div class="nav-tab" id="tab-l2" onclick="goTo('l2')">02</div>
+  <div class="nav-tab" id="tab-l3" onclick="goTo('l3')">03</div>
+  <div class="nav-tab" id="tab-l4" onclick="goTo('l4')">04</div>
+  <div class="nav-tab" id="tab-l5" onclick="goTo('l5')">05</div>
+  <div class="nav-tab" id="tab-l6" onclick="goTo('l6')">06</div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     HOME
+════════════════════════════════════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+<div class="hero">
+  <div class="phase-pill"><span class="phase-pill-dot"></span><span class="phase-pill-text">Phase 03 · Advanced SQL · Interview Weight: MEDIUM · 16h</span></div>
+  <h1>Advanced<br><span>SQL</span></h1>
+  <p class="hero-sub">The queries that separate juniors from seniors. Window functions, CTEs, EXPLAIN-driven optimization, transaction isolation, and stored routines — mastered through Morafek CareMate EHR and Deutsche Bahn operational data.</p>
+  <div class="hero-chips">
+    <div class="hero-chip">⏱ <strong>16 hours total</strong></div>
+    <div class="hero-chip">📋 <strong>6 lessons</strong></div>
+    <div class="hero-chip">🎯 <strong>MEDIUM priority</strong></div>
+    <div class="hero-chip">🗄️ <strong>MariaDB 10.11+</strong></div>
+  </div>
+</div>
+<div class="hero-grid">
+  <div class="hero-card c-green" onclick="goTo('l1')">
+    <div class="hero-card-icon" style="background:var(--greenb)">📊</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--green)">01 · 5h</div>
+      <div class="hero-card-title">Window Functions</div>
+      <div class="status" style="background:var(--greenb);color:var(--greend)" id="st-l1">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-blue" onclick="goTo('l2')">
+    <div class="hero-card-icon" style="background:var(--blueb)">🔄</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--blue)">02 · 3h</div>
+      <div class="hero-card-title">CTEs &amp; Recursive Queries</div>
+      <div class="status" style="background:var(--blueb);color:var(--blued)" id="st-l2">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-orange" onclick="goTo('l3')">
+    <div class="hero-card-icon" style="background:var(--orangeb)">🔍</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--orange)">03 · 3h</div>
+      <div class="hero-card-title">EXPLAIN &amp; Query Optimization</div>
+      <div class="status" style="background:var(--orangeb);color:var(--yellow)" id="st-l3">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-purple" onclick="goTo('l4')">
+    <div class="hero-card-icon" style="background:var(--purpleb)">🔐</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--purple)">04 · 3h</div>
+      <div class="hero-card-title">Transactions &amp; MVCC</div>
+      <div class="status" style="background:var(--purpleb);color:var(--purple)" id="st-l4">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-teal" onclick="goTo('l5')">
+    <div class="hero-card-icon" style="background:var(--tealb)">📦</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--teal)">05 · 2h</div>
+      <div class="hero-card-title">Stored Routines, Views &amp; Events</div>
+      <div class="status" style="background:var(--tealb);color:var(--teal)" id="st-l5">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-indigo" onclick="goTo('l6')">
+    <div class="hero-card-icon" style="background:var(--indigob)">🎤</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--indigo)">06 · 1h</div>
+      <div class="hero-card-title">Interview Q&amp;A Review</div>
+      <div class="status" style="background:var(--indigob);color:var(--indigo)" id="st-l6">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     LESSON 1 — WINDOW FUNCTIONS
+════════════════════════════════════════════════════════════════════════ -->
+<div id="page-l1" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--phase)">Phase 03 · Lesson 01 · 5h</div>
+        <div class="page-title">Window Functions</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD, SUM OVER, PARTITION BY, and FRAME clauses — the single most impactful SQL feature to learn after JOINs. They appear in virtually every analytics query in a professional environment.</p>
+  </div>
+
+  
+<!-- ═══════════════════════════════════════════════════════════════════════
+     MYSQL → MARIADB BRIDGE — shown before Lesson 01 content
+════════════════════════════════════════════════════════════════════════ -->
+<div class="callout info" style="margin-bottom:20px;border-left-width:4px">
+  <div class="lbl">🔀 Switching from MySQL to MariaDB</div>
+  <p style="margin-bottom:10px">Phase 01 used <strong>MySQL 8</strong> via Docker. From this phase onward all examples run on <strong>MariaDB 10.11+</strong> — the fork Morafek and OS GmbH both use in production. The two are broadly compatible but differ on four points you will hit immediately.</p>
+  <table style="width:100%;border-collapse:collapse;font-size:12px;font-family:'Inter',sans-serif;margin-bottom:10px">
+    <thead><tr style="background:var(--blueb)">
+      <th style="padding:7px 10px;text-align:left;border-bottom:1px solid var(--border)">Feature</th>
+      <th style="padding:7px 10px;text-align:left;border-bottom:1px solid var(--border)">MySQL 8</th>
+      <th style="padding:7px 10px;text-align:left;border-bottom:1px solid var(--border)">MariaDB 10.11</th>
+    </tr></thead>
+    <tbody>
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:6px 10px"><code style="font-family:'JetBrains Mono',monospace;font-size:11px">AUTO_INCREMENT</code> sequences</td>
+        <td style="padding:6px 10px;color:var(--muted)">AUTO_INCREMENT only</td>
+        <td style="padding:6px 10px"><code style="font-family:'JetBrains Mono',monospace;font-size:11px">CREATE SEQUENCE</code> available — use for non-PK sequences (e.g. CareMate invoice numbers)</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:6px 10px"><code style="font-family:'JetBrains Mono',monospace;font-size:11px">RETURNING</code> clause</td>
+        <td style="padding:6px 10px;color:var(--muted)">Not supported</td>
+        <td style="padding:6px 10px">MariaDB 10.5+: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">INSERT … RETURNING id</code> avoids a second SELECT after inserts — useful in CareMate's FHIR resource creation pipeline</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:6px 10px">Auth plugin default</td>
+        <td style="padding:6px 10px;color:var(--muted)"><code style="font-family:'JetBrains Mono',monospace;font-size:11px">caching_sha2_password</code></td>
+        <td style="padding:6px 10px"><code style="font-family:'JetBrains Mono',monospace;font-size:11px">ed25519</code> (MariaDB 10.4+). Flask/SQLAlchemy connectors targeting MySQL may need <code style="font-family:'JetBrains Mono',monospace;font-size:11px">mysql_native_password</code> or the MariaDB connector explicitly</td>
+      </tr>
+      <tr>
+        <td style="padding:6px 10px">CLI binary name</td>
+        <td style="padding:6px 10px;color:var(--muted)"><code style="font-family:'JetBrains Mono',monospace;font-size:11px">mysql</code></td>
+        <td style="padding:6px 10px"><code style="font-family:'JetBrains Mono',monospace;font-size:11px">mariadb</code> (alias: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">mysql</code> still works but <code style="font-family:'JetBrains Mono',monospace;font-size:11px">mariadb</code> is preferred in scripts and CRON jobs to avoid confusion with MySQL 8 installs on the same host)</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+    <div style="flex:1;min-width:220px;background:var(--tealb);border-radius:8px;padding:10px 12px;border:1px solid #99f6e4">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin-bottom:4px">🩺 CareMate</div>
+      <div style="font-size:12px;color:#134e4a;line-height:1.6">The Flask API uses <code style="font-family:'JetBrains Mono',monospace;font-size:11px">mariadb</code> Python connector (not <code style="font-family:'JetBrains Mono',monospace;font-size:11px">PyMySQL</code>) because it supports <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ed25519</code> auth and the <code style="font-family:'JetBrains Mono',monospace;font-size:11px">RETURNING</code> clause natively — critical for the high-volume vitals INSERT path.</div>
+    </div>
+    <div style="flex:1;min-width:220px;background:#fee2e2;border-radius:8px;padding:10px 12px;border:1px solid #fca5a5">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#b91c1c;margin-bottom:4px">🚂 OS/DB</div>
+      <div style="font-size:12px;color:#7f1d1d;line-height:1.6">The booking service's JDBC connection string targets <code style="font-family:'JetBrains Mono',monospace;font-size:11px">jdbc:mariadb://</code> — not <code style="font-family:'JetBrains Mono',monospace;font-size:11px">jdbc:mysql://</code> — to ensure MariaDB-specific features like Galera-aware failover in the connector are active.</div>
+    </div>
+  </div>
+</div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Why This Matters<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <p style="font-size:13px;line-height:1.75;color:var(--muted);margin-bottom:12px">Window functions let you perform calculations across rows related to the current row — without collapsing them like GROUP BY does. In CareMate, you rank patients by vital readings per city without losing individual rows. In OS GmbH's booking system, you compute running revenue totals and detect price anomalies — all in a single pass over the data.</p>
+      <p style="font-size:13px;line-height:1.75;color:var(--muted);margin-bottom:12px">Michael Nietsch will probe whether you can read a business requirement and map it to the right window function. Knowing when to use LAG vs a self-join, or DENSE_RANK vs ROW_NUMBER, signals genuine experience.</p>
+      <div class="callout interview"><div class="lbl">🎯 Interview Anchor</div><p>"Window functions return a value per row while still being able to see other rows in the partition — that's their superpower over GROUP BY. I use PARTITION BY like GROUP BY for the window, ORDER BY to define ranking or running-aggregate direction, and FRAME clauses to build rolling-window analytics."</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Core Concepts<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="concepts">
+        <div class="concept green">
+          <div class="concept-name">Window functions never collapse rows</div>
+          <div class="concept-desc">Unlike GROUP BY, a window function appends a computed column to every row. You can mix them with WHERE, JOIN, and GROUP BY in the same query — they execute after all filters, in their own logical phase.<br><br>EHR: rank patients by latest weight per city without losing individual vital rows. OS/DB: show each booking's price alongside the route average in the same row.</div>
+        </div>
+        <div class="concept blue">
+          <div class="concept-name">OVER() — the window definition</div>
+          <div class="concept-desc">Every window function requires <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--blueb);padding:1px 4px;border-radius:3px">OVER()</code>. Empty OVER = whole result set. Add <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--blueb);padding:1px 4px;border-radius:3px">PARTITION BY</code> to scope by group, <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--blueb);padding:1px 4px;border-radius:3px">ORDER BY</code> for ranking or running aggregates.<br><br>EHR: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">OVER(PARTITION BY city ORDER BY recorded_at DESC)</code> for per-city vital rankings. OS/DB: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">OVER(PARTITION BY route_id ORDER BY booked_at)</code> for per-route cumulative bookings.</div>
+        </div>
+        <div class="concept purple">
+          <div class="concept-name">RANK vs DENSE_RANK vs ROW_NUMBER</div>
+          <div class="concept-desc">ROW_NUMBER: unique sequential number with no ties — always 1,2,3,4. RANK: skips ranks after a tie — 1,1,3,4. DENSE_RANK: never skips — 1,1,2,3. Use ROW_NUMBER for pagination and deduplication; DENSE_RANK for leaderboards where every rank number must be represented.<br><br>EHR: DENSE_RANK on systolic BP to identify the top 3 hypertensive risk patients per clinic. OS/DB: ROW_NUMBER per route to find the single cheapest available seat.</div>
+        </div>
+        <div class="concept orange">
+          <div class="concept-name">LAG / LEAD — time-series comparisons</div>
+          <div class="concept-desc"><code style="font-family:'JetBrains Mono',monospace;font-size:11px">LAG(col, n, default)</code> fetches the value n rows behind in the window order. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">LEAD(col, n, default)</code> looks ahead. Both accept a default for when no prior or next row exists. Eliminates expensive self-joins for period-over-period comparisons.<br><br>EHR: LAG(weight_kg) to compute weight change between consecutive patient visits. OS/DB: LAG(price) to flag bookings that are more than 30% more expensive than the previous booking on the same route.</div>
+        </div>
+        <div class="concept teal">
+          <div class="concept-name">FRAME clause — rolling windows</div>
+          <div class="concept-desc"><code style="font-family:'JetBrains Mono',monospace;font-size:11px">ROWS BETWEEN n PRECEDING AND CURRENT ROW</code> defines a moving frame for rolling aggregates. ROWS uses physical row count; RANGE uses logical value ranges (rows with the same ORDER BY value count as one unit). Critical for time-series analytics.<br><br>EHR: 7-day rolling average of patient pulse using ROWS BETWEEN 6 PRECEDING AND CURRENT ROW. OS/DB: 30-day rolling revenue per route.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🩺 EHR Example — Morafek CareMate<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout phr"><div class="lbl">🩺 Context</div><p>CareMate clinical analytics: rank patients by blood pressure risk per city, track weight trends over visits, and build a 7-day rolling pulse average for remote monitoring — all avoiding costly application-layer loops.</p></div>
+      <div class="code-block">
+        <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm">-- 1. Latest systolic BP rank within each city (DENSE_RANK — no skipped ranks)</span>
+<span class="kw">WITH</span> latest_vitals <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    v.patient_id, p.full_name, p.city,
+    v.systolic, v.diastolic, v.recorded_at,
+    <span class="fn">ROW_NUMBER</span>() <span class="kw">OVER</span> (
+      <span class="kw">PARTITION BY</span> v.patient_id <span class="kw">ORDER BY</span> v.recorded_at <span class="kw">DESC</span>
+    ) <span class="kw">AS</span> rn                       <span class="cm">-- rn=1 means the most recent reading</span>
+  <span class="kw">FROM</span> <span class="tb">vitals</span> v
+  <span class="kw">JOIN</span> <span class="tb">patients</span> p <span class="kw">ON</span> v.patient_id <span class="op">=</span> p.id
+)
+<span class="kw">SELECT</span>
+  full_name, city, systolic, diastolic,
+  <span class="fn">DENSE_RANK</span>() <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> city <span class="kw">ORDER BY</span> systolic <span class="kw">DESC</span>
+  )                          <span class="kw">AS</span> bp_rank_in_city,
+  <span class="fn">ROUND</span>(<span class="fn">AVG</span>(systolic) <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> city), <span class="num">1</span>)
+                             <span class="kw">AS</span> city_avg_systolic   <span class="cm">-- city mean on every row</span>
+<span class="kw">FROM</span> latest_vitals
+<span class="kw">WHERE</span> rn <span class="op">=</span> <span class="num">1</span>;               <span class="cm">-- only the most recent vital per patient</span>
+
+<span class="cm">-- 2. Weight change between consecutive visits using LAG</span>
+<span class="kw">SELECT</span>
+  p.full_name,
+  v.recorded_at,
+  v.weight_kg,
+  <span class="fn">LAG</span>(v.weight_kg, <span class="num">1</span>, v.weight_kg) <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> v.patient_id <span class="kw">ORDER BY</span> v.recorded_at
+  )                                  <span class="kw">AS</span> prev_weight_kg,
+  v.weight_kg <span class="op">-</span> <span class="fn">LAG</span>(v.weight_kg, <span class="num">1</span>, v.weight_kg) <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> v.patient_id <span class="kw">ORDER BY</span> v.recorded_at
+  )                                  <span class="kw">AS</span> delta_kg   <span class="cm">-- positive=gained, negative=lost</span>
+<span class="kw">FROM</span> <span class="tb">vitals</span> v
+<span class="kw">JOIN</span> <span class="tb">patients</span> p <span class="kw">ON</span> v.patient_id <span class="op">=</span> p.id
+<span class="kw">ORDER BY</span> p.id, v.recorded_at;
+
+<span class="cm">-- 3. 7-day rolling average pulse per patient (ROWS frame)</span>
+<span class="kw">SELECT</span>
+  patient_id, recorded_at, pulse,
+  <span class="fn">ROUND</span>(<span class="fn">AVG</span>(pulse) <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> patient_id
+    <span class="kw">ORDER BY</span> recorded_at
+    <span class="kw">ROWS BETWEEN</span> <span class="num">6</span> <span class="kw">PRECEDING AND CURRENT ROW</span>   <span class="cm">-- up to last 7 readings</span>
+  ), <span class="num">1</span>)                                          <span class="kw">AS</span> rolling_7_avg_pulse
+<span class="kw">FROM</span> <span class="tb">vitals</span>
+<span class="kw">ORDER BY</span> patient_id, recorded_at;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — Deutsche Bahn<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout db"><div class="lbl">🚂 OS/DB Context</div><p>OS GmbH operational analytics: cumulative route revenue, top-N bookings per route for yield management, and price spike detection — all executed in single SQL passes to minimize DB load during peak hours.</p></div>
+      <div class="code-block">
+        <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm">-- 1. Running revenue per route with % of total route revenue</span>
+<span class="kw">SELECT</span>
+  b.route_id,
+  r.origin_station, r.destination_station,
+  b.booked_at, b.price,
+  <span class="fn">SUM</span>(b.price) <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> b.route_id
+    <span class="kw">ORDER BY</span> b.booked_at
+    <span class="kw">ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW</span>
+  )                      <span class="kw">AS</span> running_revenue,
+  <span class="fn">ROUND</span>(b.price /
+    <span class="fn">SUM</span>(b.price) <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> b.route_id) * <span class="num">100</span>, <span class="num">2</span>
+  )                      <span class="kw">AS</span> pct_of_route_total,    <span class="cm">-- this booking's revenue share</span>
+  <span class="fn">RANK</span>() <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> b.route_id <span class="kw">ORDER BY</span> b.price <span class="kw">DESC</span>
+  )                      <span class="kw">AS</span> price_rank              <span class="cm">-- highest-value booking = 1</span>
+<span class="kw">FROM</span> <span class="tb">bookings</span> b
+<span class="kw">JOIN</span> <span class="tb">routes</span> r <span class="kw">ON</span> b.route_id <span class="op">=</span> r.id
+<span class="kw">WHERE</span> b.status <span class="op">=</span> <span class="str">'confirmed'</span>
+<span class="kw">ORDER BY</span> b.route_id, b.booked_at;
+
+<span class="cm">-- 2. Price spike detection: flag bookings >40% above previous booking on same route</span>
+<span class="kw">WITH</span> priced <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    route_id, booked_at, price,
+    <span class="fn">LAG</span>(price) <span class="kw">OVER</span> (
+      <span class="kw">PARTITION BY</span> route_id <span class="kw">ORDER BY</span> booked_at
+    ) <span class="kw">AS</span> prev_price
+  <span class="kw">FROM</span> <span class="tb">bookings</span>
+  <span class="kw">WHERE</span> status <span class="op">=</span> <span class="str">'confirmed'</span>
+)
+<span class="kw">SELECT</span>
+  route_id, booked_at, prev_price, price,
+  <span class="fn">ROUND</span>((price <span class="op">-</span> prev_price) / prev_price * <span class="num">100</span>, <span class="num">1</span>) <span class="kw">AS</span> pct_jump
+<span class="kw">FROM</span> priced
+<span class="kw">WHERE</span> prev_price <span class="kw">IS NOT NULL</span>
+  <span class="kw">AND</span> price <span class="op">&gt;</span> prev_price * <span class="num">1.4</span>     <span class="cm">-- more than 40% jump = flag for review</span>
+<span class="kw">ORDER BY</span> pct_jump <span class="kw">DESC</span>;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Common Pitfalls<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout warn"><div class="lbl">⚠️ RANK() gaps in leaderboards</div><p>RANK() after a tie goes 1→1→3 — it skips rank 2. If you display "top 5 patients by risk" using RANK(), ties at rank 1 can mean only 3 patients appear (ranks 1,1,3,4,5 — rank 2 is never emitted). Use DENSE_RANK() for leaderboards where every position number must be represented.</p></div>
+      <div class="callout warn"><div class="lbl">⚠️ Using window functions in WHERE clauses</div><p>Window functions are computed after WHERE and GROUP BY — you cannot use them in WHERE. Wrap the query in a CTE or subquery, then filter on the window result in the outer query. Common mistake: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">WHERE ROW_NUMBER() OVER(...) = 1</code> — this causes a syntax error. Correct pattern: CTE with ROW_NUMBER(), then <code style="font-family:'JetBrains Mono',monospace;font-size:11px">WHERE rn = 1</code> in the outer SELECT.</p></div>
+      <div class="callout warn"><div class="lbl">⚠️ ROWS vs RANGE frame — silent wrong results</div><p>RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW includes all rows with the same ORDER BY value as the current row. If two vitals have the same recorded_at, RANGE treats them as one unit and both get the same running sum. ROWS uses physical position. Use ROWS unless you explicitly need value-based grouping — RANGE is rarely what you want for time-series data.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="qa-list">
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What is the difference between RANK() and DENSE_RANK()? Give a practical example from your work.</div>
+          <div class="qa-a">
+            <p>RANK() assigns the same rank to ties and then skips the next rank — 1,1,3. DENSE_RANK() also assigns the same rank to ties but never skips — 1,1,2. For an OS GmbH booking dashboard ranking passengers by total spend per loyalty tier, DENSE_RANK() is the right choice: if two gold-tier passengers are tied for rank 1, you still want rank 2 to be the next passenger. RANK() would jump from 1 to 3, making the leaderboard confusing. I use ROW_NUMBER() when I need strictly unique row identifiers — for example, picking exactly one booking per passenger per route for deduplication.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"DENSE_RANK for leaderboards — no skipped numbers. RANK when gaps after ties are intentional. ROW_NUMBER for deduplication where you need exactly one row per partition."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">How would you compute a running monthly revenue total per route without using a self-join?</div>
+          <div class="qa-a">
+            <p>Using SUM() OVER with a ROWS or RANGE frame. Partition by route_id, order by booking month, and use ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW. This accumulates revenue across all bookings in chronological order within each route's partition — no self-join required, and the query scales linearly with table size. If you need month-level granularity, first aggregate monthly totals into a CTE using GROUP BY, then apply the running SUM() OVER in the outer query on the pre-aggregated data.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"SUM() OVER (PARTITION BY route_id ORDER BY month ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) — one pass, no self-join, scales linearly."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">Why can't you use a window function directly in a WHERE clause?</div>
+          <div class="qa-a">
+            <p>SQL has a strict logical execution order: FROM → JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY. Window functions are evaluated in the SELECT phase, after WHERE. When the WHERE clause is processed, the window function result doesn't exist yet. The solution is to either wrap the query in a CTE or subquery where the window function appears in the SELECT, then filter on the result in the outer query's WHERE clause. This is why the pattern <code style="font-family:'JetBrains Mono',monospace;font-size:11px">WITH cte AS (SELECT ..., ROW_NUMBER() OVER(...) AS rn FROM ...) SELECT * FROM cte WHERE rn = 1</code> is so common for deduplication.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"Window functions execute in the SELECT phase — after WHERE. Wrap in a CTE to filter on the window result in an outer WHERE clause."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">How would you find each patient's latest vital reading without a subquery or window function?</div>
+          <div class="qa-a">
+            <p>The classic approach is a correlated subquery: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">WHERE recorded_at = (SELECT MAX(recorded_at) FROM vitals v2 WHERE v2.patient_id = v.patient_id)</code>. This works but scans the vitals table once per patient — O(n²) complexity. With window functions, ROW_NUMBER() OVER (PARTITION BY patient_id ORDER BY recorded_at DESC) in a CTE, then WHERE rn = 1, achieves the same result in a single linear scan. For OS GmbH's tables with millions of rows, the window function approach can be 10-100× faster. I always prefer the window function pattern for this class of "latest per group" queries.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"ROW_NUMBER() OVER (PARTITION BY patient_id ORDER BY recorded_at DESC) in a CTE, then WHERE rn = 1 — linear scan vs correlated subquery's O(n²). Always the window function for production tables."</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">💪 Challenge<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="challenge">
+        <div class="challenge-head" onclick="togChallenge(this)">
+          <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Top 2 highest-systolic patients per city — without subqueries</span></div>
+          <span class="challenge-arrow">▾</span>
+        </div>
+        <div class="challenge-body">
+          <p class="challenge-q">Write a query that returns the 2 patients with the highest latest systolic reading in each city. Use only window functions — no correlated subqueries allowed. Include each patient's name, city, systolic, and their rank within that city.</p>
+          <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+          <div class="answer">
+            <div class="code-block">
+              <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+              <div class="code-body"><span class="kw">WITH</span> latest <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    v.patient_id, p.full_name, p.city, v.systolic,
+    <span class="fn">ROW_NUMBER</span>() <span class="kw">OVER</span> (
+      <span class="kw">PARTITION BY</span> v.patient_id <span class="kw">ORDER BY</span> v.recorded_at <span class="kw">DESC</span>
+    ) <span class="kw">AS</span> visit_rn    <span class="cm">-- pick the most recent vital per patient</span>
+  <span class="kw">FROM</span> <span class="tb">vitals</span> v
+  <span class="kw">JOIN</span> <span class="tb">patients</span> p <span class="kw">ON</span> v.patient_id <span class="op">=</span> p.id
+),
+ranked <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    full_name, city, systolic,
+    <span class="fn">DENSE_RANK</span>() <span class="kw">OVER</span> (
+      <span class="kw">PARTITION BY</span> city <span class="kw">ORDER BY</span> systolic <span class="kw">DESC</span>
+    ) <span class="kw">AS</span> city_rank   <span class="cm">-- rank within city, ties share the same rank</span>
+  <span class="kw">FROM</span> latest
+  <span class="kw">WHERE</span> visit_rn <span class="op">=</span> <span class="num">1</span>  <span class="cm">-- only the latest reading per patient</span>
+)
+<span class="kw">SELECT</span> full_name, city, systolic, city_rank
+<span class="kw">FROM</span> ranked
+<span class="kw">WHERE</span> city_rank <span class="op">&lt;=</span> <span class="num">2</span>  <span class="cm">-- top 2 per city (DENSE_RANK so ties are included)</span>
+<span class="kw">ORDER BY</span> city, city_rank;</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('home')">↑ Phase Home</button>
+    <button class="mark-done-btn" id="done-l1" onclick="markDone('l1')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l2')">Next: CTEs &amp; Recursive →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     LESSON 2 — CTEs & RECURSIVE QUERIES
+════════════════════════════════════════════════════════════════════════ -->
+<div id="page-l2" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--phase)">Phase 03 · Lesson 02 · 3h</div>
+        <div class="page-title">CTEs &amp; Recursive Queries</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">WITH clause, multiple CTEs, recursive CTE for hierarchy traversal — the tool that turns unreadable 12-level subqueries into readable, maintainable pipelines. Essential for org-chart and referral-chain queries.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Why This Matters<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <p style="font-size:13px;line-height:1.75;color:var(--muted);margin-bottom:12px">CTEs transform deeply nested queries into readable, maintainable SQL. Recursive CTEs unlock an entire class of hierarchy and graph problems — referral chains, organisational structures, route networks — that are genuinely impossible with plain SELECT. At OS GmbH, station-to-station route planning and escalation trees rely on recursive queries.</p>
+      <div class="callout interview"><div class="lbl">🎯 Interview Anchor</div><p>"A CTE is a named subquery that executes once in the session and can be referenced multiple times in the same query. Recursive CTEs have an anchor member (base case) and a recursive member (the JOIN back on itself) — they terminate when the recursive member returns no rows."</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Core Concepts<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="concepts">
+        <div class="concept green">
+          <div class="concept-name">CTE = named subquery, not a temp table</div>
+          <div class="concept-desc">A CTE defined with WITH executes in-line when referenced — it is not materialized to disk unless the optimiser decides to. MariaDB's optimiser may inline it or materialise it depending on complexity. Multiple CTEs can be defined in sequence and each can reference the ones before it, creating a readable pipeline.<br><br>EHR: stage patient filtering, visit aggregation, and doctor attribution as three separate named CTEs before the final SELECT. OS/DB: CTE chain for monthly revenue → route percentiles → anomaly flags.</div>
+        </div>
+        <div class="concept blue">
+          <div class="concept-name">Recursive CTE — the anchor + recursive pattern</div>
+          <div class="concept-desc">A recursive CTE has two parts joined by UNION ALL: the anchor member (base case — rows with no parent) and the recursive member (SELECT that JOINs the CTE back on itself). MariaDB limits depth with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">@@max_recursive_iterations</code> (default 1000) — always add a depth column and a depth limit to prevent runaway recursion on bad data.<br><br>EHR: traverse a doctor referral chain. OS/DB: find all stations reachable from Frankfurt Hbf with transfer count.</div>
+        </div>
+        <div class="concept purple">
+          <div class="concept-name">Materialised vs inlined CTEs</div>
+          <div class="concept-desc">MariaDB 10.4+ has the MATERIALIZED and NOT MATERIALIZED hints. A materialised CTE is computed once and cached as a temp table — useful if referenced multiple times in the query. An inlined CTE is substituted directly — better when referenced once or when the optimiser can push predicates through. The default behaviour depends on the CTE's content; force it with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">WITH cte AS MATERIALIZED (...)</code>.<br><br>EHR: materialise expensive patient-vitals aggregation used in multiple joins. OS/DB: inline a simple route filter used once.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🩺 EHR Example — Morafek CareMate<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout phr"><div class="lbl">🩺 Context</div><p>CareMate uses recursive CTEs to traverse doctor referral chains (DSGVO audit requirement) and multi-CTE pipelines to build patient risk scores in a single readable query.</p></div>
+      <div class="code-block">
+        <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm">-- Multi-CTE pipeline: active patients → recent vitals → risk score</span>
+<span class="kw">WITH</span>
+  active_patients <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> id, full_name, city, date_of_birth
+    <span class="kw">FROM</span> <span class="tb">patients</span>
+    <span class="kw">WHERE</span> created_at <span class="op">&gt;</span> <span class="fn">NOW</span>() <span class="op">-</span> <span class="kw">INTERVAL</span> <span class="num">2</span> <span class="kw">YEAR</span>
+  ),
+  latest_vitals <span class="kw">AS</span> (
+    <span class="cm">-- One row per patient: the most recent vitals reading</span>
+    <span class="kw">SELECT</span> patient_id, systolic, diastolic, weight_kg, pulse
+    <span class="kw">FROM</span> (
+      <span class="kw">SELECT</span> *,
+        <span class="fn">ROW_NUMBER</span>() <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> patient_id <span class="kw">ORDER BY</span> recorded_at <span class="kw">DESC</span>) <span class="kw">AS</span> rn
+      <span class="kw">FROM</span> <span class="tb">vitals</span>
+    ) ranked
+    <span class="kw">WHERE</span> rn <span class="op">=</span> <span class="num">1</span>
+  ),
+  risk_scored <span class="kw">AS</span> (
+    <span class="cm">-- Simple BP-based risk flag: systolic >=140 = HIGH</span>
+    <span class="kw">SELECT</span>
+      ap.id, ap.full_name, ap.city,
+      lv.systolic, lv.weight_kg,
+      <span class="kw">CASE</span>
+        <span class="kw">WHEN</span> lv.systolic <span class="op">&gt;=</span> <span class="num">180</span> <span class="kw">THEN</span> <span class="str">'CRITICAL'</span>
+        <span class="kw">WHEN</span> lv.systolic <span class="op">&gt;=</span> <span class="num">140</span> <span class="kw">THEN</span> <span class="str">'HIGH'</span>
+        <span class="kw">WHEN</span> lv.systolic <span class="op">&gt;=</span> <span class="num">120</span> <span class="kw">THEN</span> <span class="str">'ELEVATED'</span>
+        <span class="kw">ELSE</span> <span class="str">'NORMAL'</span>
+      <span class="kw">END</span> <span class="kw">AS</span> bp_risk_level
+    <span class="kw">FROM</span> active_patients ap
+    <span class="kw">JOIN</span> latest_vitals lv <span class="kw">ON</span> ap.id <span class="op">=</span> lv.patient_id
+  )
+<span class="kw">SELECT</span> city,
+  bp_risk_level,
+  <span class="fn">COUNT</span>(*)                           <span class="kw">AS</span> patient_count,
+  <span class="fn">ROUND</span>(<span class="fn">AVG</span>(systolic), <span class="num">1</span>)            <span class="kw">AS</span> avg_systolic,
+  <span class="fn">ROUND</span>(<span class="fn">AVG</span>(weight_kg), <span class="num">1</span>)           <span class="kw">AS</span> avg_weight_kg
+<span class="kw">FROM</span> risk_scored
+<span class="kw">GROUP BY</span> city, bp_risk_level
+<span class="kw">ORDER BY</span> city, bp_risk_level;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — Deutsche Bahn<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout db"><div class="lbl">🚂 OS/DB Context</div><p>OS GmbH route planning: recursive CTE to find all stations reachable from a given origin within N transfers — critical for disruption management when a line is cancelled and passengers need re-routing options.</p></div>
+      <div class="code-block">
+        <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm">-- Recursive CTE: all reachable destinations from Frankfurt Hbf within 3 transfers</span>
+<span class="kw">WITH RECURSIVE</span> reachable_stations <span class="kw">AS</span> (
+
+  <span class="cm">-- ANCHOR: direct routes from Frankfurt Hbf</span>
+  <span class="kw">SELECT</span>
+    r.destination_station <span class="kw">AS</span> station,
+    <span class="num">1</span>                      <span class="kw">AS</span> transfers,
+    <span class="fn">CAST</span>(r.origin_station <span class="kw">AS</span> <span class="fn">CHAR</span>(<span class="num">200</span>)) <span class="kw">AS</span> path   <span class="cm">-- track the path to detect cycles</span>
+  <span class="kw">FROM</span> <span class="tb">routes</span> r
+  <span class="kw">WHERE</span> r.origin_station <span class="op">=</span> <span class="str">'Frankfurt Hbf'</span>
+    <span class="kw">AND</span> r.scheduled_departure <span class="op">&gt;</span> <span class="fn">NOW</span>()
+
+  <span class="kw">UNION ALL</span>
+
+  <span class="cm">-- RECURSIVE MEMBER: extend one more transfer from each reachable station</span>
+  <span class="kw">SELECT</span>
+    r.destination_station,
+    rs.transfers <span class="op">+</span> <span class="num">1</span>,
+    <span class="fn">CONCAT</span>(rs.path, <span class="str">' → '</span>, r.origin_station)
+  <span class="kw">FROM</span> <span class="tb">routes</span> r
+  <span class="kw">JOIN</span> reachable_stations rs <span class="kw">ON</span> r.origin_station <span class="op">=</span> rs.station
+  <span class="kw">WHERE</span> rs.transfers <span class="op">&lt;</span> <span class="num">3</span>                          <span class="cm">-- STOP at 3 transfers (prevents runaway)</span>
+    <span class="kw">AND</span> rs.path <span class="kw">NOT LIKE</span> <span class="fn">CONCAT</span>(<span class="str">'%'</span>, r.destination_station, <span class="str">'%'</span>)
+                                                   <span class="cm">-- cycle guard: don't revisit stations</span>
+)
+<span class="kw">SELECT DISTINCT</span>
+  station,
+  <span class="fn">MIN</span>(transfers) <span class="kw">AS</span> min_transfers_needed
+<span class="kw">FROM</span> reachable_stations
+<span class="kw">GROUP BY</span> station
+<span class="kw">ORDER BY</span> min_transfers_needed, station;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Common Pitfalls<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout warn"><div class="lbl">⚠️ Infinite recursion on bad data</div><p>A recursive CTE with a missing or incorrect termination condition will loop until MariaDB hits @@max_recursive_iterations (default 1000) and throws an error. Always: (1) add an explicit depth/counter column and a WHERE depth &lt; N condition, and (2) add a cycle-detection guard using the path or a visited-set pattern. Never deploy a recursive CTE on production data without testing it against rows with circular references.</p></div>
+      <div class="callout warn"><div class="lbl">⚠️ CTEs are not always materialised — predicate pushdown surprises</div><p>Developers sometimes expect a CTE to "run once and cache" — but MariaDB may inline it, causing it to re-execute for each reference. If your CTE is expensive and referenced multiple times, use the MATERIALIZED hint explicitly. Conversely, expecting MariaDB to push a WHERE predicate into a CTE may not happen — verify with EXPLAIN.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="qa-list">
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What is the difference between a CTE and a derived table (subquery in FROM)?</div>
+          <div class="qa-a">
+            <p>Both produce an inline result set, but CTEs are named, defined at the top of the query, and can be referenced multiple times. A derived table is anonymous and defined inline — readable only once in the query. CTEs also support recursion, which derived tables cannot do. In MariaDB, a non-recursive CTE is generally inlined by the optimizer the same way as a derived table, so performance is equivalent. The primary advantage of CTEs is readability and reusability within the same query. For OS GmbH, I use CTEs whenever a pipeline has more than two steps — the code becomes reviewable by colleagues and testable in isolation.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"CTEs: named, reusable within query, support recursion, readable. Derived tables: anonymous, inline, referenced once. Performance equivalent for non-recursive cases — use CTEs for anything complex."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">Explain the structure of a recursive CTE. What terminates the recursion?</div>
+          <div class="qa-a">
+            <p>A recursive CTE has two mandatory parts joined by UNION ALL. The anchor member is a plain SELECT that returns the base rows — the starting point of traversal (for example, root nodes where parent_id IS NULL). The recursive member is a SELECT that JOINs the CTE back on itself to extend the result by one level per iteration. Recursion terminates when the recursive member's JOIN produces zero rows — no more children to follow. In MariaDB, you must also add an explicit depth limit (WHERE depth &lt; N) because a data cycle would otherwise run until max_recursive_iterations is reached and throw an error. Always add a cycle-guard predicate in production.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"Anchor (base case) UNION ALL recursive member (self-join). Terminates when the recursive member returns zero rows. Always add a depth limit and cycle guard for production data."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">How would you debug a slow CTE in MariaDB?</div>
+          <div class="qa-a">
+            <p>First, EXPLAIN the outer query — MariaDB shows whether the CTE is inlined or materialised. If inlined, the CTE is re-evaluated for each reference, which may be expensive. Force materialisation with the MATERIALIZED hint. If the CTE itself has a complex filter, check whether the optimiser is pushing predicates into it — if not, move the filter inside the CTE explicitly. For recursive CTEs, check the recursion depth: a large max_recursive_iterations count in EXPLAIN ANALYZE indicates slow traversal, possibly due to missing indexes on the join columns. Always index the FK columns used in the recursive JOIN.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"EXPLAIN first: is it inlined or materialised? Force MATERIALIZED if needed. Push filters inside the CTE explicitly. For recursive CTEs, index the self-join columns."</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">💪 Challenge<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="challenge">
+        <div class="challenge-head" onclick="togChallenge(this)">
+          <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Doctor referral chain — recursive CTE</span></div>
+          <span class="challenge-arrow">▾</span>
+        </div>
+        <div class="challenge-body">
+          <p class="challenge-q">The doctors table has a column <code style="font-family:'JetBrains Mono',monospace;font-size:11px">referred_by_id</code> pointing to another doctor. Write a recursive CTE that, starting from doctor ID 1, returns the full referral chain: doctor ID, name, depth in the chain, and the full path as a string like "Dr. Müller → Dr. Schmidt → Dr. Weber".</p>
+          <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+          <div class="answer">
+            <div class="code-block">
+              <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+              <div class="code-body"><span class="kw">WITH RECURSIVE</span> referral_chain <span class="kw">AS</span> (
+
+  <span class="cm">-- ANCHOR: the root doctor (starting point)</span>
+  <span class="kw">SELECT</span>
+    id,
+    full_name,
+    referred_by_id,
+    <span class="num">0</span>                                             <span class="kw">AS</span> depth,
+    <span class="fn">CAST</span>(full_name <span class="kw">AS</span> <span class="fn">CHAR</span>(<span class="num">500</span>))                  <span class="kw">AS</span> chain_path
+  <span class="kw">FROM</span> <span class="tb">doctors</span>
+  <span class="kw">WHERE</span> id <span class="op">=</span> <span class="num">1</span>
+
+  <span class="kw">UNION ALL</span>
+
+  <span class="cm">-- RECURSIVE MEMBER: follow referrals one level deeper</span>
+  <span class="kw">SELECT</span>
+    d.id,
+    d.full_name,
+    d.referred_by_id,
+    rc.depth <span class="op">+</span> <span class="num">1</span>,
+    <span class="fn">CONCAT</span>(rc.chain_path, <span class="str">' → '</span>, d.full_name)
+  <span class="kw">FROM</span> <span class="tb">doctors</span> d
+  <span class="kw">JOIN</span> referral_chain rc <span class="kw">ON</span> d.referred_by_id <span class="op">=</span> rc.id
+  <span class="kw">WHERE</span> rc.depth <span class="op">&lt;</span> <span class="num">10</span>                            <span class="cm">-- prevent runaway on cycles</span>
+)
+<span class="kw">SELECT</span>
+  id        <span class="kw">AS</span> doctor_id,
+  full_name,
+  depth     <span class="kw">AS</span> chain_depth,
+  chain_path
+<span class="kw">FROM</span> referral_chain
+<span class="kw">ORDER BY</span> depth;</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l1')">← Window Functions</button>
+    <button class="mark-done-btn" id="done-l2" onclick="markDone('l2')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l3')">Next: EXPLAIN &amp; Optimization →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     LESSON 3 — EXPLAIN & QUERY OPTIMIZATION
+════════════════════════════════════════════════════════════════════════ -->
+<div id="page-l3" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--phase)">Phase 03 · Lesson 03 · 3h</div>
+        <div class="page-title">EXPLAIN &amp; Query Optimization</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">Reading EXPLAIN output, identifying table scans, understanding join types, and applying indexes and query rewrites to eliminate performance bottlenecks. The most practical DBA skill in day-to-day operations.</p>
+  </div>
+
+  <div class="callout info">
+    <div class="lbl">📚 Building on previous phases</div>
+    <p>Indexes have appeared twice already: <strong>Phase 01 Lesson 08</strong> covered the syntax (<code>CREATE INDEX</code>, basic usage). <strong>Phase 02 Lesson 03</strong> covered design strategy (column order, composite vs covering, selectivity). This lesson adds the third layer: using <code>EXPLAIN</code> and <code>EXPLAIN ANALYZE</code> to verify whether your indexes are actually being used — and to diagnose precisely why they are not.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Why This Matters<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <p style="font-size:13px;line-height:1.75;color:var(--muted);margin-bottom:12px">Every slow query that hits OS GmbH's 24/7 infrastructure is a potential incident. EXPLAIN is your first diagnostic tool — it tells you exactly how the query engine plans to execute a query before you run it. Understanding the output and knowing how to rewrite or re-index based on it is the core skill that separates a good DBA from a great one.</p>
+      <div class="callout interview"><div class="lbl">🎯 Interview Anchor</div><p>"I start with EXPLAIN FORMAT=JSON for any slow query — I look at type (ALL is a full table scan — always bad on large tables), key (which index was used), rows (estimated rows examined), and filtered (% of rows surviving the WHERE). Then I check whether a composite or covering index would eliminate the scan."</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Core Concepts<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="concepts">
+        <div class="concept green">
+          <div class="concept-name">EXPLAIN type column — the access method</div>
+          <div class="concept-desc">From worst to best: ALL (full scan) → index (full index scan) → range (index range scan) → ref (non-unique index lookup) → eq_ref (unique index, one match per join) → const/system (single row, effectively cached). For large tables in production, ALL and index are danger signs requiring immediate investigation.<br><br>EHR: type=ALL on the vitals table (millions of rows) means every query is reading the whole table. OS/DB: eq_ref on bookings.passenger_id means an efficient PK/unique-index lookup.</div>
+        </div>
+        <div class="concept blue">
+          <div class="concept-name">key vs possible_keys</div>
+          <div class="concept-desc">possible_keys: all indexes MariaDB considered for this table access. key: the index actually chosen. If possible_keys is empty, no index exists for this access pattern — you need to create one. If key is NULL but possible_keys is populated, the optimiser decided a full scan is cheaper (often because the table is tiny or the index selectivity is very low).<br><br>EHR: no index on vitals.patient_id → possible_keys=NULL, type=ALL on a 5-million-row table — create the index immediately. OS/DB: bookings has an index on passenger_id but the query scans route_id — wrong index for this query pattern.</div>
+        </div>
+        <div class="concept purple">
+          <div class="concept-name">rows × filtered = rows actually examined</div>
+          <div class="concept-desc">The rows column is the estimated number of rows the engine will examine for that table. The filtered column (%) is what fraction survives the WHERE clause. rows × (filtered/100) = output rows passed to the next step. A large rows count with a small filtered value means the index is not selective enough — the engine reads many rows only to discard most.<br><br>EHR: rows=50000, filtered=2.0 → the engine reads 50k vitals but only 1k survive the patient_id filter — add a composite index. OS/DB: rows=1000000, filtered=0.1 on bookings — the status='confirmed' filter is not indexed.</div>
+        </div>
+        <div class="concept orange">
+          <div class="concept-name">Covering index — the index-only scan</div>
+          <div class="concept-desc">When a secondary index contains all columns needed by the query (SELECT list + WHERE + ORDER BY), MariaDB can answer the query from the index alone without touching the main table (clustered index). EXPLAIN shows "Using index" in the Extra column. Covering indexes can reduce I/O by 10-100× for high-frequency read queries.<br><br>EHR: CREATE INDEX idx_vitals_cover ON vitals(patient_id, recorded_at, systolic) — covers the most common clinical query pattern. OS/DB: INDEX ON bookings(route_id, status, booked_at, price) for the revenue analytics query.</div>
+        </div>
+        <div class="concept teal">
+          <div class="concept-name">EXPLAIN ANALYZE — actual vs estimated</div>
+          <div class="concept-desc">EXPLAIN ANALYZE (MariaDB 10.9+) actually executes the query and shows both estimated and actual row counts. Discrepancies between estimated and actual rows indicate stale statistics — run ANALYZE TABLE to refresh. The output also shows actual execution time per node, revealing which join or sort step is the bottleneck.<br><br>EHR: estimated 100 rows, actual 45,000 rows — statistics are severely stale, run ANALYZE TABLE vitals. OS/DB: filesort in Extra with 2-second sort time — add an ORDER BY-matching index.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🩺 EHR Example — Morafek CareMate<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout phr"><div class="lbl">🩺 Context</div><p>A CareMate report query is slow — the clinical team reports the "patients needing follow-up" dashboard takes 8 seconds. Walk through EXPLAIN diagnosis and the fix.</p></div>
+      <div class="code-block">
+        <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm">-- STEP 1: Run EXPLAIN on the slow query</span>
+<span class="kw">EXPLAIN FORMAT</span><span class="op">=</span>JSON
+<span class="kw">SELECT</span>
+  p.full_name, p.city,
+  v.systolic, v.recorded_at,
+  vi.reason
+<span class="kw">FROM</span> <span class="tb">patients</span> p
+<span class="kw">JOIN</span> <span class="tb">vitals</span> v   <span class="kw">ON</span> v.patient_id <span class="op">=</span> p.id
+<span class="kw">JOIN</span> <span class="tb">visits</span> vi  <span class="kw">ON</span> vi.patient_id <span class="op">=</span> p.id
+<span class="kw">WHERE</span> v.systolic <span class="op">&gt;=</span> <span class="num">140</span>
+  <span class="kw">AND</span> vi.status <span class="op">=</span> <span class="str">'scheduled'</span>
+  <span class="kw">AND</span> p.city <span class="op">=</span> <span class="str">'Frankfurt'</span>
+<span class="kw">ORDER BY</span> v.recorded_at <span class="kw">DESC</span>;
+
+<span class="cm">-- STEP 2: Read the output (key findings)
+-- patients: type=ref, key=PRIMARY  ← good, filtered by city via index
+-- vitals:   type=ALL, key=NULL     ← BAD — full scan of 5M rows, no index on patient_id!
+-- visits:   type=ALL, key=NULL     ← BAD — no index on patient_id + status
+
+-- STEP 3: Fix — add targeted indexes</span>
+
+<span class="cm">-- Composite index on vitals: patient_id first (join), then systolic (filter), recorded_at (sort)</span>
+<span class="kw">CREATE INDEX</span> idx_vitals_pid_sys_at
+  <span class="kw">ON</span> <span class="tb">vitals</span> (patient_id, systolic, recorded_at);
+
+<span class="cm">-- Composite index on visits: patient_id + status (both used in WHERE)</span>
+<span class="kw">CREATE INDEX</span> idx_visits_pid_status
+  <span class="kw">ON</span> <span class="tb">visits</span> (patient_id, status);
+
+<span class="cm">-- Optional: covering index on patients if city queries are frequent</span>
+<span class="kw">CREATE INDEX</span> idx_patients_city
+  <span class="kw">ON</span> <span class="tb">patients</span> (city, id, full_name);
+
+<span class="cm">-- STEP 4: Verify improvement</span>
+<span class="kw">EXPLAIN ANALYZE</span>
+<span class="kw">SELECT</span> p.full_name, v.systolic
+<span class="kw">FROM</span> <span class="tb">patients</span> p
+<span class="kw">JOIN</span> <span class="tb">vitals</span> v <span class="kw">ON</span> v.patient_id <span class="op">=</span> p.id
+<span class="kw">WHERE</span> v.systolic <span class="op">&gt;=</span> <span class="num">140</span> <span class="kw">AND</span> p.city <span class="op">=</span> <span class="str">'Frankfurt'</span>;
+<span class="cm">-- Expected: type changes from ALL to range/ref, query drops from 8s → under 100ms</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — Deutsche Bahn<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout db"><div class="lbl">🚂 OS/DB Context</div><p>A revenue reporting query on the bookings table is timing out every night. EXPLAIN reveals an index choice problem and a filesort on a 50-million-row table. Diagnosis and fix using covering indexes.</p></div>
+      <div class="code-block">
+        <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm">-- Slow query: nightly route revenue report</span>
+<span class="kw">EXPLAIN</span>
+<span class="kw">SELECT</span>
+  b.route_id,
+  <span class="fn">SUM</span>(b.price)  <span class="kw">AS</span> total_revenue,
+  <span class="fn">COUNT</span>(*)      <span class="kw">AS</span> booking_count
+<span class="kw">FROM</span> <span class="tb">bookings</span> b
+<span class="kw">WHERE</span> b.status <span class="op">=</span> <span class="str">'confirmed'</span>
+  <span class="kw">AND</span> b.booked_at <span class="op">&gt;=</span> <span class="str">'2024-01-01'</span>
+  <span class="kw">AND</span> b.booked_at <span class="op">&lt;</span>  <span class="str">'2025-01-01'</span>
+<span class="kw">GROUP BY</span> b.route_id
+<span class="kw">ORDER BY</span> total_revenue <span class="kw">DESC</span>;
+
+<span class="cm">-- EXPLAIN shows:
+--   type=ALL on bookings (50M rows), Extra=Using filesort
+--   Existing index: idx_bookings_passenger — wrong index for this query!
+--   No index covers (status, booked_at, route_id, price)
+
+-- FIX 1: Covering index that serves WHERE + GROUP BY + SELECT aggregate</span>
+<span class="kw">CREATE INDEX</span> idx_bookings_revenue_cover
+  <span class="kw">ON</span> <span class="tb">bookings</span> (status, booked_at, route_id, price);
+<span class="cm">-- Columns ordered: most selective filter first (status), then range (booked_at),
+-- then GROUP BY column (route_id), then aggregate column (price)
+-- This is an index-only scan — engine never touches the main table rows</span>
+
+<span class="cm">-- FIX 2: Verify with EXPLAIN after adding the index</span>
+<span class="kw">EXPLAIN</span>
+<span class="kw">SELECT</span> b.route_id, <span class="fn">SUM</span>(b.price), <span class="fn">COUNT</span>(*)
+<span class="kw">FROM</span> <span class="tb">bookings</span> b
+<span class="kw">WHERE</span> b.status <span class="op">=</span> <span class="str">'confirmed'</span>
+  <span class="kw">AND</span> b.booked_at <span class="kw">BETWEEN</span> <span class="str">'2024-01-01'</span> <span class="kw">AND</span> <span class="str">'2024-12-31'</span>
+<span class="kw">GROUP BY</span> b.route_id;
+<span class="cm">-- Expected after fix:
+--   type=range (index range scan on booked_at)
+--   key=idx_bookings_revenue_cover
+--   Extra=Using index (covering — no table access!)
+--   Query time drops from 45s → under 1s</span>
+
+<span class="cm">-- FIX 3: Keep index statistics fresh for the optimiser</span>
+<span class="kw">ANALYZE TABLE</span> <span class="tb">bookings</span>;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Common Pitfalls<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout warn"><div class="lbl">⚠️ Function on indexed column kills the index</div><p>WHERE YEAR(booked_at) = 2024 prevents the index on booked_at from being used — the function is applied to every row. Always rewrite to a range: WHERE booked_at &gt;= '2024-01-01' AND booked_at &lt; '2025-01-01'. Same applies to UPPER(email), DATE(created_at), and any expression wrapping an indexed column.</p></div>
+      <div class="callout warn"><div class="lbl">⚠️ Implicit type conversion disables indexes</div><p>If booked_at is a VARCHAR but you compare it to a DATE literal, MariaDB must cast every row — resulting in a full scan. Always match the data type of your comparison value to the column's declared type. This is especially common with status columns stored as INT but compared with a string, or varchar dates compared with DATE functions.</p></div>
+      <div class="callout warn"><div class="lbl">⚠️ EXPLAIN rows is an estimate — verify with EXPLAIN ANALYZE</div><p>The rows column in EXPLAIN is based on index statistics — it can be wildly wrong if the table has skewed data distribution or hasn't been ANALYZEd recently. Always run EXPLAIN ANALYZE (or use EXPLAIN EXTENDED + SHOW WARNINGS) on production-representative data before concluding an optimization is working.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="qa-list">
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">A query on the bookings table is slow. Walk me through your diagnosis process step by step.</div>
+          <div class="qa-a">
+            <p>Step 1: Run EXPLAIN FORMAT=JSON on the query — look at type (ALL = danger), key (which index was chosen), rows (estimated scan size), and Extra (filesort/tmp table flags). Step 2: If type=ALL on a large table, check whether an index exists on the filtered columns. If not, design one. Step 3: Check column order — composite index columns must match the query's filter + join + sort order. Step 4: Check for function calls on indexed columns in the WHERE clause — rewrite them to range conditions. Step 5: Run EXPLAIN ANALYZE to compare estimated vs actual rows — if they diverge significantly, run ANALYZE TABLE to refresh statistics. Step 6: After adding indexes, re-run EXPLAIN to confirm type changed to range/ref and Extra shows "Using index" for a covering index scan.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"EXPLAIN first — look at type, key, rows, Extra. ALL on a large table = immediate red flag. Design a covering index matching filter+sort columns. EXPLAIN ANALYZE to verify actual vs estimated rows. ANALYZE TABLE if statistics are stale."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What does "Using filesort" mean in EXPLAIN Extra, and how do you fix it?</div>
+          <div class="qa-a">
+            <p>Filesort means MariaDB must sort the result set in memory (or on disk if it exceeds sort_buffer_size) because the ORDER BY columns are not served by the index in the right order. It does not always mean disk I/O — the name is historical. To eliminate it: (1) add an index whose leftmost columns match the ORDER BY clause, in the same direction (ASC/DESC must match). (2) If the query also has a WHERE clause, the index must cover the WHERE columns first, then the ORDER BY columns. (3) If GROUP BY is present, the GROUP BY columns must also be in the index before ORDER BY. Covering the ORDER BY in the index makes the engine read already-sorted data and skip the sort step entirely.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"Filesort = sort not served by an index. Fix: add an index whose column order matches WHERE → GROUP BY → ORDER BY. Once the data is read in index order, MariaDB skips the sort entirely."</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">💪 Challenge<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="challenge">
+        <div class="challenge-head" onclick="togChallenge(this)">
+          <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Design a covering index for the CareMate vital-sign alert query</span></div>
+          <span class="challenge-arrow">▾</span>
+        </div>
+        <div class="challenge-body">
+          <p class="challenge-q">The following query runs every 5 minutes to alert on critical vitals. EXPLAIN shows type=ALL on vitals. Design the optimal covering index and explain your column ordering decisions.<br><br><code style="font-family:'JetBrains Mono',monospace;font-size:12px;display:block;background:var(--card);padding:8px;border-radius:6px;margin-top:8px">SELECT patient_id, systolic, diastolic, recorded_at<br>FROM vitals<br>WHERE systolic &gt;= 180 OR diastolic &gt;= 110<br>ORDER BY recorded_at DESC<br>LIMIT 50;</code></p>
+          <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+          <div class="answer">
+            <div class="code-block">
+              <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+              <div class="code-body"><span class="cm">-- The OR condition prevents a single composite index from covering both branches.
+-- Strategy: use two partial indexes (one per OR branch) or rewrite with UNION ALL.
+
+-- Option A: Rewrite with UNION ALL to allow two separate index scans</span>
+<span class="kw">CREATE INDEX</span> idx_vitals_systolic_at <span class="kw">ON</span> <span class="tb">vitals</span> (systolic, recorded_at, patient_id, diastolic);
+<span class="kw">CREATE INDEX</span> idx_vitals_diastolic_at <span class="kw">ON</span> <span class="tb">vitals</span> (diastolic, recorded_at, patient_id, systolic);
+
+<span class="cm">-- Rewritten query: UNION ALL lets each branch use its own index</span>
+(<span class="kw">SELECT</span> patient_id, systolic, diastolic, recorded_at
+ <span class="kw">FROM</span> <span class="tb">vitals</span>
+ <span class="kw">WHERE</span> systolic <span class="op">&gt;=</span> <span class="num">180</span>
+ <span class="kw">ORDER BY</span> recorded_at <span class="kw">DESC</span> <span class="kw">LIMIT</span> <span class="num">50</span>)
+<span class="kw">UNION ALL</span>
+(<span class="kw">SELECT</span> patient_id, systolic, diastolic, recorded_at
+ <span class="kw">FROM</span> <span class="tb">vitals</span>
+ <span class="kw">WHERE</span> diastolic <span class="op">&gt;=</span> <span class="num">110</span>
+ <span class="kw">ORDER BY</span> recorded_at <span class="kw">DESC</span> <span class="kw">LIMIT</span> <span class="num">50</span>)
+<span class="kw">ORDER BY</span> recorded_at <span class="kw">DESC</span> <span class="kw">LIMIT</span> <span class="num">50</span>;
+
+<span class="cm">-- Column ordering rationale:
+-- (systolic, recorded_at, patient_id, diastolic):
+--   1. systolic: the range filter — must be leftmost for the range scan
+--   2. recorded_at: ORDER BY column — immediately after the range filter for no filesort
+--   3. patient_id, diastolic: additional SELECT columns for index-only scan (Extra=Using index)</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l2')">← CTEs &amp; Recursive</button>
+    <button class="mark-done-btn" id="done-l3" onclick="markDone('l3')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l4')">Next: Transactions &amp; MVCC →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     LESSON 4 — TRANSACTIONS & MVCC
+════════════════════════════════════════════════════════════════════════ -->
+<div id="page-l4" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--phase)">Phase 03 · Lesson 04 · 3h</div>
+        <div class="page-title">Transactions &amp; MVCC</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">ACID guarantees, isolation levels, MVCC snapshot reads, deadlock anatomy, and long-running transaction hazards. Understanding this layer is essential for diagnosing the class of bugs that only appear under concurrent load.</p>
+  </div>
+
+  <div class="callout info">
+    <div class="lbl">🔁 Two-phase coverage — SQL level here, engine level in Phase 04</div>
+    <p>This lesson covers MVCC and transactions from the <strong>SQL developer's perspective</strong>: what isolation levels mean, how to use <code>FOR UPDATE</code>, and how to reason about concurrent behaviour when writing queries. <strong>Phase 04 Lesson 02</strong> covers the same territory from the <strong>engine's perspective</strong>: undo logs, read views, history list length, and the purge thread. Read both — neither is a substitute for the other, and Nietsch is likely to probe both layers.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Why This Matters<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <p style="font-size:13px;line-height:1.75;color:var(--muted);margin-bottom:12px">OS GmbH processes millions of booking transactions daily. A single misunderstood isolation level or an uncommitted long-running transaction can cascade into lock contention, replication lag, and failed backups. At 3am, you need to know exactly what isolation level a transaction is running under and why a query is blocking.</p>
+      <div class="callout interview"><div class="lbl">🎯 Interview Anchor</div><p>"MVCC means a plain SELECT never blocks and is never blocked — it reads a consistent snapshot from when the transaction started. Writes create a new row version; the old version stays in the undo log until no active transaction needs it. Long transactions bloat the undo log and can starve InnoDB's purge thread."</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Core Concepts<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="concepts">
+        <div class="concept green">
+          <div class="concept-name">ACID — the four guarantees</div>
+          <div class="concept-desc">Atomicity: all-or-nothing — either all statements in a transaction commit, or all roll back. Consistency: the DB moves from one valid state to another — constraints are never violated mid-transaction. Isolation: concurrent transactions do not see each other's partial changes (degree depends on isolation level). Durability: once committed, changes survive a crash — guaranteed by the redo log flush.<br><br>EHR: a CareMate visit creation inserts into visits AND updates a patient's last_visit_at atomically — no partial inserts. OS/DB: a seat booking reserves the seat AND deducts credit in one transaction.</div>
+        </div>
+        <div class="concept blue">
+          <div class="concept-name">MVCC — reads never block writes</div>
+          <div class="concept-desc">Multi-Version Concurrency Control: when a row is updated, InnoDB does not overwrite it — it writes a new version and keeps the old version in the undo log. A plain SELECT reads the version that existed when its transaction started (consistent snapshot). This means reads never acquire locks and never block writes, and writes never block reads. The undo log is cleaned up by the purge thread once no active transaction needs the old version.<br><br>EHR: clinical reads of patient history are never blocked by concurrent vital inserts. OS/DB: reporting queries run concurrently with booking writes without locking each other.</div>
+        </div>
+        <div class="concept purple">
+          <div class="concept-name">Isolation levels — four choices</div>
+          <div class="concept-desc">READ UNCOMMITTED: can read uncommitted changes (dirty reads) — almost never correct. READ COMMITTED: reads only committed data, but different reads within the same transaction can see different data (non-repeatable reads). REPEATABLE READ (MariaDB default): same rows seen throughout the transaction — consistent snapshot. SERIALIZABLE: full sequential isolation — every read acquires a shared lock — lowest concurrency.<br><br>EHR: REPEATABLE READ prevents nurses from seeing different patient weights in consecutive reads of the same transaction. OS/DB: READ COMMITTED is sometimes used for reporting to avoid long snapshot holding.</div>
+        </div>
+        <div class="concept orange">
+          <div class="concept-name">Deadlocks — anatomy and auto-resolution</div>
+          <div class="concept-desc">A deadlock occurs when two transactions each hold a lock the other needs, and both wait forever. InnoDB detects cycles in the wait-for graph in ~1 second and rolls back the transaction with the least undo data. The rolled-back transaction receives error 1213. Application code must always retry on deadlock.<br><br>EHR: Nurse session A locks patient row 42, waits for visit row 100. Nurse session B holds visit row 100, waits for patient row 42 → InnoDB detects and rolls back the lighter transaction. OS/DB: two booking sessions trying to lock the same seat row in opposite order.</div>
+        </div>
+        <div class="concept teal">
+          <div class="concept-name">Long transactions — the hidden danger</div>
+          <div class="concept-desc">A transaction that stays open for minutes or hours prevents the undo log from being purged — undo log grows unboundedly, filling disk. It also holds any row locks it has acquired, blocking other writers. Monitor with SHOW ENGINE INNODB STATUS (History list length) and information_schema.INNODB_TRX. Any transaction open longer than 60 seconds in OLTP is a warning sign.<br><br>EHR: a FHIR export script that opens a transaction and slowly reads millions of rows keeps snapshots alive for the entire export duration. OS/DB: a misconfigured ETL job holding an open transaction during a 30-minute file write.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🩺 EHR Example — Morafek CareMate<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout phr"><div class="lbl">🩺 Context</div><p>A DSGVO-compliant patient data update must be atomic: update patient email, log the change in audit_log, and invalidate any cached sessions — all or nothing. Demonstrate transaction control and deadlock handling.</p></div>
+      <div class="code-block">
+        <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm">-- Atomic patient email update with audit log (DSGVO requirement)</span>
+<span class="kw">START TRANSACTION</span>;
+
+<span class="cm">-- Lock the patient row first to prevent concurrent modification</span>
+<span class="kw">SELECT</span> id, email <span class="kw">FROM</span> <span class="tb">patients</span>
+<span class="kw">WHERE</span> id <span class="op">=</span> <span class="num">4821</span>
+<span class="kw">FOR UPDATE</span>;                                  <span class="cm">-- acquires exclusive row lock</span>
+
+<span class="cm">-- Update the email</span>
+<span class="kw">UPDATE</span> <span class="tb">patients</span>
+<span class="kw">SET</span>    email <span class="op">=</span> <span class="str">'new.email@example.de'</span>,
+       updated_at <span class="op">=</span> <span class="fn">NOW</span>()
+<span class="kw">WHERE</span> id <span class="op">=</span> <span class="num">4821</span>;
+
+<span class="cm">-- Write DSGVO audit record (who changed what, when)</span>
+<span class="kw">INSERT INTO</span> <span class="tb">audit_log</span> (entity_type, entity_id, field, old_value, new_value, changed_by, changed_at)
+<span class="kw">VALUES</span> (<span class="str">'patient'</span>, <span class="num">4821</span>, <span class="str">'email'</span>, <span class="str">'old@example.de'</span>, <span class="str">'new.email@example.de'</span>, <span class="num">77</span>, <span class="fn">NOW</span>());
+
+<span class="kw">COMMIT</span>;                                       <span class="cm">-- both changes visible atomically</span>
+
+<span class="cm">-- Check for blocking transactions (run when CareMate reports slow writes)</span>
+<span class="kw">SELECT</span>
+  r.trx_id            <span class="kw">AS</span> waiting_trx_id,
+  r.trx_mysql_thread_id <span class="kw">AS</span> waiting_thread,
+  r.trx_query         <span class="kw">AS</span> waiting_query,
+  b.trx_id            <span class="kw">AS</span> blocking_trx_id,
+  b.trx_mysql_thread_id <span class="kw">AS</span> blocking_thread,
+  b.trx_started       <span class="kw">AS</span> blocking_started    <span class="cm">-- how long has the blocker been running?</span>
+<span class="kw">FROM</span> information_schema.<span class="tb">INNODB_TRX</span> r
+<span class="kw">JOIN</span> performance_schema.data_lock_waits w
+  <span class="kw">ON</span> r.trx_id <span class="op">=</span> w.requesting_engine_transaction_id
+<span class="kw">JOIN</span> information_schema.<span class="tb">INNODB_TRX</span> b
+  <span class="kw">ON</span> b.trx_id <span class="op">=</span> w.blocking_engine_transaction_id;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — Deutsche Bahn<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout db"><div class="lbl">🚂 OS/DB Context</div><p>A seat reservation must be completely atomic — check availability, reserve, and charge in a single transaction. Race conditions here mean two passengers booking the same seat, which at OS GmbH is a Sev-1 incident.</p></div>
+      <div class="code-block">
+        <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm">-- Atomic seat reservation — prevents double-booking under concurrency</span>
+<span class="kw">SET SESSION</span> transaction_isolation <span class="op">=</span> <span class="str">'REPEATABLE-READ'</span>; <span class="cm">-- explicit; MariaDB default</span>
+<span class="kw">START TRANSACTION</span>;
+
+<span class="cm">-- Lock the seat row for update — prevents concurrent reservations</span>
+<span class="kw">SELECT</span> seat_number, status
+<span class="kw">FROM</span> <span class="tb">bookings</span>
+<span class="kw">WHERE</span> route_id <span class="op">=</span> <span class="num">88</span> <span class="kw">AND</span> seat_number <span class="op">=</span> <span class="str">'12A'</span> <span class="kw">AND</span> status <span class="op">=</span> <span class="str">'available'</span>
+<span class="kw">FOR UPDATE</span>;              <span class="cm">-- if another session already locked this, we wait here</span>
+
+<span class="cm">-- Only proceed if seat was available (application checks returned row count > 0)</span>
+<span class="kw">UPDATE</span> <span class="tb">bookings</span>
+<span class="kw">SET</span>    status <span class="op">=</span> <span class="str">'confirmed'</span>,
+       passenger_id <span class="op">=</span> <span class="num">9918</span>,
+       booked_at <span class="op">=</span> <span class="fn">NOW</span>()
+<span class="kw">WHERE</span> route_id <span class="op">=</span> <span class="num">88</span> <span class="kw">AND</span> seat_number <span class="op">=</span> <span class="str">'12A'</span> <span class="kw">AND</span> status <span class="op">=</span> <span class="str">'available'</span>;
+
+<span class="kw">COMMIT</span>;  <span class="cm">-- lock released, booking visible to all sessions</span>
+
+<span class="cm">-- Monitor undo log growth — sign of long-running transactions</span>
+<span class="kw">SHOW ENGINE INNODB STATUS</span>\G
+<span class="cm">-- Look for: "History list length XXXX"
+-- > 1000 = undo log building up, purge thread struggling
+-- > 100000 = critical — find and kill the long-running transaction
+
+-- Find long-running transactions</span>
+<span class="kw">SELECT</span> trx_id, trx_started,
+  <span class="fn">TIMESTAMPDIFF</span>(<span class="kw">SECOND</span>, trx_started, <span class="fn">NOW</span>()) <span class="kw">AS</span> age_seconds,
+  trx_query
+<span class="kw">FROM</span> information_schema.<span class="tb">INNODB_TRX</span>
+<span class="kw">ORDER BY</span> trx_started <span class="kw">ASC</span>
+<span class="kw">LIMIT</span> <span class="num">10</span>;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Common Pitfalls<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout warn"><div class="lbl">⚠️ autocommit=1 masking missing explicit transactions</div><p>MariaDB defaults to autocommit=1 — every statement is its own transaction. Developers assume multi-statement sequences are atomic when they are not. Always wrap multi-step business operations (reserve seat + charge payment) in explicit START TRANSACTION ... COMMIT. Monitor for sessions with autocommit=0 that forget to COMMIT — they hold locks indefinitely.</p></div>
+      <div class="callout warn"><div class="lbl">⚠️ Deadlock not retried — application crashes instead</div><p>InnoDB rolls back one deadlock victim and returns error 1213 (ER_LOCK_DEADLOCK). If the application doesn't catch this and retry the transaction, the user sees an error. All write-path code must handle deadlocks with a retry loop (typically 3 attempts with exponential back-off). Deadlocks are not bugs to eliminate — they are a normal part of concurrent access. Design for retry.</p></div>
+      <div class="callout warn"><div class="lbl">⚠️ REPEATABLE READ snapshot taken at transaction start, not at first read</div><p>In MariaDB REPEATABLE READ, the snapshot is taken when the first data-reading statement executes in the transaction — not at START TRANSACTION. This means: START TRANSACTION; (wait 5 minutes); SELECT ... — the snapshot is 5 minutes old. Use START TRANSACTION WITH CONSISTENT SNAPSHOT to force an immediate snapshot if time-consistency from the exact start moment matters.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="qa-list">
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What is MVCC and why does it matter for OS GmbH's 24/7 booking system?</div>
+          <div class="qa-a">
+            <p>MVCC — Multi-Version Concurrency Control — means that when a row is updated, InnoDB writes a new version of the row rather than overwriting in place. Reads can still see the old version via the undo log, which means plain SELECT statements never need to acquire locks and are never blocked by concurrent writes. For OS GmbH's booking system this is critical: reporting queries and booking writes run simultaneously without blocking each other. The trade-off is the undo log — old versions must be kept until no active transaction needs them. A transaction that stays open for hours (like a poorly written batch job) prevents purge, causing undo log bloat and eventual disk pressure.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"MVCC: reads see a consistent snapshot, never block. Writes create new versions, keep old in undo log. The cost: long-open transactions bloat the undo log — always monitor History list length in SHOW ENGINE INNODB STATUS."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">Two transactions deadlock. What does InnoDB do, and what should the application do?</div>
+          <div class="qa-a">
+            <p>InnoDB continuously maintains a wait-for graph of which transactions are waiting for locks held by other transactions. When it detects a cycle — typically within one second — it selects a victim (the transaction with the least undo data to roll back), rolls it back completely, and returns error 1213 to that session. The other transaction can then proceed and acquire the released lock. On the application side: every write path must catch error 1213 and retry the entire transaction, typically with exponential back-off and a max of 3 attempts. Deadlocks in low-contention systems suggest a lock ordering problem — consistently acquiring locks in the same order across transactions eliminates most deadlock cycles.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"InnoDB rolls back the lighter transaction (1213 error) within ~1 second. Application must catch 1213 and retry. Prevent deadlocks by always acquiring locks in the same order across all transactions."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What isolation level does MariaDB use by default, and when would you change it?</div>
+          <div class="qa-a">
+            <p>REPEATABLE READ — the InnoDB default. Within a transaction, all reads see the same consistent snapshot from when the first read occurred, regardless of concurrent commits by other sessions. I'd consider changing it in two scenarios: (1) READ COMMITTED for long-running analytics queries that don't need snapshot consistency and where holding a snapshot for 30 minutes would prevent undo log purge. (2) SERIALIZABLE for critical financial or inventory-check operations where phantom reads — new rows matching a range condition inserted by other transactions — would cause correctness problems. Lowering below READ COMMITTED (to READ UNCOMMITTED) is almost never justified in production — dirty reads corrupt any business logic that depends on committed data.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"Default: REPEATABLE READ. Change to READ COMMITTED for long analytics sessions to prevent undo bloat. Use SERIALIZABLE for critical inventory/financial checks where phantom reads are unacceptable."</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">💪 Challenge<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="challenge">
+        <div class="challenge-head" onclick="togChallenge(this)">
+          <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Find and kill the transaction blocking OS GmbH booking writes</span></div>
+          <span class="challenge-arrow">▾</span>
+        </div>
+        <div class="challenge-body">
+          <p class="challenge-q">It's 3:07am. The on-call app-monitoring alerts that new seat bookings are timing out. You suspect a long-running transaction is holding row locks on the bookings table. Write the SQL to: (1) find the blocking transaction and how long it has been open, (2) identify the blocking thread ID, and (3) kill it.</p>
+          <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+          <div class="answer">
+            <div class="code-block">
+              <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+              <div class="code-body"><span class="cm">-- 1. Find all transactions open longer than 60 seconds</span>
+<span class="kw">SELECT</span>
+  trx_id,
+  trx_mysql_thread_id                                           <span class="kw">AS</span> thread_id,
+  trx_started,
+  <span class="fn">TIMESTAMPDIFF</span>(<span class="kw">SECOND</span>, trx_started, <span class="fn">NOW</span>())                    <span class="kw">AS</span> age_seconds,
+  trx_rows_locked,
+  trx_query
+<span class="kw">FROM</span> information_schema.<span class="tb">INNODB_TRX</span>
+<span class="kw">WHERE</span> <span class="fn">TIMESTAMPDIFF</span>(<span class="kw">SECOND</span>, trx_started, <span class="fn">NOW</span>()) <span class="op">&gt;</span> <span class="num">60</span>
+<span class="kw">ORDER BY</span> trx_started <span class="kw">ASC</span>;
+
+<span class="cm">-- 2. Confirm it is blocking booking writes</span>
+<span class="kw">SELECT</span>
+  w.blocking_engine_transaction_id   <span class="kw">AS</span> blocker_trx_id,
+  b.trx_mysql_thread_id              <span class="kw">AS</span> blocker_thread_id,
+  b.trx_query                        <span class="kw">AS</span> blocker_query,
+  w.requesting_engine_transaction_id <span class="kw">AS</span> waiter_trx_id
+<span class="kw">FROM</span> performance_schema.data_lock_waits w
+<span class="kw">JOIN</span> information_schema.<span class="tb">INNODB_TRX</span> b
+  <span class="kw">ON</span> b.trx_id <span class="op">=</span> w.blocking_engine_transaction_id;
+
+<span class="cm">-- 3. Kill the blocking thread (use thread_id from step 1)</span>
+<span class="kw">KILL</span> <span class="num">1234</span>;    <span class="cm">-- replace 1234 with actual thread_id</span>
+
+<span class="cm">-- 4. Verify bookings resume and History list length drops</span>
+<span class="kw">SHOW ENGINE INNODB STATUS</span>\G  <span class="cm">-- check History list length returns to < 100</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l3')">← EXPLAIN &amp; Optimization</button>
+    <button class="mark-done-btn" id="done-l4" onclick="markDone('l4')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l5')">Next: Stored Routines →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     LESSON 5 — STORED ROUTINES, VIEWS & EVENTS
+════════════════════════════════════════════════════════════════════════ -->
+<div id="page-l5" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--phase)">Phase 03 · Lesson 05 · 2h</div>
+        <div class="page-title">Stored Routines, Views &amp; Events</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">Stored procedures, functions, triggers, views, and the event scheduler — the database-side automation layer. Know when to use them and when not to: the debate over business logic in the DB is a real interview topic.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Why This Matters<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <p style="font-size:13px;line-height:1.75;color:var(--muted);margin-bottom:12px">Stored procedures, views, and events exist throughout enterprise MariaDB deployments. At OS GmbH, audit triggers and scheduled event-based cleanup jobs run continuously. Understanding these components — and their performance implications — shows operational maturity.</p>
+      <div class="callout interview"><div class="lbl">🎯 Interview Anchor</div><p>"I use views to abstract complexity and enforce row-level security (WHERE deleted_at IS NULL on every view). Stored procedures for multi-step operations that would otherwise require round-trips. Triggers sparingly — for audit logs where application-level consistency cannot be guaranteed. Events for scheduled cleanup that doesn't need an external cron dependency."</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Core Concepts<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="concepts">
+        <div class="concept green">
+          <div class="concept-name">Views — abstraction and security layer</div>
+          <div class="concept-desc">A view is a named stored query. It can hide columns (PII exclusion), pre-apply soft-delete filters, join complex schemas, and enforce access patterns. Simple views (single table, no DISTINCT/GROUP BY) are updatable. Complex views are read-only. Views do not store data — they re-execute the underlying query on every access.<br><br>EHR: v_active_patients view: SELECT * FROM patients WHERE deleted_at IS NULL — all queries go through the view; deleted patients are invisible. OS/DB: v_confirmed_bookings view joining bookings + routes + passengers for the reporting team.</div>
+        </div>
+        <div class="concept blue">
+          <div class="concept-name">Stored Procedures — server-side logic</div>
+          <div class="concept-desc">Stored procedures execute multiple SQL statements in a single server round-trip, reduce network overhead, and can enforce consistent business logic across different clients. They support variables, IF/ELSE, loops, and SIGNAL for error raising. In MariaDB, procedures use the DELIMITER workaround in CLI (;; or $$) since the default ; terminates the procedure prematurely.<br><br>EHR: sp_discharge_patient(patient_id) — closes open visits, sets discharge date, sends FHIR notification trigger, logs to audit_log in one call. OS/DB: sp_cancel_booking(booking_id, refund_reason).</div>
+        </div>
+        <div class="concept purple">
+          <div class="concept-name">Triggers — automatic audit and consistency</div>
+          <div class="concept-desc">A trigger fires automatically BEFORE or AFTER INSERT, UPDATE, or DELETE on a specific table. Inside, OLD holds the previous row values and NEW holds the new values. Triggers are invisible to application code — useful for audit logging, but dangerous because they can cause unexpected latency on writes and are often forgotten during migrations.<br><br>EHR: AFTER UPDATE trigger on patients to write every email change to audit_log automatically — DSGVO compliance regardless of which application path triggered the update. OS/DB: BEFORE INSERT on bookings to validate seat availability.</div>
+        </div>
+        <div class="concept orange">
+          <div class="concept-name">Events — the built-in scheduler</div>
+          <div class="concept-desc">MariaDB's event scheduler runs SQL on a schedule without needing an external cron job. Events can run ONCE at a specific time, or EVERY n SECOND/MINUTE/HOUR. Must enable with SET GLOBAL event_scheduler = ON (or in my.cnf). Events run with the DEFINER's privileges and are replicated to replicas by default.<br><br>EHR: daily event to delete soft-deleted patients older than 7 years (DSGVO retention limit). OS/DB: hourly event to archive completed routes older than 90 days to the routes_archive table.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🩺 EHR Example — Morafek CareMate<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout phr"><div class="lbl">🩺 Context</div><p>CareMate uses a view for DSGVO-safe patient queries, a trigger for automatic GDPR audit on email changes, and a scheduled event to purge patient data past the legal retention period.</p></div>
+      <div class="code-block">
+        <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="cm">-- 1. View: active patients only (soft-delete filter + PII-safe columns)</span>
+<span class="kw">CREATE OR REPLACE VIEW</span> v_active_patients <span class="kw">AS</span>
+<span class="kw">SELECT</span>
+  id, full_name, date_of_birth, blood_type, city, created_at
+  <span class="cm">-- email intentionally omitted from the view (PII minimisation)</span>
+<span class="kw">FROM</span> <span class="tb">patients</span>
+<span class="kw">WHERE</span> deleted_at <span class="kw">IS NULL</span>;
+
+<span class="cm">-- 2. Trigger: automatic audit log on email change (DSGVO compliance)</span>
+<span class="kw">DELIMITER</span> ;;
+<span class="kw">CREATE TRIGGER</span> trg_patients_audit_email
+<span class="kw">AFTER UPDATE ON</span> <span class="tb">patients</span>
+<span class="kw">FOR EACH ROW</span>
+<span class="kw">BEGIN</span>
+  <span class="kw">IF</span> OLD.email <span class="op">!=</span> NEW.email <span class="kw">THEN</span>
+    <span class="kw">INSERT INTO</span> <span class="tb">audit_log</span>
+      (entity_type, entity_id, field, old_value, new_value, changed_at)
+    <span class="kw">VALUES</span>
+      (<span class="str">'patient'</span>, NEW.id, <span class="str">'email'</span>, OLD.email, NEW.email, <span class="fn">NOW</span>());
+  <span class="kw">END IF</span>;
+<span class="kw">END</span>;;
+<span class="kw">DELIMITER</span> ;
+
+<span class="cm">-- 3. Event: purge patients deleted more than 7 years ago (DSGVO §17)</span>
+<span class="kw">SET GLOBAL</span> event_scheduler <span class="op">=</span> <span class="kw">ON</span>;
+
+<span class="kw">CREATE EVENT</span> <span class="kw">IF NOT EXISTS</span> evt_purge_expired_patients
+<span class="kw">ON SCHEDULE EVERY</span> <span class="num">1</span> <span class="kw">DAY</span>
+<span class="kw">STARTS</span> <span class="fn">CURDATE</span>() <span class="op">+</span> <span class="kw">INTERVAL</span> <span class="num">1</span> <span class="kw">DAY</span>   <span class="cm">-- first run tomorrow at midnight</span>
+<span class="kw">DO</span>
+  <span class="kw">DELETE FROM</span> <span class="tb">patients</span>
+  <span class="kw">WHERE</span> deleted_at <span class="kw">IS NOT NULL</span>
+    <span class="kw">AND</span> deleted_at <span class="op">&lt;</span> <span class="fn">NOW</span>() <span class="op">-</span> <span class="kw">INTERVAL</span> <span class="num">7</span> <span class="kw">YEAR</span>;
+
+<span class="cm">-- Verify events are running</span>
+<span class="kw">SELECT</span> event_name, status, last_executed, next_not_after
+<span class="kw">FROM</span> information_schema.<span class="tb">EVENTS</span>
+<span class="kw">WHERE</span> event_schema <span class="op">=</span> <span class="str">'caremate'</span>;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — Deutsche Bahn<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout db"><div class="lbl">🚂 OS/DB Context</div><p>A stored procedure handles the complete booking cancellation workflow — validates state, issues refund record, updates seat status, and logs the cancellation — in a single atomic call from the booking service.</p></div>
+      <div class="code-block">
+        <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <div class="code-body"><span class="kw">DELIMITER</span> ;;
+<span class="kw">CREATE PROCEDURE</span> <span class="fn">sp_cancel_booking</span> (
+  <span class="kw">IN</span>  p_booking_id  <span class="fn">BIGINT</span>,
+  <span class="kw">IN</span>  p_reason      <span class="fn">VARCHAR</span>(<span class="num">200</span>),
+  <span class="kw">OUT</span> p_result      <span class="fn">VARCHAR</span>(<span class="num">50</span>)
+)
+<span class="kw">BEGIN</span>
+  <span class="kw">DECLARE</span> v_status   <span class="fn">VARCHAR</span>(<span class="num">20</span>);
+  <span class="kw">DECLARE</span> v_price    <span class="fn">DECIMAL</span>(<span class="num">10</span>,<span class="num">2</span>);
+  <span class="kw">DECLARE</span> v_passenger_id <span class="fn">BIGINT</span>;
+
+  <span class="cm">-- Read current state within a transaction</span>
+  <span class="kw">START TRANSACTION</span>;
+
+  <span class="kw">SELECT</span> status, price, passenger_id
+  <span class="kw">INTO</span>   v_status, v_price, v_passenger_id
+  <span class="kw">FROM</span> <span class="tb">bookings</span>
+  <span class="kw">WHERE</span> id <span class="op">=</span> p_booking_id
+  <span class="kw">FOR UPDATE</span>;           <span class="cm">-- lock the row during the whole procedure</span>
+
+  <span class="cm">-- Guard: can only cancel a confirmed booking</span>
+  <span class="kw">IF</span> v_status <span class="op">!=</span> <span class="str">'confirmed'</span> <span class="kw">THEN</span>
+    <span class="kw">ROLLBACK</span>;
+    <span class="kw">SET</span> p_result <span class="op">=</span> <span class="str">'ERROR: booking not in confirmed state'</span>;
+    <span class="kw">LEAVE</span> sp_cancel_booking;
+  <span class="kw">END IF</span>;
+
+  <span class="cm">-- Mark booking cancelled</span>
+  <span class="kw">UPDATE</span> <span class="tb">bookings</span>
+  <span class="kw">SET</span> status <span class="op">=</span> <span class="str">'cancelled'</span>
+  <span class="kw">WHERE</span> id <span class="op">=</span> p_booking_id;
+
+  <span class="cm">-- Issue refund record</span>
+  <span class="kw">INSERT INTO</span> <span class="tb">refunds</span> (booking_id, passenger_id, amount, reason, issued_at)
+  <span class="kw">VALUES</span> (p_booking_id, v_passenger_id, v_price, p_reason, <span class="fn">NOW</span>());
+
+  <span class="kw">COMMIT</span>;
+  <span class="kw">SET</span> p_result <span class="op">=</span> <span class="str">'OK'</span>;
+<span class="kw">END</span>;;
+<span class="kw">DELIMITER</span> ;
+
+<span class="cm">-- Call the procedure</span>
+<span class="kw">CALL</span> <span class="fn">sp_cancel_booking</span>(<span class="num">88201</span>, <span class="str">'passenger request'</span>, @result);
+<span class="kw">SELECT</span> @result;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Common Pitfalls<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="callout warn"><div class="lbl">⚠️ Triggers are invisible — migrations break silently</div><p>A trigger on the patients table fires on every INSERT/UPDATE/DELETE — including bulk data migrations. A poorly timed trigger that inserts into audit_log during a migration that copies 50 million rows will write 50 million audit records, fill your disk, and crash the migration. Always check SHOW TRIGGERS before bulk data operations and consider temporarily disabling non-essential triggers.</p></div>
+      <div class="callout warn"><div class="lbl">⚠️ event_scheduler off by default after restart</div><p>Unless event_scheduler = ON is set in my.cnf (not just SET GLOBAL), it resets to OFF after a MariaDB restart. This has caused outages when a critical cleanup event silently stops running. Always add event_scheduler = ON to my.cnf and verify with SHOW VARIABLES LIKE 'event_scheduler' after any restart.</p></div>
+      <div class="callout warn"><div class="lbl">⚠️ Views don't store data — expensive views compound</div><p>A view over a view over a JOIN is not cached — it re-executes the full underlying query every time. If a view is complex or joins millions of rows, materialise it as a scheduled summary table instead. Check whether your views appear in slow query log — they won't be labelled as "view access" but will show the underlying query text.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">🎤 Interview Questions<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="qa-list">
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">When would you use a trigger vs application-level audit logging?</div>
+          <div class="qa-a">
+            <p>Triggers are appropriate when you need guaranteed audit coverage regardless of the access path — multiple applications, direct DB access, or migrations that bypass the application layer. DSGVO audit requirements for patient email changes fit this model: you can't rely on every application team to call the audit function correctly. The trade-off is that triggers add latency to every write, are invisible in code reviews, and must be checked before migrations. Application-level audit is easier to test, debug, and version-control. My default is application-level; I add triggers when compliance requires guaranteed capture or when auditing third-party ETL access that I can't control.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"Triggers for compliance-guaranteed audit when multiple access paths exist. Application-level for everything else — easier to test, version, and debug. Always check SHOW TRIGGERS before bulk operations."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What are the risks of putting too much business logic in stored procedures?</div>
+          <div class="qa-a">
+            <p>Three main risks. First, testability: stored procedures are hard to unit test — you need a DB connection for every test, which slows CI pipelines. Application code with pure functions is far easier to test. Second, version control and deployment: procedure changes require DB migrations, not just code deploys, which complicates rollbacks. Third, scaling: stored procedures run on the DB server — heavy logic can max out CPU on the database tier, which is your hardest resource to scale horizontally. I use stored procedures for multi-step, high-network-round-trip operations (like sp_cancel_booking) where the performance gain is clear, and keep business rules in the application layer.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"Stored procedures: hard to unit test, complicate deployments, add CPU to the DB tier (hardest to scale). Use them for multi-round-trip operations where the network win is real — keep business rules in the application."</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">💪 Challenge<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="challenge">
+        <div class="challenge-head" onclick="togChallenge(this)">
+          <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Write a scheduled event to archive old OS/DB ticket scans</span></div>
+          <span class="challenge-arrow">▾</span>
+        </div>
+        <div class="challenge-body">
+          <p class="challenge-q">The ticket_scans table grows by ~2 million rows per day. Rows older than 90 days should be moved to ticket_scans_archive (same schema) and deleted from the live table. Write a MariaDB event that runs nightly at 02:00 and archives in batches of 10,000 rows to avoid long locks.</p>
+          <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+          <div class="answer">
+            <div class="code-block">
+              <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+              <div class="code-body"><span class="kw">SET GLOBAL</span> event_scheduler <span class="op">=</span> <span class="kw">ON</span>;  <span class="cm">-- also add to my.cnf!</span>
+
+<span class="kw">DELIMITER</span> ;;
+<span class="kw">CREATE EVENT</span> <span class="kw">IF NOT EXISTS</span> evt_archive_ticket_scans
+<span class="kw">ON SCHEDULE EVERY</span> <span class="num">1</span> <span class="kw">DAY</span>
+<span class="kw">STARTS</span> <span class="fn">DATE_FORMAT</span>(<span class="fn">NOW</span>() <span class="op">+</span> <span class="kw">INTERVAL</span> <span class="num">1</span> <span class="kw">DAY</span>, <span class="str">'%Y-%m-%d 02:00:00'</span>)
+<span class="kw">DO</span>
+<span class="kw">BEGIN</span>
+  <span class="kw">DECLARE</span> rows_moved <span class="fn">INT</span> <span class="kw">DEFAULT</span> <span class="num">1</span>;
+
+  <span class="cm">-- Loop until all qualifying rows are archived (batch to avoid long locks)</span>
+  <span class="kw">WHILE</span> rows_moved <span class="op">&gt;</span> <span class="num">0</span> <span class="kw">DO</span>
+
+    <span class="cm">-- Copy batch to archive table</span>
+    <span class="kw">INSERT INTO</span> <span class="tb">ticket_scans_archive</span>
+    <span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">ticket_scans</span>
+    <span class="kw">WHERE</span> scanned_at <span class="op">&lt;</span> <span class="fn">NOW</span>() <span class="op">-</span> <span class="kw">INTERVAL</span> <span class="num">90</span> <span class="kw">DAY</span>
+    <span class="kw">LIMIT</span> <span class="num">10000</span>;           <span class="cm">-- batch size: keeps individual locks short</span>
+
+    <span class="kw">SET</span> rows_moved <span class="op">=</span> <span class="fn">ROW_COUNT</span>();
+
+    <span class="cm">-- Delete the same batch from live table</span>
+    <span class="kw">DELETE FROM</span> <span class="tb">ticket_scans</span>
+    <span class="kw">WHERE</span> scanned_at <span class="op">&lt;</span> <span class="fn">NOW</span>() <span class="op">-</span> <span class="kw">INTERVAL</span> <span class="num">90</span> <span class="kw">DAY</span>
+    <span class="kw">LIMIT</span> <span class="num">10000</span>;
+
+    <span class="cm">-- Brief pause to yield I/O to the live booking traffic</span>
+    <span class="kw">DO</span> <span class="fn">SLEEP</span>(<span class="num">0.1</span>);
+
+  <span class="kw">END WHILE</span>;
+<span class="kw">END</span>;;
+<span class="kw">DELIMITER</span> ;</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l4')">← Transactions &amp; MVCC</button>
+    <button class="mark-done-btn" id="done-l5" onclick="markDone('l5')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('l6')">Next: Interview Q&amp;A →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     LESSON 6 — INTERVIEW Q&A REVIEW
+════════════════════════════════════════════════════════════════════════ -->
+<div id="page-l6" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--phase)">Phase 03 · Lesson 06 · 1h</div>
+        <div class="page-title">Interview Q&amp;A — Advanced SQL Review</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← All lessons</button>
+    </div>
+    <p class="page-desc">Rapid-fire review across all Phase 03 topics. Michael Nietsch will probe SQL reasoning — not just syntax. Answer these out loud, timing yourself to under 90 seconds per answer.</p>
+  </div>
+
+  <div class="expand-bar"><span class="expand-bar-label">Click any section to expand</span><button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button></div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Window Functions &amp; CTEs<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="qa-list">
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What is the difference between GROUP BY and window functions?</div>
+          <div class="qa-a">
+            <p>GROUP BY collapses multiple rows into one row per group and computes aggregates across the group. Window functions compute a value for each row by looking at a defined window of related rows — without collapsing. You can use both in the same query: GROUP BY first to aggregate, then window functions over the grouped results. The window is defined by OVER() — empty means the whole result set, PARTITION BY sub-divides it, ORDER BY defines direction for running totals or rankings.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"GROUP BY: one row per group. Window functions: one value per row, computed across a window. Both can coexist — GROUP BY first, window functions on top of the grouped result."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">How do you compute a year-over-year revenue comparison with LAG?</div>
+          <div class="qa-a">
+            <p>First aggregate revenue by month or year in a CTE. Then apply LAG(revenue, 1) OVER (ORDER BY period) to get the previous period's revenue on the same row. Subtract or divide to get the delta or growth percentage. Key detail: if you want year-over-year (comparing the same month last year, not just the previous month), use LAG(revenue, 12) OVER (ORDER BY month) for monthly data — 12 positions back lands on the same month the previous year.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"LAG(revenue, 12) OVER (ORDER BY month) for same-month year-over-year comparison on monthly data. LAG(revenue, 1) for month-over-month."</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">EXPLAIN &amp; Performance<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="qa-list">
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What does type=ALL in EXPLAIN mean, and is it always a problem?</div>
+          <div class="qa-a">
+            <p>type=ALL means a full table scan — MariaDB reads every row in the table to find matches. On a large table (thousands of rows or more), this is almost always a problem: it is O(n) in data volume, hits disk for every row not in the buffer pool, and doesn't scale as the table grows. The exception is very small tables — for a lookup table with 20 rows, a full scan is faster than an index lookup. In practice: type=ALL on any table with more than a few thousand rows is a red flag that needs an index. Check EXPLAIN rows to estimate impact — a table scan of 50 rows is fine; 5 million is not.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"type=ALL = full scan: fine for tiny tables, dangerous for anything over a few thousand rows. Fix with an index covering the WHERE + JOIN columns. Check EXPLAIN rows to confirm the impact."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">A query is slow. EXPLAIN shows type=range and key is set. What else would you check?</div>
+          <div class="qa-a">
+            <p>type=range with a key means the index is being used but only for a range scan — which is correct. Things to check further: (1) Extra column — is it showing "Using filesort" or "Using temporary"? If so, the ORDER BY or GROUP BY is not served by the index and needs a composite index fix. (2) rows — is the estimated scan size reasonable? 10,000 rows for a range on a 10-million-row table is fine; 1 million rows means the range is too broad and selectivity is poor. (3) filtered — if rows=100,000 and filtered=0.5%, only 500 rows survive the WHERE, meaning 99.5% of scanned rows are discarded — consider a more selective composite index. (4) Run EXPLAIN ANALYZE to see actual vs estimated row counts.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"range + key = index being used. Still check: Extra for filesort/tmp, rows for scan size, filtered for selectivity. EXPLAIN ANALYZE to compare actual vs estimated."</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Transactions, MVCC &amp; Routines<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <div class="qa-list">
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What is the History list length in SHOW ENGINE INNODB STATUS and why does it matter?</div>
+          <div class="qa-a">
+            <p>History list length is the number of undo log records that the purge thread has not yet processed. It represents old row versions that are still being kept because at least one active transaction might need them (MVCC consistency). A healthy value is typically under 1000. Values over 100,000 indicate a long-running transaction is holding an old snapshot, preventing purge. This causes the undo log to grow, consuming disk space, and slowing down queries as InnoDB must traverse longer version chains to find the correct row version for a snapshot read. Diagnosis: find the oldest transaction in INNODB_TRX, kill it if safe, verify the history list length drops.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"History list length = undo records waiting for purge. Normal: under 1000. Over 100k: a long-running transaction is holding a snapshot, blocking purge. Find it in INNODB_TRX, kill it."</p></div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q" onclick="togQA(this)">What is the DEFINER clause in stored routines and triggers, and why does it matter for security?</div>
+          <div class="qa-a">
+            <p>The DEFINER specifies which MySQL user account's privileges are used when the routine or trigger executes. By default it's the user who created it. If the DEFINER account is dropped or renamed, the routine fails with a privilege error at runtime — not at creation time, which makes it a common silent production failure. For security: routines that access sensitive tables should use a dedicated service account with minimal privileges as the DEFINER, not a DBA or root account. Check routines with SHOW PROCEDURE STATUS and SHOW TRIGGER STATUS — audit DEFINER values as part of a periodic security review.</p>
+            <div class="callout interview"><div class="lbl">🎯 Anchor</div><p>"DEFINER = the user whose privileges the routine runs with. If dropped, routine fails at runtime silently. Use a dedicated minimal-privilege service account as DEFINER for production routines."</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Quick Reference — Phase 03<span class="section-chevron">▾</span></div>
+    <div class="section-body">
+      <table class="compare-table">
+        <thead><tr><th>Feature</th><th>When to Use</th><th>Common Mistake</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">ROW_NUMBER()</td><td>Deduplication, pagination, "latest per group"</td><td>Using RANK() when unique row numbers are needed</td></tr>
+          <tr><td class="mono">DENSE_RANK()</td><td>Leaderboards, top-N with tie inclusion</td><td>Using RANK() — leaves gaps that break "top 5" displays</td></tr>
+          <tr><td class="mono">LAG / LEAD</td><td>Period-over-period comparison, trend detection</td><td>Doing a self-join instead — 10× more expensive</td></tr>
+          <tr><td class="mono">CTE (WITH)</td><td>Complex multi-step queries, readability, recursion</td><td>Expecting CTEs to always be materialised (they may inline)</td></tr>
+          <tr><td class="mono">EXPLAIN</td><td>Before any production index change or query deploy</td><td>Trusting estimated rows without EXPLAIN ANALYZE on real data</td></tr>
+          <tr><td class="mono">Covering index</td><td>High-frequency read queries with fixed column patterns</td><td>Wrong column order — filter before sort before aggregate</td></tr>
+          <tr><td class="mono">FOR UPDATE</td><td>Read-then-write patterns (seat reservation, balance check)</td><td>Forgetting it — allows race conditions between the read and write</td></tr>
+          <tr><td class="mono">Trigger</td><td>Guaranteed audit across all access paths (DSGVO)</td><td>Forgetting triggers fire during bulk migrations</td></tr>
+          <tr><td class="mono">Event</td><td>Scheduled cleanup, archiving, aggregation</td><td>Not setting event_scheduler = ON in my.cnf (resets on restart)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" onclick="goTo('l5')">← Stored Routines</button>
+    <button class="mark-done-btn" id="done-l6" onclick="markDone('l6')">Mark complete ✓</button>
+    <button class="lesson-nav-btn primary" onclick="goTo('home')">↑ Phase Home</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════════════════════════ -->
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let currentPage = 'home';
+const LESSONS = ['home','l1','l2','l3','l4','l5','l6'];
+
+// ── Navigation ─────────────────────────────────────────────────────────────
+function goTo(id) {
+  document.getElementById('page-' + currentPage).classList.remove('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+  const page = document.getElementById('page-' + id);
+  if (page) {
+    page.classList.add('active');
+    page.querySelectorAll('.section-title').forEach(t => t.classList.remove('sec-open'));
+    page.querySelectorAll('.section-body').forEach(b => b.classList.remove('sec-open'));
+    page.querySelectorAll('.expand-all-btn').forEach(b => { b.textContent = 'Expand all ↓'; });
+  } else {
+    document.getElementById('page-home').classList.add('active');
+    id = 'home';
+  }
+  const tab = document.getElementById('tab-' + id);
+  if (tab) tab.classList.add('active');
+
+  currentPage = id;
+  // CRITICAL: direct assignment — bypasses smooth-scroll, keeps home hidden
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+}
+
+// ── Section toggle ──────────────────────────────────────────────────────────
+function togSection(titleEl) {
+  titleEl.classList.toggle('sec-open');
+  titleEl.nextElementSibling.classList.toggle('sec-open');
+}
+
+// ── Expand all ──────────────────────────────────────────────────────────────
+function expandAll(btn) {
+  const page = btn.closest('.page');
+  const titles = (page || document).querySelectorAll('.section-title');
+  const bodies  = (page || document).querySelectorAll('.section-body');
+  const allOpen = [...bodies].every(b => b.classList.contains('sec-open'));
+  titles.forEach(t => t.classList.toggle('sec-open', !allOpen));
+  bodies.forEach(b => b.classList.toggle('sec-open', !allOpen));
+  btn.textContent = allOpen ? 'Expand all ↓' : 'Collapse all ↑';
+}
+
+// ── Q&A accordion ──────────────────────────────────────────────────────────
+function togQA(qEl) {
+  qEl.classList.toggle('open');
+  qEl.nextElementSibling.classList.toggle('open');
+}
+
+// ── Challenge toggle ────────────────────────────────────────────────────────
+function togChallenge(headEl) {
+  const body  = headEl.nextElementSibling;
+  const arrow = headEl.querySelector('.challenge-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function togAnswer(toggleEl) {
+  const ans = toggleEl.nextElementSibling;
+  ans.classList.toggle('open');
+  toggleEl.textContent = ans.classList.contains('open') ? 'Hide answer ↑' : 'Show answer ↓';
+}
+
+// ── Copy button ─────────────────────────────────────────────────────────────
+function copyCode(btn) {
+  const body = btn.closest('.code-block').querySelector('.code-body');
+  const text = body.innerText || body.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── Progress persistence ────────────────────────────────────────────────────
+let done = {};
+try { done = JSON.parse(localStorage.getItem('phase_03_done') || '{}'); } catch(e) {}
+
+function markDone(id) {
+  done[id] = !done[id];
+  try { localStorage.setItem('phase_03_done', JSON.stringify(done)); } catch(e) {}
+  updateDoneState();
+}
+
+function updateDoneState() {
+  LESSONS.filter(l => l !== 'home').forEach(id => {
+    const btn = document.getElementById('done-' + id);
+    const tab = document.getElementById('tab-' + id);
+    const st  = document.getElementById('st-' + id);
+    if (btn) {
+      btn.classList.toggle('done', !!done[id]);
+      btn.textContent = done[id] ? 'Completed ✓' : 'Mark complete ✓';
+    }
+    if (tab) tab.classList.toggle('done-tab', !!done[id]);
+    if (st && done[id]) { st.textContent = 'Completed ✓'; st.style.background = 'var(--greenb)'; st.style.color = 'var(--greend)'; }
+    else if (st) { st.textContent = 'Not started'; }
+  });
+}
+
+// Init
+updateDoneState();
+</script>
+</body>
+</html>

@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Databases — The Big Picture · DB·MASTERY</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#eef2f7;--surface:#ffffff;--card:#f4f7fb;--border:#dde4ef;--border2:#c5cedf;
+  --text:#1a2440;--muted:#5a6a85;--dim:#8fa0bb;
+  --blue:#0284c7;--blueb:#e0f2fe;--blued:#0369a1;
+  --purple:#7c3aed;--purpleb:#ede9fe;
+  --green:#059669;--greenb:#d1fae5;--greend:#047857;
+  --orange:#d97706;--orangeb:#fef3c7;
+  --pink:#db2777;--pinkb:#fce7f3;
+  --yellow:#b45309;--yellowb:#fef9c3;
+  --red:#dc2626;--redb:#fee2e2;
+  --teal:#0d9488;--tealb:#ccfbf1;
+  --slate:#334155;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;min-height:100vh}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;padding:0 24px;gap:0;box-shadow:0 1px 6px rgba(0,60,120,.06)}
+.nav-logo{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--text);padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:8px;white-space:nowrap;flex-shrink:0}
+.nav-logo span{color:var(--teal)}
+.nav-tab{padding:14px 13px;font-size:11px;font-weight:600;letter-spacing:.05em;cursor:pointer;color:var(--muted);transition:color .15s;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent;user-select:none}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--text);border-bottom-color:var(--teal)}
+
+/* LAYOUT */
+.page{display:none;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.page.active{display:block}
+
+/* HERO */
+.hero{padding:56px 40px 16px;max-width:1100px;margin:0 auto}
+.eyebrow{font-size:11px;letter-spacing:.2em;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:14px}
+h1{font-size:48px;font-weight:800;line-height:1;letter-spacing:-.03em;margin-bottom:14px;color:var(--text)}
+h1 span{color:var(--teal)}
+.hero-sub{font-size:14px;color:var(--muted);max-width:600px;line-height:1.65;margin-bottom:36px}
+.hero-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;max-width:1100px;margin:0 40px 48px}
+.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;cursor:pointer;transition:border-color .15s,transform .1s,box-shadow .15s;display:flex;align-items:center;gap:14px;box-shadow:0 1px 4px rgba(0,60,120,.05)}
+.hero-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,60,120,.1)}
+.hero-card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.hero-card-num{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+.hero-card-title{font-size:14px;font-weight:700;color:var(--text)}
+.hero-card-arrow{margin-left:auto;color:var(--dim);font-size:18px}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.page-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:8px}
+.lesson-num{font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.page-title{font-size:30px;font-weight:800;letter-spacing:-.02em}
+.back-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-family:'Syne',sans-serif;color:var(--muted);cursor:pointer;transition:color .15s,border-color .15s;white-space:nowrap}
+.back-btn:hover{color:var(--text);border-color:var(--border2)}
+.page-desc{font-size:13px;color:var(--muted);line-height:1.65;max-width:700px}
+
+/* SECTION */
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.section-title .tog{margin-left:6px;font-size:10px;transition:transform .2s}
+.section-title.sec-open .tog{transform:rotate(180deg)}
+.section-body{display:none}
+.section-body.sec-open{display:block}
+.expand-all-btn{font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'Syne',sans-serif;padding:0;letter-spacing:.04em}
+.expand-all-btn:hover{color:var(--text)}
+
+/* CONCEPT CARDS */
+.concepts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.concept{background:var(--surface);border-radius:10px;padding:14px 16px;border:1px solid var(--border);border-left:3px solid var(--border2)}
+.concept.green{border-left-color:var(--green)}
+.concept.blue{border-left-color:var(--blue)}
+.concept.orange{border-left-color:var(--orange)}
+.concept.purple{border-left-color:var(--purple)}
+.concept.teal{border-left-color:var(--teal)}
+.concept.yellow{border-left-color:var(--yellow)}
+.concept.red{border-left-color:var(--red)}
+.concept.pink{border-left-color:var(--pink)}
+.concept-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px}
+.concept-desc{font-size:12px;color:var(--muted);line-height:1.65}
+.concept-tag{font-size:10px;padding:1px 8px;border-radius:99px;font-weight:600;letter-spacing:.05em;margin-left:8px;vertical-align:middle}
+
+/* CODE BLOCKS */
+.code-block{background:#f8fafc;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,60,120,.04)}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--surface)}
+.code-label{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.code-label.sql{color:var(--blue)}.code-label.json{color:var(--orange)}.code-label.bash{color:var(--green)}.code-label.nosql{color:var(--purple)}
+.copy-btn{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);background:none;border:1px solid var(--border);border-radius:5px;padding:3px 8px;cursor:pointer;transition:color .15s,border-color .15s}
+.copy-btn:hover{color:var(--text);border-color:var(--border2)}
+.copy-btn.copied{color:var(--green);border-color:var(--green)}
+.code-body{padding:16px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#334155;line-height:1.75;overflow-x:auto;white-space:pre;background:#f8fafc}
+.kw{color:#0284c7}.fn{color:#7c3aed}.str{color:#059669}.cm{color:#94a3b8}.num{color:#d97706}.op{color:#db2777}.tp{color:#b45309}.tb{color:#0d9488}.key{color:#0d9488}
+
+/* CALLOUTS */
+.callout{border-radius:0 10px 10px 0;padding:13px 16px;margin-bottom:16px;border:1px solid transparent;border-left-width:3px}
+.callout .lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.callout p,.callout li{font-size:12px;line-height:1.65}
+.callout ul{padding-left:16px}.callout li{margin-bottom:3px}
+.callout.tip{background:var(--greenb);border-color:#a7f3d0;border-left-color:var(--green)}.callout.tip .lbl{color:var(--green)}.callout.tip p,.callout.tip li{color:#065f46}
+.callout.warn{background:var(--yellowb);border-color:#fde68a;border-left-color:var(--yellow)}.callout.warn .lbl{color:var(--yellow)}.callout.warn p{color:#78350f}
+.callout.info{background:var(--blueb);border-color:#bae6fd;border-left-color:var(--blue)}.callout.info .lbl{color:var(--blue)}.callout.info p,.callout.info li{color:#075985}
+.callout.phr{background:var(--tealb);border-color:#99f6e4;border-left-color:var(--teal)}.callout.phr .lbl{color:var(--teal)}.callout.phr p,.callout.phr li{color:#0f766e}
+.callout.purple{background:var(--purpleb);border-color:#c4b5fd;border-left-color:var(--purple)}.callout.purple .lbl{color:var(--purple)}.callout.purple p{color:#5b21b6}
+
+/* TABLES */
+.ref-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,60,120,.06)}
+.ref-table thead tr{background:var(--slate);color:#fff}
+.ref-table thead th{padding:10px 14px;text-align:left;font-weight:700;letter-spacing:.04em}
+.ref-table tbody tr{border-bottom:1px solid var(--border)}
+.ref-table tbody tr:last-child{border-bottom:none}
+.ref-table tbody tr:nth-child(even){background:var(--card)}
+.ref-table tbody td{padding:9px 14px;vertical-align:top;line-height:1.55}
+.ref-table .mono{font-family:'JetBrains Mono',monospace;font-size:11px}
+.ref-table .win{color:var(--green);font-weight:700}
+.ref-table .lose{color:var(--red)}
+.ref-table .neutral{color:var(--orange)}
+
+/* COMPARISON TABLE (themed headers) */
+.cmp-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px}
+.cmp-table th{padding:10px 14px;text-align:center;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.cmp-table td{padding:9px 14px;text-align:center;border-bottom:1px solid var(--border);vertical-align:middle}
+.cmp-table td:first-child{text-align:left;font-weight:600;background:var(--card);border-right:2px solid var(--border)}
+.cmp-table tr:last-child td{border-bottom:none}
+.check{color:var(--green);font-size:15px}
+.cross{color:var(--red);font-size:15px}
+.maybe{color:var(--orange);font-size:13px}
+
+/* DB LOGOS / BADGES */
+.db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:20px}
+.db-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;transition:transform .15s,box-shadow .15s}
+.db-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,60,120,.1)}
+.db-icon{font-size:28px;margin-bottom:8px}
+.db-name{font-size:13px;font-weight:700;margin-bottom:3px}
+.db-type{font-size:10px;font-family:'JetBrains Mono',monospace;letter-spacing:.07em;text-transform:uppercase}
+
+/* VERDICT CARD */
+.verdict{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px;display:flex;gap:16px;align-items:flex-start}
+.verdict-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.verdict-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.verdict-desc{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* PILL tags */
+.pill{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.05em;padding:2px 9px;border-radius:99px;margin:2px}
+
+/* TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0;position:relative;padding-left:28px;margin-bottom:20px}
+.timeline::before{content:'';position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:var(--border)}
+.tl-item{position:relative;padding:0 0 18px 20px}
+.tl-dot{position:absolute;left:-22px;top:4px;width:10px;height:10px;border-radius:50%;border:2px solid var(--surface);background:var(--teal)}
+.tl-year{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--teal);font-weight:600;margin-bottom:2px}
+.tl-text{font-size:12px;color:var(--muted);line-height:1.5}
+.tl-text strong{color:var(--text)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">🗄️ DB·<span>MASTERY</span></div>
+  <div class="nav-tab active" id="tab-home" onclick="goTo('home')">Overview</div>
+  <div class="nav-tab" id="tab-what" onclick="goTo('what')">01 What Is a DB</div>
+  <div class="nav-tab" id="tab-relational" onclick="goTo('relational')">02 Relational (SQL)</div>
+  <div class="nav-tab" id="tab-nosql" onclick="goTo('nosql')">03 NoSQL Types</div>
+  <div class="nav-tab" id="tab-compare" onclick="goTo('compare')">04 SQL vs NoSQL</div>
+  <div class="nav-tab" id="tab-engines" onclick="goTo('engines')">05 DB Engines</div>
+  <div class="nav-tab" id="tab-choose" onclick="goTo('choose')">06 Choose Your DB</div>
+</nav>
+
+<!-- ═══ HOME ══════════════════════════════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="eyebrow">Intro · Before the Track Starts</div>
+    <h1>Databases —<br>The <span>Big Picture</span></h1>
+    <div class="hero-sub">Before writing a single line of SQL or touching MariaDB, understand the landscape. What is a database? Why are there so many types? When do you use SQL versus NoSQL? This is the map — read it once, and everything else will make sense.</div>
+  </div>
+
+  <div class="hero-grid">
+    <div class="hero-card" onclick="goTo('what')">
+      <div class="hero-card-icon" style="background:var(--tealb)">🗄️</div>
+      <div><div class="hero-card-num" style="color:var(--teal)">01 · Foundation</div><div class="hero-card-title">What Is a Database?</div></div>
+      <div class="hero-card-arrow">›</div>
+    </div>
+    <div class="hero-card" onclick="goTo('relational')">
+      <div class="hero-card-icon" style="background:var(--blueb)">📊</div>
+      <div><div class="hero-card-num" style="color:var(--blue)">02 · Core Track</div><div class="hero-card-title">Relational / SQL</div></div>
+      <div class="hero-card-arrow">›</div>
+    </div>
+    <div class="hero-card" onclick="goTo('nosql')">
+      <div class="hero-card-icon" style="background:var(--purpleb)">🌐</div>
+      <div><div class="hero-card-num" style="color:var(--purple)">03 · Awareness</div><div class="hero-card-title">NoSQL Types</div></div>
+      <div class="hero-card-arrow">›</div>
+    </div>
+    <div class="hero-card" onclick="goTo('compare')">
+      <div class="hero-card-icon" style="background:var(--orangeb)">⚖️</div>
+      <div><div class="hero-card-num" style="color:var(--orange)">04 · Decision</div><div class="hero-card-title">SQL vs NoSQL</div></div>
+      <div class="hero-card-arrow">›</div>
+    </div>
+    <div class="hero-card" onclick="goTo('engines')">
+      <div class="hero-card-icon" style="background:var(--greenb)">⚙️</div>
+      <div><div class="hero-card-num" style="color:var(--green)">05 · Market</div><div class="hero-card-title">DB Engines</div></div>
+      <div class="hero-card-arrow">›</div>
+    </div>
+    <div class="hero-card" onclick="goTo('choose')">
+      <div class="hero-card-icon" style="background:var(--pinkb)">🎯</div>
+      <div><div class="hero-card-num" style="color:var(--pink)">06 · Practical</div><div class="hero-card-title">Choose Your DB</div></div>
+      <div class="hero-card-arrow">›</div>
+    </div>
+  </div>
+
+  <!-- Quick orientation callout -->
+  <div style="max-width:1100px;margin:0 40px 40px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div class="callout info" style="margin-bottom:0">
+      <div class="lbl">📌 Why This File Exists</div>
+      <p>Most database courses throw you into SQL commands on day one. That's backwards. Knowing <em>why</em> relational databases exist, what alternatives look like, and when each fits — that context turns syntax into understanding. Read this once. It pays off for the entire track.</p>
+    </div>
+    <div class="callout tip" style="margin-bottom:0">
+      <div class="lbl">🗺️ Where This Fits In The Track</div>
+      <p>This is <strong>Phase 00 — General Knowledge</strong>. After this: Phase 00-L (Linux/RedHat), Phase 01 (SQL & MySQL hands-on), Phase 02 (DB Design), Phase 03 (Advanced SQL), Phase 04 (DB Internals).</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 01 WHAT IS A DATABASE ═════════════════════════════════════════════════ -->
+<div id="page-what" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--teal)">Section 01 · Foundation</div>
+        <div class="page-title" style="color:var(--teal)">What Is a Database?</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← Overview</button>
+    </div>
+    <div class="page-desc">A database is an organised collection of data that can be stored, retrieved, and modified efficiently. But that definition fits a lot of things — including a spreadsheet. So what makes a database different?</div>
+  </div>
+  <button class="expand-all-btn" onclick="expandAll(this)" style="margin-bottom:20px">Expand all ↓</button>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Why Not Just Use a Spreadsheet? <span class="tog">▾</span></div>
+    <div class="section-body">
+      <table class="ref-table">
+        <thead><tr><th>Feature</th><th>Spreadsheet (Excel / Sheets)</th><th>Database</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Data volume</strong></td><td class="lose">~1M rows before it breaks</td><td class="win">Billions of rows, no problem</td></tr>
+          <tr><td><strong>Simultaneous users</strong></td><td class="lose">1 user editing safely</td><td class="win">Thousands of concurrent users</td></tr>
+          <tr><td><strong>Data integrity</strong></td><td class="lose">You can type anything anywhere</td><td class="win">Enforced types, constraints, foreign keys</td></tr>
+          <tr><td><strong>Speed of queries</strong></td><td class="lose">Slow on large data (filters, VLOOKUPs)</td><td class="win">Indexed queries in milliseconds</td></tr>
+          <tr><td><strong>Relationships</strong></td><td class="neutral">VLOOKUP / manual linking</td><td class="win">Native JOINs across any tables</td></tr>
+          <tr><td><strong>Automation / API access</strong></td><td class="lose">Fragile / not designed for it</td><td class="win">Built for apps, APIs, scripts</td></tr>
+          <tr><td><strong>Crash recovery</strong></td><td class="lose">File corruption risk</td><td class="win">WAL, transactions, ACID</td></tr>
+          <tr><td><strong>Security / access control</strong></td><td class="lose">File-level only</td><td class="win">Row-level, column-level permissions</td></tr>
+        </tbody>
+      </table>
+      <div class="callout tip"><div class="lbl">Mental Model</div><p>Think of a spreadsheet as a personal notebook and a database as a professional filing system with staff, locks, an index, and a security desk. Both store information — but they serve completely different scales and purposes.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">The Three Core Database Guarantees <span class="tog">▾</span></div>
+    <div class="section-body">
+      <div class="concepts">
+        <div class="concept teal"><div class="concept-name">Storage — Data persists reliably</div><div class="concept-desc">A database stores data on disk so it survives power loss, crashes, and restarts. Unlike a variable in a running program, database data is durable.</div></div>
+        <div class="concept blue"><div class="concept-name">Retrieval — Data is queryable</div><div class="concept-desc">You don't scan every row to find what you need. Databases use indexes, query planners, and structured query languages so you can find one record in billions in milliseconds.</div></div>
+        <div class="concept green"><div class="concept-name">Integrity — Data is correct</div><div class="concept-desc">Rules (constraints, types, foreign keys) prevent bad data from entering in the first place. A database rejects <code>age = "hello"</code>. A spreadsheet accepts it.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">A Brief History — Why So Many Database Types? <span class="tog">▾</span></div>
+    <div class="section-body">
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1960s</div><div class="tl-text"><strong>Hierarchical & Network DBs</strong> — IBM's IMS. Data stored as trees or graphs. Fast reads, rigid structure. Used in banks and airlines. Still running in some places today.</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1970s</div><div class="tl-text"><strong>The Relational Model (Edgar Codd, IBM)</strong> — data in tables, rows, columns. Any data related by keys. The foundation of everything you'll learn in this track.</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1979–1995</div><div class="tl-text"><strong>SQL becomes the standard</strong> — Oracle, IBM DB2, Sybase, MySQL (1995). Relational databases dominate enterprise computing.</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2000s</div><div class="tl-text"><strong>Web scale breaks relational assumptions</strong> — Google, Amazon, Facebook hit billions of users and petabytes of unstructured data. Relational databases struggle to scale horizontally.</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2009</div><div class="tl-text"><strong>NoSQL movement</strong> — MongoDB, Cassandra, Redis emerge. "Not Only SQL" — flexible schemas, horizontal scaling, new data models for new problems.</div></div>
+        <div class="tl-item"><div class="tl-dot" style="background:var(--orange)"></div><div class="tl-year">2010s–Now</div><div class="tl-text"><strong>Convergence</strong> — SQL databases add JSON support. NoSQL databases add SQL-like query languages. NewSQL (CockroachDB, TiDB) combines both. The borders blur — but the fundamentals remain.</div></div>
+      </div>
+      <div class="callout info"><div class="lbl">The Takeaway</div><p>Different database types weren't invented to be confusing — each solved a real problem that existing systems couldn't handle. Understanding <em>what problem each type solves</em> is how you pick the right tool.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 02 RELATIONAL ═════════════════════════════════════════════════════════ -->
+<div id="page-relational" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--blue)">Section 02 · Core Track</div>
+        <div class="page-title" style="color:var(--blue)">Relational Databases &amp; SQL</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← Overview</button>
+    </div>
+    <div class="page-desc">Relational databases organise data into tables with rows and columns. They are linked by keys and queried with SQL. This is the dominant database model — it runs banks, hospitals, e-commerce, and almost every enterprise system on earth.</div>
+  </div>
+  <button class="expand-all-btn" onclick="expandAll(this)" style="margin-bottom:20px">Expand all ↓</button>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">The Relational Model — Core Concepts <span class="tog">▾</span></div>
+    <div class="section-body">
+      <table class="ref-table">
+        <thead><tr><th>Concept</th><th>What It Is</th><th>Why It Matters</th></tr></thead>
+        <tbody>
+          <tr><td class="mono"><strong>Table (Relation)</strong></td><td>Rows and columns, like a spreadsheet sheet</td><td>The fundamental unit of storage</td></tr>
+          <tr><td class="mono"><strong>Row (Tuple)</strong></td><td>One record — one flight, one customer, one order</td><td>Each row is one real-world entity</td></tr>
+          <tr><td class="mono"><strong>Column (Attribute)</strong></td><td>One property with an enforced data type</td><td>Prevents bad data at the schema level</td></tr>
+          <tr><td class="mono"><strong>Primary Key</strong></td><td>Unique identifier for each row — never null, never duplicate</td><td>You can always find and reference exactly one row</td></tr>
+          <tr><td class="mono"><strong>Foreign Key</strong></td><td>A column referencing another table's primary key</td><td>Links tables together — enforces referential integrity</td></tr>
+          <tr><td class="mono"><strong>Schema</strong></td><td>The blueprint — which tables exist, what columns, what types</td><td>Defined upfront; changes are controlled migrations</td></tr>
+          <tr><td class="mono"><strong>ACID</strong></td><td>Atomicity, Consistency, Isolation, Durability</td><td>Guarantees that transactions are safe and reliable</td></tr>
+          <tr><td class="mono"><strong>SQL</strong></td><td>Structured Query Language — the language of all relational DBs</td><td>Learn once, works on MySQL, MariaDB, PostgreSQL, Oracle…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">How Tables Link Together <span class="tog">▾</span></div>
+    <div class="section-body">
+      <div class="callout phr"><div class="lbl">The Core Idea</div><p>Instead of one giant table with duplicated data, you split data into smaller, focused tables and <strong>link them with keys</strong>. This is the "relational" in relational database.</p></div>
+      <div class="code-block"><div class="code-header"><span class="code-label sql">SQL — three linked tables</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div><div class="code-body"><span class="cm">-- Table 1: passengers (master data)</span>
+<span class="kw">CREATE TABLE</span> passengers (
+  passenger_id  <span class="tp">INT</span> <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  full_name     <span class="tp">VARCHAR(100)</span> <span class="kw">NOT NULL</span>,
+  email         <span class="tp">VARCHAR(255)</span> <span class="kw">UNIQUE NOT NULL</span>
+);
+
+<span class="cm">-- Table 2: flights (master data)</span>
+<span class="kw">CREATE TABLE</span> flights (
+  flight_id     <span class="tp">INT</span> <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  flight_number <span class="tp">CHAR(8)</span> <span class="kw">NOT NULL</span>,
+  departure_at  <span class="tp">DATETIME</span> <span class="kw">NOT NULL</span>
+);
+
+<span class="cm">-- Table 3: bookings (links passengers ↔ flights)</span>
+<span class="kw">CREATE TABLE</span> bookings (
+  booking_id    <span class="tp">INT</span> <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  passenger_id  <span class="tp">INT</span> <span class="kw">NOT NULL</span>,
+  flight_id     <span class="tp">INT</span> <span class="kw">NOT NULL</span>,
+  seat          <span class="tp">CHAR(4)</span>,
+  <span class="kw">FOREIGN KEY</span> (passenger_id) <span class="kw">REFERENCES</span> passengers(passenger_id),
+  <span class="kw">FOREIGN KEY</span> (flight_id)    <span class="kw">REFERENCES</span> flights(flight_id)
+);</div></div>
+      <div class="callout tip"><div class="lbl">Why split? The No-Duplication Rule</div><p>If you stored the passenger's name and email on every booking row, updating an email means updating potentially thousands of rows — and one missed update causes corrupted data. Split into separate tables and you update in exactly one place.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">ACID — The Four Guarantees That Make Databases Trustworthy <span class="tog">▾</span></div>
+    <div class="section-body">
+      <div class="concepts">
+        <div class="concept blue"><div class="concept-name">A — Atomicity: All or nothing</div><div class="concept-desc">A transaction either completes fully or rolls back completely. If you're transferring money and the debit succeeds but the credit fails — the entire transaction is undone. No partial writes.</div></div>
+        <div class="concept teal"><div class="concept-name">C — Consistency: Valid state to valid state</div><div class="concept-desc">A transaction can only bring the database from one valid state to another. Rules (constraints, foreign keys) are never violated. You can never end up with a booking that references a non-existent passenger.</div></div>
+        <div class="concept orange"><div class="concept-name">I — Isolation: Concurrent transactions don't interfere</div><div class="concept-desc">Multiple users running queries simultaneously see consistent results. Transaction A's in-progress work is invisible to Transaction B until A commits. No dirty reads.</div></div>
+        <div class="concept green"><div class="concept-name">D — Durability: Committed data survives crashes</div><div class="concept-desc">Once a transaction commits, that data is written to disk (via WAL — write-ahead log). Power failure, server crash — committed data is not lost.</div></div>
+      </div>
+      <div class="callout warn"><div class="lbl">ACID vs NoSQL</div><p>Most NoSQL databases sacrifice some ACID guarantees in exchange for speed and horizontal scalability. This is a deliberate trade-off — but it means NoSQL databases are not suitable for financial transactions, healthcare records, or any system where partial writes are catastrophic.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">SQL — One Language, Many Databases <span class="tog">▾</span></div>
+    <div class="section-body">
+      <div class="callout info"><div class="lbl">What SQL is</div><p><strong>SQL (Structured Query Language)</strong> is the standard language for interacting with relational databases. It was standardised by ANSI in 1986. Every major relational database speaks SQL — MySQL, MariaDB, PostgreSQL, Oracle, SQL Server. Learn it once; the core transfers everywhere.</p></div>
+      <table class="ref-table">
+        <thead><tr><th>SQL Group</th><th>Commands</th><th>What They Do</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill" style="background:var(--blueb);color:var(--blue)">DML</span> Data Manipulation</td><td class="mono">SELECT, INSERT, UPDATE, DELETE</td><td>Read and write actual data rows</td></tr>
+          <tr><td><span class="pill" style="background:var(--orangeb);color:var(--orange)">DDL</span> Data Definition</td><td class="mono">CREATE, ALTER, DROP, TRUNCATE</td><td>Define and change the structure (schema)</td></tr>
+          <tr><td><span class="pill" style="background:var(--greenb);color:var(--green)">DCL</span> Data Control</td><td class="mono">GRANT, REVOKE</td><td>Manage user permissions</td></tr>
+          <tr><td><span class="pill" style="background:var(--purpleb);color:var(--purple)">TCL</span> Transaction Control</td><td class="mono">BEGIN, COMMIT, ROLLBACK, SAVEPOINT</td><td>Control multi-step transactions</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Relational DB Strengths &amp; Limitations <span class="tog">▾</span></div>
+    <div class="section-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">✓ Strengths</div>
+          <div class="concepts">
+            <div class="concept green" style="padding:10px 14px"><div class="concept-desc">Strong data integrity via constraints and foreign keys</div></div>
+            <div class="concept green" style="padding:10px 14px"><div class="concept-desc">ACID transactions — safe for financial and medical data</div></div>
+            <div class="concept green" style="padding:10px 14px"><div class="concept-desc">Powerful querying with JOINs, aggregations, subqueries</div></div>
+            <div class="concept green" style="padding:10px 14px"><div class="concept-desc">Mature — 50+ years of tools, optimisation, documentation</div></div>
+            <div class="concept green" style="padding:10px 14px"><div class="concept-desc">Universal SQL standard — skills are highly portable</div></div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--red);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">✗ Limitations</div>
+          <div class="concepts">
+            <div class="concept red" style="padding:10px 14px"><div class="concept-desc">Rigid schema — adding columns requires migrations</div></div>
+            <div class="concept red" style="padding:10px 14px"><div class="concept-desc">Vertical scaling by default (bigger server, not more servers)</div></div>
+            <div class="concept red" style="padding:10px 14px"><div class="concept-desc">Poor fit for unstructured data (documents, blobs, graphs)</div></div>
+            <div class="concept red" style="padding:10px 14px"><div class="concept-desc">Complex JOINs can be slow without careful index design</div></div>
+            <div class="concept red" style="padding:10px 14px"><div class="concept-desc">Not optimal for real-time or massive write throughput</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 03 NOSQL TYPES ════════════════════════════════════════════════════════ -->
+<div id="page-nosql" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--purple)">Section 03 · Awareness</div>
+        <div class="page-title" style="color:var(--purple)">NoSQL Database Types</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← Overview</button>
+    </div>
+    <div class="page-desc">"NoSQL" means "Not Only SQL" — it's not one thing but a family of very different database models, each designed for a specific kind of problem. You need to know they exist and what each is good at, even if this track focuses on SQL.</div>
+  </div>
+  <button class="expand-all-btn" onclick="expandAll(this)" style="margin-bottom:20px">Expand all ↓</button>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">The Four Main NoSQL Families <span class="tog">▾</span></div>
+    <div class="section-body">
+      <table class="ref-table">
+        <thead><tr><th>Type</th><th>Data Model</th><th>Best For</th><th>Leading Databases</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="pill" style="background:var(--orangeb);color:var(--orange)">Document</span></td>
+            <td>JSON/BSON documents — nested, flexible structure</td>
+            <td>Content, user profiles, product catalogues, APIs</td>
+            <td class="mono">MongoDB, CouchDB, Firestore</td>
+          </tr>
+          <tr>
+            <td><span class="pill" style="background:var(--tealb);color:var(--teal)">Key-Value</span></td>
+            <td>Simple key → value pairs, like a giant dictionary</td>
+            <td>Caching, sessions, real-time leaderboards, queues</td>
+            <td class="mono">Redis, DynamoDB, Memcached</td>
+          </tr>
+          <tr>
+            <td><span class="pill" style="background:var(--blueb);color:var(--blue)">Wide-Column</span></td>
+            <td>Tables but columns can vary per row, optimised for writes</td>
+            <td>Time-series, IoT data, analytics at massive scale</td>
+            <td class="mono">Cassandra, HBase, ScyllaDB</td>
+          </tr>
+          <tr>
+            <td><span class="pill" style="background:var(--purpleb);color:var(--purple)">Graph</span></td>
+            <td>Nodes and edges — relationships are first-class citizens</td>
+            <td>Social networks, fraud detection, recommendation engines</td>
+            <td class="mono">Neo4j, Amazon Neptune, ArangoDB</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Document Databases — MongoDB, Firestore <span class="tog">▾</span></div>
+    <div class="section-body">
+      <div class="callout purple"><div class="lbl">The Model</div><p>Data is stored as <strong>documents</strong> — JSON-like objects with nested arrays and sub-documents. No fixed schema. Two documents in the same "collection" can have completely different fields.</p></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <div class="code-block" style="margin-bottom:0"><div class="code-header"><span class="code-label sql">SQL — Relational</span></div><div class="code-body"><span class="cm">-- Three separate tables, linked by IDs</span>
+passengers: id, name, email
+bookings:   id, passenger_id, flight_id
+flights:    id, number, departure
+
+<span class="cm">-- To get a booking with passenger + flight:</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> bookings
+<span class="kw">JOIN</span> passengers <span class="kw">USING</span> (passenger_id)
+<span class="kw">JOIN</span> flights <span class="kw">USING</span> (flight_id);</div></div>
+        <div class="code-block" style="margin-bottom:0"><div class="code-header"><span class="code-label json">JSON — MongoDB Document</span></div><div class="code-body">{
+  <span class="key">"_id"</span>: <span class="str">"booking_xyz"</span>,
+  <span class="key">"passenger"</span>: {
+    <span class="key">"name"</span>: <span class="str">"Ali Schmidt"</span>,
+    <span class="key">"email"</span>: <span class="str">"ali@example.com"</span>
+  },
+  <span class="key">"flight"</span>: {
+    <span class="key">"number"</span>: <span class="str">"LH441"</span>,
+    <span class="key">"departure"</span>: <span class="str">"2025-06-01T14:00Z"</span>
+  },
+  <span class="key">"seat"</span>: <span class="str">"12A"</span>,
+  <span class="key">"extras"</span>: [<span class="str">"meal"</span>, <span class="str">"wifi"</span>]
+}</div></div>
+      </div>
+      <div class="callout tip"><div class="lbl">When to choose Document DBs</div><ul><li>Data structure varies per record</li><li>You read one entity's full data together (no JOINs needed)</li><li>Schema needs to evolve rapidly (startup, MVP, content platform)</li><li>Hierarchical or nested data is natural (order with line items)</li></ul></div>
+      <div class="callout warn"><div class="lbl">When NOT to choose Document DBs</div><p>Financial systems, healthcare records, anything where ACID across multiple documents is critical. MongoDB has multi-document transactions, but they're slower and still secondary to the document model.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Key-Value Databases — Redis, DynamoDB <span class="tog">▾</span></div>
+    <div class="section-body">
+      <div class="callout phr"><div class="lbl">The Model</div><p>The simplest database model: a giant in-memory dictionary. You SET a key to a value. You GET a key. Extremely fast. Redis keeps data in RAM — reads and writes in microseconds.</p></div>
+      <div class="code-block"><div class="code-header"><span class="code-label bash">Redis commands</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div><div class="code-body"><span class="cm"># Store a session</span>
+<span class="kw">SET</span>    session:user_1042  <span class="str">"{'name':'Ali','role':'admin'}"</span>  EX 3600
+
+<span class="cm"># Retrieve it</span>
+<span class="kw">GET</span>    session:user_1042
+
+<span class="cm"># Increment a counter (e.g. page views)</span>
+<span class="kw">INCR</span>   pageviews:landing
+
+<span class="cm"># Leaderboard — sorted set</span>
+<span class="kw">ZADD</span>   leaderboard 95.5 <span class="str">"Ali"</span>
+<span class="kw">ZRANGE</span> leaderboard 0 9 REV WITHSCORES</div></div>
+      <table class="ref-table"><thead><tr><th>Use Case</th><th>Why Redis</th></tr></thead>
+        <tbody>
+          <tr><td>Session storage</td><td>Microsecond reads, TTL expiry built in</td></tr>
+          <tr><td>API rate limiting</td><td>Atomic INCR + TTL per key</td></tr>
+          <tr><td>Caching DB query results</td><td>Serve from RAM, skip the database entirely for hot data</td></tr>
+          <tr><td>Pub/Sub messaging</td><td>Real-time event broadcasting between services</td></tr>
+          <tr><td>Leaderboards / rankings</td><td>Sorted sets with O(log n) operations</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Wide-Column — Cassandra <span class="tog">▾</span></div>
+    <div class="section-body">
+      <div class="callout info"><div class="lbl">The Model</div><p>Looks like a table but each row can have different columns. Designed for <strong>massive write throughput</strong> across many servers (no single master). Apache Cassandra powers Netflix, Apple iCloud, Discord (trillions of messages).</p></div>
+      <table class="ref-table"><thead><tr><th>Feature</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Write throughput</td><td>Millions of writes/second across a cluster</td></tr>
+          <tr><td>Horizontal scaling</td><td>Add nodes — linear performance increase</td></tr>
+          <tr><td>No master node</td><td>No single point of failure</td></tr>
+          <tr><td>CQL</td><td>Cassandra Query Language — SQL-like syntax, very limited JOINs</td></tr>
+          <tr><td>Best for</td><td>Time-series (IoT sensors, logs), analytics append-only workloads</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Graph Databases — Neo4j <span class="tog">▾</span></div>
+    <div class="section-body">
+      <div class="callout purple"><div class="lbl">The Model</div><p>Data is stored as <strong>nodes</strong> (entities) and <strong>edges</strong> (relationships). Relationships are first-class — traversing millions of connections is as fast as accessing a single row. SQL JOINs get exponentially slower with depth; graph queries don't.</p></div>
+      <table class="ref-table"><thead><tr><th>Problem</th><th>Why Graph Wins</th></tr></thead>
+        <tbody>
+          <tr><td>Social networks (friends of friends)</td><td>Relationship traversal is O(1) per hop in Neo4j; SQL JOINs degrade exponentially</td></tr>
+          <tr><td>Fraud detection</td><td>Find patterns in transaction networks in real-time</td></tr>
+          <tr><td>"People who bought X also bought Y"</td><td>Recommendation graphs — natural model</td></tr>
+          <tr><td>Knowledge graphs</td><td>Google Knowledge Graph, drug interaction databases</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 04 SQL vs NoSQL ═══════════════════════════════════════════════════════ -->
+<div id="page-compare" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--orange)">Section 04 · Decision</div>
+        <div class="page-title" style="color:var(--orange)">SQL vs NoSQL</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← Overview</button>
+    </div>
+    <div class="page-desc">The most common interview question in database discussions. The honest answer is: it depends on the problem. Here's how to think through the decision systematically.</div>
+  </div>
+  <button class="expand-all-btn" onclick="expandAll(this)" style="margin-bottom:20px">Expand all ↓</button>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Head-to-Head Comparison <span class="tog">▾</span></div>
+    <div class="section-body">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,60,120,.06)">
+        <thead>
+          <tr>
+            <th style="padding:10px 14px;background:#1e3a5f;color:#fff;text-align:left;width:22%">Dimension</th>
+            <th style="padding:10px 14px;background:#0284c7;color:#fff;text-align:center;width:39%">SQL (Relational)</th>
+            <th style="padding:10px 14px;background:#7c3aed;color:#fff;text-align:center;width:39%">NoSQL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">Data structure</td><td style="padding:9px 14px;text-align:center">Tables — rows &amp; columns, fixed schema</td><td style="padding:9px 14px;text-align:center">Documents, key-value, columns, graphs — flexible</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">Schema</td><td style="padding:9px 14px;text-align:center">Defined upfront — strict, enforced</td><td style="padding:9px 14px;text-align:center">Flexible / schemaless — evolves freely</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">Scaling</td><td style="padding:9px 14px;text-align:center">Vertical (bigger server) + some sharding</td><td style="padding:9px 14px;text-align:center">Horizontal (more servers) by design</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">Transactions</td><td style="padding:9px 14px;text-align:center">Full ACID — across any rows/tables</td><td style="padding:9px 14px;text-align:center">Varies: eventual consistency or limited ACID</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">Query language</td><td style="padding:9px 14px;text-align:center">SQL (universal, standardised)</td><td style="padding:9px 14px;text-align:center">Each DB has its own API / query language</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">JOINs</td><td style="padding:9px 14px;text-align:center">Native, powerful, any combination</td><td style="padding:9px 14px;text-align:center">Mostly avoided — denormalisation instead</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">Data integrity</td><td style="padding:9px 14px;text-align:center">High — constraints, foreign keys enforced</td><td style="padding:9px 14px;text-align:center">Application-level — DB allows almost anything</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">Write speed</td><td style="padding:9px 14px;text-align:center">Good — ACID has some overhead</td><td style="padding:9px 14px;text-align:center">Excellent — especially Key-Value &amp; Wide-Column</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">Best data shape</td><td style="padding:9px 14px;text-align:center">Structured, tabular, highly interrelated</td><td style="padding:9px 14px;text-align:center">Unstructured, nested, hierarchical, varied</td></tr>
+          <tr><td style="padding:9px 14px;background:var(--card);font-weight:600">Maturity / tooling</td><td style="padding:9px 14px;text-align:center">50+ years — massive ecosystem</td><td style="padding:9px 14px;text-align:center">15–20 years — rapidly maturing</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Feature Comparison Grid <span class="tog">▾</span></div>
+    <div class="section-body">
+      <table class="cmp-table" style="border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,60,120,.06)">
+        <thead>
+          <tr>
+            <th style="background:var(--card);color:var(--muted);text-align:left;padding:10px 14px;width:24%">Capability</th>
+            <th style="background:#0284c7;color:#fff;padding:10px 14px">MySQL / MariaDB</th>
+            <th style="background:#0369a1;color:#fff;padding:10px 14px">PostgreSQL</th>
+            <th style="background:#f97316;color:#fff;padding:10px 14px">MongoDB</th>
+            <th style="background:#dc2626;color:#fff;padding:10px 14px">Redis</th>
+            <th style="background:#7c3aed;color:#fff;padding:10px 14px">Cassandra</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Full ACID</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="maybe">±</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+          <tr><td>Flexible schema</td><td><span class="cross">✗</span></td><td><span class="maybe">±</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+          <tr><td>SQL queries</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="maybe">±</span></td></tr>
+          <tr><td>Native JOINs</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+          <tr><td>Horizontal scaling</td><td><span class="maybe">±</span></td><td><span class="maybe">±</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+          <tr><td>In-memory speed</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="check">✓</span></td><td><span class="cross">✗</span></td></tr>
+          <tr><td>JSON / nested docs</td><td><span class="maybe">±</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="maybe">±</span></td><td><span class="cross">✗</span></td></tr>
+          <tr><td>Full-text search</td><td><span class="maybe">±</span></td><td><span class="maybe">±</span></td><td><span class="maybe">±</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+          <tr><td>High write throughput</td><td><span class="maybe">±</span></td><td><span class="maybe">±</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+          <tr><td>Foreign key constraints</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:11px;color:var(--muted);margin-top:-10px;margin-bottom:16px"><span class="check">✓</span> = native support &nbsp;·&nbsp; <span class="maybe">±</span> = partial / plugin / workaround &nbsp;·&nbsp; <span class="cross">✗</span> = not supported</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">The Real World — They're Often Used Together <span class="tog">▾</span></div>
+    <div class="section-body">
+      <div class="callout tip"><div class="lbl">Polyglot Persistence</div><p>Most production systems at scale use <strong>multiple database types</strong> — each doing what it does best. This is called polyglot persistence. Choosing SQL <em>vs</em> NoSQL is a false dilemma in most serious architectures.</p></div>
+      <table class="ref-table"><thead><tr><th>Layer</th><th>Database</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Core business data (orders, users, products)</td><td class="mono">MySQL / MariaDB / PostgreSQL</td><td>ACID, JOINs, integrity — the source of truth</td></tr>
+          <tr><td>Session management &amp; caching</td><td class="mono">Redis</td><td>Microsecond reads, TTL, doesn't need persistence</td></tr>
+          <tr><td>Search (product search, full-text)</td><td class="mono">Elasticsearch / OpenSearch</td><td>Inverted indexes, relevance scoring — SQL can't do this efficiently</td></tr>
+          <tr><td>Analytics / data warehouse</td><td class="mono">ClickHouse / BigQuery / Redshift</td><td>Columnar storage for aggregations on billions of rows</td></tr>
+          <tr><td>Activity logs / events</td><td class="mono">Cassandra / Kafka</td><td>Append-only, massive write throughput, time-series</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">CAP Theorem — The Fundamental Trade-off <span class="tog">▾</span></div>
+    <div class="section-body">
+      <div class="callout info"><div class="lbl">What Is CAP?</div><p>The CAP theorem states that a distributed database can only guarantee <strong>two of three</strong> properties simultaneously: <strong>Consistency</strong> (all nodes see the same data), <strong>Availability</strong> (every request gets a response), and <strong>Partition Tolerance</strong> (the system keeps working if network splits occur). Since partition tolerance is non-negotiable in any real network, the real trade-off is <strong>C vs A</strong>.</p></div>
+      <table class="ref-table"><thead><tr><th>Database</th><th>CAP Choice</th><th>Implication</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">MySQL / MariaDB (single node)</td><td>CA — Consistent + Available</td><td>Not partition tolerant — single server, data is always consistent</td></tr>
+          <tr><td class="mono">MySQL Galera Cluster</td><td>CA with some PA features</td><td>Synchronous replication — strong consistency across nodes</td></tr>
+          <tr><td class="mono">MongoDB</td><td>CP — Consistent + Partition-tolerant</td><td>In a partition, primary refuses writes to preserve consistency</td></tr>
+          <tr><td class="mono">Cassandra</td><td>AP — Available + Partition-tolerant</td><td>Always accepts writes; nodes may briefly diverge (eventual consistency)</td></tr>
+          <tr><td class="mono">Redis (single)</td><td>CA</td><td>Single master — no partitions, extremely fast</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 05 DB ENGINES ═════════════════════════════════════════════════════════ -->
+<div id="page-engines" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--green)">Section 05 · Market</div>
+        <div class="page-title" style="color:var(--green)">Database Engines</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← Overview</button>
+    </div>
+    <div class="page-desc">The major database products — who made them, what they're good at, and how they relate to each other. Focus is on the SQL family since that's your track, with enough NoSQL awareness to have an intelligent conversation.</div>
+  </div>
+  <button class="expand-all-btn" onclick="expandAll(this)" style="margin-bottom:20px">Expand all ↓</button>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">The SQL Family Tree <span class="tog">▾</span></div>
+    <div class="section-body">
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-dot" style="background:var(--orange)"></div><div class="tl-year">1979 — Oracle</div><div class="tl-text"><strong>Oracle Database</strong> — the original commercial SQL database. Dominant in enterprise, banking, and Oracle ERP ecosystems. Very powerful, very expensive. Still #1 in enterprise revenue.</div></div>
+        <div class="tl-item"><div class="tl-dot" style="background:var(--blue)"></div><div class="tl-year">1983 — IBM DB2</div><div class="tl-text"><strong>DB2</strong> — IBM's flagship. Huge in mainframe/banking environments. Still running critical financial infrastructure worldwide.</div></div>
+        <div class="tl-item"><div class="tl-dot" style="background:var(--blue)"></div><div class="tl-year">1989 — Microsoft SQL Server</div><div class="tl-text"><strong>SQL Server</strong> — Microsoft's relational DB. Dominant in Windows/.NET enterprise environments. T-SQL dialect. Often used with Azure.</div></div>
+        <div class="tl-item"><div class="tl-dot" style="background:var(--teal)"></div><div class="tl-year">1995 — MySQL</div><div class="tl-text"><strong>MySQL</strong> — open-source, the LAMP stack (Linux, Apache, MySQL, PHP) that powered the early web. Acquired by Sun (2008), then Oracle (2010). Still the most-deployed SQL database on the internet.</div></div>
+        <div class="tl-item"><div class="tl-dot" style="background:var(--purple)"></div><div class="tl-year">1996 — PostgreSQL</div><div class="tl-text"><strong>PostgreSQL</strong> — open-source, standards-compliant, feature-rich. Strong JSON support, custom types, window functions. The developer favourite. Growing rapidly.</div></div>
+        <div class="tl-item"><div class="tl-dot" style="background:var(--green)"></div><div class="tl-year">2009 — MariaDB</div><div class="tl-text"><strong>MariaDB</strong> — fork of MySQL created after Oracle acquisition. Drop-in replacement, mostly MySQL-compatible. Adds sequences, better clustering (Galera), and the RETURNING clause. <strong>The engine used in this training track.</strong></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">MySQL vs MariaDB vs PostgreSQL — Side by Side <span class="tog">▾</span></div>
+    <div class="section-body">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,60,120,.06)">
+        <thead>
+          <tr>
+            <th style="padding:10px 14px;background:#1e3a5f;color:#fff;text-align:left;width:24%">Feature</th>
+            <th style="padding:10px 14px;background:#0d9488;color:#fff;text-align:center">MySQL 8.0</th>
+            <th style="padding:10px 14px;background:#059669;color:#fff;text-align:center">MariaDB 10.11+</th>
+            <th style="padding:10px 14px;background:#7c3aed;color:#fff;text-align:center">PostgreSQL 16</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">License</td><td style="padding:9px 14px;text-align:center">GPL / Commercial (Oracle)</td><td style="padding:9px 14px;text-align:center">GPL (MariaDB Foundation)</td><td style="padding:9px 14px;text-align:center">PostgreSQL License (very open)</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">Default auth plugin</td><td style="padding:9px 14px;text-align:center;font-family:'JetBrains Mono',monospace">caching_sha2_password</td><td style="padding:9px 14px;text-align:center;font-family:'JetBrains Mono',monospace">ed25519</td><td style="padding:9px 14px;text-align:center;font-family:'JetBrains Mono',monospace">md5 / scram-sha-256</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">Auto-increment</td><td style="padding:9px 14px;text-align:center;font-family:'JetBrains Mono',monospace">AUTO_INCREMENT</td><td style="padding:9px 14px;text-align:center;font-family:'JetBrains Mono',monospace">AUTO_INCREMENT + SEQUENCE</td><td style="padding:9px 14px;text-align:center;font-family:'JetBrains Mono',monospace">SERIAL / GENERATED</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">RETURNING clause</td><td style="padding:9px 14px;text-align:center"><span class="cross">✗</span></td><td style="padding:9px 14px;text-align:center"><span class="check">✓</span> (10.5+)</td><td style="padding:9px 14px;text-align:center"><span class="check">✓</span></td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">Window functions</td><td style="padding:9px 14px;text-align:center"><span class="check">✓</span> (8.0+)</td><td style="padding:9px 14px;text-align:center"><span class="check">✓</span></td><td style="padding:9px 14px;text-align:center"><span class="check">✓</span> Most advanced</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">JSON support</td><td style="padding:9px 14px;text-align:center"><span class="maybe">±</span> Good</td><td style="padding:9px 14px;text-align:center"><span class="maybe">±</span> Good</td><td style="padding:9px 14px;text-align:center"><span class="check">✓</span> Best (JSONB type)</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">Multi-master clustering</td><td style="padding:9px 14px;text-align:center">InnoDB Cluster</td><td style="padding:9px 14px;text-align:center"><span style="color:var(--green);font-weight:700">Galera Cluster ★</span></td><td style="padding:9px 14px;text-align:center">Patroni / Citus</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">Performance</td><td style="padding:9px 14px;text-align:center">Excellent read performance</td><td style="padding:9px 14px;text-align:center">Excellent, esp. write-heavy</td><td style="padding:9px 14px;text-align:center">Excellent, complex queries</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;background:var(--card);font-weight:600">MySQL compatibility</td><td style="padding:9px 14px;text-align:center"><span style="color:var(--teal);font-weight:700">✓ Reference</span></td><td style="padding:9px 14px;text-align:center"><span class="check">✓</span> ~99% compatible</td><td style="padding:9px 14px;text-align:center"><span class="cross">✗</span> Different dialect</td></tr>
+          <tr><td style="padding:9px 14px;background:var(--card);font-weight:600">Best fit</td><td style="padding:9px 14px;text-align:center">Web apps, WordPress, SaaS</td><td style="padding:9px 14px;text-align:center"><strong>This track ★</strong> Enterprise + Galera</td><td style="padding:9px 14px;text-align:center">Analytics, GIS, complex queries</td></tr>
+        </tbody>
+      </table>
+      <div class="callout phr"><div class="lbl">Why MariaDB in This Track</div><p>MariaDB is the engine used at OS GmbH and Morafek CareMate in production. It is a drop-in replacement for MySQL (99% syntax compatible), adds useful features like <code>RETURNING</code>, <code>CREATE SEQUENCE</code>, and Galera multi-master clustering — and is fully open source with no Oracle dependencies.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">NoSQL Engines — Landscape Overview <span class="tog">▾</span></div>
+    <div class="section-body">
+      <div class="db-grid">
+        <div class="db-card"><div class="db-icon">🍃</div><div class="db-name">MongoDB</div><div class="db-type" style="color:var(--orange)">Document</div><div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4">General-purpose NoSQL. BSON documents, aggregation pipeline, Atlas cloud.</div></div>
+        <div class="db-card"><div class="db-icon">⚡</div><div class="db-name">Redis</div><div class="db-type" style="color:var(--red)">Key-Value / Cache</div><div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4">In-memory. Microsecond latency. Sessions, caching, pub/sub, queues.</div></div>
+        <div class="db-card"><div class="db-icon">💍</div><div class="db-name">Cassandra</div><div class="db-type" style="color:var(--blue)">Wide-Column</div><div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4">Massive write throughput. No single master. Netflix, Apple iCloud.</div></div>
+        <div class="db-card"><div class="db-icon">🔵</div><div class="db-name">Neo4j</div><div class="db-type" style="color:var(--purple)">Graph</div><div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4">Relationships first. Social graphs, fraud detection, recommendations.</div></div>
+        <div class="db-card"><div class="db-icon">🔶</div><div class="db-name">DynamoDB</div><div class="db-type" style="color:var(--orange)">Key-Value / Doc</div><div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4">AWS managed. Single-digit ms at any scale. Serverless-friendly.</div></div>
+        <div class="db-card"><div class="db-icon">🔍</div><div class="db-name">Elasticsearch</div><div class="db-type" style="color:var(--teal)">Search Engine</div><div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4">Inverted indexes, full-text search, log analytics (ELK stack).</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Cloud Database Services — What You'll Encounter <span class="tog">▾</span></div>
+    <div class="section-body">
+      <table class="ref-table"><thead><tr><th>Service</th><th>Underlying Engine</th><th>Cloud</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Amazon RDS</td><td>MySQL, MariaDB, PostgreSQL, Oracle, SQL Server</td><td>AWS</td><td>Managed — backups, patching, HA handled for you</td></tr>
+          <tr><td>Amazon Aurora</td><td>MySQL / PostgreSQL compatible</td><td>AWS</td><td>5× faster than standard MySQL, auto-scaling storage</td></tr>
+          <tr><td>Google Cloud SQL</td><td>MySQL, PostgreSQL, SQL Server</td><td>GCP</td><td>Fully managed, connects to Cloud Run / GKE</td></tr>
+          <tr><td>Azure Database for MySQL / PG</td><td>MySQL, PostgreSQL</td><td>Azure</td><td>Managed, integrates with Azure AD auth</td></tr>
+          <tr><td>PlanetScale</td><td>Vitess (MySQL compatible)</td><td>Multi</td><td>Horizontal sharding of MySQL, schema change without locks</td></tr>
+          <tr><td>Supabase</td><td>PostgreSQL</td><td>Multi</td><td>Open-source Firebase alternative. Real-time subscriptions.</td></tr>
+          <tr><td>MongoDB Atlas</td><td>MongoDB</td><td>Multi</td><td>Fully managed MongoDB, search, vector, time-series built in</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 06 CHOOSE ═════════════════════════════════════════════════════════════ -->
+<div id="page-choose" class="page">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <div class="lesson-num" style="color:var(--pink)">Section 06 · Practical</div>
+        <div class="page-title" style="color:var(--pink)">Choose Your Database</div>
+      </div>
+      <button class="back-btn" onclick="goTo('home')">← Overview</button>
+    </div>
+    <div class="page-desc">A practical decision framework. These are the questions you ask when starting any project. There is rarely one objectively correct answer — but there are clearly wrong choices. Here's how to avoid them.</div>
+  </div>
+  <button class="expand-all-btn" onclick="expandAll(this)" style="margin-bottom:20px">Expand all ↓</button>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">The Decision Framework — 6 Questions <span class="tog">▾</span></div>
+    <div class="section-body">
+      <table class="ref-table">
+        <thead><tr><th>#</th><th>Question</th><th>Suggests SQL if…</th><th>Suggests NoSQL if…</th></tr></thead>
+        <tbody>
+          <tr><td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--teal)">1</td><td><strong>How structured is your data?</strong></td><td>Consistent columns, well-defined schema, tabular</td><td>Varied fields per record, nested, hierarchical</td></tr>
+          <tr><td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--teal)">2</td><td><strong>Do you need transactions?</strong></td><td>Yes — money, medical records, orders</td><td>No — logs, analytics, caches, recommendations</td></tr>
+          <tr><td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--teal)">3</td><td><strong>How related is your data?</strong></td><td>Many relationships, JOINs needed, FK integrity matters</td><td>Data is self-contained per document / key</td></tr>
+          <tr><td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--teal)">4</td><td><strong>What scale do you need?</strong></td><td>Millions of rows, one strong server</td><td>Billions of writes/day, global distribution</td></tr>
+          <tr><td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--teal)">5</td><td><strong>How often does schema change?</strong></td><td>Rarely — mature domain, stable structure</td><td>Frequently — MVP, evolving product, unknowns</td></tr>
+          <tr><td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--teal)">6</td><td><strong>What does your team know?</strong></td><td>SQL is universal — everyone on the team can write it</td><td>Team has specific NoSQL expertise for the use case</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Scenario Verdicts <span class="tog">▾</span></div>
+    <div class="section-body">
+
+      <div class="verdict">
+        <div class="verdict-icon" style="background:var(--tealb)">🏥</div>
+        <div><div class="verdict-title">Healthcare EHR — Morafek CareMate <span class="pill" style="background:var(--tealb);color:var(--teal)">→ MariaDB</span></div><div class="verdict-desc">Patient data, vitals, prescriptions — highly structured, ACID required for DSGVO compliance, complex JOINs across patients/doctors/visits, audit trails. SQL is the only sensible choice. Galera for HA.</div></div>
+      </div>
+
+      <div class="verdict">
+        <div class="verdict-icon" style="background:var(--blueb)">🚂</div>
+        <div><div class="verdict-title">Railway Operations — OS GmbH <span class="pill" style="background:var(--tealb);color:var(--teal)">→ MariaDB + Redis</span></div><div class="verdict-desc">Booking system → MariaDB (structured, transactional, seat inventory). Real-time departure boards → Redis (in-memory pub/sub, sub-millisecond updates). Two databases, each doing its job.</div></div>
+      </div>
+
+      <div class="verdict">
+        <div class="verdict-icon" style="background:var(--orangeb)">🛒</div>
+        <div><div class="verdict-title">E-commerce Product Catalogue <span class="pill" style="background:var(--orangeb);color:var(--orange)">→ MongoDB or PostgreSQL</span></div><div class="verdict-desc">Products have wildly different attributes (a shirt has size/colour, a laptop has RAM/CPU). Either PostgreSQL with JSONB or MongoDB for flexible schema. Orders and payments still benefit from SQL.</div></div>
+      </div>
+
+      <div class="verdict">
+        <div class="verdict-icon" style="background:var(--purpleb)">📱</div>
+        <div><div class="verdict-title">Social Network (followers, feed) <span class="pill" style="background:var(--purpleb);color:var(--purple)">→ Graph + Cassandra</span></div><div class="verdict-desc">Relationship graph → Neo4j (who follows who, mutual friends, recommendations). Activity feed → Cassandra (billions of append-only events, time-partitioned, massive write throughput).</div></div>
+      </div>
+
+      <div class="verdict">
+        <div class="verdict-icon" style="background:var(--redb)">📊</div>
+        <div><div class="verdict-title">Analytics / Reporting Dashboard <span class="pill" style="background:var(--orangeb);color:var(--orange)">→ ClickHouse / BigQuery</span></div><div class="verdict-desc">Aggregating billions of events (GROUP BY, SUM, percentile) — row-oriented SQL is inefficient. Columnar databases (ClickHouse, BigQuery, Redshift) scan only the columns needed, 100× faster for analytics.</div></div>
+      </div>
+
+      <div class="verdict">
+        <div class="verdict-icon" style="background:var(--greenb)">⚡</div>
+        <div><div class="verdict-title">API Rate Limiting &amp; Session Store <span class="pill" style="background:var(--redb);color:var(--red)">→ Redis</span></div><div class="verdict-desc">Needs sub-millisecond response on every single API call. Redis TTL, atomic INCR, and in-memory speed make this trivially easy. Don't touch a relational DB for this.</div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">The Interview-Ready Answer <span class="tog">▾</span></div>
+    <div class="section-body">
+      <div class="callout phr"><div class="lbl">🎯 What to say when asked "SQL or NoSQL?"</div>
+        <p style="margin-bottom:10px"><em>"It depends on the data model and requirements. I start with SQL by default — ACID guarantees and relational integrity are hard to get right at the application level, and SQL skills are fully transferable. I'd reach for NoSQL when the data is genuinely unstructured, when I need horizontal write scaling beyond what sharding SQL can provide, or when the access pattern is a perfect fit — like Redis for caching or a graph DB for relationship traversal. In most real systems I'd expect to use both."</em></p>
+      </div>
+
+      <div class="callout warn"><div class="lbl">Common Mistakes to Avoid</div>
+        <ul>
+          <li>Choosing NoSQL because "it scales better" — SQL also scales with proper indexing, read replicas, and connection pooling for most use cases</li>
+          <li>Choosing SQL because "it's familiar" when the data is fundamentally document-like or graph-like</li>
+          <li>Treating it as a permanent decision — databases can be migrated; getting started correctly matters more than perfection</li>
+          <li>Ignoring your team's expertise — a perfect database choice run poorly is worse than a good database choice run well</li>
+        </ul>
+      </div>
+
+      <div class="callout tip"><div class="lbl">Default Rule of Thumb</div>
+        <p><strong>Start with PostgreSQL or MariaDB. Add Redis for caching. Switch to NoSQL only when you have a specific, measured reason — not upfront speculation.</strong> Most applications that chose NoSQL "for scale" never hit the scale that required it, but they paid the schema flexibility and tooling cost every day.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="togSection(this)">Track Roadmap — Where This Fits <span class="tog">▾</span></div>
+    <div class="section-body">
+      <table class="ref-table"><thead><tr><th>Phase</th><th>Content</th><th>Time</th><th>Engine</th></tr></thead>
+        <tbody>
+          <tr style="background:var(--tealb)"><td class="mono"><strong>00 · This file</strong></td><td>Database landscape — SQL vs NoSQL, types, engines</td><td>1h reading</td><td>Conceptual</td></tr>
+          <tr><td class="mono">00-L · Linux</td><td>RedHat / RHEL — filesystem, systemd, SELinux, bash for DBAs</td><td>14h</td><td>RHEL 8/9</td></tr>
+          <tr><td class="mono">01 · SQL Foundations</td><td>SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, data types, constraints</td><td>5h</td><td>MySQL 8 → MariaDB</td></tr>
+          <tr><td class="mono">02 · DB Design</td><td>Normalization 1NF→3NF, keys, indexes, schema patterns</td><td>12h</td><td>MariaDB</td></tr>
+          <tr><td class="mono">03 · Advanced SQL</td><td>Window functions, CTEs, EXPLAIN, transactions, stored routines</td><td>16h</td><td>MariaDB 10.11+</td></tr>
+          <tr><td class="mono">04 · DB Internals</td><td>InnoDB pages, MVCC, WAL, deadlocks, crash recovery</td><td>13h</td><td>MariaDB / InnoDB</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+function togSection(titleEl){
+  titleEl.classList.toggle('sec-open');
+  titleEl.nextElementSibling.classList.toggle('sec-open');
+}
+function expandAll(btn){
+  const page = btn.closest('.page');
+  const titles = page.querySelectorAll('.section-title');
+  const bodies  = page.querySelectorAll('.section-body');
+  const allOpen = [...bodies].every(b=>b.classList.contains('sec-open'));
+  titles.forEach(t=>t.classList.toggle('sec-open',!allOpen));
+  bodies.forEach(b=>b.classList.toggle('sec-open',!allOpen));
+  btn.textContent = allOpen ? 'Expand all ↓' : 'Collapse all ↑';
+}
+
+let currentPage = 'home';
+function goTo(id){
+  document.getElementById('page-'+currentPage).classList.remove('active');
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  const page = document.getElementById('page-'+id);
+  if(page){
+    page.classList.add('active');
+    page.querySelectorAll('.section-title').forEach(t=>t.classList.remove('sec-open'));
+    page.querySelectorAll('.section-body').forEach(b=>b.classList.remove('sec-open'));
+    page.querySelectorAll('.expand-all-btn').forEach(b=>{b.textContent='Expand all ↓';});
+  } else {
+    document.getElementById('page-home').classList.add('active');
+    id='home';
+  }
+  const tab = document.getElementById('tab-'+id);
+  if(tab) tab.classList.add('active');
+  currentPage = id;
+  requestAnimationFrame(()=>{
+    document.documentElement.scrollTop=0;
+    document.body.scrollTop=0;
+  });
+}
+
+function copyCode(btn){
+  const body = btn.closest('.code-block').querySelector('.code-body');
+  const text = body.innerText||body.textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent='copied!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='copy';btn.classList.remove('copied');},1800);
+  }).catch(()=>{btn.textContent='select + copy';setTimeout(()=>{btn.textContent='copy';},2000);});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 04 — Database Internals · DB·MASTERY</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── ROOT: orange phase accent ────────────────────────────────────────────── */
+:root {
+  --bg:#eef2f7;--surface:#ffffff;--card:#f4f7fb;--border:#dde4ef;--border2:#c5cedf;
+  --text:#1a2440;--muted:#5a6a85;--dim:#8fa0bb;
+  --phase:#ea6c00;--phaseb:#fff7ed;--phased:#c2530a;
+  --blue:#0284c7;--blueb:#e0f2fe;--blued:#0369a1;
+  --purple:#7c3aed;--purpleb:#ede9fe;
+  --green:#059669;--greenb:#d1fae5;--greend:#047857;
+  --orange:#d97706;--orangeb:#fef3c7;
+  --yellow:#b45309;--yellowb:#fef9c3;
+  --red:#dc2626;--redb:#fee2e2;
+  --teal:#0d9488;--tealb:#ccfbf1;
+  --indigo:#4338ca;--indigob:#e0e7ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;min-height:100vh}
+
+/* ── NAV ─────────────────────────────────────────────────────────────────── */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;padding:0 20px;gap:0;box-shadow:0 1px 6px rgba(120,60,0,.07)}
+.nav-logo{font-family:'Syne',sans-serif;font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--text);padding:14px 18px 14px 0;border-right:1px solid var(--border);margin-right:10px;white-space:nowrap;flex-shrink:0}
+.nav-logo span{color:var(--phase)}
+.nav-tab{padding:6px 13px;margin:6px 2px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.03em;cursor:pointer;color:var(--muted);transition:all .15s;white-space:nowrap;flex-shrink:0;border-radius:99px;user-select:none}
+.nav-tab:hover{background:var(--phaseb);color:var(--phased)}
+.nav-tab.active{background:var(--phase);color:#fff;font-weight:700}
+.nav-tab.done-tab{color:var(--greend)}
+.nav-tab.done-tab.active{background:var(--phase);color:#fff}
+
+/* ── LAYOUT ──────────────────────────────────────────────────────────────── */
+.page{display:none;max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.page.active{display:block}
+#page-home:not(.active){display:none}
+
+/* ── HERO ────────────────────────────────────────────────────────────────── */
+.hero{padding:52px 40px 36px;max-width:1100px;margin:0 auto}
+.phase-pill{display:inline-flex;align-items:center;gap:7px;background:var(--phaseb);border:1.5px solid var(--phase);border-radius:99px;padding:4px 14px 4px 8px;margin-bottom:18px}
+.phase-pill-dot{width:7px;height:7px;background:var(--phase);border-radius:50%;flex-shrink:0}
+.phase-pill-text{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.12em;color:var(--phased);text-transform:uppercase}
+h1{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;line-height:1;letter-spacing:-.03em;margin-bottom:12px;color:var(--text)}
+h1 span{color:var(--phase)}
+.hero-sub{font-size:13.5px;color:var(--muted);max-width:640px;line-height:1.75;margin-bottom:24px}
+.hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:36px}
+.hero-chip{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)}
+.hero-chip strong{color:var(--text);font-weight:600}
+
+/* ── HERO GRID ───────────────────────────────────────────────────────────── */
+.hero-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:7px;max-width:1100px;margin:0 40px 40px}
+.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px 10px;cursor:pointer;transition:border-color .15s,transform .12s,box-shadow .15s;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(120,60,0,.04);display:flex;align-items:center;gap:10px}
+.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:10px 10px 0 0}
+.hero-card.c-orange::before{background:var(--phase)}
+.hero-card.c-blue::before{background:var(--blue)}
+.hero-card.c-purple::before{background:var(--purple)}
+.hero-card.c-teal::before{background:var(--teal)}
+.hero-card.c-green::before{background:var(--green)}
+.hero-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:0 3px 10px rgba(120,60,0,.09)}
+.hero-card-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.hero-card-body{flex:1;min-width:0}
+.hero-card-num{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px}
+.hero-card-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.status{font-size:9px;padding:2px 7px;border-radius:99px;display:inline-block;font-weight:600;letter-spacing:.04em}
+.hero-card-arrow{font-size:13px;color:var(--dim);flex-shrink:0}
+
+/* ── PAGE HEADER ─────────────────────────────────────────────────────────── */
+.page-header{margin-bottom:28px;padding-bottom:18px;border-bottom:2px solid var(--border)}
+.page-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:8px}
+.lesson-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;color:var(--phase)}
+.page-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.02em}
+.back-btn{background:var(--card);border:1px solid var(--border);border-radius:99px;padding:7px 16px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.back-btn:hover{color:var(--text);border-color:var(--border2);background:var(--phaseb)}
+.page-desc{font-size:13px;color:var(--muted);line-height:1.7;max-width:680px}
+
+/* ── COLLAPSIBLE SECTIONS ────────────────────────────────────────────────── */
+.section{margin-bottom:6px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface)}
+.section-title{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:12px 16px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;transition:all .12s;border-left:3px solid transparent}
+.section-title:hover{background:var(--card);color:var(--text)}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.section-chevron{font-size:11px;color:var(--dim);margin-left:4px;transition:transform .2s;flex-shrink:0}
+.section-title.sec-open{color:var(--phase);background:var(--phaseb);border-left-color:var(--phase);border-bottom:1px solid var(--border)}
+.section-title.sec-open .section-chevron{transform:rotate(180deg)}
+.section-body{display:none;padding:14px 16px 12px}
+.section-body.sec-open{display:block}
+
+/* ── EXPAND BAR ──────────────────────────────────────────────────────────── */
+.expand-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:0 2px}
+.expand-bar-label{font-size:11px;color:var(--dim)}
+.expand-all-btn{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;background:var(--card);border:1px solid var(--border);border-radius:99px;padding:4px 12px;color:var(--muted);cursor:pointer;transition:all .15s}
+.expand-all-btn:hover{color:var(--phase);border-color:var(--phase);background:var(--phaseb)}
+
+/* ── CONCEPT CARDS ───────────────────────────────────────────────────────── */
+.concepts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.concept{background:var(--card);border-radius:10px;padding:13px 16px;border:1px solid var(--border);border-top:3px solid var(--border2)}
+.concept.orange{border-top-color:var(--phase)}
+.concept.blue{border-top-color:var(--blue)}
+.concept.purple{border-top-color:var(--purple)}
+.concept.green{border-top-color:var(--green)}
+.concept.teal{border-top-color:var(--teal)}
+.concept.yellow{border-top-color:var(--yellow)}
+.concept.indigo{border-top-color:var(--indigo)}
+.concept.red{border-top-color:var(--red)}
+.concept-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px}
+.concept-desc{font-family:'Inter',sans-serif;font-size:12px;color:var(--muted);line-height:1.65}
+
+/* ── CODE BLOCKS ─────────────────────────────────────────────────────────── */
+.code-block{background:#f8fafc;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 3px rgba(120,60,0,.04)}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--surface);gap:8px;flex-wrap:wrap;border-left:3px solid var(--phase)}
+.code-header-left{display:flex;align-items:center;gap:8px}
+.code-label{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.code-label.sql{color:var(--blue)}
+.code-label.bash{color:var(--green)}
+.code-label.output{color:var(--orange)}
+.code-label.conf{color:var(--purple)}
+.copy-btn{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);background:none;border:1px solid var(--border);border-radius:99px;padding:3px 10px;cursor:pointer;transition:all .15s}
+.copy-btn:hover{color:var(--text);border-color:var(--border2)}
+.copy-btn.copied{color:var(--green);border-color:var(--green)}
+.code-body{padding:16px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#334155;line-height:1.8;overflow-x:auto;white-space:pre;background:#f8fafc}
+.kw{color:#0284c7}.fn{color:#7c3aed}.str{color:#059669}.cm{color:#94a3b8}.num{color:#d97706}.op{color:#db2777}.tp{color:#b45309}.tb{color:#0d9488}
+
+/* ── EXAMPLE BADGES ──────────────────────────────────────────────────────── */
+.example-badge{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.04em}
+.example-badge.ehr{background:#ccfbf1;color:#0d9488}
+.example-badge.db{background:#fee2e2;color:#EC0016}
+
+/* ── CALLOUTS ────────────────────────────────────────────────────────────── */
+.callout{border-radius:0 12px 12px 0;padding:13px 16px;margin-bottom:14px;border:1px solid transparent;border-left-width:4px}
+.callout .lbl{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.callout p,.callout li{font-family:'Inter',sans-serif;font-size:12px;line-height:1.7}
+.callout ul,.callout ol{padding-left:16px}
+.callout li{margin-bottom:4px}
+.callout.tip{background:var(--greenb);border-color:#a7f3d0;border-left-color:var(--green)}
+.callout.tip .lbl{color:var(--greend)}
+.callout.tip p,.callout.tip li{color:#065f46}
+.callout.warn{background:var(--yellowb);border-color:#fde68a;border-left-color:var(--yellow)}
+.callout.warn .lbl{color:var(--yellow)}
+.callout.warn p,.callout.warn li{color:#78350f}
+.callout.info{background:var(--blueb);border-color:#bae6fd;border-left-color:var(--blue)}
+.callout.info .lbl{color:var(--blue)}
+.callout.info p,.callout.info li{color:#075985}
+.callout.phr{background:var(--tealb);border-color:#99f6e4;border-left-color:var(--teal)}
+.callout.phr .lbl{color:var(--teal)}
+.callout.phr p,.callout.phr li{color:#134e4a}
+.callout.db{background:#fee2e2;border-color:#fca5a5;border-left-color:#EC0016}
+.callout.db .lbl{color:#b91c1c}
+.callout.db p,.callout.db li{color:#7f1d1d}
+.callout.interview{background:var(--indigob);border-color:#a5b4fc;border-left-color:var(--indigo)}
+.callout.interview .lbl{color:#3730a3}
+.callout.interview p{color:#312e81;font-weight:700}
+.callout.scenario{background:#1e293b;color:#e2e8f0;border-left-color:#dc2626;border-left-width:4px}
+.callout.scenario .lbl{color:#f87171;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.callout.scenario p{font-family:'Inter',sans-serif;font-size:12px;line-height:1.65;color:#e2e8f0}
+.callout.scenario ol,.callout.scenario ul{padding-left:16px}
+.callout.scenario li{font-family:'Inter',sans-serif;font-size:12px;line-height:1.6;color:#cbd5e1;margin-bottom:4px}
+
+/* ── INTERVIEW Q&A ───────────────────────────────────────────────────────── */
+.qa-list{display:flex;flex-direction:column;gap:8px}
+.qa-item{border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.qa-q{padding:11px 14px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:var(--card);transition:background .12s;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.qa-q::after{content:'▾';font-size:11px;color:var(--dim);transition:transform .2s;flex-shrink:0}
+.qa-q.open::after{transform:rotate(180deg)}
+.qa-q:hover{background:var(--phaseb)}
+.qa-a{display:none;padding:13px 14px;border-top:1px solid var(--border)}
+.qa-a.open{display:block}
+.qa-a p{font-family:'Inter',sans-serif;font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:8px}
+
+/* ── CHALLENGE ───────────────────────────────────────────────────────────── */
+.challenge{background:var(--surface);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 4px rgba(120,60,0,.05)}
+.challenge-head{padding:12px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .12s;background:var(--phaseb)}
+.challenge-head:hover{background:#fed7aa}
+.challenge-head-left{display:flex;align-items:center;gap:10px}
+.challenge-badge{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;background:var(--phase);color:#fff;border-radius:99px;padding:2px 9px}
+.challenge-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--phased)}
+.challenge-arrow{font-size:12px;color:var(--phased);transition:transform .2s}
+.challenge-arrow.open{transform:rotate(180deg)}
+.challenge-body{display:none;padding:16px;border-top:1px solid var(--border)}
+.challenge-body.open{display:block}
+.challenge-q{font-family:'Inter',sans-serif;font-size:13px;color:var(--text);margin-bottom:12px;line-height:1.65}
+.answer-toggle{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--phase);cursor:pointer;text-decoration:underline;margin-bottom:8px;display:inline-block}
+.answer{display:none}
+.answer.open{display:block}
+
+/* ── COMPARE TABLE ───────────────────────────────────────────────────────── */
+.compare-table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:12px;font-family:'Inter',sans-serif}
+.compare-table th{background:var(--card);padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:2px solid var(--border)}
+.compare-table td{padding:9px 12px;color:var(--text);border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table .mono{font-family:'JetBrains Mono',monospace;color:var(--purple);font-size:11px}
+.compare-table .good{color:var(--green);font-weight:700}
+.compare-table .bad{color:var(--red);font-weight:700}
+
+/* ── LESSON NAV ──────────────────────────────────────────────────────────── */
+.lesson-nav{display:flex;gap:8px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border);flex-wrap:wrap}
+.lesson-nav-btn{background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:10px 20px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
+.lesson-nav-btn:hover{color:var(--text);border-color:var(--border2)}
+.lesson-nav-btn.primary{background:var(--phaseb);border-color:var(--phase);color:var(--phased)}
+.lesson-nav-btn.primary:hover{background:#fed7aa}
+.mark-done-btn{margin-left:auto;background:var(--greenb);border:1px solid #a7f3d0;border-radius:99px;padding:10px 20px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:var(--greend);cursor:pointer;transition:all .15s}
+.mark-done-btn:hover{background:#a7f3d0}
+.mark-done-btn.done{background:var(--green);border-color:var(--greend);color:#fff}
+
+/* ── ASCII DIAGRAM ───────────────────────────────────────────────────────── */
+.ascii-wrap{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;overflow-x:auto}
+.ascii-wrap pre{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#334155;line-height:1.6;white-space:pre}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────────────── */
+@media(max-width:700px){
+  .page,.hero{padding:24px 16px 60px}
+  .hero-grid{margin:0 16px 28px;grid-template-columns:1fr 1fr}
+  h1{font-size:34px}
+  .page-title{font-size:22px}
+  .lesson-nav{flex-direction:column}
+  .mark-done-btn{margin-left:0}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ NAV -->
+<nav>
+  <div class="nav-logo">🔬 DB·<span>INTERNALS</span></div>
+  <div class="nav-tab active" id="tab-home" onclick="goTo('home')">Home</div>
+  <div class="nav-tab" id="tab-l1" onclick="goTo('l1')">01</div>
+  <div class="nav-tab" id="tab-l2" onclick="goTo('l2')">02</div>
+  <div class="nav-tab" id="tab-l3" onclick="goTo('l3')">03</div>
+  <div class="nav-tab" id="tab-l4" onclick="goTo('l4')">04</div>
+  <div class="nav-tab" id="tab-l5" onclick="goTo('l5')">05</div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ HOME -->
+<div id="page-home" class="page active">
+<div class="hero">
+  <div class="phase-pill"><span class="phase-pill-dot"></span><span class="phase-pill-text">Phase 04 · Database Internals · Interview Weight: MEDIUM · 13h</span></div>
+  <h1>Database<br><span>Internals</span></h1>
+  <p class="hero-sub">What separates an administrator from a developer. When Nietsch asks "how does InnoDB handle a crash?" or "why is the history list length rising?" — these are the answers. Pages, MVCC, WAL, and the anatomy of every deadlock your pager has ever woken you for.</p>
+  <div class="hero-chips">
+    <div class="hero-chip">⏱ <strong>13 hours total</strong></div>
+    <div class="hero-chip">📋 <strong>5 lessons</strong></div>
+    <div class="hero-chip">🎯 <strong>MEDIUM priority</strong></div>
+    <div class="hero-chip">🗄️ <strong>MariaDB / InnoDB</strong></div>
+  </div>
+</div>
+<div class="hero-grid">
+  <div class="hero-card c-orange" onclick="goTo('l1')">
+    <div class="hero-card-icon" style="background:var(--phaseb)">📦</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--phase)">01 · 3h</div>
+      <div class="hero-card-title">Storage &amp; InnoDB Architecture</div>
+      <div class="status" style="background:var(--phaseb);color:var(--phased)" id="st-l1">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-blue" onclick="goTo('l2')">
+    <div class="hero-card-icon" style="background:var(--blueb)">🔄</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--blue)">02 · 3h</div>
+      <div class="hero-card-title">MVCC &amp; Concurrency Control</div>
+      <div class="status" style="background:var(--blueb);color:var(--blued)" id="st-l2">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-purple" onclick="goTo('l3')">
+    <div class="hero-card-icon" style="background:var(--purpleb)">📝</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--purple)">03 · 3h</div>
+      <div class="hero-card-title">WAL, Binlog &amp; Crash Recovery</div>
+      <div class="status" style="background:var(--purpleb);color:var(--purple)" id="st-l3">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-teal" onclick="goTo('l4')">
+    <div class="hero-card-icon" style="background:var(--tealb)">🔒</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--teal)">04 · 3h</div>
+      <div class="hero-card-title">Locking, Deadlocks &amp; Gap Locks</div>
+      <div class="status" style="background:var(--tealb);color:var(--teal)" id="st-l4">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+  <div class="hero-card c-green" onclick="goTo('l5')">
+    <div class="hero-card-icon" style="background:var(--greenb)">🎤</div>
+    <div class="hero-card-body">
+      <div class="hero-card-num" style="color:var(--green)">05 · 1h</div>
+      <div class="hero-card-title">Interview Q&amp;A + Scenarios</div>
+      <div class="status" style="background:var(--greenb);color:var(--greend)" id="st-l5">Not started</div>
+    </div>
+    <div class="hero-card-arrow">›</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     LESSON 1 — Storage: Pages, Tablespaces & InnoDB Architecture
+════════════════════════════════════════════════════════════════════════ -->
+<div id="page-l1" class="page">
+<div class="page-header">
+  <div class="page-header-top">
+    <div>
+      <div class="lesson-num">Phase 04 · Lesson 01 · 3h</div>
+      <div class="page-title">Storage: Pages, Tablespaces &amp; InnoDB Architecture</div>
+    </div>
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+  </div>
+  <p class="page-desc">InnoDB doesn't think in rows — it thinks in 16KB pages. Understanding pages, the buffer pool, tablespaces, and the clustered index is the difference between guessing why a query is slow and knowing. This is the foundation every other internal concept builds on.</p>
+</div>
+
+<div class="expand-bar">
+  <span class="expand-bar-label">Click any section to expand</span>
+  <button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button>
+</div>
+
+<!-- Why this matters -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚡ Why This Matters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">When Nietsch asks "why is your buffer pool hit ratio low?" or "why is this query doing a full table scan despite an index?" — both answers live in InnoDB's page architecture. At OS GmbH, where 24/7 DB infrastructure means any performance regression pages the on-call DBA at 3am, understanding the buffer pool and clustered index is non-negotiable. For Morafek CareMate EHR, the DSGVO audit trail must be readable under load — only possible if hot pages stay in RAM.</p>
+    <div class="callout interview">
+      <div class="lbl">⚓ Interview Anchor</div>
+      <p>"InnoDB stores data in 16KB pages — the clustered index IS the table, ordered by primary key on disk. A secondary index lookup costs two B-tree traversals: secondary index leaf → PK value, then PK B-tree → data row. The buffer pool is a page cache — we tune it to keep hit ratio above 99%."</p>
+    </div>
+  </div>
+</div>
+
+<!-- Core Concepts -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🧠 Core Concepts<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="concepts">
+      <div class="concept orange">
+        <div class="concept-name">Pages — the fundamental unit of I/O</div>
+        <div class="concept-desc">InnoDB reads and writes data in fixed-size 16KB pages. A single disk read always retrieves a full page, regardless of how many rows you need from it. Rows smaller than half a page are stored fully inline; larger rows overflow to separate pages (off-page columns). <br><br><strong>EHR:</strong> A <code style="font-family:'JetBrains Mono',monospace;font-size:11px">vitals</code> row (~80 bytes) means ~200 rows per 16KB page. Fetching one patient's 50 vitals touches ≈1 page (sequential reads) when data is on the clustered index.<br><strong>OS/DB:</strong> The <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ticket_scans</code> table accumulates millions of rows/day — page density matters enormously for buffer pool efficiency.</div>
+      </div>
+      <div class="concept blue">
+        <div class="concept-name">Buffer Pool — the most important knob you have</div>
+        <div class="concept-desc">The buffer pool is an in-memory cache of InnoDB pages. On every read, InnoDB first checks the buffer pool (cache hit = no disk I/O). On a cache miss, it reads the page from disk and loads it into the pool. The hit ratio should exceed 99% in production. Setting <code style="font-family:'JetBrains Mono',monospace;font-size:11px">innodb_buffer_pool_size</code> to ~70–80% of RAM is standard.<br><br><strong>EHR:</strong> CareMate's 16GB server: buffer pool = 12G. Patient records and vital sign pages stay warm — API response times drop from 80ms to 4ms.<br><strong>OS/DB:</strong> Fraport 128GB nodes: buffer pool = 96G. At peak operations, 99.97% hit ratio keeps query latency under 2ms for the ticketing engine.</div>
+      </div>
+      <div class="concept purple">
+        <div class="concept-name">Clustered Index — the table IS the index</div>
+        <div class="concept-desc">InnoDB organises the table data itself as a B-tree keyed on the primary key. There is no separate "data file" — the PK B-tree leaves contain the full row data. This means: PK lookups are single-traversal. Range scans on PK are sequential on disk (fast). Secondary index lookups require two traversals. Choosing a bad PK causes random I/O and page fragmentation.<br><br><strong>EHR:</strong> <code style="font-family:'JetBrains Mono',monospace;font-size:11px">patients(id INT AUTO_INCREMENT)</code> — sequential PK inserts never fragment the clustered index.<br><strong>OS/DB:</strong> Using a UUID as PK on <code style="font-family:'JetBrains Mono',monospace;font-size:11px">bookings</code> causes random page writes and 50% buffer pool waste — always use sequential IDs or ULIDs on high-write tables.</div>
+      </div>
+      <div class="concept teal">
+        <div class="concept-name">Tablespaces — where data physically lives</div>
+        <div class="concept-desc">By default (<code style="font-family:'JetBrains Mono',monospace;font-size:11px">innodb_file_per_table=ON</code>), each table gets its own <code style="font-family:'JetBrains Mono',monospace;font-size:11px">.ibd</code> file. The system tablespace (<code style="font-family:'JetBrains Mono',monospace;font-size:11px">ibdata1</code>) still holds the data dictionary and undo segments (until MariaDB 10.6+ where undo is separate). File-per-table enables: reclaiming disk space with OPTIMIZE TABLE, faster DROP TABLE, partial backups.<br><br><strong>EHR:</strong> Archiving old audit records from <code style="font-family:'JetBrains Mono',monospace;font-size:11px">visits_audit</code> to cold storage is simpler with file-per-table — OPTIMIZE TABLE reclaims the freed space.<br><strong>OS/DB:</strong> With shared tablespace, DROP TABLE on a 500GB historical table doesn't release disk space — file-per-table is mandatory on OS's infrastructure.</div>
+      </div>
+      <div class="concept green">
+        <div class="concept-name">Row Formats — DYNAMIC vs COMPACT</div>
+        <div class="concept-desc">MariaDB InnoDB default is DYNAMIC (from MariaDB 10.1+). DYNAMIC stores overflow columns off-page with only a 20-byte pointer inline. COMPACT stores the first 768 bytes inline. DYNAMIC is better for tables with TEXT/BLOB/JSON columns — avoids double-reading large fields. Row format affects: row size, overflow threshold, and maximum index key length (3072 bytes with DYNAMIC).<br><br><strong>EHR:</strong> <code style="font-family:'JetBrains Mono',monospace;font-size:11px">visits.notes</code> is TEXT — DYNAMIC stores it off-page, keeping the main B-tree pages lean and cache-friendly.<br><strong>OS/DB:</strong> Ticket JSON payloads in <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ticket_scans</code> (if stored as JSON column) similarly benefit from DYNAMIC off-page storage.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Deep Dive -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔬 Deep Dive — InnoDB Architecture<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout info"><div class="lbl">ℹ️ Architecture</div><p>Understanding the internal memory and disk components of InnoDB helps you diagnose performance issues before they become 3am incidents.</p></div>
+    <div class="ascii-wrap"><pre>
+ ┌──────────────────── Buffer Pool (RAM) ─────────────────────┐
+ │                                                             │
+ │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
+ │  │  Data Pages │  │ Index Pages │  │ Undo Pages  │        │
+ │  │  (B-tree    │  │  (Secondary │  │  (old row   │        │
+ │  │   leaves)   │  │   indexes)  │  │  versions)  │        │
+ │  └─────────────┘  └─────────────┘  └─────────────┘        │
+ │                                                             │
+ │  LRU List: young (hot) ──────────────────► old (cold)      │
+ │  Flush List: dirty pages waiting to be written to disk     │
+ └──────────────────────────────────────┬────────────────────-┘
+                                        │ background flush
+                                        ▼
+ ┌──── InnoDB Redo Log (iblogfile0/1) ──────┐ ← WAL: every
+ │  Sequential circular buffer on disk      │   commit written
+ │  innodb_log_file_size × 2 files          │   here first
+ └─────────────────────────────┬────────────┘
+                               │ checkpoint
+                               ▼
+ ┌──── Data Files (.ibd tablespace files) ──────────────────┐
+ │  Clustered index B-tree (PK → row data)                  │
+ │  Secondary indexes B-tree (col → PK ref)                 │
+ │  ibdata1: system tablespace, undo logs (pre-10.6)        │
+ └──────────────────────────────────────────────────────────┘</pre></div>
+    <p style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:12px">The critical insight: a <strong>committed write</strong> only needs to hit the redo log, not the data file. Pages in the buffer pool are marked "dirty" and flushed asynchronously. This is why InnoDB is fast — sequential log writes are orders of magnitude faster than random data file writes.</p>
+  </div>
+</div>
+
+<!-- EHR Example -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🩺 EHR Example — Morafek CareMate<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout phr"><div class="lbl">🩺 Context</div><p>Diagnosing buffer pool efficiency on the CareMate production server — monitoring hit ratio, finding fragmented tables, and checking tablespace sizes to plan archival.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm">-- 1. Buffer pool hit ratio — should be above 99%</span>
+<span class="kw">SELECT</span>
+  <span class="fn">VARIABLE_VALUE</span> <span class="kw">INTO</span> @reads
+  <span class="kw">FROM</span> information_schema.GLOBAL_STATUS
+  <span class="kw">WHERE</span> VARIABLE_NAME <span class="op">=</span> <span class="str">'Innodb_buffer_pool_reads'</span>;
+
+<span class="kw">SELECT</span>
+  <span class="fn">VARIABLE_VALUE</span> <span class="kw">INTO</span> @read_requests
+  <span class="kw">FROM</span> information_schema.GLOBAL_STATUS
+  <span class="kw">WHERE</span> VARIABLE_NAME <span class="op">=</span> <span class="str">'Innodb_buffer_pool_read_requests'</span>;
+
+<span class="kw">SELECT</span>
+  <span class="fn">ROUND</span>((<span class="num">1</span> <span class="op">-</span> (@reads / @read_requests)) * <span class="num">100</span>, <span class="num">2</span>) <span class="kw">AS</span> hit_ratio_pct;
+<span class="cm">-- Target: > 99.0%. Below 97% = buffer pool too small or data too large</span>
+
+<span class="cm">-- 2. Find fragmented CareMate tables (high data_free = fragmentation)</span>
+<span class="kw">SELECT</span>
+  table_name,
+  <span class="fn">ROUND</span>(data_length / <span class="num">1024</span> / <span class="num">1024</span>, <span class="num">1</span>)     <span class="kw">AS</span> data_mb,
+  <span class="fn">ROUND</span>(data_free   / <span class="num">1024</span> / <span class="num">1024</span>, <span class="num">1</span>)     <span class="kw">AS</span> free_mb,
+  <span class="fn">ROUND</span>(data_free / data_length * <span class="num">100</span>, <span class="num">1</span>) <span class="kw">AS</span> fragmentation_pct
+<span class="kw">FROM</span> information_schema.TABLES
+<span class="kw">WHERE</span> table_schema <span class="op">=</span> <span class="str">'carematephr'</span>
+  <span class="kw">AND</span> engine <span class="op">=</span> <span class="str">'InnoDB'</span>
+  <span class="kw">AND</span> data_free <span class="op">></span> <span class="num">50</span> * <span class="num">1024</span> * <span class="num">1024</span>   <span class="cm">-- only tables with >50MB free space</span>
+<span class="kw">ORDER BY</span> fragmentation_pct <span class="kw">DESC</span>;
+
+<span class="cm">-- 3. Rebuild fragmented table (reclaims disk space, re-sorts rows)</span>
+<span class="cm">-- Warning: acquires MDL lock. Use pt-online-schema-change on production!</span>
+<span class="kw">OPTIMIZE TABLE</span> <span class="tb">visits</span>;
+
+<span class="cm">-- 4. Verify row format on all CareMate tables</span>
+<span class="kw">SELECT</span> table_name, row_format, create_options
+<span class="kw">FROM</span> information_schema.TABLES
+<span class="kw">WHERE</span> table_schema <span class="op">=</span> <span class="str">'carematephr'</span>
+  <span class="kw">AND</span> row_format <span class="op">!=</span> <span class="str">'Dynamic'</span>;   <span class="cm">-- should return 0 rows on modern MariaDB</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- OS/DB Example -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — Deutsche Bahn<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout db"><div class="lbl">🚂 OS/DB Context</div><p>On OS GmbH's Fraport DB cluster: monitoring buffer pool dirty pages, calculating per-table disk allocation, and detecting secondary index overhead on high-write tables like ticket_scans.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm">-- 1. Buffer pool status — dirty pages indicate pending I/O pressure</span>
+<span class="kw">SELECT</span>
+  VARIABLE_NAME,
+  <span class="fn">FORMAT</span>(<span class="fn">VARIABLE_VALUE</span>, <span class="num">0</span>) <span class="kw">AS</span> val
+<span class="kw">FROM</span> information_schema.GLOBAL_STATUS
+<span class="kw">WHERE</span> VARIABLE_NAME <span class="kw">IN</span> (
+  <span class="str">'Innodb_buffer_pool_pages_total'</span>,   <span class="cm">-- total pages in pool</span>
+  <span class="str">'Innodb_buffer_pool_pages_data'</span>,    <span class="cm">-- pages holding data</span>
+  <span class="str">'Innodb_buffer_pool_pages_dirty'</span>,   <span class="cm">-- dirty (not yet flushed)</span>
+  <span class="str">'Innodb_buffer_pool_pages_free'</span>,    <span class="cm">-- available pages</span>
+  <span class="str">'Innodb_buffer_pool_reads'</span>,         <span class="cm">-- disk reads (cache misses)</span>
+  <span class="str">'Innodb_buffer_pool_read_requests'</span>  <span class="cm">-- total read attempts</span>
+);
+<span class="cm">-- dirty_pages > 20% of pool = I/O subsystem can't keep up → tune innodb_io_capacity</span>
+
+<span class="cm">-- 2. Largest tables in the OS operational DB</span>
+<span class="kw">SELECT</span>
+  table_name,
+  <span class="fn">ROUND</span>((data_length + index_length) / <span class="num">1024</span> / <span class="num">1024</span> / <span class="num">1024</span>, <span class="num">2</span>) <span class="kw">AS</span> total_gb,
+  <span class="fn">ROUND</span>(index_length / data_length * <span class="num">100</span>, <span class="num">1</span>)                  <span class="kw">AS</span> index_overhead_pct
+<span class="kw">FROM</span> information_schema.TABLES
+<span class="kw">WHERE</span> table_schema <span class="op">=</span> <span class="str">'railway_ops'</span>
+  <span class="kw">AND</span> engine <span class="op">=</span> <span class="str">'InnoDB'</span>
+<span class="kw">ORDER BY</span> total_gb <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="num">10</span>;
+<span class="cm">-- index_overhead_pct > 100% means indexes are bigger than data = too many indexes</span>
+
+<span class="cm">-- 3. Verify innodb_buffer_pool_size config (show effective value)</span>
+<span class="kw">SHOW VARIABLES LIKE</span> <span class="str">'innodb_buffer_pool%'</span>;
+<span class="cm">-- innodb_buffer_pool_size      = 96G   (on 128GB Fraport nodes)
+-- innodb_buffer_pool_instances = 16    (one per 6GB, reduces mutex contention)
+-- innodb_buffer_pool_chunk_size = set automatically</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Common Pitfalls -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚠️ Common Pitfalls<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout warn"><div class="lbl">⚠ Pitfall — UUID Primary Keys</div><p>Using UUID (version 4) as a primary key on a high-write InnoDB table causes random-order page writes. Because the clustered index is sorted by PK, every insert lands in a random position — blowing the buffer pool with pages that are only 50% full and causing constant random I/O. Use AUTO_INCREMENT or UUID v7 / ULID (which are time-ordered) instead.</p></div>
+    <div class="callout warn"><div class="lbl">⚠ Pitfall — Buffer Pool Size Too Small</div><p>Setting <code style="font-family:'JetBrains Mono',monospace;font-size:11px">innodb_buffer_pool_size</code> to the default 128MB is catastrophic on any real workload. Every query that touches hot data hits disk. Rule of thumb: 70–80% of available RAM. On a 16GB server, set 12G. Also set <code style="font-family:'JetBrains Mono',monospace;font-size:11px">innodb_buffer_pool_instances = 8</code> (or 1 per GB) to reduce internal mutex contention with multiple threads.</p></div>
+    <div class="callout warn"><div class="lbl">⚠ Pitfall — OPTIMIZE TABLE on Large Production Tables</div><p>OPTIMIZE TABLE rebuilds the table and acquires a metadata lock (MDL) for the duration — blocking all reads and writes. On a 50GB table this takes 30+ minutes. In production, use <code style="font-family:'JetBrains Mono',monospace;font-size:11px">pt-online-schema-change</code> from Percona Toolkit or MariaDB's own online DDL. Never run OPTIMIZE TABLE directly on an OS GmbH production table without a maintenance window.</p></div>
+  </div>
+</div>
+
+<!-- Challenge -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🧩 Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Calculate the buffer pool hit ratio and interpret the result</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">Run the buffer pool hit ratio query. Your result shows: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Innodb_buffer_pool_reads = 45,000</code> and <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Innodb_buffer_pool_read_requests = 3,200,000</code>. Calculate the hit ratio. Is this acceptable? What would you do if it was not?</p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+        <div class="answer">
+          <div class="callout tip"><div class="lbl">✓ Answer</div><p>Hit ratio = (1 − 45000/3200000) × 100 = 98.6%. This is borderline — acceptable in some contexts but concerning in a 24/7 operational environment. Acceptable threshold is 99%+. If below 99%: (1) Increase innodb_buffer_pool_size — check available RAM with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">free -h</code>. (2) Check for full table scans with the slow query log polluting the pool with cold data. (3) Use innodb_buffer_pool_dump_at_shutdown / innodb_buffer_pool_load_at_startup to warm the pool after a restart.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('home')">← Home</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('l2')">Next: MVCC →</button>
+  <button class="mark-done-btn" id="done-l1" onclick="markDone('l1')">Mark complete ✓</button>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     LESSON 2 — MVCC & Concurrency Control
+════════════════════════════════════════════════════════════════════════ -->
+<div id="page-l2" class="page">
+<div class="page-header">
+  <div class="page-header-top">
+    <div>
+      <div class="lesson-num">Phase 04 · Lesson 02 · 3h</div>
+      <div class="page-title">MVCC &amp; Concurrency Control</div>
+    </div>
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+  </div>
+  <p class="page-desc">Multi-Version Concurrency Control is why MariaDB reads never block writes. Instead of locking rows for reads, InnoDB keeps old versions in the undo log and serves them to readers via snapshot isolation. When Nietsch asks about the "history list length" alarm — this is the mechanism behind it.</p>
+</div>
+
+<div class="expand-bar">
+  <span class="expand-bar-label">Click any section to expand</span>
+  <button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button>
+</div>
+
+<div class="callout info" style="margin-bottom:18px"><div class="lbl">⏪ Backward Reference — Phase 03, Lesson 04</div><p>Phase 03 (Lesson 04) covered transaction isolation levels and FOR UPDATE from the SQL developer's perspective. This lesson explains the engine mechanism underneath those behaviors — undo logs, read views, and the history list. The two lessons complement each other; neither is a substitute for the other.</p></div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚡ Why This Matters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">On OS GmbH's 24/7 railway operations database, thousands of simultaneous reads and writes happen every second. MVCC is why readers (reporting queries, FHIR export, analytics) don't block writers (new bookings, ticket scans). Understanding MVCC also explains the most common 3am incident at high-throughput databases: a long-running transaction causing the undo log and history list length to balloon, triggering "InnoDB table full" errors and degrading every write on the server.</p>
+    <div class="callout interview">
+      <div class="lbl">⚓ Interview Anchor</div>
+      <p>"MVCC means readers never block writers. When a row is updated, InnoDB writes a new version and keeps the old in the undo log. Readers with an older snapshot transparently see the old version. The danger is long-running transactions — they prevent the purge thread from cleaning old versions, causing history list length to grow, disk to fill, and performance to degrade."</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🧠 Core Concepts<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="concepts">
+      <div class="concept orange">
+        <div class="concept-name">MVCC — the core promise</div>
+        <div class="concept-desc">Multi-Version Concurrency Control keeps multiple versions of a row simultaneously. When Transaction A updates a row, InnoDB does NOT overwrite it in place — it creates a new version and chains the old version into the undo log. Transaction B that started before A's commit reads the old version. This means SELECT never waits for an UPDATE to commit, and UPDATE never waits for a SELECT to finish.<br><br><strong>EHR:</strong> A CareMate reporting query reading 6 months of vitals runs for 30 seconds. During those 30 seconds, nurses continue entering new vitals without blocking.<br><strong>OS/DB:</strong> Nightly revenue reports run alongside real-time ticket sales. MVCC makes this possible without application-layer coordination.</div>
+      </div>
+      <div class="concept blue">
+        <div class="concept-name">Undo Log — where old versions live</div>
+        <div class="concept-desc">The undo log is a sequential log of "how to undo" each change. For MVCC, it stores the before-image of modified rows. Each row version has a DB_TRX_ID (the transaction that created it) and a DB_ROLL_PTR (pointer to the previous version in the undo log). A read view (snapshot) is established at transaction start — InnoDB walks the undo log chain backward until it finds a version visible to the snapshot.<br><br><strong>EHR:</strong> If a nurse corrects a patient's blood pressure reading (UPDATE), the original value stays in the undo log for any concurrent reads that started before the update.<br><strong>OS/DB:</strong> Undo log is stored in the system tablespace (ibdata1) on older MariaDB — it cannot shrink. Keep transactions short to prevent unbounded growth.</div>
+      </div>
+      <div class="concept purple">
+        <div class="concept-name">Read View — your transaction's snapshot</div>
+        <div class="concept-desc">Under REPEATABLE READ (MariaDB default), a read view is created at the first statement of a transaction. It captures: the current transaction ID, the list of active transaction IDs, and the maximum committed transaction ID. Any row version created by a transaction in the "active" list is invisible — the reader walks the undo log to find the last committed version visible before its snapshot.<br><br><strong>EHR:</strong> A FHIR export transaction opened at 14:00 sees a consistent snapshot as of 14:00, even if dozens of vitals are updated during the export. The FHIR document is internally consistent.<br><strong>OS/DB:</strong> Under READ COMMITTED (non-default), a new read view is created per statement — different statements in the same transaction can see different committed data. This is sometimes desired for reporting but can cause phantom rows.</div>
+      </div>
+      <div class="concept red">
+        <div class="concept-name">History List Length — the MVCC danger metric</div>
+        <div class="concept-desc">The purge thread periodically removes undo log entries for row versions that are no longer needed by any active transaction. If a long-running transaction holds a read view from the past, the purge thread cannot advance — all undo entries since that snapshot must be kept. This causes history list length to grow. When it exceeds ~10,000 it signals serious trouble: undo log filling disk, queries slowing as version chains lengthen.<br><br><strong>EHR:</strong> A developer accidentally left a transaction open via a debug session at 09:00. By 15:00 history list length is 50,000. Every write to CareMate is slower — a 6-hour open transaction holds the purge back.<br><strong>OS/DB:</strong> On KRITIS infrastructure, history list > 1,000 triggers an alert. The fix: find the oldest transaction (INNODB_TRX) and kill it.</div>
+      </div>
+      <div class="concept green">
+        <div class="concept-name">InnoDB vs PostgreSQL MVCC — a key comparison</div>
+        <div class="concept-desc">Both databases implement MVCC but with very different mechanics. InnoDB stores old versions in the undo log (separate from the table) — cleanup is handled by the purge thread, transparent to users. PostgreSQL stores old row versions (dead tuples) inline in the heap table — cleanup requires explicit VACUUM. InnoDB advantage: no manual VACUUM, no table bloat from dead tuples. PostgreSQL advantage: undo log size doesn't affect table size or index reads.<br><br><strong>EHR:</strong> CareMate uses MariaDB — no VACUUM to schedule. The equivalent concern is monitoring history list length and purge thread lag.<br><strong>OS/DB:</strong> If OS were on PostgreSQL, autovacuum would be a critical operational concern — especially for high-UPDATE tables like booking status.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔬 Deep Dive — MVCC Version Chain<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="ascii-wrap"><pre>
+MVCC version chain — what InnoDB stores for a single row
+
+Current row in clustered index B-tree (most recent committed version):
+┌─────────────────────────────────────────────────────────┐
+│ id=42 | systolic=145 | DB_TRX_ID=1050 | DB_ROLL_PTR ───┼──┐
+└─────────────────────────────────────────────────────────┘  │
+                                                             │
+Undo log (previous versions, chained backward):             │
+◄─────────────────────────────────────────────────────────  │
+┌───────────────────────────────────────────┐               │
+│ id=42 | systolic=138 | DB_TRX_ID=1040  ◄─┼───────────────┘
+│                       | DB_ROLL_PTR ────┼──┐
+└───────────────────────────────────────────┘ │
+┌───────────────────────────────────────────┐ │
+│ id=42 | systolic=130 | DB_TRX_ID=1020  ◄─┼─┘
+└───────────────────────────────────────────┘
+(end of chain — this is the original insert version)
+
+A SELECT in transaction with read_view trx_min=1045 sees:
+  - TRX_ID=1050 ≥ 1045 → invisible (committed after our snapshot)
+  - TRX_ID=1040 &lt; 1045 → VISIBLE → returns systolic=138 ✓</pre></div>
+    <p style="font-size:12px;color:var(--muted);line-height:1.7">The longer the version chain, the slower old-version reads become — InnoDB must walk more undo log pointers. This is another reason long-running transactions hurt even read performance: they force other readers to walk longer chains.</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🩺 EHR Example — Morafek CareMate<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout phr"><div class="lbl">🩺 Context</div><p>Monitoring MVCC health on CareMate: finding long-running transactions, checking history list length, and understanding what isolation level each session uses.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm">-- 1. Find long-running transactions (the #1 cause of MVCC trouble)</span>
+<span class="kw">SELECT</span>
+  trx_id,
+  trx_state,                                         <span class="cm">-- RUNNING or LOCK WAIT</span>
+  trx_started,
+  <span class="fn">TIMESTAMPDIFF</span>(<span class="kw">SECOND</span>, trx_started, <span class="fn">NOW</span>()) <span class="kw">AS</span> age_seconds,
+  trx_mysql_thread_id                               <span class="cm">-- thread to KILL if needed</span>
+<span class="kw">FROM</span> information_schema.INNODB_TRX
+<span class="kw">ORDER BY</span> trx_started <span class="kw">ASC</span>                            <span class="cm">-- oldest first</span>
+<span class="kw">LIMIT</span> <span class="num">10</span>;
+<span class="cm">-- Any transaction older than 300 seconds on a production OLTP system is suspicious</span>
+
+<span class="cm">-- 2. Check history list length (undo log backlog)</span>
+<span class="kw">SHOW ENGINE INNODB STATUS</span>\G
+<span class="cm">-- In the output, look for:
+-- History list length 47
+-- TRANSACTIONS section will show which trx is preventing purge
+-- History list > 1000 = investigate immediately
+-- History list > 10000 = likely causing real performance impact</span>
+
+<span class="cm">-- 3. Check current transaction isolation level</span>
+<span class="kw">SELECT</span> @@global.tx_isolation, @@session.tx_isolation;
+<span class="cm">-- CareMate default: REPEATABLE-READ (safest for EHR — consistent reads)
+-- If a session uses READ-COMMITTED: each statement gets fresh snapshot</span>
+
+<span class="cm">-- 4. Verify purge thread is keeping up</span>
+<span class="kw">SHOW GLOBAL STATUS LIKE</span> <span class="str">'Innodb_history_list_length'</span>;
+<span class="cm">-- MariaDB 10.5+: directly queryable without parsing SHOW ENGINE INNODB STATUS</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — Deutsche Bahn<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout db"><div class="lbl">🚂 OS/DB Context</div><p>On OS GmbH's railway operations cluster, monitoring MVCC under high concurrency: the bookings table sees thousands of UPDATE statements per second. Understanding how isolation levels interact with MaxScale read/write split is critical.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm">-- 1. Show all active transactions with their lock info</span>
+<span class="kw">SELECT</span>
+  t.trx_id,
+  t.trx_state,
+  t.trx_started,
+  <span class="fn">TIMESTAMPDIFF</span>(<span class="kw">MINUTE</span>, t.trx_started, <span class="fn">NOW</span>()) <span class="kw">AS</span> age_min,
+  t.trx_rows_locked,
+  t.trx_rows_modified,
+  t.trx_query                                <span class="cm">-- current or last SQL statement</span>
+<span class="kw">FROM</span> information_schema.INNODB_TRX t
+<span class="kw">ORDER BY</span> t.trx_started <span class="kw">ASC</span>;
+
+<span class="cm">-- 2. Demonstrate MVCC in action — two sessions simultaneously</span>
+<span class="cm">-- SESSION A (booking system — updates seat status):</span>
+<span class="kw">START TRANSACTION</span>;
+<span class="kw">UPDATE</span> <span class="tb">bookings</span> <span class="kw">SET</span> status <span class="op">=</span> <span class="str">'boarded'</span>
+<span class="kw">WHERE</span> id <span class="op">=</span> <span class="num">88341</span>;
+<span class="cm">-- NOT COMMITTED YET</span>
+
+<span class="cm">-- SESSION B (conductor app — reads same booking):</span>
+<span class="kw">SELECT</span> status <span class="kw">FROM</span> <span class="tb">bookings</span> <span class="kw">WHERE</span> id <span class="op">=</span> <span class="num">88341</span>;
+<span class="cm">-- Returns: 'confirmed' (old version via MVCC) — no blocking!</span>
+
+<span class="cm">-- SESSION A commits:</span>
+<span class="kw">COMMIT</span>;
+
+<span class="cm">-- SESSION B (if REPEATABLE READ) still sees 'confirmed' — snapshot locked at start
+-- SESSION B (if READ COMMITTED) would now see 'boarded' on next SELECT</span>
+
+<span class="cm">-- 3. Set per-session isolation for analytics (READ COMMITTED = less locking overhead)</span>
+<span class="kw">SET SESSION</span> TRANSACTION ISOLATION LEVEL READ COMMITTED;
+<span class="cm">-- Used by MaxScale when routing reporting queries to read replicas</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚠️ Common Pitfalls<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout warn"><div class="lbl">⚠ Pitfall — BEGIN but never COMMIT</div><p>Application code that opens a transaction and crashes (or the developer closes their SQL client) leaves an idle open transaction. In REPEATABLE READ, this holds a read view from the moment it started — preventing the purge thread from advancing. On a busy system, the history list can reach tens of thousands within minutes. Always set <code style="font-family:'JetBrains Mono',monospace;font-size:11px">wait_timeout</code> and <code style="font-family:'JetBrains Mono',monospace;font-size:11px">interactive_timeout</code> to kill idle connections, and use connection poolers (MaxScale) that enforce timeouts.</p></div>
+    <div class="callout warn"><div class="lbl">⚠ Pitfall — Long Reads Block Purge</div><p>A read-only analytics query that runs for 2 hours holds a read view for 2 hours — even though it modifies no data. The purge thread cannot advance past the start of that query. During those 2 hours, undo log grows, every write to any table gets a longer version chain, and disk may fill. On OS GmbH infrastructure, run long reports on a dedicated read replica with its own purge thread, not on the primary.</p></div>
+    <div class="callout warn"><div class="lbl">⚠ Pitfall — Checking History List Length Reactively</div><p>By the time you notice symptoms (slow writes, disk filling), the history list may already be at 100,000+. Monitor it proactively — add <code style="font-family:'JetBrains Mono',monospace;font-size:11px">Innodb_history_list_length</code> to Prometheus/Grafana with a warning threshold of 1,000 and a critical threshold of 10,000. Alert before it becomes a 3am incident.</p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🧩 Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Diagnose a rising history list length</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">SHOW ENGINE INNODB STATUS shows: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">History list length 8234</code>. Grafana shows this started rising 3 hours ago. Describe your diagnostic steps and resolution.</p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+        <div class="answer">
+          <div class="callout tip"><div class="lbl">✓ Answer</div>
+            <ol style="font-size:12px;color:#065f46;line-height:1.7;padding-left:16px">
+              <li>Query INNODB_TRX ordered by trx_started — find the oldest transaction.</li>
+              <li>Check trx_mysql_thread_id to identify the connection.</li>
+              <li>Run SHOW PROCESSLIST to find the associated client host/user.</li>
+              <li>If the transaction is idle (trx_query = NULL) and old → KILL &lt;thread_id&gt;.</li>
+              <li>Monitor history list — it should start dropping immediately as purge thread catches up.</li>
+              <li>Prevention: set wait_timeout=300, add app-level transaction timeouts, check for missing COMMIT in application code.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('l1')">← Storage Architecture</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('l3')">Next: WAL & Crash Recovery →</button>
+  <button class="mark-done-btn" id="done-l2" onclick="markDone('l2')">Mark complete ✓</button>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     LESSON 3 — WAL, Binlog & Crash Recovery
+════════════════════════════════════════════════════════════════════════ -->
+<div id="page-l3" class="page">
+<div class="page-header">
+  <div class="page-header-top">
+    <div>
+      <div class="lesson-num">Phase 04 · Lesson 03 · 3h</div>
+      <div class="page-title">WAL, Binlog &amp; Crash Recovery</div>
+    </div>
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+  </div>
+  <p class="page-desc">How MariaDB guarantees your data survives a power cut. The Write-Ahead Log (InnoDB redo log) is the engine-level durability guarantee. The binary log is the server-level replay log for replication and PITR. Understanding both — and especially the single variable that controls the trade-off between safety and speed — is core OS GmbH interview material.</p>
+</div>
+
+<div class="expand-bar">
+  <span class="expand-bar-label">Click any section to expand</span>
+  <button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚡ Why This Matters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">OS GmbH operates KRITIS infrastructure — critical national infrastructure for Germany's railway network. Zero data loss is not a nice-to-have; it is a regulatory requirement. The WAL and binary log are the mechanisms that make this possible. Knowing what <code style="font-family:'JetBrains Mono',monospace;font-size:11px">innodb_flush_log_at_trx_commit=1</code> means and why the alternatives are dangerous is the kind of nuance Nietsch will probe for. For Morafek CareMate EHR, DSGVO mandates data integrity — a crash that loses committed patient data is a regulatory violation, not just a technical problem.</p>
+    <div class="callout interview">
+      <div class="lbl">⚓ Interview Anchor</div>
+      <p>"innodb_flush_log_at_trx_commit=1 means every COMMIT flushes the redo log to disk — that is the only fully ACID-safe setting. Value 0 flushes once per second (lose up to 1 second of commits on crash). Value 2 writes to OS buffer but not disk (lose up to 1 second on OS crash). For KRITIS infrastructure at OS GmbH, only value 1 is acceptable."</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🧠 Core Concepts<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="concepts">
+      <div class="concept orange">
+        <div class="concept-name">Write-Ahead Log (WAL) — durability before speed</div>
+        <div class="concept-desc">Before any data page is modified in the buffer pool, the change is written to the InnoDB redo log (a sequential file on disk). On COMMIT, the log entry is flushed. On crash, InnoDB replays the redo log to re-apply changes that were in the buffer pool but not yet written to data files. This is called crash recovery and happens automatically on next startup.<br><br><strong>EHR:</strong> If the CareMate server loses power mid-transaction, on restart InnoDB reads the redo log: committed transactions are replayed, uncommitted ones are rolled back using the undo log. No manual intervention needed.<br><strong>OS/DB:</strong> OS's Galera cluster writes redo log on every node — crash recovery on a restarted node replays the log before rejoining the cluster (IST path).</div>
+      </div>
+      <div class="concept blue">
+        <div class="concept-name">innodb_flush_log_at_trx_commit — the safety dial</div>
+        <div class="concept-desc"><strong>1 (default, safe):</strong> Log buffer → redo log file → fsync to disk on every COMMIT. Fully ACID-compliant. Slowest. <strong>2 (fast, some risk):</strong> Log buffer → OS buffer on COMMIT. OS flushes to disk once per second. Survives MariaDB crash but loses up to 1 second if OS crashes. <strong>0 (fastest, dangerous):</strong> Log buffer flushed once per second regardless of COMMIT. Can lose up to 1 second of commits even on clean shutdown. Never use 0 or 2 on KRITIS infrastructure.<br><br><strong>EHR:</strong> CareMate MUST use =1. A committed vital sign reading must survive a server crash — DSGVO auditing requires it.<br><strong>OS/DB:</strong> =1 with sync_binlog=1 is the combination for zero data loss on OS GmbH infrastructure.</div>
+      </div>
+      <div class="concept purple">
+        <div class="concept-name">Binary Log — server-level replay log</div>
+        <div class="concept-desc">The binary log is separate from the InnoDB redo log. It operates at the MariaDB server level, above the storage engine. It records every DDL and DML (in ROW format: the exact before/after row images). Uses: (1) Replication — primary sends binlog events to replicas. (2) PITR — replay binlog from last backup to target time. The binlog captures what changes were made and to which rows, not the internal page operations.<br><br><strong>EHR:</strong> CareMate runs with log_bin=ON. If a developer runs DELETE FROM vitals WHERE 1=1, we restore the last backup and replay the binlog up to T-1 second to recover all data.<br><strong>OS/DB:</strong> Galera cluster requires binlog_format=ROW — STATEMENT format is non-deterministic across nodes and will cause data divergence.</div>
+      </div>
+      <div class="concept teal">
+        <div class="concept-name">Checkpoints — when WAL gets applied to disk</div>
+        <div class="concept-desc">A checkpoint marks the point up to which dirty pages have been flushed from the buffer pool to disk. The redo log is circular — once a checkpoint advances, the log space before it can be reused. If dirty pages accumulate faster than InnoDB flushes them, the redo log fills up and MariaDB throttles writes to force a checkpoint. Tuning: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">innodb_log_file_size</code> controls how long recovery takes (larger = slower restart) but how much burst write capacity you have.<br><br><strong>EHR:</strong> innodb_log_file_size=512M is typical for CareMate. Larger values mean more data can be written before a checkpoint is forced — smoother throughput at the cost of longer crash recovery.<br><strong>OS/DB:</strong> On Fraport's high-throughput cluster: innodb_log_file_size=2G. Recovery after a crash takes ~5 minutes but avoids write stalls during peak operations.</div>
+      </div>
+      <div class="concept green">
+        <div class="concept-name">sync_binlog — the other durability knob</div>
+        <div class="concept-desc">sync_binlog=1 means the binary log is synced to disk on every transaction commit (via fsync). sync_binlog=0 lets the OS decide when to flush — fastest but risks losing binlog events on OS crash. For zero data loss replication and PITR integrity, use both innodb_flush_log_at_trx_commit=1 AND sync_binlog=1. These two together are called "the gold standard" for durable MariaDB configuration.<br><br><strong>EHR:</strong> Without sync_binlog=1, a crash could mean the binlog doesn't contain the last few committed transactions — PITR would miss them.<br><strong>OS/DB:</strong> OS GmbH production: always sync_binlog=1. The performance cost (one extra fsync per commit) is accepted because zero data loss is a regulatory requirement.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔬 Deep Dive — Write Path &amp; Crash Recovery<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="ascii-wrap"><pre>
+THE WRITE PATH — what happens on a single UPDATE + COMMIT
+
+Application: UPDATE vitals SET systolic=145 WHERE id=1001
+
+Step 1: InnoDB writes undo log entry (old value for MVCC + rollback)
+        undo log: "id=1001 had systolic=138"
+
+Step 2: Modify page in buffer pool (dirty page — NOT yet on disk)
+        buffer pool: page containing id=1001 updated to systolic=145
+
+Step 3: Write to InnoDB redo log buffer (in RAM)
+        redo log buffer: "page X, offset Y: systolic=138→145, trx=1050"
+
+COMMIT:
+Step 4a: innodb_flush_log_at_trx_commit=1 → fsync redo log to disk ✓
+Step 4b: sync_binlog=1 → write binlog event → fsync binlog to disk ✓
+Step 4c: Return "Query OK" to client
+
+Later (asynchronous):
+Step 5: Background thread flushes dirty page from buffer pool to .ibd file
+        (checkpoint advances — redo log space reclaimed)
+
+CRASH between Step 3 and Step 5:
+  → On restart, InnoDB finds redo log entry (fsynced in Step 4a)
+  → Replays: "page X, offset Y: apply systolic=145" → data file updated ✓
+  → Transaction is committed — data is safe ✓
+
+CRASH between Step 2 and Step 4a (flush_log=1):
+  → On restart, redo log has NO entry for this transaction
+  → InnoDB does NOT replay → systolic stays at old value
+  → Undo log says "id=1001 had systolic=138" → no rollback needed (nothing to undo)
+  → Data loss: 0 rows (the COMMIT never made it to log = transaction never committed)</pre></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🩺 EHR Example — Morafek CareMate<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout phr"><div class="lbl">🩺 Context</div><p>Verifying CareMate's durability configuration and demonstrating PITR workflow using mysqlbinlog — the recovery procedure for a catastrophic DELETE.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label bash">BASH + SQL</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm">-- Verify durability settings</span>
+<span class="kw">SHOW VARIABLES LIKE</span> <span class="str">'innodb_flush_log_at_trx_commit'</span>;  <span class="cm">-- must be 1</span>
+<span class="kw">SHOW VARIABLES LIKE</span> <span class="str">'sync_binlog'</span>;                        <span class="cm">-- must be 1</span>
+<span class="kw">SHOW VARIABLES LIKE</span> <span class="str">'log_bin'</span>;                            <span class="cm">-- must be ON</span>
+<span class="kw">SHOW VARIABLES LIKE</span> <span class="str">'binlog_format'</span>;                      <span class="cm">-- must be ROW</span>
+<span class="kw">SHOW BINARY LOGS</span>;                                          <span class="cm">-- list all binlog files</span>
+<span class="kw">SHOW MASTER STATUS</span>\G                                        <span class="cm">-- current file + position</span>
+
+<span class="cm">-- Scenario: Developer ran DELETE FROM vitals WHERE 1=1 at 14:37
+-- Last mariabackup full: 02:00 today
+-- Recovery: restore backup + replay binlog from 02:00 to 14:36:59</span>
+
+<span class="cm"># Step 1: Restore the full backup (on a recovery server!)</span>
+mariabackup --prepare --target-dir=/backups/full_today
+mariabackup --copy-back  --target-dir=/backups/full_today
+chown -R mysql:mysql /var/lib/mysql
+systemctl start mariadb
+
+<span class="cm"># Step 2: Replay binary log from backup endpoint to T-1 second</span>
+mysqlbinlog \
+  --start-datetime=<span class="str">"2024-06-01 02:00:00"</span> \
+  --stop-datetime=<span class="str">"2024-06-01 14:36:59"</span> \
+  /var/log/mysql/mariadb-bin.000041 \
+  /var/log/mysql/mariadb-bin.000042 \   <span class="cm"># include all binlog files in range</span>
+  | mysql -u root -p carematephr
+
+<span class="cm"># Step 3: Verify row counts match expectation</span>
+<span class="cm"># Step 4: Export only the recovered vitals table, import to production</span>
+mysqldump --single-transaction carematephr vitals > vitals_recovered.sql
+mysql -u root -p carematephr < vitals_recovered.sql</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — Deutsche Bahn<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout db"><div class="lbl">🚂 OS/DB Context</div><p>On OS GmbH's railway operations cluster: validating crash recovery settings across all Galera nodes and demonstrating binlog management for the PITR runbook.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label bash">BASH + SQL</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm"># /etc/mysql/mariadb.conf.d/50-server.cnf — production OS GmbH config</span>
+[mysqld]
+<span class="cm"># --- Durability (non-negotiable for KRITIS) ---</span>
+innodb_flush_log_at_trx_commit  = 1    <span class="cm"># fsync redo log every COMMIT</span>
+sync_binlog                     = 1    <span class="cm"># fsync binlog every COMMIT</span>
+log_bin                         = /var/log/mysql/mariadb-bin
+binlog_format                   = ROW  <span class="cm"># required for Galera</span>
+expire_logs_days                = 7    <span class="cm"># auto-purge after 7 days</span>
+max_binlog_size                 = 256M <span class="cm"># rotate files at 256MB</span>
+
+<span class="cm"># --- Redo log ---</span>
+innodb_log_file_size            = 2G   <span class="cm"># 2G per file, 2 files = 4G total</span>
+innodb_log_buffer_size          = 64M  <span class="cm"># in-memory buffer before flush</span>
+
+<span class="cm">-- Monitor redo log space usage</span>
+<span class="kw">SHOW ENGINE INNODB STATUS</span>\G
+<span class="cm">-- Find: LOG section
+-- Log sequence number NNNNNN
+-- Log flushed up to  NNNNNN
+-- Pages flushed up to NNNNNN
+-- Last checkpoint at NNNNNN
+-- If (LSN - checkpoint) > 75% of total log size → writes will stall soon</span>
+
+<span class="cm">-- Check how much binlog space we're using</span>
+<span class="kw">SELECT</span>
+  <span class="fn">SUM</span>(file_size) / <span class="num">1024</span> / <span class="num">1024</span> / <span class="num">1024</span> <span class="kw">AS</span> total_binlog_gb
+<span class="kw">FROM</span> information_schema.FILES
+<span class="kw">WHERE</span> file_type <span class="op">=</span> <span class="str">'UNDO LOG'</span>;
+<span class="cm">-- Also: ls -lh /var/log/mysql/mariadb-bin.* | tail -20</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔴 3am Scenario<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🔴 3am On-Call Incident — InnoDB Redo Log Full</div>
+      <p><strong>Situation:</strong> 03:17. PagerDuty wakes you. Alert: "MariaDB writes stalled on db-primary-01. Application reports timeout on all INSERT/UPDATE. SELECT still working." The monitoring shows innodb_log_waits spiking to 1,200/min.</p>
+      <p style="margin-top:10px"><strong>Immediate diagnosis:</strong></p>
+      <ol>
+        <li>SSH to the primary. Run: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SHOW ENGINE INNODB STATUS\G</code></li>
+        <li>Find LOG section. Calculate: (Log sequence number) − (Last checkpoint at). If this gap > 80% of innodb_log_files_in_group × innodb_log_file_size → redo log is nearly full.</li>
+        <li>Find what's generating writes: check TRANSACTIONS section — look for trx_rows_modified counts. Run: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SHOW PROCESSLIST</code> to find long-running write transactions.</li>
+        <li>Check innodb_io_capacity and iostat — if disk I/O is maxed, dirty pages can't flush, checkpoint can't advance, redo log fills.</li>
+      </ol>
+      <p style="margin-top:10px"><strong>Resolution:</strong> (A) If a single huge transaction is causing it: KILL it — redo log space frees immediately. (B) If it's general I/O bottleneck: temporarily raise innodb_io_capacity_max to let the flusher catch up. (C) Long term: increase innodb_log_file_size (requires controlled restart: stop MariaDB, delete old log files, restart).</p>
+      <p style="margin-top:10px"><strong>Prevention:</strong> Alert when redo log usage exceeds 60%. Add Prometheus metric: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">mysql_global_status_innodb_log_waits > 10</code>. Ensure innodb_log_file_size is sized for your write throughput (rule: 1 hour of writes should fit in the log).</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚠️ Common Pitfalls<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout warn"><div class="lbl">⚠ Pitfall — innodb_flush_log_at_trx_commit=2</div><p>Value 2 is often presented as a "safe" compromise — it writes to the OS buffer on every commit but only fsyncs to disk once per second. This is NOT safe for KRITIS infrastructure. An OS kernel crash or power failure can lose up to 1 second of commits even with value=2. On OS GmbH infrastructure, the answer to "why not value 2?" is: "a DB admin crash can be survived; an OS crash, which is more likely during a hardware failure, cannot."</p></div>
+    <div class="callout warn"><div class="lbl">⚠ Pitfall — Deleting Binlog Files Manually</div><p>Never use <code style="font-family:'JetBrains Mono',monospace;font-size:11px">rm</code> to delete binary log files. MariaDB maintains an index file (mariadb-bin.index) that lists active log files. Manual deletion causes index corruption, replication breaks, and PITR gaps. Always use: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">PURGE BINARY LOGS BEFORE '2024-06-01 00:00:00';</code> or set expire_logs_days.</p></div>
+    <div class="callout warn"><div class="lbl">⚠ Pitfall — Not Verifying PITR Before a Crisis</div><p>The worst time to discover your PITR procedure doesn't work is during a production data loss event at 3am. Test the full procedure (backup restore + binlog replay) monthly on a staging server. Keep a printed runbook. Verify that your backup user's binlog position is recorded in the backup metadata (<code style="font-family:'JetBrains Mono',monospace;font-size:11px">xtrabackup_binlog_info</code> file inside the backup directory).</p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🧩 Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">What's the difference between the redo log and the binary log?</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">Explain to a colleague in one paragraph why MariaDB has BOTH a redo log (InnoDB) AND a binary log (server level). What does each do, and why can't one replace the other?</p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+        <div class="answer">
+          <div class="callout tip"><div class="lbl">✓ Answer</div><p>The redo log is engine-internal: it records page-level changes needed to redo work that was in the buffer pool but not yet written to disk files. It is circular, overwritten when checkpointed, and used only for crash recovery on restart — you cannot replay it across servers or to specific timestamps. The binary log operates at the server level above all storage engines: it records logical SQL operations (or row images in ROW format) and is retained for days. It enables replication (streaming events to replicas) and point-in-time recovery (replaying to a specific timestamp after restoring a backup). Neither can replace the other: the redo log doesn't know about replication topology; the binary log doesn't help if you crash before a checkpoint is written.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="callout phr" style="margin-bottom:18px"><div class="lbl">⏩ Forward Reference — Phase 05, Lessons 03 &amp; 04</div><p>The operational application of these concepts — taking consistent backups with mariabackup, reading the binlog with mysqlbinlog, and executing a full point-in-time recovery — is covered in Phase 05, Lessons 03 and 04.</p></div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('l2')">← MVCC</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('l4')">Next: Locking & Deadlocks →</button>
+  <button class="mark-done-btn" id="done-l3" onclick="markDone('l3')">Mark complete ✓</button>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     LESSON 4 — Locking: Row Locks, Table Locks & Deadlocks
+════════════════════════════════════════════════════════════════════════ -->
+<div id="page-l4" class="page">
+<div class="page-header">
+  <div class="page-header-top">
+    <div>
+      <div class="lesson-num">Phase 04 · Lesson 04 · 3h</div>
+      <div class="page-title">Locking: Row Locks, Table Locks &amp; Deadlocks</div>
+    </div>
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+  </div>
+  <p class="page-desc">Deadlocks are inevitable on any sufficiently concurrent system. What matters is detecting them fast, understanding their anatomy, and designing the application to minimise them. On OS GmbH's ticketing infrastructure, a deadlock that cascades across MaxScale connections can take down a booking service. This lesson covers the full locking hierarchy — from shared row locks to gap locks — and gives you the diagnostic queries to resolve them under pressure.</p>
+</div>
+
+<div class="expand-bar">
+  <span class="expand-bar-label">Click any section to expand</span>
+  <button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚡ Why This Matters<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">"Lock wait timeout exceeded" and "Deadlock found when trying to get lock" are among the most common errors in production MariaDB deployments. At OS GmbH, where thousands of simultaneous seat reservations hit the bookings table every minute during peak travel, lock contention is a design challenge, not an edge case. Morafek CareMate's multi-user EHR has concurrent nurse sessions updating the same patient records — without proper locking understanding, data corruption or performance collapse is a matter of when, not if.</p>
+    <div class="callout interview">
+      <div class="lbl">⚓ Interview Anchor</div>
+      <p>"InnoDB auto-detects deadlocks in ~1 second and rolls back the transaction with fewer undo records. The key to preventing them: always acquire locks in a consistent order across all transactions. Use SELECT ... FOR UPDATE to explicitly acquire row locks before writing. Gap locks in REPEATABLE READ prevent phantom reads but can cause surprising contention — know when to switch to READ COMMITTED."</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🧠 Core Concepts<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="concepts">
+      <div class="concept orange">
+        <div class="concept-name">Shared (S) vs Exclusive (X) Locks</div>
+        <div class="concept-desc">Shared lock (S): multiple transactions can hold it on the same row simultaneously. Acquired by: SELECT ... LOCK IN SHARE MODE. Exclusive lock (X): only one transaction at a time. Acquired by: UPDATE, DELETE, INSERT, SELECT ... FOR UPDATE. A plain SELECT in MVCC takes NO lock — it reads the snapshot. Lock compatibility: S + S = compatible. S + X = incompatible (X must wait). X + X = incompatible.<br><br><strong>EHR:</strong> A CareMate medical review transaction uses SELECT ... FOR UPDATE on a patient record before updating their treatment plan — ensuring no other session can concurrently modify it.<br><strong>OS/DB:</strong> The booking service acquires an X lock on a seat row before confirming it — preventing double-booking when two passengers request the same seat simultaneously.</div>
+      </div>
+      <div class="concept blue">
+        <div class="concept-name">Gap Locks — preventing phantom reads</div>
+        <div class="concept-desc">In REPEATABLE READ, when InnoDB scans a range (e.g. WHERE id BETWEEN 10 AND 20), it locks not just the existing rows but the gaps between them. This prevents another transaction from inserting a new row into that range during your transaction — avoiding phantom reads. Gap locks are only used in REPEATABLE READ; READ COMMITTED eliminates them (using only record locks), which reduces contention at the cost of allowing phantom reads.<br><br><strong>EHR:</strong> A gap lock on patient IDs 100–200 prevents inserting a new patient in that range while an audit query is scanning it. Usually harmless in EHR workloads.<br><strong>OS/DB:</strong> On the ticket_scans table with range queries on station_id, gap locks can cause INSERT contention during high-frequency scan events. Switching scan-heavy transactions to READ COMMITTED eliminates the gap locks.</div>
+      </div>
+      <div class="concept purple">
+        <div class="concept-name">Intention Locks — table-level signals</div>
+        <div class="concept-desc">Before acquiring a row-level lock, InnoDB places an intention lock on the table: Intention Shared (IS) or Intention Exclusive (IX). These are lightweight table-level locks that signal "I intend to lock some rows in this table." They allow concurrent row-level locking while preventing whole-table operations (like LOCK TABLE) from conflicting. You'll see them in SHOW ENGINE INNODB STATUS as IS, IX, S, X next to table names.<br><br><strong>EHR:</strong> Concurrent UPDATE on two different patient rows: Session A places IX on the patients table, locks row 42. Session B places IX on the same table, locks row 107. IX + IX are compatible — both proceed concurrently.<br><strong>OS/DB:</strong> A LOCK TABLES bookings WRITE waits until all IX locks are released — this is why table-level locking is avoided in OLTP; it blocks every concurrent DML.</div>
+      </div>
+      <div class="concept red">
+        <div class="concept-name">Deadlock Anatomy</div>
+        <div class="concept-desc">A deadlock occurs when Transaction A holds lock X and waits for lock Y, while Transaction B holds lock Y and waits for lock X — a circular dependency. InnoDB's deadlock detector runs on every lock request, checks for cycles, and resolves by rolling back the transaction with fewer undo records. The rolled-back transaction gets error 1213: "Deadlock found when trying to get lock; try restarting transaction." The application must handle this by retrying.<br><br><strong>EHR:</strong> Session A locks patient 42 → tries to lock visit 100. Session B locks visit 100 → tries to lock patient 42. Deadlock. InnoDB rolls back B (1 row modified vs A's 2). Fix: always lock patient first, then visit — consistent order.<br><strong>OS/DB:</strong> Two booking transactions locking seats in different orders cause deadlocks. Fix: ORDER BY seat_id in the application's lock acquisition sequence.</div>
+      </div>
+      <div class="concept green">
+        <div class="concept-name">Lock Wait Timeout — the softer failure</div>
+        <div class="concept-desc">Before a deadlock is detected, a transaction waiting for a lock that another holds will wait up to innodb_lock_wait_timeout seconds (default 50 seconds). If the wait exceeds this, InnoDB gives up with error 1205: "Lock wait timeout exceeded; try restarting transaction." Only the waiting transaction is rolled back, not the holder. This is different from a deadlock — it's just one transaction waiting too long.<br><br><strong>EHR:</strong> A CareMate batch job holds a lock on 1,000 patient rows while processing. Concurrent API requests time out waiting for those locks. Fix: batch in smaller chunks to release locks between batches.<br><strong>OS/DB:</strong> On MaxScale, a long-running write on the primary can cause all routing traffic queued behind it to exceed lock_wait_timeout. Monitor and set connection-level timeouts in application code.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔬 Deep Dive — Deadlock Diagnostics<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="ascii-wrap"><pre>
+DEADLOCK ANATOMY — what SHOW ENGINE INNODB STATUS reveals
+
+LATEST DETECTED DEADLOCK
+------------------------
+Transaction 1 (Session A — booking confirmation):
+  HOLDS: X lock on bookings row id=88341
+  WAITS: X lock on bookings row id=88399
+
+Transaction 2 (Session B — seat upgrade):
+  HOLDS: X lock on bookings row id=88399
+  WAITS: X lock on bookings row id=88341
+  ← circular dependency detected
+
+RESOLUTION: InnoDB rolls back Transaction 2 (fewer undo records)
+  Error 1213 returned to Session B's application
+  Session A proceeds and commits normally
+  Session B's application should retry the operation</pre></div>
+    <div class="callout info"><div class="lbl">ℹ️ Reading the Deadlock Report</div><p>The key fields in the deadlock section: HOLDS (what lock the victim had), WAITS FOR (what it was trying to acquire), and which transaction was the victim (rolled back). The victim choice is automatic — you cannot control it. Design applications to retry on error 1213.</p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🩺 EHR Example — Morafek CareMate<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout phr"><div class="lbl">🩺 Context</div><p>Diagnosing lock contention in CareMate's multi-nurse environment: finding blocking transactions, identifying the deadlock report, and the fix for a consistent lock-order violation in the Flask application.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge ehr">🩺 EHR</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm">-- 1. Find who is blocking whom (data_lock_waits — MariaDB 10.5+)</span>
+<span class="kw">SELECT</span>
+  wait.requesting_engine_transaction_id  <span class="kw">AS</span> waiting_trx,
+  wait.blocking_engine_transaction_id   <span class="kw">AS</span> blocking_trx,
+  req.trx_mysql_thread_id               <span class="kw">AS</span> waiting_thread,
+  blk.trx_mysql_thread_id               <span class="kw">AS</span> blocking_thread,
+  req.trx_query                         <span class="kw">AS</span> waiting_query,
+  blk.trx_query                         <span class="kw">AS</span> blocking_query,
+  blk.trx_started                       <span class="kw">AS</span> blocking_started
+<span class="kw">FROM</span> performance_schema.data_lock_waits wait
+<span class="kw">JOIN</span> information_schema.INNODB_TRX req
+  <span class="kw">ON</span> req.trx_id <span class="op">=</span> wait.requesting_engine_transaction_id
+<span class="kw">JOIN</span> information_schema.INNODB_TRX blk
+  <span class="kw">ON</span> blk.trx_id <span class="op">=</span> wait.blocking_engine_transaction_id;
+
+<span class="cm">-- 2. Kill the blocking thread (if it's been running too long)</span>
+<span class="kw">KILL</span> <span class="num">4421</span>;  <span class="cm">-- blocking_thread from above</span>
+
+<span class="cm">-- 3. Read the full deadlock report</span>
+<span class="kw">SHOW ENGINE INNODB STATUS</span>\G
+<span class="cm">-- Scroll to: "LATEST DETECTED DEADLOCK"
+-- Read: which tables, which rows, which transactions</span>
+
+<span class="cm">-- 4. CareMate deadlock fix — consistent lock order in visit entry
+-- WRONG (deadlock-prone): locks patient then visit in random order
+-- RIGHT: always lock patient FIRST, visit SECOND</span>
+<span class="kw">START TRANSACTION</span>;
+<span class="kw">SELECT</span> id <span class="kw">FROM</span> <span class="tb">patients</span>  <span class="kw">WHERE</span> id <span class="op">=</span> <span class="num">42</span>  <span class="kw">FOR UPDATE</span>;  <span class="cm">-- always first</span>
+<span class="kw">SELECT</span> id <span class="kw">FROM</span> <span class="tb">visits</span>    <span class="kw">WHERE</span> id <span class="op">=</span> <span class="num">100</span> <span class="kw">FOR UPDATE</span>;  <span class="cm">-- always second</span>
+<span class="kw">UPDATE</span> <span class="tb">visits</span> <span class="kw">SET</span> status <span class="op">=</span> <span class="str">'completed'</span>, notes <span class="op">=</span> <span class="str">'Reviewed'</span> <span class="kw">WHERE</span> id <span class="op">=</span> <span class="num">100</span>;
+<span class="kw">COMMIT</span>;</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🚂 OS/DB Example — Deutsche Bahn<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout db"><div class="lbl">🚂 OS/DB Context</div><p>On OS GmbH's booking system: diagnosing gap lock contention on ticket_scans range queries and implementing READ COMMITTED at the session level to eliminate them for the scan ingestion service.</p></div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge db">🚂 OS/DB</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="code-body"><span class="cm">-- 1. View all current locks held in the database</span>
+<span class="kw">SELECT</span>
+  l.engine_lock_id,
+  l.object_schema,
+  l.object_name                         <span class="kw">AS</span> table_name,
+  l.lock_type,                          <span class="cm">-- TABLE or RECORD</span>
+  l.lock_mode,                          <span class="cm">-- S, X, IS, IX, GAP, etc.</span>
+  l.lock_status,                        <span class="cm">-- GRANTED or WAITING</span>
+  l.lock_data                           <span class="cm">-- key value locked (for RECORD)</span>
+<span class="kw">FROM</span> performance_schema.data_locks l
+<span class="kw">WHERE</span> l.object_schema <span class="op">=</span> <span class="str">'railway_ops'</span>
+<span class="kw">ORDER BY</span> l.lock_type, l.lock_status;
+
+<span class="cm">-- 2. Check innodb_lock_wait_timeout setting</span>
+<span class="kw">SHOW VARIABLES LIKE</span> <span class="str">'innodb_lock_wait_timeout'</span>;
+<span class="cm">-- Default: 50 seconds. Consider reducing to 5-10s for OLTP
+-- to fail fast and allow application retry logic to kick in</span>
+
+<span class="cm">-- 3. Eliminate gap locks for high-INSERT ticket_scans table</span>
+<span class="cm">-- The scan ingestion service runs thousands of INSERTs per second
+-- REPEATABLE READ + gap locks cause contention on range queries by station_id</span>
+<span class="kw">SET SESSION</span> TRANSACTION ISOLATION LEVEL READ COMMITTED;
+<span class="cm">-- Now only record locks (not gap locks) — higher throughput for bulk INSERTs</span>
+
+<span class="cm">-- 4. Monitor deadlock frequency</span>
+<span class="kw">SHOW GLOBAL STATUS LIKE</span> <span class="str">'Innodb_deadlocks'</span>;  <span class="cm">-- MariaDB 10.2+</span>
+<span class="kw">SHOW GLOBAL STATUS LIKE</span> <span class="str">'Innodb_lock_timeouts'</span>;
+<span class="cm">-- Both should be close to 0. >10/minute = application lock order bug</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔴 3am Scenario<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🔴 3am On-Call Incident — Lock Wait Timeout Cascade</div>
+      <p><strong>Situation:</strong> 02:44. Alert: "OS booking API timeout rate: 78% of requests failing. Error: Lock wait timeout exceeded (1205)." MaxScale dashboard shows 600 connections queued on the primary. System was fine 10 minutes ago.</p>
+      <p style="margin-top:10px"><strong>Immediate diagnosis:</strong></p>
+      <ol>
+        <li>Run: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SHOW PROCESSLIST;</code> — immediately visible: one thread in state "executing" for 580 seconds with an UPDATE on bookings.</li>
+        <li>Check INNODB_TRX: the long-running UPDATE holds locks on 45,000 rows of the bookings table (a batch job that someone ran manually during low traffic — now running at 02:44 due to timezone misconfiguration).</li>
+        <li>Verify with data_lock_waits: 598 transactions waiting on the batch job's X locks.</li>
+        <li>KILL the batch job thread. Immediately monitor: queued transactions begin processing.</li>
+      </ol>
+      <p style="margin-top:10px"><strong>Resolution:</strong> The 45,000-row UPDATE was a status migration script designed to run in 10ms batches. It ran as a single transaction instead. KILL resolves the immediate crisis. The 598 waiting transactions retry automatically — most succeed within 2 minutes.</p>
+      <p style="margin-top:10px"><strong>Prevention:</strong> (1) Batch scripts must COMMIT every N rows (e.g. 1,000). (2) Add cron schedule validation — production batch jobs must run between 03:00–05:00 UTC, not 02:44 local time. (3) Add ProxySQL/MaxScale connection queueing limits — 600 queued connections masked the real problem; cap at 50 and fail fast.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">⚠️ Common Pitfalls<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout warn"><div class="lbl">⚠ Pitfall — Not Handling Error 1213 in Application Code</div><p>InnoDB resolves deadlocks by rolling back one transaction — but it does NOT retry it. The application receives error 1213 and must retry the entire transaction. Most ORM frameworks do NOT retry automatically. This means deadlock-prone code silently fails unless the application explicitly catches 1213 and retries (typically 2–3 times with jitter). Verify this in every service that writes to MariaDB.</p></div>
+    <div class="callout warn"><div class="lbl">⚠ Pitfall — SELECT ... FOR UPDATE Across Multiple Tables in the Wrong Order</div><p>The most reliable way to create deadlocks: Transaction A locks table X then Y; Transaction B locks table Y then X. Always document and enforce a canonical lock order in your team's coding standards. For OS GmbH: passengers → routes → bookings (in entity ID order when locking multiple rows of the same table).</p></div>
+    <div class="callout warn"><div class="lbl">⚠ Pitfall — SHOW ENGINE INNODB STATUS Only Shows the LATEST Deadlock</div><p>SHOW ENGINE INNODB STATUS retains only the most recent deadlock — it's overwritten on the next one. For deadlock analysis at scale, enable <code style="font-family:'JetBrains Mono',monospace;font-size:11px">innodb_print_all_deadlocks=ON</code> in my.cnf. This writes every deadlock to the MariaDB error log, where you can grep and aggregate them to find patterns. Essential for debugging intermittent deadlocks that only occur during peak traffic.</p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🧩 Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Design a deadlock-safe seat reservation procedure</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">Two passengers simultaneously try to book the last seat (seat_number=42A) on the same train. Write a MariaDB transaction that safely reserves the seat for exactly one passenger and cleanly rejects the other — with no deadlock possible and no double-booking.</p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show answer ↓</span>
+        <div class="answer">
+          <div class="code-block">
+            <div class="code-header"><div class="code-header-left"><span class="code-label sql">SQL</span><span class="example-badge db">🚂 Solution</span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm">-- Atomic seat reservation — deadlock-safe approach</span>
+<span class="kw">START TRANSACTION</span>;
+
+<span class="cm">-- 1. Acquire X lock on the specific seat row BEFORE reading
+--    FOR UPDATE = nobody else can modify this row until we commit</span>
+<span class="kw">SELECT</span> id, status
+<span class="kw">FROM</span> <span class="tb">bookings</span>
+<span class="kw">WHERE</span> route_id <span class="op">=</span> <span class="num">501</span>
+  <span class="kw">AND</span> seat_number <span class="op">=</span> <span class="str">'42A'</span>
+  <span class="kw">AND</span> status      <span class="op">=</span> <span class="str">'available'</span>
+<span class="kw">FOR UPDATE</span>;    <span class="cm">-- Session B will WAIT here if Session A got here first</span>
+
+<span class="cm">-- 2. Only proceed if we got the row (row exists = seat still available)</span>
+<span class="cm">-- In application: if rowcount == 0: seat gone, ROLLBACK and notify user</span>
+<span class="cm">-- If rowcount == 1: seat is ours (we hold the X lock)</span>
+
+<span class="kw">UPDATE</span> <span class="tb">bookings</span>
+<span class="kw">SET</span>
+  status       <span class="op">=</span> <span class="str">'confirmed'</span>,
+  passenger_id <span class="op">=</span> <span class="num">9912</span>,       <span class="cm">-- the requesting passenger</span>
+  booked_at    <span class="op">=</span> <span class="fn">NOW</span>()
+<span class="kw">WHERE</span> route_id    <span class="op">=</span> <span class="num">501</span>
+  <span class="kw">AND</span> seat_number <span class="op">=</span> <span class="str">'42A'</span>
+  <span class="kw">AND</span> status      <span class="op">=</span> <span class="str">'available'</span>; <span class="cm">-- double-check status in WHERE</span>
+
+<span class="kw">COMMIT</span>;
+<span class="cm">-- Session B's SELECT FOR UPDATE now proceeds — returns 0 rows (status=confirmed)
+-- Session B correctly determines seat is unavailable → ROLLBACK → notify user</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('l3')">← WAL &amp; Crash Recovery</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('l5')">Next: Interview Q&A →</button>
+  <button class="mark-done-btn" id="done-l4" onclick="markDone('l4')">Mark complete ✓</button>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     LESSON 5 — Interview Q&A + 3am Scenarios
+════════════════════════════════════════════════════════════════════════ -->
+<div id="page-l5" class="page">
+<div class="page-header">
+  <div class="page-header-top">
+    <div>
+      <div class="lesson-num">Phase 04 · Lesson 05 · 1h</div>
+      <div class="page-title">Interview Q&amp;A &amp; Phase Summary</div>
+    </div>
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+  </div>
+  <p class="page-desc">Michael Nietsch's internals questions are designed to separate people who've administered MariaDB from people who understand it. These are the questions that trip up candidates who only know the commands but not the mechanisms. Practise until the anchor phrases are automatic.</p>
+</div>
+
+<div class="expand-bar">
+  <span class="expand-bar-label">Click any section to expand</span>
+  <button class="expand-all-btn" onclick="expandAll(this)">Expand all ↓</button>
+</div>
+
+<!-- Interview Q&A Section -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🎤 Interview Questions — Michael Nietsch<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="qa-list">
+
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">What happens inside InnoDB when you run SELECT * FROM patients WHERE id = 42?</div>
+        <div class="qa-a">
+          <p>InnoDB checks the buffer pool for the page containing row id=42 (a page lookup by PK value in the clustered index B-tree). If the page is in the pool (cache hit), the row is returned directly from RAM with zero disk I/O. If not (cache miss), InnoDB reads the 16KB page from the .ibd data file into the buffer pool, then returns the row. Because id is the primary key, this is a single B-tree traversal to the leaf page containing the row — extremely fast (O log n). A secondary index lookup would require two traversals: secondary index leaf (yields the PK), then PK B-tree to the data row.</p>
+          <div class="callout interview"><div class="lbl">⚓ Interview Anchor</div><p>"Buffer pool first — if the page is cached, zero disk I/O. PK = single B-tree lookup, returns row from clustered index leaf. Secondary index = two lookups: index leaf → PK, then PK → row data."</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">Why is innodb_flush_log_at_trx_commit=1 mandatory for production? What does it actually do?</div>
+        <div class="qa-a">
+          <p>On every COMMIT, value=1 writes the redo log buffer to the redo log file AND calls fsync() — this forces the OS to flush the file to physical storage. This guarantees that once "Query OK" is returned to the client, the change is on durable storage and will survive any crash. Value=2 writes to the redo log file but does NOT fsync — a kernel crash or power failure could lose the last ~1 second of commits even though they were "committed." Value=0 doesn't even write to the file on each commit, only every second — worst safety guarantee. For OS GmbH operating KRITIS infrastructure, any data loss is unacceptable, and only value=1 provides the guarantee.</p>
+          <div class="callout interview"><div class="lbl">⚓ Interview Anchor</div><p>"Value=1 means every COMMIT calls fsync — data is physically on disk before we return OK. Value=2 skips the fsync — an OS crash loses the last second of commits. For KRITIS infrastructure, only 1 is acceptable."</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">Your monitoring shows the InnoDB history list length has risen from 50 to 8,000 over the last 4 hours. Walk me through your diagnosis.</div>
+        <div class="qa-a">
+          <p>The history list length represents the backlog of undo log entries that the purge thread hasn't been able to clean. It rises when an active transaction holds a read view from 4 hours ago — the purge thread cannot remove any undo records created after that snapshot. My steps: (1) Query INNODB_TRX ordered by trx_started — find the transaction that started ~4 hours ago. (2) Check trx_mysql_thread_id and trx_query — if trx_query is NULL, it's an idle open transaction. (3) KILL the thread — the purge thread immediately resumes and the history list drops rapidly. (4) Investigation: was this a developer debug session, a reporting query, or a connection pool bug? (5) Prevention: set wait_timeout=300 to kill idle connections, add connection-level transaction timeouts in the application.</p>
+          <div class="callout interview"><div class="lbl">⚓ Interview Anchor</div><p>"History list rising = a long-running transaction blocking the purge thread. Find it in INNODB_TRX ordered by trx_started. KILL the thread. Monitor the history list drop. Prevent it: wait_timeout and connection pooling with explicit transaction timeouts."</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">What's the difference between a deadlock and a lock wait timeout, and how does InnoDB handle each?</div>
+        <div class="qa-a">
+          <p>A deadlock is a circular lock dependency: Transaction A waits for B, B waits for A. Neither can proceed. InnoDB's deadlock detection algorithm runs synchronously on each lock request, detects cycles using a depth-first graph traversal, and immediately resolves the deadlock by rolling back the transaction with fewer undo records — returning error 1213 to the victim's application. A lock wait timeout is simpler: Transaction A is waiting for a lock held by Transaction B, but no circular dependency exists — B will eventually release the lock. If the wait exceeds innodb_lock_wait_timeout (default 50 seconds), InnoDB gives up and returns error 1205 to the waiting transaction only — the holder is not affected. Application handling differs: 1213 (deadlock) should always be retried. 1205 (timeout) may indicate a real issue (B is stuck) and requires more analysis before retry.</p>
+          <div class="callout interview"><div class="lbl">⚓ Interview Anchor</div><p>"Deadlock = circular dependency, detected immediately, one victim rolled back (1213). Lock timeout = one-way wait that exceeds innodb_lock_wait_timeout, only the waiter fails (1205). Both need application-level retry logic."</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">Explain how MVCC allows a long-running SELECT to return consistent data even while concurrent UPDATEs are happening on the same rows.</div>
+        <div class="qa-a">
+          <p>When a transaction starts in REPEATABLE READ, InnoDB creates a read view: it records the current transaction ID, the list of all active transaction IDs at that moment, and the maximum committed transaction ID. For every row it reads, InnoDB checks the row's DB_TRX_ID against the read view. If the row's transaction ID is in the "active" list (i.e., it was being modified when our snapshot was taken), that version is invisible — InnoDB follows the DB_ROLL_PTR to the previous version in the undo log, and repeats until it finds a version that was committed before our snapshot. This means the SELECT sees a frozen snapshot of the data as of when it started, regardless of how many concurrent UPDATEs occur — without taking any locks on the rows it reads.</p>
+          <div class="callout interview"><div class="lbl">⚓ Interview Anchor</div><p>"MVCC: each row has a transaction ID and a pointer to its previous version in the undo log. The read view filters out rows modified after our snapshot. We walk the undo log chain backward until we find a visible version — no row locks needed for reads."</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-q" onclick="togQA(this)">What is a gap lock and when would you disable it?</div>
+        <div class="qa-a">
+          <p>A gap lock prevents insertion into a range between index values. For example, if you lock WHERE id BETWEEN 100 AND 200, InnoDB also locks the "gap" between 100 and 200 so no new row can be inserted there. This prevents phantom reads in REPEATABLE READ. Gap locks are only applied in REPEATABLE READ isolation level — READ COMMITTED removes them, using only record locks on existing rows. You would disable gap locking by switching to READ COMMITTED in scenarios where: (1) High-concurrency INSERT workloads are being slowed by gap lock contention. (2) Phantom reads are acceptable for your application. (3) You're running on a Galera cluster where extra gap locking overhead isn't needed (Galera handles its own certification). The trade-off is clear: READ COMMITTED means SELECT might see different committed rows in different statements of the same transaction — acceptable for OLAP/reporting, risky for OLTP write logic.</p>
+          <div class="callout interview"><div class="lbl">⚓ Interview Anchor</div><p>"Gap locks prevent phantom reads by locking index ranges, not just existing rows. Only active in REPEATABLE READ. Set READ COMMITTED to eliminate them — higher INSERT concurrency at the cost of allowing phantom reads."</p></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Phase Summary / Quick Reference -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">📋 Phase 04 Quick Reference<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <table class="compare-table">
+      <thead>
+        <tr><th>Topic</th><th>Key Fact</th><th>The Number / Setting</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>InnoDB page size</td><td>Fixed unit of all I/O</td><td class="mono">16KB (default, adjustable)</td></tr>
+        <tr><td>Buffer pool hit ratio target</td><td>Cache miss → disk read</td><td class="good">&gt; 99%</td></tr>
+        <tr><td>innodb_buffer_pool_size</td><td>Most important tuning knob</td><td class="mono">~70–80% of RAM</td></tr>
+        <tr><td>innodb_flush_log_at_trx_commit</td><td>ACID durability setting</td><td class="good">1 (production, always)</td></tr>
+        <tr><td>sync_binlog</td><td>Binlog durability</td><td class="good">1 (paired with above)</td></tr>
+        <tr><td>History list length alert</td><td>MVCC purge backlog</td><td class="bad">&gt; 1,000 = investigate</td></tr>
+        <tr><td>Deadlock error code</td><td>Circular lock dependency</td><td class="mono">1213 (retry transaction)</td></tr>
+        <tr><td>Lock wait timeout error</td><td>Waiting too long for lock</td><td class="mono">1205 (retry or escalate)</td></tr>
+        <tr><td>innodb_lock_wait_timeout default</td><td>How long to wait for lock</td><td class="mono">50 seconds (reduce for OLTP)</td></tr>
+        <tr><td>Gap lock isolation level</td><td>When gap locks are active</td><td class="mono">REPEATABLE READ (default)</td></tr>
+        <tr><td>innodb_print_all_deadlocks</td><td>Log every deadlock to error log</td><td class="good">ON (recommended always)</td></tr>
+        <tr><td>Row format (modern MariaDB)</td><td>Best for TEXT/BLOB tables</td><td class="mono">DYNAMIC (default 10.1+)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Additional Scenario -->
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🔴 Composite 3am Scenario<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="callout scenario">
+      <div class="lbl">🔴 3am On-Call Incident — "Everything is slow and I don't know why"</div>
+      <p><strong>Situation:</strong> 03:51. Alert: "OS DB primary response time P95 = 4.2 seconds (normal: 12ms). No obvious error in application logs — queries complete, just very slow. MaxScale health check shows all nodes UP."</p>
+      <p style="margin-top:10px"><strong>Systematic diagnosis in order:</strong></p>
+      <ol>
+        <li><code style="font-family:'JetBrains Mono',monospace;font-size:11px">SHOW PROCESSLIST;</code> — are there locked threads? Are queries in "waiting for lock" state?</li>
+        <li><code style="font-family:'JetBrains Mono',monospace;font-size:11px">SHOW ENGINE INNODB STATUS\G</code> — read ALL sections: TRANSACTIONS (lock waits), LOG (redo log filling?), BUFFER POOL (hit ratio ok?), ROW OPERATIONS.</li>
+        <li>Check <code style="font-family:'JetBrains Mono',monospace;font-size:11px">INNODB_TRX</code> — is there a suspiciously long-running transaction? What is the history list length?</li>
+        <li>Check iostat / dstat on the OS level — is the disk I/O saturated? (Dirty page flushing storm?)</li>
+        <li>Check buffer pool hit ratio — did something evict all hot pages? (e.g., a full table scan on a huge table).</li>
+      </ol>
+      <p style="margin-top:10px"><strong>Finding:</strong> History list = 42,000. Oldest transaction started 5 hours ago — a nightly analytics report that someone added without a transaction boundary. It's reading vitals across all time (full scan), holding a read view, preventing purge, growing the undo log. All writes are slow because every row has a 42,000-entry-long version chain to walk.</p>
+      <p style="margin-top:10px"><strong>Resolution:</strong> KILL the analytics thread. Monitor history list drop. Writes normalise within 2 minutes as purge catches up. Long term: analytics queries run on read replica, not primary.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" onclick="togSection(this)">🧩 Final Challenge<span class="section-chevron">▾</span></div>
+  <div class="section-body">
+    <div class="challenge">
+      <div class="challenge-head" onclick="togChallenge(this)">
+        <div class="challenge-head-left"><span class="challenge-badge">TRY IT</span><span class="challenge-title">Explain InnoDB internals in 60 seconds — interview cold-open</span></div>
+        <span class="challenge-arrow">▾</span>
+      </div>
+      <div class="challenge-body">
+        <p class="challenge-q">Nietsch opens the interview with: "Without using any prepared notes — explain to me in 60 seconds what happens inside InnoDB when a transaction commits." Practice answering this out loud before your interview.</p>
+        <span class="answer-toggle" onclick="togAnswer(this)">Show model answer ↓</span>
+        <div class="answer">
+          <div class="callout tip"><div class="lbl">✓ Model Answer (60 seconds)</div><p>"When a transaction commits, InnoDB first writes the change to the undo log — that's what enables MVCC reads to see the old version and what lets us roll back if needed. The actual data change is made in the buffer pool — in RAM, on the 16KB page. The redo log buffer records the physical change. On COMMIT with flush_log=1, we fsync the redo log to disk — that's the durability guarantee. The data page is marked dirty in the buffer pool and flushed to disk later by the background thread. The binary log is also fsynced if sync_binlog=1 — that's for replication and PITR. If the server crashes before the dirty page is written but after the redo log fsync, InnoDB replays the redo log on restart and the data is safe. That's the write-ahead guarantee — log first, data second."</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <button class="lesson-nav-btn" onclick="goTo('l4')">← Locking &amp; Deadlocks</button>
+  <button class="lesson-nav-btn primary" onclick="goTo('home')">↑ Phase Home</button>
+  <button class="mark-done-btn" id="done-l5" onclick="markDone('l5')">Mark complete ✓</button>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════════════════════════ -->
+<script>
+const LESSONS = ['home','l1','l2','l3','l4','l5'];
+let currentPage = 'home';
+
+// ── NAVIGATION ──────────────────────────────────────────────────────────────
+function goTo(id) {
+  document.getElementById('page-' + currentPage).classList.remove('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+  const page = document.getElementById('page-' + id);
+  if (page) {
+    page.classList.add('active');
+    // Collapse all sections on page entry
+    page.querySelectorAll('.section-title').forEach(t => t.classList.remove('sec-open'));
+    page.querySelectorAll('.section-body').forEach(b => b.classList.remove('sec-open'));
+    page.querySelectorAll('.expand-all-btn').forEach(b => { b.textContent = 'Expand all ↓'; });
+  } else {
+    document.getElementById('page-home').classList.add('active');
+    id = 'home';
+  }
+
+  const tab = document.getElementById('tab-' + id);
+  if (tab) tab.classList.add('active');
+
+  currentPage = id;
+  // CRITICAL: direct assignment, NOT window.scrollTo — bypasses smooth-scroll
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+}
+
+// ── SECTIONS ─────────────────────────────────────────────────────────────────
+function togSection(titleEl) {
+  titleEl.classList.toggle('sec-open');
+  titleEl.nextElementSibling.classList.toggle('sec-open');
+}
+
+function expandAll(btn) {
+  const page = btn.closest('.page');
+  const titles = (page || document).querySelectorAll('.section-title');
+  const bodies  = (page || document).querySelectorAll('.section-body');
+  const allOpen = [...bodies].every(b => b.classList.contains('sec-open'));
+  titles.forEach(t => t.classList.toggle('sec-open', !allOpen));
+  bodies.forEach(b => b.classList.toggle('sec-open', !allOpen));
+  btn.textContent = allOpen ? 'Expand all ↓' : 'Collapse all ↑';
+}
+
+// ── Q&A ──────────────────────────────────────────────────────────────────────
+function togQA(qEl) {
+  qEl.classList.toggle('open');
+  const ans = qEl.nextElementSibling;
+  ans.classList.toggle('open');
+}
+
+// ── CHALLENGE ─────────────────────────────────────────────────────────────────
+function togChallenge(headEl) {
+  const body  = headEl.nextElementSibling;
+  const arrow = headEl.querySelector('.challenge-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function togAnswer(toggleEl) {
+  const ans = toggleEl.nextElementSibling;
+  const isOpen = ans.classList.toggle('open');
+  toggleEl.textContent = isOpen ? 'Hide answer ↑' : 'Show answer ↓';
+}
+
+// ── COPY CODE ─────────────────────────────────────────────────────────────────
+function copyCode(btn) {
+  const body = btn.closest('.code-block').querySelector('.code-body');
+  const text = body.innerText || body.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    btn.textContent = 'failed';
+    setTimeout(() => { btn.textContent = 'copy'; }, 1500);
+  });
+}
+
+// ── PROGRESS ─────────────────────────────────────────────────────────────────
+let done = {};
+try { done = JSON.parse(localStorage.getItem('phase_04_done') || '{}'); } catch(e) {}
+
+function markDone(id) {
+  done[id] = !done[id];
+  try { localStorage.setItem('phase_04_done', JSON.stringify(done)); } catch(e) {}
+  updateDoneState();
+}
+
+function updateDoneState() {
+  LESSONS.filter(l => l !== 'home').forEach(id => {
+    const btn = document.getElementById('done-' + id);
+    const tab = document.getElementById('tab-' + id);
+    const st  = document.getElementById('st-' + id);
+    if (btn) {
+      btn.classList.toggle('done', !!done[id]);
+      btn.textContent = done[id] ? 'Completed ✓' : 'Mark complete ✓';
+    }
+    if (tab) tab.classList.toggle('done-tab', !!done[id]);
+    if (st) {
+      if (done[id]) {
+        st.textContent = 'Completed ✓';
+        st.style.background = 'var(--greenb)';
+        st.style.color = 'var(--greend)';
+      } else {
+        st.textContent = 'Not started';
+        st.style.background = '';
+        st.style.color = '';
+      }
+    }
+  });
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+updateDoneState();
+</script>
+</body>
+</html>
