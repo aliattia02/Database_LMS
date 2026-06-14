@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LMS Platform</title>
+  <link rel="stylesheet" href="../core/styles.css" />
+</head>
+<body>
+
+  <div class="app-shell">
+
+    <aside class="sidebar">
+
+      <a id="btn-back-field" href="#" class="back-link">
+        ← <span data-i18n="shell.backToField">Modules</span>
+      </a>
+
+      <div class="brand">
+        <h1>LMS<span>·Platform</span></h1>
+        <p id="brand-subtitle"></p>
+      </div>
+
+      <div class="lang-switcher" aria-label="Language">
+        <button data-lang="en" class="lang-btn active" type="button">EN</button>
+        <button data-lang="ar" class="lang-btn"        type="button">AR</button>
+      </div>
+
+      <section class="panel-block">
+        <div class="panel-title" data-i18n="shell.lessonsPanel">Lessons</div>
+        <nav id="lesson-nav" class="lesson-list"></nav>
+      </section>
+
+      <section class="panel-block stats-block">
+        <div class="stat-row">
+          <span data-i18n="shell.currentModule">Module progress</span>
+          <strong id="module-progress">0%</strong>
+        </div>
+        <div class="track">
+          <div id="module-progress-fill" class="fill"></div>
+        </div>
+      </section>
+
+      <button id="reset-progress" class="danger-btn" type="button"
+              data-i18n="shell.resetButton">Reset all progress</button>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h2 id="active-module-title" data-i18n="shell.chooseLesson">Choose a lesson</h2>
+          <p  id="active-module-subtitle"></p>
+        </div>
+      </header>
+
+      <section id="welcome" class="welcome">
+        <h3 id="welcome-heading" data-i18n="welcome.heading">Your learning platform</h3>
+        <p  id="welcome-body"    data-i18n="welcome.body">Select a lesson on the left to begin.</p>
+      </section>
+
+      <iframe id="lesson-frame" title="Lesson content"></iframe>
+    </main>
+
+  </div>
+
+  <script type="module" src="../core/module-shell.js"></script>
+</body>
+</html>

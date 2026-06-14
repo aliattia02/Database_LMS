@@ -1,6 +1,32 @@
 export const LMS_CONFIG = {
   appName: 'LMS Platform',
   storagePrefix: 'lms',
+
+  welcome: {
+    heading: 'Your learning platform',
+    body: 'Select a module on the left, then select a lesson to begin.'
+  },
+
+  fields: [
+    {
+      id: 'backend',
+      title: 'Backend Development',
+      subtitle: 'Databases, server logic, and infrastructure',
+      icon: '🗄️',
+      theme: { accent: '#2563eb', accentSoft: '#dbeafe' },
+      moduleIds: ['database', 'python']
+    },
+    {
+      id: 'frontend',
+      title: 'Frontend Development',
+      subtitle: 'Web components, state management, and mobile',
+      icon: '⚛️',
+      theme: { accent: '#0369a1', accentSoft: '#e0f2fe' },
+      moduleIds: ['react', 'react-native', 'python']
+      // python appears here AND in backend — its progress is shared either way
+    }
+  ],
+
   modules: [
     {
       id: 'database',
