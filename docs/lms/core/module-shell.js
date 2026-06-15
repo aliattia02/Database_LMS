@@ -158,6 +158,39 @@ frame.addEventListener('load', () =>
 resetButton.addEventListener('click', resetAllProgress);
 setInterval(() => { renderProgressBar(); renderLessonNav(); }, PROGRESS_POLL_INTERVAL);
 
+// ── cross-iframe lesson navigation ────────────────────────────────────────────
+// Lesson pages (e.g. db-masterplan-v2.html) that contain links to sibling
+// lesson files post a message here instead of navigating the iframe directly.
+// This keeps the shell chrome (sidebar, progress bar, theme) intact.
+//
+// Message shape: { type: 'lms:openLesson', route: 'lms/modules/.../file.html' }
+//
+// Strategy:
+//   1. Try to find a registered lesson with that route and open it normally
+//      (sidebar highlights, progress tracked).
+//   2. If the route isn't in the registry (e.g. deep-dive files that aren't
+//      listed as lessons), load it directly into the iframe so the user still
+//      sees the content — just without a sidebar entry.
+window.addEventListener('message', (e) => {
+  if (e.data?.type !== 'lms:openLesson') return;
+  const route = e.data.route;
+  if (!route || typeof route !== 'string') return;
+
+  const registered = mod.lessons.find(l => l.route === route);
+  if (registered) {
+    // Registered lesson: use the normal path so the sidebar highlights correctly.
+    openLesson(registered.id);
+  } else {
+    // Unregistered file (deep-dive, reference doc, etc.): load into iframe
+    // directly. The sidebar stays as-is; progress bar is unaffected.
+    activeLessonId = null;          // deselect current sidebar item
+    frame.src = `../../${route}`;
+    frame.classList.add('visible');
+    welcome.classList.add('hidden');
+    renderLessonNav();              // clears the active highlight
+  }
+});
+
 // ── initial render ────────────────────────────────────────────────────────────
 renderLessonNav();
 renderProgressBar();

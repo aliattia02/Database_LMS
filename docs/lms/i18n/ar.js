@@ -14,8 +14,8 @@ export const translations = {
 
   // ── Shell sidebar ────────────────────────────────────────────────────────
   'shell.backToFields':    'المجالات',
-  'shell.modulesPanel':    'الوحدات',
-  'shell.lessonsPanel':    'الدروس',
+  'shell.modulesTitle':    'الوحدات',
+  'shell.lessonsTitle':    'الدروس',
   'shell.currentModule':   'الوحدة الحالية',
   'shell.globalLMS':       'التقدم الكلي',
   'shell.resetButton':     'إعادة تعيين جميع التقدم',
@@ -26,14 +26,23 @@ export const translations = {
   'welcome.heading':       'منصة التعلم الخاصة بك',
   'welcome.body':          'اختر وحدة من القائمة اليسرى، ثم اختر درساً للبدء.',
 
+  // ── Auth panel (Phase 3) ─────────────────────────────────────────────────
+  'auth.signInTitle':      'سجّل الدخول لمزامنة التقدم',
+  'auth.googleButton':     'الاستمرار باستخدام Google',
+  'auth.orDivider':        'أو',
+  'auth.signInButton':     'تسجيل الدخول',
+  'auth.signUpButton':     'إنشاء حساب',
+  'auth.adminPanel':       'لوحة الإدارة ↗',
+  'auth.signOut':          'تسجيل الخروج',
+
   // ── Lesson nav labels ────────────────────────────────────────────────────
   'lesson.referenceLabel': 'مرجع',
 
   // ── Progress labels ──────────────────────────────────────────────────────
   'progress.complete':     '٪ مكتمل',
-};
 
   // ── Module card labels ───────────────────────────────────────────────────
   'module.lessons':        'دروس',
   'shell.backToField':     'الوحدات',
   'shell.chooseLesson':    'اختر درساً',
+};

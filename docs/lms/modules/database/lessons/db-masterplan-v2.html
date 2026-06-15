@@ -1786,7 +1786,7 @@ function buildGrid(){
         ${weightBadgeHTML(p.weight)}
       </div>
       <div class="phase-card-deepdive">
-        <a href="${p.deepDive}" class="deepdive-link" onclick="event.stopPropagation()">Open deep-dive →</a>
+        <a href="#" class="deepdive-link" onclick="event.stopPropagation(); openDeepDive('${p.deepDive}'); return false;">Open deep-dive →</a>
       </div>
     </div>`;
   }).join('');
@@ -1941,6 +1941,24 @@ function markDone(pi, ti, el){
   el.classList.toggle('done', !!done[key]);
   saveState();
   updateUI();
+}
+
+// ─── DEEP-DIVE NAVIGATION ────────────────────────────────────────────────────
+// When running inside the LMS shell iframe, post a message to the parent so
+// the shell can load the deep-dive file into the iframe itself (keeping the
+// sidebar, theme and progress bar intact).
+// When opened as a standalone page (e.g. direct browser access), fall back to
+// a normal same-page navigation.
+function openDeepDive(filename) {
+  const LESSON_BASE = 'lms/modules/database/lessons/';
+  if (window.parent !== window) {
+    window.parent.postMessage(
+      { type: 'lms:openLesson', route: LESSON_BASE + filename },
+      '*'
+    );
+  } else {
+    window.location.href = filename;
+  }
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────

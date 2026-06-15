@@ -1,4 +1,7 @@
 import { LMS_CONFIG } from './registry.js';
+
+document.title = LMS_CONFIG.appName;
+
 import { loadLanguage, applyTranslations, t } from './i18n.js';
 import {
   onAuthChange,
@@ -7,20 +10,16 @@ import {
   signInWithEmail,
   signOutUser
 } from './auth.js';
-import { getUserProfile } from './db.js';
+import { getUserProfile, getLessonProgress, setLessonProgress, updateUserLang, upsertUserIndex } from './db.js';
+import { getVisibleModules, isAdmin } from './access.js';
 
 // ── DOM REFERENCES ─────────────────────────────────────────────────────────
 const moduleNav             = document.getElementById('module-nav');
 const lessonNav             = document.getElementById('lesson-nav');
-const moduleProgress        = document.getElementById('module-progress');
-const moduleProgressFill    = document.getElementById('module-progress-fill');
-const globalProgress        = document.getElementById('global-progress');
-const globalProgressFill    = document.getElementById('global-progress-fill');
-const moduleTitle           = document.getElementById('active-module-title');
-const moduleSubtitle        = document.getElementById('active-module-subtitle');
-const welcome               = document.getElementById('welcome');
-const welcomeHeading        = welcome.querySelector('h3');
-const welcomeBody           = welcome.querySelector('p');
+const progressBars          = document.getElementById('progress-bars');
+const welcomePanel          = document.getElementById('welcome-panel');
+const welcomeHeading        = document.getElementById('welcome-heading');
+const welcomeBody           = document.getElementById('welcome-body');
 const brandSubtitle         = document.getElementById('brand-subtitle');
 const frame                 = document.getElementById('lesson-frame');
 const resetButton           = document.getElementById('reset-progress');
@@ -49,7 +48,35 @@ let activeLessonId = null;
 let currentUser  = null;     // firebase.User | null
 let userProfile  = null;     // Firestore user document data | null
 
+// module objects the current user can see — recomputed by getVisibleModules()
+// on every auth change. Seeded optimistically from accessControl.mode so the
+// very first synchronous render() (before onAuthChange resolves) doesn't
+// show every field as locked on 'open' platforms.
+let visibleModules = (LMS_CONFIG.accessControl?.mode ?? 'open') === 'open'
+  ? LMS_CONFIG.modules
+  : [];
+
 // ── PROGRESS HELPERS ───────────────────────────────────────────────────────
+
+/**
+ * Returns the deduplicated set of all checklist storageKeys across every
+ * module in the registry. Progress is global (not field-scoped), so this
+ * must scan ALL modules, not just the active field's modules.
+ * @returns {string[]}
+ */
+function getAllStorageKeys() {
+  const keys = new Set();
+  for (const mod of LMS_CONFIG.modules) {
+    for (const lesson of mod.lessons) {
+      const cfg = lesson.progress;
+      if (cfg?.type === 'checklist' && cfg.storageKey) {
+        keys.add(cfg.storageKey);
+      }
+    }
+  }
+  return Array.from(keys);
+}
+
 function safeReadStorage(key) {
   try {
     return JSON.parse(localStorage.getItem(key) || '{}');
@@ -89,13 +116,68 @@ function computeGlobalProgress() {
   return { ...totals, pct };
 }
 
+// ── FIRESTORE SYNC (Phase 4) ───────────────────────────────────────────────
+
+/**
+ * Called on every 3-second poll tick when a user is signed in.
+ * Reads all checklist storageKeys from localStorage and writes any non-empty
+ * ones to Firestore. Lesson files only write to localStorage; this is the
+ * bridge that makes those writes cross-device.
+ *
+ * Non-blocking — errors are swallowed so a transient network failure doesn't
+ * break the progress poll cycle.
+ */
+async function syncProgressToFirestore() {
+  if (!currentUser) return;
+  const keys = getAllStorageKeys();
+  for (const key of keys) {
+    const localData = safeReadStorage(key);
+    if (Object.keys(localData).length === 0) continue;
+    try {
+      await setLessonProgress(currentUser.uid, key, localData);
+    } catch (err) {
+      console.warn(`[LMS] syncProgressToFirestore: failed to sync key "${key}"`, err);
+    }
+  }
+}
+
+/**
+ * Called once on sign-in, before the first render.
+ * Reads the Firestore progress for every storageKey and merges it with
+ * whatever is already in localStorage. Firestore wins on conflict — it holds
+ * the most recent data from any device. Local-only keys that don't exist in
+ * Firestore are preserved (the user may have worked offline since last sync).
+ * The merged result is written back to both localStorage and Firestore so
+ * both stores converge immediately.
+ *
+ * @param {string} uid
+ */
+async function migrateLocalStorageToFirestore(uid) {
+  const keys = getAllStorageKeys();
+  for (const key of keys) {
+    try {
+      const remote = await getLessonProgress(uid, key);   // {} if doc doesn't exist
+      const local  = safeReadStorage(key);
+      // Spread order: local first, remote second — remote wins on key conflicts.
+      const merged = { ...local, ...remote };
+      localStorage.setItem(key, JSON.stringify(merged));
+      if (Object.keys(merged).length > 0) {
+        await setLessonProgress(uid, key, merged);
+      }
+    } catch (err) {
+      console.warn(`[LMS] migrateLocalStorageToFirestore: failed for key "${key}"`, err);
+      // Continue — a failure on one key must not block the rest.
+    }
+  }
+}
+
 // ── FIELD / MODULE SCOPING ─────────────────────────────────────────────────
 function getActiveFieldModules() {
-  if (!activeFieldId) return LMS_CONFIG.modules;
+  if (!activeFieldId) return visibleModules;
   const field = LMS_CONFIG.fields?.find(f => f.id === activeFieldId);
-  if (!field) return LMS_CONFIG.modules;
+  if (!field) return visibleModules;
   return field.moduleIds
-    .map(id => LMS_CONFIG.modules.find(m => m.id === id))
+    .map(id => visibleModules.find(m => m.id === id))
     .filter(Boolean);
 }
 
@@ -105,7 +187,7 @@ function enterField(fieldId) {
   activeLessonId = null;
   frame.src = '';
   frame.classList.remove('visible');
-  welcome.classList.remove('hidden');
+  welcomePanel.classList.remove('hidden');
   render();
 }
 
@@ -147,7 +229,7 @@ function openLesson(lessonId) {
   activeLessonId = lessonId;
   frame.src = lesson.route;
   frame.classList.add('visible');
-  welcome.classList.add('hidden');
+  welcomePanel.classList.add('hidden');
   renderLessonNav();
 }
 
@@ -173,29 +255,49 @@ function renderProgressBars() {
   const mod = getActiveFieldModules().find(m => m.id === activeModuleId);
   const mp  = mod ? computeModuleProgress(mod) : { pct: 0 };
   const gp  = computeGlobalProgress();
-  moduleProgress.textContent    = `${mp.pct}%`;
-  moduleProgressFill.style.width = `${mp.pct}%`;
-  globalProgress.textContent    = `${gp.pct}%`;
-  globalProgressFill.style.width = `${gp.pct}%`;
+
+  progressBars.innerHTML = `
+    <div class="stat-row">
+      <span data-i18n="progress.module">${t('progress.module', 'Module')}</span>
+      <strong>${mp.pct}%</strong>
+    </div>
+    <div class="track"><div class="fill" style="width:${mp.pct}%"></div></div>
+    <div class="stat-row">
+      <span data-i18n="progress.overall">${t('progress.overall', 'Overall')}</span>
+      <strong>${gp.pct}%</strong>
+    </div>
+    <div class="track"><div class="fill" style="width:${gp.pct}%"></div></div>
+  `;
 }
 
-function renderHeader() {
-  const mod = getActiveFieldModules().find(m => m.id === activeModuleId);
-  if (!mod) return;
-  moduleTitle.textContent    = mod.title;
-  moduleSubtitle.textContent = mod.subtitle;
-}
+/**
+ * Clears all progress from localStorage. When signed in, also writes empty
+ * objects to Firestore so that the reset propagates across devices.
+ * Must be async because Firestore writes are awaited sequentially.
+ */
+async function resetAllProgress() {
+  const keys = getAllStorageKeys();
 
-function resetAllProgress() {
-  const keys = new Set();
-  getActiveFieldModules().forEach(mod => {
-    mod.lessons.forEach(lesson => {
-      const cfg = lesson.progress;
-      if (cfg?.type === 'checklist' && cfg.storageKey) keys.add(cfg.storageKey);
-    });
-  });
+  // Always clear localStorage immediately so the UI updates without waiting
+  // for the network.
   keys.forEach(key => localStorage.removeItem(key));
+
+  // When signed in, propagate the reset to Firestore so other devices see it
+  // too. Errors on individual keys are swallowed so a partial network failure
+  // doesn't leave the UI in a broken state — the local clear already happened.
+  if (currentUser) {
+    for (const key of keys) {
+      try {
+        await setLessonProgress(currentUser.uid, key, {});
+      } catch (err) {
+        console.warn(`[LMS] resetAllProgress: failed to clear Firestore key "${key}"`, err);
+      }
+    }
+  }
+
   render();
+
+  // Reload the iframe so checkbox state inside the lesson reflects the reset.
   if (frame.src) {
     const src = frame.src;
     frame.src = '';
@@ -211,7 +313,7 @@ function renderFieldsLanding() {
 
   (LMS_CONFIG.fields || []).forEach(field => {
     const fieldModules = field.moduleIds
-      .map(id => LMS_CONFIG.modules.find(m => m.id === id))
+      .map(id => visibleModules.find(m => m.id === id))
       .filter(Boolean);
 
     const totals = fieldModules.reduce((acc, mod) => {
@@ -268,7 +370,6 @@ function renderShell() {
   if (field?.theme) updateTheme(field);
 
   renderModuleNav();
-  renderHeader();
   renderLessonNav();
   renderProgressBars();
   renderBrandSubtitle();
@@ -355,15 +456,6 @@ function hideAuthError() {
   authError.hidden      = true;
 }
 
-// ── PHASE 4 STUB ───────────────────────────────────────────────────────────
-// migrateLocalStorageToFirestore will be implemented in Phase 4 (cross-device
-// progress sync). Called here so the onAuthChange handler is already in its
-// final shape and Phase 4 only needs to fill in the body.
-async function migrateLocalStorageToFirestore(_uid) {
-  // TODO (Phase 4): read Firestore progress for each storageKey, merge with
-  // localStorage (Firestore wins on conflict), write merged result back.
-}
-
 // ── AUTH STATE OBSERVER ────────────────────────────────────────────────────
 // Registered early; fires immediately with the persisted auth state (or null)
 // and again on every subsequent sign-in / sign-out event.
@@ -372,6 +464,10 @@ onAuthChange(async (user) => {
 
   if (user) {
     userProfile = await getUserProfile(user.uid);
+
+    // Keep the admin panel's userIndex entry current (displayName/photoURL
+    // can change between sessions; email users never re-register).
+    await upsertUserIndex(user);
 
     // If the user's Firestore profile has a different language preference,
     // apply it and persist locally so the shell reflects it on next load.
@@ -385,11 +481,32 @@ onAuthChange(async (user) => {
     }
 
     showSignedIn(user, userProfile);
+
+    // Merge Firestore progress into localStorage on first sign-in.
+    // Must complete before render() so that progress bars reflect the
+    // full cross-device state on the very first paint.
     await migrateLocalStorageToFirestore(user.uid);
   } else {
     userProfile = null;
     showSignedOut();
   }
+
+  // Recompute which modules this user can see. Anonymous users fall back to
+  // the platform's accessControl.mode default (handled inside access.js).
+  visibleModules = await getVisibleModules(user?.uid ?? null);
+
+  // If the currently selected module is no longer visible (access revoked,
+  // or user signed out of a 'controlled' platform), reset the selection to
+  // the first visible module so the shell doesn't render a dangling state.
+  if (activeModuleId && !visibleModules.find(m => m.id === activeModuleId)) {
+    activeModuleId = visibleModules[0]?.id ?? null;
+    activeLessonId = null;
+  }
+
+  // Show/hide the admin panel link based on role. Guarded with optional
+  // chaining — the element may not exist on every shell variant.
+  const adminLink = document.getElementById('btn-admin-panel');
+  if (adminLink) adminLink.hidden = !isAdmin(userProfile);
 
   render();
 });
@@ -398,6 +515,10 @@ onAuthChange(async (user) => {
 async function switchLanguage(lang) {
   await loadLanguage(lang);
   localStorage.setItem('lms_lang', lang);
+
+  if (currentUser) {
+    await updateUserLang(currentUser.uid, lang);
+  }
 
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.lang === lang);
@@ -449,5 +570,12 @@ document.getElementById('btn-email-signup').addEventListener('click', () => {
 
 document.getElementById('btn-signout').addEventListener('click', signOutUser);
 
-// Progress polling — keeps the sidebar in sync with iframe checkbox changes
-setInterval(renderProgressBars, PROGRESS_POLL_INTERVAL);
+// ── PROGRESS POLLING ───────────────────────────────────────────────────────
+// Runs every 3 seconds to detect checkbox changes made inside the lesson
+// iframe (the iframe can only communicate via shared localStorage).
+// When signed in, each tick also syncs dirty keys to Firestore so progress
+// is visible on other devices within one poll cycle.
+setInterval(async () => {
+  renderProgressBars();
+  await syncProgressToFirestore();
+}, PROGRESS_POLL_INTERVAL);

@@ -9,12 +9,11 @@
 //   signOutUser       — signs the current user out
 //   onAuthChange      — registers a callback fired on every auth-state change
 //
-// SDK version pin: update the version string below when upgrading Firebase.
-// Check the latest at: https://www.gstatic.com/firebasejs/
-
-const FIREBASE_SDK_VERSION = '10.12.0';
-const SDK_BASE = `https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}`;
-
+// SDK version pin: 10.12.0 — update both URLs below together when upgrading.
+// NOTE: ES module import specifiers MUST be static string literals — they
+// cannot be built from variables or template literals (that throws a
+// SyntaxError and breaks the entire module graph, including app.js).
+// Check the latest version at: https://www.gstatic.com/firebasejs/
 import {
   getAuth,
   signInWithPopup,
@@ -23,16 +22,17 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged
-} from `${SDK_BASE}/firebase-auth.js`;
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
-import { initializeApp } from `${SDK_BASE}/firebase-app.js`;
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 
 import { FIREBASE_CONFIG } from './firebase-config.js';
 import { ensureUserDocument } from './db.js';
 
 // ── Initialise Firebase app ────────────────────────────────────────────────
 // initializeApp is safe to call multiple times with the same config in the
-// same JS module graph; Firebase de-duplicates by project ID.
+// same JS module graph; Firebase de-duplicates by project ID and returns the
+// existing app instance (db.js calls this too, independently).
 const app = initializeApp(FIREBASE_CONFIG);
 
 /** Shared Auth instance — imported by db.js and anywhere else that needs it. */

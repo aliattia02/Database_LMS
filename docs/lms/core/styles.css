@@ -12,6 +12,13 @@
 
 * { box-sizing: border-box; }
 
+/* The `hidden` attribute must always win over component display rules
+   (e.g. .app-shell { display: grid } / .fields-landing { display: flex }
+   would otherwise override the browser's default `[hidden] { display: none }`
+   at equal specificity, since author styles beat UA styles). Without this,
+   #fields-landing and #app-shell can both be visible at the same time. */
+[hidden] { display: none !important; }
+
 html, body {
   margin: 0;
   height: 100%;
@@ -125,6 +132,61 @@ html, body {
   transition: width .3s ease;
 }
 
+/* ── AUTH PANEL ──────────────────────────────────────────────────────────── */
+.auth-btn {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 9px 12px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface);
+  cursor: pointer; font-size: 13px; font-weight: 500;
+  transition: background .15s, border-color .15s;
+}
+.auth-btn:hover { background: var(--accent-soft); border-color: var(--accent); }
+.auth-divider { text-align: center; color: var(--muted); font-size: 11px; margin: 6px 0; }
+#auth-email, #auth-password {
+  width: 100%; padding: 8px 10px; border-radius: 6px;
+  border: 1px solid var(--border); font-size: 13px;
+  background: var(--surface); color: var(--text);
+  margin-bottom: 6px;
+}
+.auth-actions { display: flex; gap: 6px; }
+.auth-actions button {
+  flex: 1; padding: 8px; border-radius: 6px; cursor: pointer;
+  font-size: 12px; border: 1px solid var(--border);
+  background: var(--accent); color: #fff; font-weight: 600;
+}
+.auth-actions button:last-child {
+  background: var(--surface); color: var(--accent);
+}
+.auth-error { color: var(--danger); font-size: 11px; margin: 4px 0 0; }
+.auth-user { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.auth-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+.tier-badge {
+  margin-inline-start: auto; padding: 2px 7px; border-radius: 999px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  background: var(--accent-soft); color: var(--accent);
+}
+.tier-badge.pro { background: #fef9c3; color: #854d0e; }
+
+/* ── ADMIN PANEL LINK ────────────────────────────────────────────────────── */
+.admin-link {
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent-soft);
+  transition: background .15s, color .15s;
+}
+.admin-link:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
 /* ── RESET BUTTON ────────────────────────────────────────────────────────── */
 .danger-btn {
   border: 1px solid color-mix(in srgb, var(--danger) 40%, var(--border));
@@ -143,14 +205,31 @@ html, body {
 }
 
 /* ── MAIN AREA ───────────────────────────────────────────────────────────── */
+/*
+  .main has THREE children in module.html:
+    1. .topbar   → row 1 (auto height)
+    2. #welcome  → row 2 (shown when no lesson is open)
+    3. #lesson-frame → row 2 (shown when a lesson is open; replaces welcome)
+
+  Without explicit grid-row placement the browser assigns them to rows 1/2/3,
+  putting the iframe in an implicit 3rd row with height:auto — so height:100%
+  on the iframe resolves to 0.
+
+  Fix: give #welcome and #lesson-frame the same grid-row: 2, making them
+  stack on top of each other in the 1fr row. Only one is visible at a time
+  (toggled via .hidden / .visible), so they never actually overlap visually.
+*/
 .main {
   display: grid;
   grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr;
   min-height: 0;
+  overflow: hidden;
   background: var(--bg);
 }
 
 .topbar {
+  grid-row: 1;
   border-bottom: 1px solid var(--border);
   background: var(--surface);
   padding: 14px 20px;
@@ -159,18 +238,25 @@ html, body {
 .topbar p  { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
 
 .welcome {
+  grid-row: 2;
   margin: 20px;
   border: 1px solid var(--border);
   background: var(--surface);
   border-radius: 12px;
   padding: 24px;
+  overflow-y: auto;
+  /* align to top of the 1fr row rather than stretching */
+  align-self: start;
 }
 .welcome h3 { margin-top: 0; color: var(--text); }
 .welcome p  { color: var(--muted); max-width: 680px; line-height: 1.65; }
 
+/* iframe shares row 2 with #welcome — only one is visible at a time */
 #lesson-frame {
+  grid-row: 2;
   width: 100%;
   height: 100%;
+  min-height: 0;
   border: none;
   display: none;
   background: #fff;

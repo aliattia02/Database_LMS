@@ -2,6 +2,14 @@ export const LMS_CONFIG = {
   appName: 'LMS Platform',
   storagePrefix: 'lms',
 
+  // Phase 6 — controls default module visibility when a user has no
+  // per-user access document (see access.js → getVisibleModules).
+  //   'open'       → all modules visible by default; explicit `false` hides one
+  //   'controlled' → all modules hidden by default; explicit `true` shows one
+  accessControl: {
+    mode: 'open'
+  },
+
   welcome: {
     heading: 'Your learning platform',
     body: 'Select a module on the left, then select a lesson to begin.'

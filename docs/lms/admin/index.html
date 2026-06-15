@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LMS Admin — Access Control</title>
+  <link rel="stylesheet" href="../core/styles.css" />
+  <style>
+    /* ── ADMIN SHELL ──────────────────────────────────────────────────────── */
+    .admin-shell {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .admin-header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .admin-header h1 span {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    /* ── SEARCH ───────────────────────────────────────────────────────────── */
+    .search-bar {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: 280px;
+      font-size: 13px;
+      background: var(--surface);
+      color: var(--text);
+      transition: border-color .15s;
+    }
+    .search-bar:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* ── ACCESS MODE BANNER ───────────────────────────────────────────────── */
+    #access-mode-banner {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    #access-mode-banner code {
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* ── STATUS MESSAGE ───────────────────────────────────────────────────── */
+    .status-msg {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 4px 0 12px;
+      min-height: 16px;
+    }
+
+    /* ── USER TABLE ───────────────────────────────────────────────────────── */
+    .user-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .user-table th,
+    .user-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+    .user-table th {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      background: var(--surface-2);
+    }
+    .user-table tr:last-child td {
+      border-bottom: none;
+    }
+    .user-table tr:hover td {
+      background: var(--surface-2);
+    }
+
+    /* ── ROLE COLUMN ──────────────────────────────────────────────────────── */
+    .role-label {
+      display: inline-block;
+      margin-right: 6px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ── MODULE ACCESS TOGGLES ────────────────────────────────────────────── */
+    .module-toggle {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .toggle-chip {
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      background: var(--surface);
+      color: var(--muted);
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .toggle-chip:hover {
+      border-color: var(--accent);
+    }
+    .toggle-chip.granted {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .toggle-chip.revoked {
+      background: color-mix(in srgb, var(--danger) 8%, transparent);
+      color: color-mix(in srgb, var(--danger) 80%, var(--text));
+      border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
+    }
+
+    /* ── FIELD GROUPS (module access cell) ───────────────────────────────── */
+    .field-group {
+      margin-bottom: 14px;
+    }
+    .field-group:last-child {
+      margin-bottom: 0;
+    }
+    .field-group-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      margin-bottom: 6px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border);
+    }
+    .field-group-label {
+      flex: 1;
+    }
+
+    /* ── ACTION / PROMOTE BUTTONS ─────────────────────────────────────────── */
+    .promote-btn {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      background: var(--surface);
+      color: var(--text);
+      transition: background .15s, border-color .15s;
+    }
+    .promote-btn:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+    }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────────────── */
+    @media (max-width: 700px) {
+      .admin-shell { padding: 16px; }
+      .search-bar { width: 100%; }
+      .user-table, .user-table thead, .user-table tbody,
+      .user-table th, .user-table td, .user-table tr {
+        display: block;
+      }
+      .user-table thead { display: none; }
+      .user-table tr {
+        border-bottom: 1px solid var(--border);
+        padding: 8px 0;
+      }
+      .user-table tr:last-child {
+        border-bottom: none;
+      }
+      .user-table td {
+        border-bottom: none;
+        padding: 6px 12px;
+      }
+    }
+
+    /* ── RTL SUPPORT ──────────────────────────────────────────────────────── */
+    [dir="rtl"] .user-table th,
+    [dir="rtl"] .user-table td {
+      text-align: right;
+    }
+    [dir="rtl"] .admin-header {
+      flex-direction: row-reverse;
+    }
+    [dir="rtl"] .field-group-header {
+      flex-direction: row-reverse;
+    }
+    [dir="rtl"] .role-label {
+      margin-right: 0;
+      margin-left: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+
+    <div class="admin-header">
+      <h1>Access Control <span>— LMS Admin Panel</span></h1>
+      <div>
+        <input id="search" class="search-bar" type="search" placeholder="Filter by name or email…" />
+      </div>
+    </div>
+
+    <div id="access-mode-banner" class="panel-block" style="margin-bottom:16px">
+      <!-- Populated by admin.js: shows current accessControl.mode and explanation -->
+    </div>
+
+    <div id="status" class="status-msg"></div>
+
+    <table class="user-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Module access</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="user-rows">
+        <!-- Populated by admin.js -->
+      </tbody>
+    </table>
+
+  </div>
+
+  <script type="module" src="../core/admin.js"></script>
+</body>
+</html>
