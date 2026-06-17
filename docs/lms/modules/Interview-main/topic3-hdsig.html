@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 3: HDSIG — Hessian Data Protection Law | Treuhandstelle Interview Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:        #0f172a;
+  --navy2:       #1e293b;
+  --slate:       #475569;
+  --muted:       #94a3b8;
+  --border:      #e2e8f0;
+  --bg:          #f8fafc;
+  --white:       #ffffff;
+  --amber-bg:    #fffbeb;
+  --amber-border:#f59e0b;
+  --amber-text:  #92400e;
+  --amber-icon:  #d97706;
+  --blue:        #2563eb;
+  --blue-light:  #eff6ff;
+  --pill-l1: #94a3b8; --pill-l1t: #fff;
+  --pill-l2: #3b82f6; --pill-l2t: #fff;
+  --pill-l3: #16a34a; --pill-l3t: #fff;
+  --pill-l4: #7c3aed; --pill-l4t: #fff;
+  --accent:      #0ea5e9;
+  --radius:      10px;
+  --shadow:      0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  background: var(--bg);
+  color: var(--navy);
+}
+
+/* HEADER */
+.header {
+  background: var(--navy);
+  color: #fff;
+  padding: 28px 24px 20px;
+}
+.header-inner { max-width: 820px; margin: 0 auto; }
+.header-meta {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.header h1 {
+  font-size: clamp(22px, 4vw, 30px);
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+.header h1 abbr {
+  text-decoration: underline dotted rgba(255,255,255,.35);
+  cursor: help;
+}
+.header-sub {
+  font-size: 13.5px;
+  color: #94a3b8;
+  max-width: 580px;
+}
+
+/* TABS BAR */
+.tabs-bar {
+  background: var(--navy);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 2px solid rgba(255,255,255,0.07);
+}
+.tabs-inner {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+}
+.tab-btn {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.tab-btn.active {
+  background: var(--bg);
+  color: var(--navy);
+}
+.tab-btn:not(.active):hover {
+  color: #fff;
+}
+
+/* BODY */
+.body {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* COLLAPSIBLE SECTIONS */
+.section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.section-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 28px;
+  border: none;
+  background: transparent;
+  font-family: 'IBM Plex Sans', sans-serif;
+  cursor: pointer;
+  text-align: left;
+  gap: 12px;
+}
+.section-toggle.open { border-bottom: 1px solid var(--border); }
+.section-toggle:hover { background: #f8fafc; }
+.toggle-left { display: flex; flex-direction: column; gap: 3px; }
+.section-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.section-toggle h2 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.section-chevron {
+  color: var(--muted);
+  font-size: 18px;
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.section-toggle:not(.open) .section-chevron { transform: rotate(-90deg); }
+.section-body { padding: 22px 28px 26px; }
+.section-body.hidden { display: none; }
+
+/* MUST-KNOW */
+.must-know {
+  background: var(--amber-bg);
+  border: 1px solid #fde68a;
+  border-left: 4px solid var(--amber-border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.must-know .section-label { color: #b45309; }
+.must-know .section-toggle h2 { color: #78350f; }
+.must-know .section-chevron { color: #d97706; }
+.must-know .section-body { padding: 22px 28px 26px; }
+.must-know-items { display: flex; flex-direction: column; gap: 10px; }
+.must-know-item {
+  display: flex;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--amber-text);
+  align-items: flex-start;
+}
+.flag { color: var(--amber-icon); font-size: 15px; flex-shrink: 0; line-height: 1.65; }
+
+/* LEARNING LADDER */
+.ladder { display: flex; flex-direction: column; gap: 14px; }
+.ladder-level {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.level-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border);
+}
+.level-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.l1 .level-pill { background: var(--pill-l1); color: var(--pill-l1t); }
+.l2 .level-pill { background: var(--pill-l2); color: var(--pill-l2t); }
+.l3 .level-pill { background: var(--pill-l3); color: var(--pill-l3t); }
+.l4 .level-pill { background: var(--pill-l4); color: var(--pill-l4t); }
+.level-title { font-weight: 600; font-size: 14px; color: var(--navy2); }
+.level-bullets { padding: 14px 16px; }
+.level-bullets ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.level-bullets li {
+  font-size: 13.5px;
+  color: #334155;
+  padding-left: 18px;
+  position: relative;
+}
+.level-bullets li::before {
+  content: '›';
+  color: var(--muted);
+  position: absolute;
+  left: 0;
+}
+
+/* GLOSSARY */
+.glossary-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.glossary-table th {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--border);
+  text-align: left;
+}
+.glossary-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: #334155;
+  vertical-align: top;
+}
+.glossary-table tr:nth-child(even) td { background: #f8fafc; }
+.term-cell {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--navy);
+  white-space: nowrap;
+  width: 28%;
+}
+
+/* ACCORDION */
+.accordion { display: flex; flex-direction: column; gap: 8px; }
+.acc-item {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.acc-trigger {
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  background: #f8fafc;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  transition: background .15s, color .15s;
+}
+.acc-trigger.open { background: var(--blue-light); color: var(--blue); }
+.acc-trigger:not(.open):hover { background: #f1f5f9; }
+.acc-chevron {
+  font-size: 16px;
+  flex-shrink: 0;
+  transition: transform .2s;
+  margin-top: 2px;
+}
+.acc-trigger.open .acc-chevron { transform: rotate(180deg); }
+.acc-body {
+  display: none;
+  padding: 16px;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  font-size: 13.5px;
+  color: #334155;
+}
+.acc-body.open { display: block; }
+.acc-strategy-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 6px;
+}
+
+/* CONNECTIONS GRID */
+.connections-grid { display: flex; flex-direction: column; gap: 10px; }
+.connection-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--white);
+}
+.conn-badge {
+  background: var(--blue-light);
+  color: var(--blue);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 99px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.conn-text { font-size: 13.5px; color: #334155; }
+
+/* STUDY PLAN */
+.study-plan {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.day-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--white);
+}
+.day-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border);
+}
+.day-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.day-focus {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--slate);
+}
+.day-tasks {
+  list-style: none;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.day-task { font-size: 13px; color: #334155; }
+.task-time {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #d97706;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 4px;
+  padding: 1px 6px;
+  margin-bottom: 4px;
+}
+.task-link {
+  color: var(--blue);
+  font-size: 12px;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(37,99,235,.35);
+  display: inline;
+}
+.task-link:hover { border-bottom-style: solid; }
+
+/* UTILITY */
+p + p { margin-top: .85em; }
+.why-list { list-style: none; margin: 10px 0; display: flex; flex-direction: column; gap: 6px; }
+.why-list li {
+  font-size: 13.5px;
+  color: #334155;
+  padding-left: 20px;
+  position: relative;
+}
+.why-list li::before { content: '›'; color: var(--blue); position: absolute; left: 0; font-weight: 700; }
+.closing { font-size: 13.5px; color: var(--slate); margin-top: 10px; font-style: italic; }
+abbr { text-decoration: underline dotted var(--muted); cursor: help; }
+
+/* RESPONSIVE */
+@media(max-width:540px) {
+  .header { padding: 20px 16px 16px; }
+  .body { padding: 20px 14px 48px; }
+  .section-body { padding: 16px 16px 20px; }
+  .section-toggle { padding: 16px; }
+  .term-cell { width: 36%; white-space: normal; }
+  .study-plan { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Treuhandstelle Interview Prep &middot; Topic 3 of 6</div>
+    <h1><abbr title="Hessisches Datenschutz- und Informationsfreiheitsgesetz">HDSIG</abbr> &mdash; Hessian Data Protection Law</h1>
+    <p class="header-sub">State-level data protection regulation governing health research in Hesse — the legal backbone of every consent and pseudonymisation decision at the Frankfurt Treuhandstelle.</p>
+  </div>
+</header>
+
+<!-- STICKY TABS -->
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn" onclick="switchTab('de', this)">Deutsch</button>
+  </div>
+</div>
+
+<!-- BODY -->
+<main class="body">
+
+  <!-- ═══════════════════ ENGLISH TAB ═══════════════════ -->
+  <div id="tab-en" class="tab-content active">
+
+    <!-- Section 1: What is it -->
+    <div class="section">
+      <button class="section-toggle open" onclick="toggleSection(this)">
+        <div class="toggle-left">
+          <span class="section-label">Section 1</span>
+          <h2>What is it?</h2>
+        </div>
+        <span class="section-chevron">▾</span>
+      </button>
+      <div class="section-body">
+        <p>The <abbr title="Hessisches Datenschutz- und Informationsfreiheitsgesetz">HDSIG</abbr> (Hessisches Datenschutz- und Informationsfreiheitsgesetz) is Hesse's state data protection law, enacted in January 2018 to align with the <abbr title="General Data Protection Regulation">GDPR</abbr> (EU Regulation 2016/679). Unlike the GDPR — which is directly binding across all EU member states — the HDSIG fills the "opening clauses" that the GDPR deliberately leaves to national and regional lawmakers. For health data, these clauses are especially important because the GDPR allows member states to introduce stricter safeguards for sensitive categories such as genetic, biometric, and health information.</p>
+        <p>In practical terms, HDSIG governs all public bodies in Hesse — including universities and university hospitals such as Universitätsmedizin Frankfurt — when they process personal data. It sets out the legal basis for processing health-related research data, the conditions under which pseudonymised data may be shared across institutional boundaries, and the obligations of the data controller and any data processors they work with.</p>
+        <p>For hospital-based research, the most relevant provisions are those dealing with medical-research exceptions (§§ 25–28 HDSIG), which permit processing of special-category health data without individual consent under strict conditions: a scientific purpose, proportionate data use, technical and organisational safeguards, and oversight by the data-protection officer (<abbr title="Datenschutzbeauftragter">DSB</abbr>). The Treuhandstelle sits at the intersection of all these provisions — it is the technical and organisational safeguard that makes research exceptions lawful.</p>
+        <p>The law also defines the role of the <abbr title="Hessischer Beauftragter für Datenschutz und Informationsfreiheit">HBDI</abbr> (Hessischer Beauftragter für Datenschutz und Informationsfreiheit), the independent supervisory authority for Hesse. Public bodies like university hospitals must notify and, in certain cases, consult the HBDI before launching data-intensive research projects — a procedural step the Treuhandstelle leader must be able to manage.</p>
+      </div>
+    </div>
+
+    <!-- Section 2: Why it matters -->
+    <div class="section">
+      <button class="section-toggle open" onclick="toggleSection(this)">
+        <div class="toggle-left">
+          <span class="section-label">Section 2</span>
+          <h2>Why it matters for this role</h2>
+        </div>
+        <span class="section-chevron">▾</span>
+      </button>
+      <div class="section-body">
+        <p>The Treuhandstelle at Universitätsmedizin Frankfurt operates under Hessian law. Every service it offers — from patient consent capture to pseudonym issuance — must be legally grounded in HDSIG (in combination with GDPR and, for social-code data, <abbr title="Sozialgesetzbuch X">SGB X</abbr>). As Leitung, Ali will be expected to translate legal provisions into operational decisions without being a lawyer.</p>
+        <ul class="why-list">
+          <li>Drafting and reviewing internal data-processing agreements and operating procedures that cite the correct HDSIG paragraphs.</li>
+          <li>Advising clinical researchers on whether their proposed study can rely on a research exception, or whether informed consent is required.</li>
+          <li>Configuring <abbr title="generic Informed Consent Service">gICS</abbr> and <abbr title="generic Pseudonym Administration Service">gPAS</abbr> policies to match the retention and access rules mandated by HDSIG.</li>
+          <li>Preparing documentation for the <abbr title="Datenschutzbeauftragter">DSB</abbr> and, where required, the HBDI prior to new research projects.</li>
+          <li>Training junior team members so they can answer basic HDSIG questions from study coordinators and <abbr title="Datenintegrationszentrum">DIZ</abbr> colleagues.</li>
+        </ul>
+        <p class="closing">The interviewer will likely probe whether Ali can distinguish what HDSIG adds beyond the GDPR, and whether Ali understands the practical workflow from legal basis to technical implementation.</p>
+      </div>
+    </div>
+
+    <!-- Section 3: Learning ladder -->
+    <div class="section">
+      <button class="section-toggle open" onclick="toggleSection(this)">
+        <div class="toggle-left">
+          <span class="section-label">Section 3</span>
+          <h2>Zero to hero: learning ladder</h2>
+        </div>
+        <span class="section-chevron">▾</span>
+      </button>
+      <div class="section-body">
+        <div class="ladder">
+          <div class="ladder-level l1">
+            <div class="level-head">
+              <span class="level-pill">Level 1</span>
+              <span class="level-title">Basic awareness — can define it</span>
+            </div>
+            <div class="level-bullets">
+              <ul>
+                <li>Know that HDSIG is Hesse's implementation of the GDPR's national opening clauses.</li>
+                <li>Understand that it applies to all Hessian public bodies, including Universitätsmedizin Frankfurt.</li>
+                <li>Recognise that health data is a special category requiring heightened protection under both GDPR Art. 9 and HDSIG.</li>
+                <li>Know the name of the supervisory authority: HBDI (Hessischer Beauftragter für Datenschutz und Informationsfreiheit).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="ladder-level l2">
+            <div class="level-head">
+              <span class="level-pill">Level 2</span>
+              <span class="level-title">Working knowledge — can describe how it works</span>
+            </div>
+            <div class="level-bullets">
+              <ul>
+                <li>Explain the six legal bases for processing under GDPR Art. 6 and how HDSIG refines them for public bodies.</li>
+                <li>Describe the medical-research exception in §§ 25–28 HDSIG: conditions, safeguards, and documentation requirements.</li>
+                <li>Outline when a <abbr title="Data Protection Impact Assessment">DPIA</abbr> (Datenschutz-Folgenabschätzung) is mandatory and who leads it.</li>
+                <li>Explain the difference between anonymisation and pseudonymisation under HDSIG and why this distinction drives the Treuhandstelle's entire architecture.</li>
+                <li>Know the standard contractual obligations when two institutions share pseudonymised data (joint controllership vs. processor agreement).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="ladder-level l3">
+            <div class="level-head">
+              <span class="level-pill">Level 3</span>
+              <span class="level-title">Applied understanding — can connect it to the job tasks</span>
+            </div>
+            <div class="level-bullets">
+              <ul>
+                <li>Map HDSIG §§ 25–28 provisions onto specific gICS policy fields (retention period, revocation handling, purpose binding).</li>
+                <li>Draft a data-processing register entry for a Treuhandstelle service compliant with GDPR Art. 30 and HDSIG.</li>
+                <li>Advise a study team on whether HDSIG's research exception applies to their registry, or whether they need broad patient consent.</li>
+                <li>Prepare a DPIA outline for a cross-institutional pseudonymisation project in cooperation with the DIZ.</li>
+                <li>Explain to clinical staff why the Treuhandstelle holds only the identity-to-pseudonym mapping and never the research data itself.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="ladder-level l4">
+            <div class="level-head">
+              <span class="level-pill">Level 4</span>
+              <span class="level-title">Interview-ready — can handle tough questions</span>
+            </div>
+            <div class="level-bullets">
+              <ul>
+                <li>Argue confidently why HDSIG is stricter than the GDPR baseline in specific areas, and give concrete examples from health-research practice.</li>
+                <li>Discuss the tension between data minimisation (GDPR Art. 5(1)(c)) and the need for longitudinal patient linkage in clinical registries.</li>
+                <li>Explain how HDSIG interacts with SGB X §75a for studies involving statutory health-insurance data.</li>
+                <li>Describe a hypothetical scenario where a research project's legal basis collapses mid-study and outline the steps you would take as Treuhandstelle lead.</li>
+                <li>Articulate a position on the 2023–2024 HDSIG amendment debates and their impact on the MII data-sharing framework.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Must-know facts -->
+    <div class="must-know section">
+      <button class="section-toggle open" onclick="toggleSection(this)">
+        <div class="toggle-left">
+          <span class="section-label">Section 4</span>
+          <h2>Must-know facts</h2>
+        </div>
+        <span class="section-chevron">▾</span>
+      </button>
+      <div class="section-body">
+        <div class="must-know-items">
+          <div class="must-know-item"><span class="flag">⚑</span><span>HDSIG entered into force on <strong>25 May 2018</strong> — the same day as the GDPR — replacing the 1999 HDSG. It has since been amended; always cite the current consolidated version when writing policies.</span></div>
+          <div class="must-know-item"><span class="flag">⚑</span><span>Health data is classified as a <strong>special category</strong> under both GDPR Art. 9 and HDSIG §13. Processing it requires at minimum an explicit legal basis <em>and</em> a documented proportionality assessment.</span></div>
+          <div class="must-know-item"><span class="flag">⚑</span><span>HDSIG §§ 25–28 create a <strong>medical-research exception</strong> allowing processing without individual consent, but only when: (1) the research purpose is scientifically justified, (2) the data are pseudonymised as soon as feasible, (3) an ethics committee has approved the study, and (4) the DSB has been notified.</span></div>
+          <div class="must-know-item"><span class="flag">⚑</span><span>Pseudonymised data under HDSIG is still considered <strong>personal data</strong> as long as re-identification is technically possible — which it always is from the Treuhandstelle's perspective. The Treuhandstelle's organisational separation from research systems is the legal safeguard.</span></div>
+          <div class="must-know-item"><span class="flag">⚑</span><span>A <strong>DPIA</strong> (Datenschutz-Folgenabschätzung, GDPR Art. 35) is mandatory for large-scale processing of health data. The Treuhandstelle leader typically co-authors the technical sections with the DSB.</span></div>
+          <div class="must-know-item"><span class="flag">⚑</span><span>The <strong>HBDI</strong> is the independent supervisory authority for Hesse. University hospitals must consult HBDI before implementing processing activities deemed "high risk" under the GDPR. Non-compliance can trigger investigations and fines.</span></div>
+          <div class="must-know-item"><span class="flag">⚑</span><span>HDSIG §18 requires public bodies to appoint a <strong>Datenschutzbeauftragter (DSB)</strong> — the data protection officer. The Treuhandstelle leader works closely with the DSB; they do <em>not</em> hold the DSB role themselves, but must document all HDSIG-relevant decisions for the DSB's review.</span></div>
+          <div class="must-know-item"><span class="flag">⚑</span><span>Patients in Hesse retain the right to <strong>withdraw consent</strong> at any time (GDPR Art. 7(3), HDSIG §9). The gICS system must be configured to propagate withdrawal signals to all downstream research systems — a key technical responsibility of the Treuhandstelle.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 5: Glossary -->
+    <div class="section">
+      <button class="section-toggle open" onclick="toggleSection(this)">
+        <div class="toggle-left">
+          <span class="section-label">Section 5</span>
+          <h2>Key terms glossary</h2>
+        </div>
+        <span class="section-chevron">▾</span>
+      </button>
+      <div class="section-body">
+        <table class="glossary-table">
+          <thead>
+            <tr><th>Term</th><th>Plain-language definition</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="term-cell">HDSIG</td><td>Hessisches Datenschutz- und Informationsfreiheitsgesetz — Hesse's state data protection law that supplements and refines the GDPR for Hessian public bodies.</td></tr>
+            <tr><td class="term-cell">GDPR / DSGVO</td><td>General Data Protection Regulation (EU 2016/679) — the pan-European baseline. HDSIG cannot be weaker than GDPR; it can only be stricter or more specific.</td></tr>
+            <tr><td class="term-cell">Öffnungsklausel</td><td>"Opening clause" — an article in the GDPR that explicitly allows member states to introduce their own rules. HDSIG is largely built from these clauses for the health-research context.</td></tr>
+            <tr><td class="term-cell">Besondere Kategorie</td><td>Special category of personal data (GDPR Art. 9) — includes health, genetic, and biometric data. Processing requires a specific legal basis beyond ordinary Art. 6 grounds.</td></tr>
+            <tr><td class="term-cell">Forschungsausnahme</td><td>Research exception (HDSIG §§ 25–28) — the legal provision allowing health data processing for scientific purposes without individual consent, subject to strict conditions.</td></tr>
+            <tr><td class="term-cell">DPIA</td><td>Data Protection Impact Assessment (Datenschutz-Folgenabschätzung, GDPR Art. 35) — a mandatory risk analysis before launching high-risk processing activities.</td></tr>
+            <tr><td class="term-cell">Pseudonymisierung</td><td>Pseudonymisation — replacing direct identifiers with a code. The mapping is held separately (by the Treuhandstelle). The data remain personal data under law.</td></tr>
+            <tr><td class="term-cell">Anonymisierung</td><td>Anonymisation — irreversible removal of all identifiers so re-identification is impossible. Truly anonymised data falls outside GDPR/HDSIG scope entirely.</td></tr>
+            <tr><td class="term-cell">HBDI</td><td>Hessischer Beauftragter für Datenschutz und Informationsfreiheit — Hesse's independent data-protection supervisory authority. University hospitals report high-risk processing to HBDI.</td></tr>
+            <tr><td class="term-cell">DSB</td><td>Datenschutzbeauftragter — the Data Protection Officer. Mandatory for public bodies under HDSIG §18; the Treuhandstelle works alongside the DSB, not as the DSB.</td></tr>
+            <tr><td class="term-cell">Zweckbindung</td><td>Purpose limitation (GDPR Art. 5(1)(b)) — data collected for one purpose cannot be repurposed without a new legal basis. The Treuhandstelle enforces this by controlling who receives which pseudonym.</td></tr>
+            <tr><td class="term-cell">Verarbeitungsverzeichnis</td><td>Record of processing activities (GDPR Art. 30) — a mandatory internal register listing every data-processing operation, its legal basis, and safeguards in place.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Section 6: Interview questions -->
+    <div class="section">
+      <button class="section-toggle open" onclick="toggleSection(this)">
+        <div class="toggle-left">
+          <span class="section-label">Section 6</span>
+          <h2>Likely interview questions</h2>
+        </div>
+        <span class="section-chevron">▾</span>
+      </button>
+      <div class="section-body">
+        <div class="accordion" id="acc-en">
+          <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+              <span>What does HDSIG add to the GDPR, and why does it matter specifically for Universitätsmedizin Frankfurt?</span>
+              <span class="acc-chevron">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="acc-strategy-label">Answer strategy</div>
+              <p>Open by framing HDSIG as filling GDPR's deliberate "opening clauses" for Hessian public bodies. Then give two to three concrete examples: the medical-research exception in §§ 25–28, stricter DSB appointment rules, and HBDI oversight obligations. Close by connecting this to Frankfurt specifically — every Treuhandstelle operating procedure must cite the relevant HDSIG paragraphs, not just GDPR articles.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+              <span>A clinical researcher tells you their registry qualifies for the HDSIG research exception and they don't need patient consent. How do you respond?</span>
+              <span class="acc-chevron">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="acc-strategy-label">Answer strategy</div>
+              <p>Acknowledge the exception exists but walk through the conditions: scientific justification, ethics committee approval, DSB notification, and pseudonymisation "as soon as feasible." Stress that the Treuhandstelle assesses technical feasibility but cannot unilaterally confirm legal eligibility — that sits with the DSB and, if uncertain, the HBDI. You would document the discussion and request the ethics approval before configuring any gICS or gPAS service for the project.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+              <span>Explain the difference between pseudonymisation and anonymisation under HDSIG, and why the distinction is critical for the Treuhandstelle.</span>
+              <span class="acc-chevron">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="acc-strategy-label">Answer strategy</div>
+              <p>Pseudonymised data is still personal data as long as any party holds the re-identification key — and the Treuhandstelle is explicitly that party. Anonymised data, by contrast, falls entirely outside GDPR and HDSIG scope. This distinction means the Treuhandstelle's entire architecture — organisational separation, access controls, audit logs — is a legal requirement, not just best practice, because without it there would be no compliant pseudonymisation under HDSIG.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+              <span>When is a Data Protection Impact Assessment (DPIA) required, and what role does the Treuhandstelle play in it?</span>
+              <span class="acc-chevron">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="acc-strategy-label">Answer strategy</div>
+              <p>A DPIA is mandatory under GDPR Art. 35 whenever large-scale processing of special-category data (including health data) is planned, or when processing is likely to pose a high risk to individuals. In practice, any new cross-institutional research project involving the Treuhandstelle triggers a DPIA. As Leitung, Ali would co-author the technical sections — describing the pseudonymisation architecture, access controls, and breach protocols — while the DSB leads the legal risk assessment and the HBDI must be consulted if residual risk remains high.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+              <span>A patient revokes their consent mid-study. Walk me through exactly what the Treuhandstelle does.</span>
+              <span class="acc-chevron">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="acc-strategy-label">Answer strategy</div>
+              <p>The right to withdraw consent is unconditional under GDPR Art. 7(3) and HDSIG §9. Upon receiving the withdrawal signal (via gICS), the Treuhandstelle must propagate a status change to all downstream systems that hold data linked to that pseudonym — including the DIZ and any registered research databases. The pseudonym record is flagged as inactive; existing pseudonyms issued to researchers cannot be revoked from already-published results, but no new linkages may be created. Document the withdrawal timestamp and confirm propagation to the DSB. Ali would have pre-defined this workflow in the Treuhandstelle's standard operating procedure.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+              <span>How does HDSIG interact with national initiatives like the MII data-sharing framework?</span>
+              <span class="acc-chevron">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="acc-strategy-label">Answer strategy</div>
+              <p>The MII's USE policy and broad-consent model were designed to be compatible with all sixteen German state data-protection laws, including HDSIG. However, Hessian university hospitals must still verify that any MII-mandated data-sharing activity satisfies HDSIG's additional conditions — for example, ensuring the HBDI is notified where required and that the ethics committee approval covers cross-site data sharing. The Treuhandstelle is the operational linchpin: it applies the Hessian legal layer on top of the MII framework without breaking cross-site interoperability.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 7: Connections -->
+    <div class="section">
+      <button class="section-toggle open" onclick="toggleSection(this)">
+        <div class="toggle-left">
+          <span class="section-label">Section 7</span>
+          <h2>Connections to Ali's existing experience</h2>
+        </div>
+        <span class="section-chevron">▾</span>
+      </button>
+      <div class="section-body">
+        <div class="connections-grid">
+          <div class="connection-card">
+            <span class="conn-badge">GDPR / DiaTwin</span>
+            <p class="conn-text">During the DiaTwin project, Ali worked within GDPR constraints for health-data processing — including legal-basis documentation and privacy-by-design architecture. HDSIG applies the same framework at state level; the conceptual work already done transfers directly to configuring Frankfurt's Treuhandstelle policies.</p>
+          </div>
+          <div class="connection-card">
+            <span class="conn-badge">National EHR rollout</span>
+            <p class="conn-text">Leading the national EHR rollout required navigating both federal (SGB V/X) and state data-protection rules across multiple Länder. Ali's experience reconciling different legal layers is directly applicable to ensuring HDSIG and GDPR are jointly satisfied without creating operational bottlenecks for researchers.</p>
+          </div>
+          <div class="connection-card">
+            <span class="conn-badge">FHIR work</span>
+            <p class="conn-text">FHIR-based data exchange requires consent metadata to be embedded in the resource model. Ali's FHIR implementation experience helps translate HDSIG consent requirements into machine-readable formats — precisely the kind of technical-legal bridging a Treuhandstelle leader must perform when configuring gICS and connecting to research pipelines.</p>
+          </div>
+          <div class="connection-card">
+            <span class="conn-badge">Pharmacy licence</span>
+            <p class="conn-text">As a licensed pharmacist under §11 BApO, Ali is professionally accustomed to working within strict regulatory frameworks where deviation carries legal consequence. This mindset — document first, act second, report anomalies immediately — maps directly onto HDSIG compliance culture in a university hospital setting.</p>
+          </div>
+          <div class="connection-card">
+            <span class="conn-badge">M.Sc. Digital Health</span>
+            <p class="conn-text">The M.Sc. curriculum covers health informatics law, data ethics, and secondary data use — all of which include EU and German data-protection frameworks. Ali can reference coursework or thesis work as evidence of structured, academically grounded engagement with the GDPR/HDSIG landscape.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 8: Study plan -->
+    <div class="section">
+      <button class="section-toggle open" onclick="toggleSection(this)">
+        <div class="toggle-left">
+          <span class="section-label">Section 8</span>
+          <h2>3-day study plan</h2>
+        </div>
+        <span class="section-chevron">▾</span>
+      </button>
+      <div class="section-body">
+        <div class="study-plan">
+          <div class="day-card">
+            <div class="day-head">
+              <span class="day-num">Day 1</span>
+              <span class="day-focus">Foundation</span>
+            </div>
+            <ul class="day-tasks">
+              <li class="day-task">
+                <div><span class="task-time">45 min</span></div>
+                Read the full HDSIG text (consolidated version) with focus on §§ 1–5 (scope and definitions) and §§ 13, 25–28 (special categories and research exceptions).
+                <div><a href="https://www.hbdi.hessen.de/datenschutz/hessisches-datenschutzrecht" class="task-link" target="_blank">hbdi.hessen.de — Hessisches Datenschutzrecht</a></div>
+              </li>
+              <li class="day-task">
+                <div><span class="task-time">30 min</span></div>
+                Work through the GDPR Art. 9 factsheet from the European Data Protection Board to understand the special-category baseline that HDSIG builds on.
+                <div><a href="https://www.edpb.europa.eu/our-work-tools/general-guidance/guidelines-recommendations-best-practices_en" class="task-link" target="_blank">edpb.europa.eu — Guidelines and Recommendations</a></div>
+              </li>
+              <li class="day-task">
+                <div><span class="task-time">30 min</span></div>
+                Read the HBDI's guidance on data protection in medical research to understand how the supervisory authority interprets the research exception.
+                <div><a href="https://www.hbdi.hessen.de/datenschutz/informationen-fuer-verantwortliche/medizin-und-gesundheitswesen" class="task-link" target="_blank">hbdi.hessen.de — Medizin und Gesundheitswesen</a></div>
+              </li>
+            </ul>
+          </div>
+          <div class="day-card">
+            <div class="day-head">
+              <span class="day-num">Day 2</span>
+              <span class="day-focus">THS mechanics</span>
+            </div>
+            <ul class="day-tasks">
+              <li class="day-task">
+                <div><span class="task-time">45 min</span></div>
+                Study the MII consent and data-use framework to understand how national standards intersect with Hessian law at the Frankfurt Treuhandstelle.
+                <div><a href="https://www.medizininformatik-initiative.de/de/der-kerndatensatz-der-medizininformatik-initiative" class="task-link" target="_blank">medizininformatik-initiative.de — Kerndatensatz</a></div>
+              </li>
+              <li class="day-task">
+                <div><span class="task-time">40 min</span></div>
+                Read the gICS documentation and map each gICS consent policy parameter to the HDSIG conditions it satisfies (purpose, retention, revocation).
+                <div><a href="https://www.ths-greifswald.de/forscher/gics/" class="task-link" target="_blank">ths-greifswald.de — gICS documentation</a></div>
+              </li>
+              <li class="day-task">
+                <div><span class="task-time">30 min</span></div>
+                Review a real DPIA template from the German DPA list of processing activities requiring a DPIA, focusing on health-research scenarios.
+                <div><a href="https://www.bfdi.bund.de/DE/Fachthemen/Inhalte/Technik/DSFA.html" class="task-link" target="_blank">bfdi.bund.de — DSFA (DPIA) guidance</a></div>
+              </li>
+            </ul>
+          </div>
+          <div class="day-card">
+            <div class="day-head">
+              <span class="day-num">Day 3</span>
+              <span class="day-focus">Interview simulation</span>
+            </div>
+            <ul class="day-tasks">
+              <li class="day-task">
+                <div><span class="task-time">30 min</span></div>
+                Practise answering all six interview questions in Section 6 aloud, timing each answer to under two minutes and incorporating specific HDSIG paragraph numbers.
+                <div><a href="https://www.hbdi.hessen.de/datenschutz/hessisches-datenschutzrecht" class="task-link" target="_blank">hbdi.hessen.de — reference while practising</a></div>
+              </li>
+              <li class="day-task">
+                <div><span class="task-time">30 min</span></div>
+                Draft a one-page "legal basis memo" for a hypothetical registry project, citing HDSIG §§ 25–28 and GDPR Art. 9(2)(j) as the legal bases and listing the four safeguard conditions.
+                <div><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679" class="task-link" target="_blank">eur-lex.europa.eu — GDPR full text</a></div>
+              </li>
+              <li class="day-task">
+                <div><span class="task-time">25 min</span></div>
+                Read the HBDI's 2023 annual report chapter on health-data processing to pick up any recent enforcement priorities you can reference in the interview.
+                <div><a href="https://www.hbdi.hessen.de/service/jahresberichte" class="task-link" target="_blank">hbdi.hessen.de — Jahresberichte</a></div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-en -->
+
+  <!-- ═══════════════════ GERMAN TAB ═══════════════════ -->
+  <div id="tab-de" class="tab-content">
+
+    <!-- Abschnitt 1 -->
+    <div class="section">
+      <button class="section-toggle open" onclick="toggleSection(this)">
+        <div class="toggle-left">
+          <span class="section-label">Abschnitt 1</span>
+          <h2>Was ist das?</h2>
+        </div>
+        <span class="section-chevron">▾</span>
+      </button>
+      <div class="section-body">
+        <p>Das <abbr title="Hessisches Datenschutz- und Informationsfreiheitsgesetz">HDSIG</abbr> (Hessisches Datenschutz- und Informationsfreiheitsgesetz) ist das landesspezifische Datenschutzrecht Hessens und trat am 25. Mai 2018 zeitgleich mit der <abbr title="Datenschutz-Grundverordnung">DSGVO</abbr> in Kraft. Es ersetzt das frühere Hessische Datenschutzgesetz (HDSG) und konkretisiert die Öffnungsklauseln, die die DSGVO bewusst den nationalen und landesrechtlichen Gesetzgebern überlässt. Gerade im Bereich der Gesundheitsdaten sind diese Öffnungsklauseln bedeutsam, weil die DSGVO ausdrücklich strengere nationale Schutzregelungen für besondere Kategorien personenbezogener Daten zulässt.</p>
+        <p>Das HDSIG gilt für alle öffentlichen Stellen in Hessen — also auch für Körperschaften des öffentlichen Rechts wie die Universitätsmedizin Frankfurt — wenn sie personenbezogene Daten verarbeiten. Es regelt die Rechtsgrundlagen für die Verarbeitung gesundheitsbezogener Forschungsdaten, die Bedingungen, unter denen pseudonymisierte Daten institutionenübergreifend weitergegeben werden dürfen, sowie die Pflichten des Verantwortlichen und etwaiger Auftragsverarbeiter.</p>
+        <p>Für die krankenhausbasierte Forschung sind vor allem die Paragraphen zur medizinischen Forschung (§§ 25–28 HDSIG) relevant. Sie erlauben die Verarbeitung besonderer Kategorien von Gesundheitsdaten ohne Einzeleinwilligung — aber nur unter strengen Voraussetzungen: wissenschaftliche Zweckbindung, verhältnismäßige Datennutzung, technisch-organisatorische Schutzmaßnahmen und Beteiligung des <abbr title="Datenschutzbeauftragter">DSB</abbr>. Die Treuhandstelle ist genau das technisch-organisatorische Schutzinstrument, das diese Forschungsausnahme erst rechtlich tragfähig macht.</p>
+        <p>Das Gesetz benennt außerdem den <abbr title="Hessischer Beauftragter für Datenschutz und Informationsfreiheit">HBDI</abbr> als unabhängige Aufsichtsbehörde für das Land Hessen. Öffentliche Stellen wie Universitätskliniken sind verpflichtet, den HBDI zu informieren und ihn in bestimmten Fällen vorab zu konsultieren — ein Verfahrensschritt, den die Leitung der Treuhandstelle eigenverantwortlich steuern muss.</p>
+      </div>
+    </div>
+
+    <!-- Abschnitt 2 -->
+    <div class="section">
+      <button class="section-toggle open" onclick="toggleSection(this)">
+        <div class="toggle-left">
+          <span class="section-label">Abschnitt 2</span>
+          <h2>Relevanz für diese Stelle</h2>
+        </div>
+        <span class="section-chevron">▾</span>
+      </button>
+      <div class="section-body">
+        <p>Die Treuhandstelle an der Universitätsmedizin Frankfurt operiert auf dem Boden des hessischen Landesrechts. Jede Dienstleistung — von der Patienteneinwilligung bis zur Pseudonymvergabe — muss auf einer Rechtsgrundlage beruhen, die HDSIG und DSGVO gemeinsam erfüllt. Als Leitung der Treuhandstelle wird Ali erwartet, gesetzliche Bestimmungen in operative Entscheidungen zu überführen — ohne selbst Jurist zu sein, aber mit belastbarem rechtlichem Grundverständnis.</p>
+        <ul class="why-list">
+          <li>Interne Auftragsverarbeitungsverträge und Verfahrensanweisungen mit korrekten HDSIG-Paragraphenverweisen erstellen und prüfen.</li>
+          <li>Klinische Forschungsteams beraten, ob ihr Vorhaben auf die Forschungsausnahme gestützt werden kann oder eine Einwilligungslösung benötigt.</li>
+          <li>gICS- und gPAS-Richtlinien so konfigurieren, dass Speicherfristen und Zugriffsregeln dem HDSIG entsprechen.</li>
+          <li>Dokumentation für den <abbr title="Datenschutzbeauftragter">DSB</abbr> und ggf. den HBDI vor dem Start neuer Forschungsprojekte vorbereiten.</li>
+          <li>Teammitglieder so schulen, dass sie grundlegende HDSIG-Anfragen von Studienkoordinatoren und <abbr title="Datenintegrationszentrum">DIZ</abbr>-Kolleginnen und -Kollegen eigenständig beantworten können.</li>
+        </ul>
+        <p class="closing">Das Interview wird sehr wahrscheinlich prüfen, ob Ali den konkreten Mehrwert des HDSIG gegenüber der DSGVO benennen und den Weg von der Rechtsgrundlage zur technischen Umsetzung nachvollziehbar skizzieren kann.</p>
+      </div>
+    </div>
+
+    <!-- Abschnitt 3 -->
+    <div class="section">
+      <button class="section-toggle open" onclick="toggleSection(this)">
+        <div class="toggle-left">
+          <span class="section-label">Abschnitt 3</span>
+          <h2>Lernleiter</h2>
+        </div>
+        <span class="section-chevron">▾</span>
+      </button>
+      <div class="section-body">
+        <div class="ladder">
+          <div class="ladder-level l1">
+            <div class="level-head">
+              <span class="level-pill">Stufe 1</span>
+              <span class="level-title">Grundlegendes Verständnis — Begriffe definieren können</span>
+            </div>
+            <div class="level-bullets">
+              <ul>
+                <li>Wissen, dass das HDSIG die DSGVO-Öffnungsklauseln für hessische öffentliche Stellen ausfüllt.</li>
+                <li>Verstehen, dass es für alle öffentlichen Stellen in Hessen gilt, einschließlich der Universitätsmedizin Frankfurt.</li>
+                <li>Erkennen, dass Gesundheitsdaten als besondere Kategorie (DSGVO Art. 9, HDSIG §13) erhöhten Schutz erfordern.</li>
+                <li>Den Namen der Aufsichtsbehörde kennen: HBDI (Hessischer Beauftragter für Datenschutz und Informationsfreiheit).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="ladder-level l2">
+            <div class="level-head">
+              <span class="level-pill">Stufe 2</span>
+              <span class="level-title">Anwendungswissen — Funktionsweise beschreiben</span>
+            </div>
+            <div class="level-bullets">
+              <ul>
+                <li>Die sechs Rechtsgrundlagen der DSGVO Art. 6 erläutern und erklären, wie das HDSIG diese für öffentliche Stellen konkretisiert.</li>
+                <li>Die medizinische Forschungsausnahme (§§ 25–28 HDSIG) mit ihren Voraussetzungen, Schutzmaßnahmen und Dokumentationspflichten beschreiben.</li>
+                <li>Darlegen, wann eine <abbr title="Datenschutz-Folgenabschätzung">DSFA</abbr> verpflichtend ist und wer sie verantwortet.</li>
+                <li>Den Unterschied zwischen Pseudonymisierung und Anonymisierung unter dem HDSIG erklären und warum diese Unterscheidung für die gesamte Architektur der Treuhandstelle grundlegend ist.</li>
+                <li>Die Vertragspflichten bei der institutionenübergreifenden Weitergabe pseudonymisierter Daten kennen (gemeinsame Verantwortung vs. Auftragsverarbeitung).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="ladder-level l3">
+            <div class="level-head">
+              <span class="level-pill">Stufe 3</span>
+              <span class="level-title">Angewandtes Verständnis — Bezug zu konkreten Aufgaben</span>
+            </div>
+            <div class="level-bullets">
+              <ul>
+                <li>HDSIG §§ 25–28 auf konkrete gICS-Richtlinienfelder abbilden (Speicherfrist, Widerrufhandling, Zweckbindung).</li>
+                <li>Einen DSGVO-Art.-30-konformen Eintrag im Verarbeitungsverzeichnis für einen Treuhandstellen-Dienst erstellen.</li>
+                <li>Ein Studienteam beraten, ob die Forschungsausnahme auf sein Register anwendbar ist oder eine Breite Einwilligung benötigt wird.</li>
+                <li>Eine DSFA-Gliederung für ein institutionenübergreifendes Pseudonymisierungsprojekt in Kooperation mit dem DIZ vorbereiten.</li>
+                <li>Klinischem Personal erklären, warum die Treuhandstelle ausschließlich die Identitäts-Pseudonym-Zuordnung hält und nie die eigentlichen Forschungsdaten.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="ladder-level l4">
+            <div class="level-head">
+              <span class="level-pill">Stufe 4</span>
+              <span class="level-title">Interviewreif — anspruchsvolle Fragen souverän beantworten</span>
+            </div>
+            <div class="level-bullets">
+              <ul>
+                <li>Überzeugend darlegen, in welchen Punkten das HDSIG über das DSGVO-Mindestmaß hinausgeht, mit konkreten Beispielen aus der Gesundheitsforschungspraxis.</li>
+                <li>Die Spannung zwischen Datensparsamkeit (DSGVO Art. 5 Abs. 1 lit. c) und dem Bedarf an longitudinaler Patientenverknüpfung in klinischen Registern diskutieren.</li>
+                <li>Das Zusammenspiel von HDSIG und SGB X §75a bei Studien mit Sozialdaten erläutern.</li>
+                <li>Ein Szenario beschreiben, in dem die Rechtsgrundlage eines laufenden Forschungsprojekts wegbricht, und die eigene Reaktionskette als Treuhandstellen-Leitung skizzieren.</li>
+                <li>Eine fundierte Position zu den HDSIG-Novellierungsdebatten 2023–2024 und deren Auswirkungen auf das MII-Datenfreigaberahmenwerk entwickeln.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Abschnitt 4: Unverzichtbares Wissen -->
+    <div class="must-know section">
+      <button class="section-toggle open" onclick="toggleSection(this)">
+        <div class="toggle-left">
+          <span class="section-label">Abschnitt 4</span>
+          <h2>Unverzichtbares Wissen</h2>
+        </div>
+        <span class="section-chevron">▾</span>
+      </button>
+      <div class="section-body">
+        <div class="must-know-items">
+          <div class="must-know-item"><span class="flag">⚑</span><span>Das HDSIG trat am <strong>25. Mai 2018</strong> in Kraft — zeitgleich mit der DSGVO. Es ersetzte das HDSG von 1999 und wird seitdem regelmäßig angepasst; bei der Erstellung interner Richtlinien immer die aktuelle konsolidierte Fassung heranziehen.</span></div>
+          <div class="must-know-item"><span class="flag">⚑</span><span>Gesundheitsdaten sind <strong>besondere Kategorien</strong> personenbezogener Daten gemäß DSGVO Art. 9 und HDSIG §13. Ihre Verarbeitung erfordert mindestens eine spezifische Rechtsgrundlage <em>und</em> eine dokumentierte Verhältnismäßigkeitsprüfung.</span></div>
+          <div class="must-know-item"><span class="flag">⚑</span><span>§§ 25–28 HDSIG regeln die <strong>Forschungsausnahme</strong>: Verarbeitung ohne Einwilligung ist zulässig, wenn (1) der wissenschaftliche Zweck belegt ist, (2) die Pseudonymisierung so früh wie möglich erfolgt, (3) eine Ethikkommission das Vorhaben gebilligt hat und (4) der DSB informiert wurde.</span></div>
+          <div class="must-know-item"><span class="flag">⚑</span><span>Pseudonymisierte Daten gelten unter dem HDSIG weiterhin als <strong>personenbezogene Daten</strong>, solange eine Re-Identifikation technisch möglich ist — was aus Perspektive der Treuhandstelle stets der Fall ist. Die organisatorische Trennung der Treuhandstelle von den Forschungssystemen ist deshalb keine freiwillige Sicherheitsmaßnahme, sondern eine rechtliche Voraussetzung.</span></div>
+          <div class="must-know-item"><span class="flag">⚑</span><span>Eine <strong>Datenschutz-Folgenabschätzung (DSFA)</strong> gemäß DSGVO Art. 35 ist bei umfangreicher Verarbeitung von Gesundheitsdaten verpflichtend. Die Treuhandstellen-Leitung verfasst die technischen Abschnitte gemeinsam mit dem DSB.</span></div>
+          <div class="must-know-item"><span class="flag">⚑</span><span>Der <strong>HBDI</strong> ist die unabhängige Datenschutz-Aufsichtsbehörde für das Land Hessen. Universitätskliniken müssen den HBDI konsultieren, bevor sie als „hohes Risiko" eingestufte Verarbeitungsvorgänge starten. Verstöße können Ermittlungen und Bußgelder nach sich ziehen.</span></div>
+          <div class="must-know-item"><span class="flag">⚑</span><span>Nach HDSIG §18 sind öffentliche Stellen zur Bestellung eines <strong>Datenschutzbeauftragten (DSB)</strong> verpflichtet. Die Leitung der Treuhandstelle arbeitet eng mit dem DSB zusammen, übernimmt dessen Rolle jedoch nicht; alle HDSIG-relevanten Entscheidungen sind für die Prüfung durch den DSB zu dokumentieren.</span></div>
+          <div class="must-know-item"><span class="flag">⚑</span><span>Patientinnen und Patienten in Hessen können ihre Einwilligung jederzeit <strong>widerrufen</strong> (DSGVO Art. 7 Abs. 3, HDSIG §9). Das gICS-System muss so konfiguriert sein, dass Widerrufssignale automatisch an alle nachgelagerten Forschungssysteme weitergegeben werden — eine zentrale technische Verantwortung der Treuhandstelle.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Abschnitt 5: Glossar -->
+    <div class="section">
+      <button class="section-toggle open" onclick="toggleSection(this)">
+        <div class="toggle-left">
+          <span class="section-label">Abschnitt 5</span>
+          <h2>Glossar</h2>
+        </div>
+        <span class="section-chevron">▾</span>
+      </button>
+      <div class="section-body">
+        <table class="glossary-table">
+          <thead>
+            <tr><th>Begriff</th><th>Erklärung in einfacher Sprache</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="term-cell">HDSIG</td><td>Hessisches Datenschutz- und Informationsfreiheitsgesetz — das Landesdatenschutzrecht Hessens, das die DSGVO für hessische öffentliche Stellen konkretisiert und ergänzt.</td></tr>
+            <tr><td class="term-cell">DSGVO (GDPR)</td><td>Datenschutz-Grundverordnung (EU 2016/679) — der europäische Mindeststandard. Das HDSIG darf diesen Rahmen nicht unterschreiten, kann ihn aber verschärfen oder präzisieren.</td></tr>
+            <tr><td class="term-cell">Öffnungsklausel</td><td>Eine DSGVO-Bestimmung, die Mitgliedstaaten oder Bundesländern ausdrücklich erlaubt, eigene Regelungen zu treffen. Das HDSIG schöpft diese Klauseln für den Gesundheitsforschungsbereich aus.</td></tr>
+            <tr><td class="term-cell">Besondere Kategorie</td><td>Sensible personenbezogene Daten nach DSGVO Art. 9, darunter Gesundheits-, Genotyp- und biometrische Daten. Für ihre Verarbeitung ist eine qualifizierte Rechtsgrundlage zwingend.</td></tr>
+            <tr><td class="term-cell">Forschungsausnahme</td><td>Regelung in §§ 25–28 HDSIG, die unter bestimmten Schutzauflagen die Verarbeitung von Gesundheitsdaten für wissenschaftliche Zwecke ohne individuelle Einwilligung ermöglicht.</td></tr>
+            <tr><td class="term-cell">DSFA (DPIA)</td><td>Datenschutz-Folgenabschätzung nach DSGVO Art. 35 — eine verpflichtende Risikoanalyse vor dem Start risikoreicher Verarbeitungsvorgänge, z.B. institutionenübergreifender Forschungsprojekte.</td></tr>
+            <tr><td class="term-cell">Pseudonymisierung</td><td>Ersatz direkter Identifikatoren durch einen Code; die Zuordnungstabelle liegt bei der Treuhandstelle. Die Daten bleiben personenbezogen im rechtlichen Sinne.</td></tr>
+            <tr><td class="term-cell">Anonymisierung</td><td>Unwiderrufliche Entfernung aller Identifikatoren, sodass eine Re-Identifikation faktisch unmöglich ist. Echte Anonymisierung fällt vollständig aus dem DSGVO/HDSIG-Anwendungsbereich heraus.</td></tr>
+            <tr><td class="term-cell">HBDI</td><td>Hessischer Beauftragter für Datenschutz und Informationsfreiheit — die unabhängige Landesaufsichtsbehörde, der Universitätskliniken bei risikoreichen Vorhaben Meldungen erstatten müssen.</td></tr>
+            <tr><td class="term-cell">DSB</td><td>Datenschutzbeauftragter — nach HDSIG §18 für öffentliche Stellen gesetzlich vorgeschrieben. Die Treuhandstellen-Leitung arbeitet mit dem DSB zusammen, übernimmt diese Funktion jedoch nicht.</td></tr>
+            <tr><td class="term-cell">Zweckbindung</td><td>Grundsatz aus DSGVO Art. 5 Abs. 1 lit. b: Daten dürfen nur für den Zweck genutzt werden, für den sie erhoben wurden. Die Treuhandstelle setzt dies durch, indem sie kontrolliert, welchem Forschungsprojekt welches Pseudonym ausgegeben wird.</td></tr>
+            <tr><td class="term-cell">Verarbeitungsverzeichnis</td><td>Internes Register nach DSGVO Art. 30, das alle Verarbeitungsvorgänge mit Rechtsgrundlage und Schutzmaßnahmen dokumentiert — eine Pflicht, die die Treuhandstellen-Leitung für alle eigenen Dienste erfüllen muss.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Abschnitt 6: Interviewfragen -->
+    <div class="section">
+      <button class="section-toggle open" onclick="toggleSection(this)">
+        <div class="toggle-left">
+          <span class="section-label">Abschnitt 6</span>
+          <h2>Mögliche Interviewfragen</h2>
+        </div>
+        <span class="section-chevron">▾</span>
+      </button>
+      <div class="section-body">
+        <div class="accordion" id="acc-de">
+          <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+              <span>Was regelt das HDSIG über die DSGVO hinaus, und warum ist das für die Universitätsmedizin Frankfurt relevant?</span>
+              <span class="acc-chevron">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="acc-strategy-label">Antwortstrategie</div>
+              <p>Einstieg mit der Funktion des HDSIG als Konkretisierung der DSGVO-Öffnungsklauseln für hessische Behörden. Dann zwei bis drei konkrete Beispiele nennen: Forschungsausnahme §§ 25–28, strengere DSB-Bestellpflicht, HBDI-Konsultationspflicht. Abschluss mit dem Bezug zu Frankfurt: Jede Verfahrensanweisung der Treuhandstelle muss auf spezifische HDSIG-Paragraphen verweisen, nicht nur auf DSGVO-Artikel.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+              <span>Eine Forscherin erklärt, ihr Register falle unter die HDSIG-Forschungsausnahme und brauche keine Patienteneinwilligung. Wie reagieren Sie?</span>
+              <span class="acc-chevron">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="acc-strategy-label">Antwortstrategie</div>
+              <p>Die Ausnahme bestätigen, aber die Voraussetzungen systematisch durchgehen: wissenschaftliche Begründung, Ethikvotum, DSB-Benachrichtigung und schnellstmögliche Pseudonymisierung. Betonen, dass die Treuhandstelle die technische Machbarkeit prüft, die rechtliche Einschätzung jedoch beim DSB liegt — und bei Unklarheit beim HBDI. Ergebnis: Diskussion dokumentieren, Ethikvotum anfordern, erst danach gICS oder gPAS konfigurieren.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+              <span>Erläutern Sie den Unterschied zwischen Pseudonymisierung und Anonymisierung nach dem HDSIG und warum er für die Treuhandstelle entscheidend ist.</span>
+              <span class="acc-chevron">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="acc-strategy-label">Antwortstrategie</div>
+              <p>Pseudonymisierte Daten bleiben solange personenbezogen, wie irgendeine Stelle den Rückschlüssel hält — und die Treuhandstelle ist genau diese Stelle. Anonymisierte Daten fallen hingegen vollständig aus dem DSGVO/HDSIG-Geltungsbereich. Daraus folgt, dass die gesamte Architektur der Treuhandstelle — organisatorische Trennung, Zugriffskontrollen, Auditprotokolle — eine Rechtsvoraussetzung ist, kein freiwilliges Best Practice. Ohne diese Strukturen gäbe es keine konforme Pseudonymisierung im Sinne des HDSIG.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+              <span>Wann ist eine Datenschutz-Folgenabschätzung erforderlich, und welche Rolle spielt die Treuhandstelle dabei?</span>
+              <span class="acc-chevron">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="acc-strategy-label">Antwortstrategie</div>
+              <p>Die DSFA ist nach DSGVO Art. 35 verpflichtend, wenn Gesundheitsdaten in großem Umfang verarbeitet werden oder ein hohes Risiko für Betroffene besteht — das trifft auf nahezu jedes institutionenübergreifende Forschungsvorhaben mit Treuhandstellen-Beteiligung zu. Als Leitung verfasst Ali die technischen Abschnitte: Pseudonymisierungsarchitektur, Zugriffsberechtigungen, Panne-/Breach-Protokolle. Der DSB leitet die rechtliche Risikobewertung; bei verbleibend hohem Restrisiko ist der HBDI vorab zu konsultieren.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+              <span>Ein Patient widerruft seine Einwilligung mitten in einer laufenden Studie. Schildern Sie den genauen Ablauf in der Treuhandstelle.</span>
+              <span class="acc-chevron">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="acc-strategy-label">Antwortstrategie</div>
+              <p>Das Widerrufsrecht ist nach DSGVO Art. 7 Abs. 3 und HDSIG §9 bedingungslos. Eingeht das Widerrufssignal über gICS, muss die Treuhandstelle den Status-Wechsel an alle nachgelagerten Systeme weitergeben, die Daten unter dem betreffenden Pseudonym halten — DIZ, Forschungsdatenbanken, Register. Das Pseudonym wird auf inaktiv gesetzt; bereits publizierte Ergebnisse können nicht rückwirkend aus Veröffentlichungen entfernt werden, aber neue Verknüpfungen sind ausgeschlossen. Zeitstempel und Propagationsnachweis an den DSB übermitteln. Dieser Ablauf ist vorab in der Standardarbeitsanweisung der Treuhandstelle zu verankern.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+              <span>Wie verhält sich das HDSIG zum MII-Datenfreigaberahmen — ergänzt es ihn, oder steht es ihm entgegen?</span>
+              <span class="acc-chevron">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="acc-strategy-label">Antwortstrategie</div>
+              <p>Das MII-USE-Policy-Modell und die Breite Einwilligung wurden so gestaltet, dass sie mit allen sechzehn Landesdatenschutzgesetzen kompatibel sind — auch mit dem HDSIG. Dennoch müssen hessische Universitätskliniken jeden MII-konformen Datenaustausch auf HDSIG-Konformität prüfen, z.B. ob eine HBDI-Benachrichtigung erforderlich ist oder ob das Ethikvotum die standortübergreifende Weitergabe explizit abdeckt. Die Treuhandstelle ist das operative Bindeglied: Sie legt die hessische Rechtsschicht über das MII-Rahmenwerk, ohne die überregionale Interoperabilität zu gefährden.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Abschnitt 7: Verbindungen zur bisherigen Erfahrung -->
+    <div class="section">
+      <button class="section-toggle open" onclick="toggleSection(this)">
+        <div class="toggle-left">
+          <span class="section-label">Abschnitt 7</span>
+          <h2>Verbindungen zu Ihrer bisherigen Erfahrung</h2>
+        </div>
+        <span class="section-chevron">▾</span>
+      </button>
+      <div class="section-body">
+        <div class="connections-grid">
+          <div class="connection-card">
+            <span class="conn-badge">DSGVO / DiaTwin</span>
+            <p class="conn-text">Im Rahmen des DiaTwin-Projekts hat Ali die DSGVO-konforme Verarbeitung von Gesundheitsdaten umgesetzt — inklusive Rechtsgrundlagendokumentation und Privacy-by-Design-Architektur. Das HDSIG wendet denselben Rahmen auf Landesebene an; das konzeptionelle Vorwissen aus DiaTwin ist unmittelbar auf die Treuhandstellen-Policy übertragbar.</p>
+          </div>
+          <div class="connection-card">
+            <span class="conn-badge">Nationale EHR-Einführung</span>
+            <p class="conn-text">Die bundesweite ePA-Einführung erforderte die gleichzeitige Einhaltung von Bundesrecht (SGB V/X) und den Datenschutzgesetzen mehrerer Bundesländer. Die Erfahrung, verschiedene Rechtsebenen miteinander in Einklang zu bringen, ist direkt anwendbar, wenn HDSIG und DSGVO gemeinsam erfüllt werden müssen, ohne den Forschungsbetrieb zu behindern.</p>
+          </div>
+          <div class="connection-card">
+            <span class="conn-badge">FHIR-Implementierung</span>
+            <p class="conn-text">FHIR-basierter Datenaustausch verlangt, dass Einwilligungsmetadaten im Ressourcenmodell abgebildet werden. Alis FHIR-Erfahrung hilft dabei, HDSIG-Einwilligungsanforderungen in maschinenlesbare Formate zu übersetzen — genau die Art technisch-rechtlicher Brückenarbeit, die die Leitung der Treuhandstelle beim Konfigurieren von gICS und der Anbindung an Forschungspipelines leisten muss.</p>
+          </div>
+          <div class="connection-card">
+            <span class="conn-badge">Approbation (§11 BApO)</span>
+            <p class="conn-text">Als approbierter Apotheker ist Ali es gewohnt, in einem streng regulierten Umfeld zu arbeiten, in dem Abweichungen unmittelbare rechtliche Folgen haben. Diese Haltung — erst dokumentieren, dann handeln, Auffälligkeiten sofort melden — entspricht exakt der HDSIG-Compliance-Kultur in einem Universitätsklinikum.</p>
+          </div>
+          <div class="connection-card">
+            <span class="conn-badge">M.Sc. Digital Health</span>
+            <p class="conn-text">Das Masterstudium umfasste Gesundheitsinformatikrecht, Datenethik und Sekundärdatennutzung — Themenbereiche, in denen EU- und deutsches Datenschutzrecht systematisch behandelt werden. Ali kann Studieninhalte oder Abschlussarbeit als Beleg für einen fundierten, wissenschaftlich gesicherten Umgang mit dem DSGVO/HDSIG-Rechtsrahmen anführen.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Abschnitt 8: 3-Tage-Lernplan -->
+    <div class="section">
+      <button class="section-toggle open" onclick="toggleSection(this)">
+        <div class="toggle-left">
+          <span class="section-label">Abschnitt 8</span>
+          <h2>3-Tage-Lernplan</h2>
+        </div>
+        <span class="section-chevron">▾</span>
+      </button>
+      <div class="section-body">
+        <div class="study-plan">
+          <div class="day-card">
+            <div class="day-head">
+              <span class="day-num">Tag 1</span>
+              <span class="day-focus">Grundlagen</span>
+            </div>
+            <ul class="day-tasks">
+              <li class="day-task">
+                <div><span class="task-time">45 Min.</span></div>
+                Den vollständigen HDSIG-Text lesen, Schwerpunkt auf §§ 1–5 (Anwendungsbereich und Begriffsbestimmungen) sowie §§ 13, 25–28 (besondere Kategorien und Forschungsausnahme).
+                <div><a href="https://www.hbdi.hessen.de/datenschutz/hessisches-datenschutzrecht" class="task-link" target="_blank">hbdi.hessen.de — Hessisches Datenschutzrecht</a></div>
+              </li>
+              <li class="day-task">
+                <div><span class="task-time">30 Min.</span></div>
+                Das EDPB-Merkblatt zu DSGVO Art. 9 durcharbeiten, um den europäischen Basisstandard zu verstehen, auf dem das HDSIG aufbaut.
+                <div><a href="https://www.edpb.europa.eu/our-work-tools/general-guidance/guidelines-recommendations-best-practices_en" class="task-link" target="_blank">edpb.europa.eu — Leitlinien und Empfehlungen</a></div>
+              </li>
+              <li class="day-task">
+                <div><span class="task-time">30 Min.</span></div>
+                Die HBDI-Orientierungshilfe zum Datenschutz in der medizinischen Forschung lesen, um die Auslegungspraxis der Aufsichtsbehörde zur Forschungsausnahme zu verstehen.
+                <div><a href="https://www.hbdi.hessen.de/datenschutz/informationen-fuer-verantwortliche/medizin-und-gesundheitswesen" class="task-link" target="_blank">hbdi.hessen.de — Medizin und Gesundheitswesen</a></div>
+              </li>
+            </ul>
+          </div>
+          <div class="day-card">
+            <div class="day-head">
+              <span class="day-num">Tag 2</span>
+              <span class="day-focus">THS-Mechanik</span>
+            </div>
+            <ul class="day-tasks">
+              <li class="day-task">
+                <div><span class="task-time">45 Min.</span></div>
+                Den MII-Einwilligungs- und Datennutzungsrahmen studieren, um zu verstehen, wie nationale Standards auf das HDSIG treffen.
+                <div><a href="https://www.medizininformatik-initiative.de/de/der-kerndatensatz-der-medizininformatik-initiative" class="task-link" target="_blank">medizininformatik-initiative.de — Kerndatensatz</a></div>
+              </li>
+              <li class="day-task">
+                <div><span class="task-time">40 Min.</span></div>
+                Die gICS-Dokumentation lesen und jeden Policy-Parameter auf die entsprechende HDSIG-Bedingung abbilden (Speicherfrist, Widerruf, Zweckbindung).
+                <div><a href="https://www.ths-greifswald.de/forscher/gics/" class="task-link" target="_blank">ths-greifswald.de — gICS-Dokumentation</a></div>
+              </li>
+              <li class="day-task">
+                <div><span class="task-time">30 Min.</span></div>
+                Eine DSFA-Mustervorlage der BfDI-Blacklist durchsehen, mit Fokus auf Szenarien im Gesundheitsforschungsbereich.
+                <div><a href="https://www.bfdi.bund.de/DE/Fachthemen/Inhalte/Technik/DSFA.html" class="task-link" target="_blank">bfdi.bund.de — DSFA-Orientierungshilfe</a></div>
+              </li>
+            </ul>
+          </div>
+          <div class="day-card">
+            <div class="day-head">
+              <span class="day-num">Tag 3</span>
+              <span class="day-focus">Interviewsimulation</span>
+            </div>
+            <ul class="day-tasks">
+              <li class="day-task">
+                <div><span class="task-time">30 Min.</span></div>
+                Alle sechs Interviewfragen aus Abschnitt 6 laut üben, jede Antwort auf unter zwei Minuten begrenzen und konkrete HDSIG-Paragraphennummern einbauen.
+                <div><a href="https://www.hbdi.hessen.de/datenschutz/hessisches-datenschutzrecht" class="task-link" target="_blank">hbdi.hessen.de — Referenz beim Üben</a></div>
+              </li>
+              <li class="day-task">
+                <div><span class="task-time">30 Min.</span></div>
+                Ein einseitiges „Rechtsgrundlagenmemo" für ein fiktives Registerprojekt erstellen, das §§ 25–28 HDSIG und DSGVO Art. 9 Abs. 2 lit. j als Rechtsgrundlagen nennt und die vier Schutzauflagen auflistet.
+                <div><a href="https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32016R0679" class="task-link" target="_blank">eur-lex.europa.eu — DSGVO Volltext</a></div>
+              </li>
+              <li class="day-task">
+                <div><span class="task-time">25 Min.</span></div>
+                Das Kapitel zum Gesundheitsdatenschutz im aktuellen HBDI-Jahresbericht lesen, um aktuelle Aufsichtsschwerpunkte nennen zu können.
+                <div><a href="https://www.hbdi.hessen.de/service/jahresberichte" class="task-link" target="_blank">hbdi.hessen.de — Jahresberichte</a></div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-de -->
+
+</main>
+
+<script>
+function switchTab(lang, btn) {
+  document.querySelectorAll('.tab-content').forEach(function(tc) {
+    tc.classList.remove('active');
+  });
+  document.querySelectorAll('.tab-btn').forEach(function(tb) {
+    tb.classList.remove('active');
+  });
+  var target = document.getElementById('tab-' + lang);
+  if (target) target.classList.add('active');
+  if (btn) btn.classList.add('active');
+  // Close all open accordions in new tab
+  if (target) {
+    target.querySelectorAll('.acc-trigger.open').forEach(function(t) {
+      t.classList.remove('open');
+    });
+    target.querySelectorAll('.acc-body.open').forEach(function(b) {
+      b.classList.remove('open');
+    });
+  }
+}
+
+function toggleSection(trigger) {
+  var body = trigger.nextElementSibling;
+  if (!body) return;
+  var isOpen = trigger.classList.contains('open');
+  if (isOpen) {
+    trigger.classList.remove('open');
+    body.classList.add('hidden');
+  } else {
+    trigger.classList.add('open');
+    body.classList.remove('hidden');
+  }
+}
+
+function toggleAcc(trigger) {
+  var body = trigger.nextElementSibling;
+  if (!body) return;
+  // Find parent tab content
+  var tab = trigger.closest('.tab-content');
+  if (!tab) return;
+  var isOpen = trigger.classList.contains('open');
+  // Close all in this tab
+  tab.querySelectorAll('.acc-trigger.open').forEach(function(t) {
+    t.classList.remove('open');
+  });
+  tab.querySelectorAll('.acc-body.open').forEach(function(b) {
+    b.classList.remove('open');
+  });
+  // Open clicked if it was closed
+  if (!isOpen) {
+    trigger.classList.add('open');
+    body.classList.add('open');
+  }
+}
+</script>
+
+</body>
+</html>

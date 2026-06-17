@@ -1,4 +1,4 @@
-import { LMS_CONFIG } from './registry.js';
+import { LMS_CONFIG, LANG_KEY } from './registry.js';
 
 document.title = LMS_CONFIG.appName;
 
@@ -12,6 +12,13 @@ import {
 } from './auth.js';
 import { getUserProfile, getLessonProgress, setLessonProgress, updateUserLang, upsertUserIndex } from './db.js';
 import { getVisibleModules, isAdmin } from './access.js';
+import {
+  safeReadStorage,
+  getAllStorageKeys,
+  computeLessonProgress,
+  computeModuleProgress,
+  computeGroupProgress
+} from './progress.js';
 
 // ── DOM REFERENCES ─────────────────────────────────────────────────────────
 const moduleNav             = document.getElementById('module-nav');
@@ -56,64 +63,36 @@ let visibleModules = (LMS_CONFIG.accessControl?.mode ?? 'open') === 'open'
   ? LMS_CONFIG.modules
   : [];
 
+// ── URL STATE ──────────────────────────────────────────────────────────────
+// Keeps the browser URL in sync with activeFieldId / activeModuleId so that:
+//   • The back/forward buttons work correctly within the SPA.
+//   • field.html and module.html can redirect here with ?field=&module= and
+//     land the user in exactly the right view (see those files for the shims).
+//   • Users can bookmark or share a direct link to a specific module.
+//
+// replaceState is used (not pushState) so that navigating between modules
+// doesn't pollute the history stack — only field entry/exit creates a new
+// entry via pushState below.
+function updateURL(push = false) {
+  const params = new URLSearchParams();
+  if (activeFieldId)  params.set('field',  activeFieldId);
+  if (activeModuleId) params.set('module', activeModuleId);
+  const search = params.toString() ? `?${params}` : location.pathname;
+  if (push) {
+    history.pushState(null, '', search);
+  } else {
+    history.replaceState(null, '', search);
+  }
+}
+
 // ── PROGRESS HELPERS ───────────────────────────────────────────────────────
-
-/**
- * Returns the deduplicated set of all checklist storageKeys across every
- * module in the registry. Progress is global (not field-scoped), so this
- * must scan ALL modules, not just the active field's modules.
- * @returns {string[]}
- */
-function getAllStorageKeys() {
-  const keys = new Set();
-  for (const mod of LMS_CONFIG.modules) {
-    for (const lesson of mod.lessons) {
-      const cfg = lesson.progress;
-      if (cfg?.type === 'checklist' && cfg.storageKey) {
-        keys.add(cfg.storageKey);
-      }
-    }
-  }
-  return Array.from(keys);
-}
-
-function safeReadStorage(key) {
-  try {
-    return JSON.parse(localStorage.getItem(key) || '{}');
-  } catch {
-    return {};
-  }
-}
-
-function computeLessonProgress(lesson) {
-  const cfg = lesson.progress || { type: 'untracked' };
-  if (cfg.type !== 'checklist') return { done: 0, total: cfg.total || 0, pct: 100 };
-  const raw    = safeReadStorage(cfg.storageKey);
-  const ignore = new Set(cfg.ignoreKeys || []);
-  const done   = Object.entries(raw).filter(([k, v]) => !ignore.has(k) && !!v).length;
-  const total  = cfg.total || 0;
-  const clamped = Math.min(done, total);
-  const pct    = total > 0 ? Math.round((clamped / total) * 100) : 0;
-  return { done: clamped, total, pct };
-}
-
-function computeModuleProgress(mod) {
-  const trackable = mod.lessons.filter(l => (l.progress?.type || 'untracked') === 'checklist');
-  const totals = trackable.reduce((acc, lesson) => {
-    const p = computeLessonProgress(lesson);
-    return { done: acc.done + p.done, total: acc.total + p.total };
-  }, { done: 0, total: 0 });
-  const pct = totals.total > 0 ? Math.round((totals.done / totals.total) * 100) : 0;
-  return { ...totals, pct };
-}
+// safeReadStorage, getAllStorageKeys, computeLessonProgress, computeModuleProgress,
+// and computeGroupProgress are imported from ./progress.js (Issue 2 fix).
+// computeGlobalProgress is a thin local wrapper that scopes the group calc to
+// the active field's modules — it is not generic enough for the shared module.
 
 function computeGlobalProgress() {
-  const totals = getActiveFieldModules().reduce((acc, mod) => {
-    const p = computeModuleProgress(mod);
-    return { done: acc.done + p.done, total: acc.total + p.total };
-  }, { done: 0, total: 0 });
-  const pct = totals.total > 0 ? Math.round((totals.done / totals.total) * 100) : 0;
-  return { ...totals, pct };
+  return computeGroupProgress(getActiveFieldModules());
 }
 
 // ── FIRESTORE SYNC (Phase 4) ───────────────────────────────────────────────
@@ -188,6 +167,7 @@ function enterField(fieldId) {
   frame.src = '';
   frame.classList.remove('visible');
   welcomePanel.classList.remove('hidden');
+  updateURL(true);  // pushState so the browser back button exits the field
   render();
 }
 
@@ -195,6 +175,9 @@ function exitToFields() {
   activeFieldId  = null;
   activeModuleId = null;
   activeLessonId = null;
+  frame.src = '';
+  frame.classList.remove('visible');
+  updateURL(true);  // pushState so forward goes back into the field
   render();
 }
 
@@ -216,20 +199,117 @@ function renderModuleNav() {
     btn.addEventListener('click', () => {
       activeModuleId = mod.id;
       activeLessonId = null;
+      updateURL();   // replaceState — module switches don't need history entries
       render();
     });
     moduleNav.appendChild(btn);
   });
 }
 
+// ── LESSON ACCESS GATING (Phase 5) ──────────────────────────────────────────
+
+/**
+ * Returns the access status for a lesson given the current auth + tier state.
+ *
+ *   'open'       — no restriction, or user meets all requirements
+ *   'needs-auth' — lesson.requiresAuth is true and the user is not signed in
+ *   'needs-pro'  — lesson.requiresPro is true and the user is not on the pro tier
+ *
+ * requiresPro implies requiresAuth — a signed-out user on a pro-required lesson
+ * gets 'needs-auth' so the UX asks them to sign in first, then checks tier.
+ *
+ * Lessons with no flags at all return 'open' immediately (no cost for the
+ * common case where most lessons are public).
+ *
+ * @param {object} lesson — lesson object from LMS_CONFIG
+ * @returns {'open'|'needs-auth'|'needs-pro'}
+ */
+function getLessonAccess(lesson) {
+  if (!lesson.requiresAuth && !lesson.requiresPro) return 'open';
+  if (!currentUser)                                return 'needs-auth';
+  if (lesson.requiresPro && userProfile?.tier !== 'pro') return 'needs-pro';
+  return 'open';
+}
+
+/**
+ * Shows a contextual gate prompt in the main content area instead of loading
+ * the lesson iframe. Reuses the existing #welcome-panel so no new HTML is
+ * needed. Injects a transient #gate-cta action button, removed on the next
+ * render cycle.
+ *
+ * For 'needs-auth': scrolls the sidebar auth panel into view so the user
+ * can act immediately without explaining where to look.
+ * For 'needs-pro': describes the requirement; upgrade flow is a Phase 5 TODO.
+ *
+ * @param {'needs-auth'|'needs-pro'} access
+ */
+function showLessonGatePrompt(access) {
+  // Swap iframe for the welcome panel
+  frame.classList.remove('visible');
+  frame.src = '';
+  welcomePanel.classList.remove('hidden');
+
+  if (access === 'needs-auth') {
+    welcomeHeading.textContent = t('gate.authHeading', 'Sign in to access this lesson');
+    welcomeBody.textContent    = t('gate.authBody',
+      'Create a free account to track your progress and unlock this content.');
+  } else {
+    welcomeHeading.textContent = t('gate.proHeading', 'Pro access required');
+    welcomeBody.textContent    = t('gate.proBody',
+      'This lesson is available on the Pro plan. Upgrade to unlock personalised content and AI-generated exercises.');
+  }
+
+  // Remove any CTA left over from a previous prompt before injecting a new one.
+  document.getElementById('gate-cta')?.remove();
+
+  if (access === 'needs-auth') {
+    // CTA button — focuses the email field in the sidebar auth panel.
+    const cta       = document.createElement('button');
+    cta.id          = 'gate-cta';
+    cta.type        = 'button';
+    cta.className   = 'auth-btn gate-cta-btn';
+    cta.textContent = t('gate.authCta', 'Sign in or create an account →');
+    cta.addEventListener('click', () => {
+      const emailField = document.getElementById('auth-email');
+      const authPanel  = document.getElementById('auth-panel');
+      authPanel?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Small delay so the scroll completes before focus triggers any
+      // scroll-into-view from the browser's focus handling.
+      setTimeout(() => emailField?.focus(), 300);
+    });
+    welcomePanel.appendChild(cta);
+  }
+  // 'needs-pro': no CTA yet — upgrade flow is not implemented (Phase 5 TODO).
+  // Add a button here that links to the upgrade/billing page when that ships.
+}
+
+// ── LESSON NAVIGATION ────────────────────────────────────────────────────────
+
+/**
+ * Opens a lesson in the iframe. Guards against locked lessons so that the
+ * postMessage path (lms:openLesson) cannot bypass gating.
+ */
 function openLesson(lessonId) {
   const mod    = getActiveFieldModules().find(m => m.id === activeModuleId);
   const lesson = mod?.lessons.find(l => l.id === lessonId);
   if (!lesson) return;
+
+  const access = getLessonAccess(lesson);
+  if (access !== 'open') {
+    // Highlight the lesson in the nav so the user sees which one they clicked,
+    // then show the appropriate gate prompt instead of loading the iframe.
+    activeLessonId = lessonId;
+    showLessonGatePrompt(access);
+    renderLessonNav();
+    return;
+  }
+
   activeLessonId = lessonId;
   frame.src = lesson.route;
   frame.classList.add('visible');
   welcomePanel.classList.add('hidden');
+  // Remove any gate CTA from a previous locked-lesson click
+  document.getElementById('gate-cta')?.remove();
   renderLessonNav();
 }
 
@@ -237,16 +317,42 @@ function renderLessonNav() {
   lessonNav.innerHTML = '';
   const mod = getActiveFieldModules().find(m => m.id === activeModuleId);
   if (!mod) return;
+
   mod.lessons.forEach(lesson => {
-    const p   = computeLessonProgress(lesson);
-    const btn = document.createElement('button');
-    btn.type      = 'button';
-    btn.className = `nav-btn ${lesson.id === activeLessonId ? 'active' : ''}`;
-    const progressLabel = (lesson.progress?.type || 'untracked') === 'checklist'
-      ? `${p.done}/${p.total} · ${p.pct}%`
-      : t('lesson.referenceLabel', 'Reference');
-    btn.innerHTML = `<strong>${lesson.title}</strong><small>${lesson.subtitle}</small><small>${progressLabel}</small>`;
-    btn.addEventListener('click', () => openLesson(lesson.id));
+    const access   = getLessonAccess(lesson);
+    const isLocked = access !== 'open';
+    const p        = computeLessonProgress(lesson);
+
+    const btn   = document.createElement('button');
+    btn.type    = 'button';
+
+    // 'locked' CSS class signals styles.css to grey out and show a muted cursor.
+    btn.className = [
+      'nav-btn',
+      lesson.id === activeLessonId ? 'active'  : '',
+      isLocked                     ? 'locked'  : ''
+    ].filter(Boolean).join(' ');
+
+    // Progress label: locked lessons show the reason instead of done/total.
+    const progressLabel = isLocked
+      ? (access === 'needs-auth'
+          ? `🔒 ${t('gate.signInLabel', 'Sign in')}`
+          : `🔒 ${t('gate.proLabel',    'Pro')}`)
+      : (lesson.progress?.type || 'untracked') === 'checklist'
+          ? `${p.done}/${p.total} · ${p.pct}%`
+          : t('lesson.referenceLabel', 'Reference');
+
+    btn.innerHTML = `
+      <strong>${lesson.title}</strong>
+      <small>${lesson.subtitle}</small>
+      <small>${progressLabel}</small>
+    `;
+
+    btn.addEventListener('click', () => {
+      // openLesson handles both locked and open cases — no branching here.
+      openLesson(lesson.id);
+    });
+
     lessonNav.appendChild(btn);
   });
 }
@@ -471,9 +577,9 @@ onAuthChange(async (user) => {
 
     // If the user's Firestore profile has a different language preference,
     // apply it and persist locally so the shell reflects it on next load.
-    if (userProfile?.lang && userProfile.lang !== localStorage.getItem('lms_lang')) {
+    if (userProfile?.lang && userProfile.lang !== localStorage.getItem(LANG_KEY)) {
       await loadLanguage(userProfile.lang);
-      localStorage.setItem('lms_lang', userProfile.lang);
+      localStorage.setItem(LANG_KEY, userProfile.lang);
       document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === userProfile.lang);
       });
@@ -514,7 +620,7 @@ onAuthChange(async (user) => {
 // ── LANGUAGE SWITCHER ──────────────────────────────────────────────────────
 async function switchLanguage(lang) {
   await loadLanguage(lang);
-  localStorage.setItem('lms_lang', lang);
+  localStorage.setItem(LANG_KEY, lang);
 
   if (currentUser) {
     await updateUserLang(currentUser.uid, lang);
@@ -533,7 +639,48 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
 });
 
 // ── STARTUP ────────────────────────────────────────────────────────────────
-const savedLang = localStorage.getItem('lms_lang') || 'en';
+// Restore state from URL params. This is the entry point for:
+//   • Direct deep links (e.g. bookmarks to ?field=backend&module=database)
+//   • Redirects from the legacy field.html and module.html shim pages
+//
+// Must run before the first render() so the correct view is shown immediately.
+// visibleModules is seeded synchronously above, so we can validate the IDs
+// without waiting for Firestore — onAuthChange will refine visibility later.
+(function restoreStateFromURL() {
+  const params    = new URLSearchParams(location.search);
+  const fieldId   = params.get('field');
+  const moduleId  = params.get('module');
+
+  const fieldValid  = fieldId  && LMS_CONFIG.fields?.find(f => f.id === fieldId);
+  const moduleValid = moduleId && LMS_CONFIG.modules.find(m => m.id === moduleId);
+
+  if (fieldValid)  activeFieldId  = fieldId;
+  if (moduleValid) activeModuleId = moduleId;
+  // If a moduleId was given but not a fieldId, infer the field from the module.
+  // field-page.js passes ?from=<fieldId>&id=<moduleId>; the redirect shim
+  // re-maps those to ?field=&module=, but this guard handles any edge case.
+  if (moduleValid && !fieldValid) {
+    const inferredField = LMS_CONFIG.fields?.find(f => f.moduleIds.includes(moduleId));
+    if (inferredField) activeFieldId = inferredField.id;
+  }
+})();
+
+// Handle browser back/forward — re-read the URL and re-render.
+window.addEventListener('popstate', () => {
+  const params   = new URLSearchParams(location.search);
+  const fieldId  = params.get('field')  ?? null;
+  const moduleId = params.get('module') ?? null;
+
+  activeFieldId  = fieldId  && LMS_CONFIG.fields?.find(f => f.id === fieldId)  ? fieldId  : null;
+  activeModuleId = moduleId && LMS_CONFIG.modules.find(m => m.id === moduleId) ? moduleId : null;
+  activeLessonId = null;
+  frame.src = '';
+  frame.classList.remove('visible');
+  welcomePanel?.classList.remove('hidden');
+  render();
+});
+
+const savedLang = localStorage.getItem(LANG_KEY) || 'en';
 await loadLanguage(savedLang);
 
 document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -570,12 +717,67 @@ document.getElementById('btn-email-signup').addEventListener('click', () => {
 
 document.getElementById('btn-signout').addEventListener('click', signOutUser);
 
-// ── PROGRESS POLLING ───────────────────────────────────────────────────────
-// Runs every 3 seconds to detect checkbox changes made inside the lesson
-// iframe (the iframe can only communicate via shared localStorage).
-// When signed in, each tick also syncs dirty keys to Firestore so progress
-// is visible on other devices within one poll cycle.
+// ── PROGRESS IPC (Issue 3 fix) ─────────────────────────────────────────────
+// Lesson iframes can only communicate progress changes via two mechanisms:
+//
+//   1. window.storage event — fires immediately in this window whenever a
+//      DIFFERENT tab/window writes to localStorage. This covers the case where
+//      a user has two tabs open and checks a box in one — the other updates
+//      within milliseconds instead of waiting up to 3 seconds.
+//      NOTE: the storage event does NOT fire in the same tab that wrote the
+//      value. That's why we still need the poll below.
+//
+//   2. setInterval poll — catches same-tab checkbox writes from the lesson
+//      iframe (iframes share localStorage with the parent page but do NOT
+//      trigger the parent's storage event). Kept at 3 s; the storage event
+//      handles cross-tab latency so there is no reason to shorten the interval.
+//
+//   3. postMessage (lms:openLesson) — lesson pages that contain links to
+//      sibling lessons post a message instead of navigating the iframe directly.
+//      Ported from module-shell.js so that file can be deleted (Issue 1 cleanup).
+//      Message shape: { type: 'lms:openLesson', route: 'lms/modules/.../file.html' }
+
+// ① Instant update on cross-tab localStorage writes
+window.addEventListener('storage', (e) => {
+  // Only re-render for keys we actually track — ignore unrelated writes.
+  const trackedKeys = new Set(getAllStorageKeys());
+  if (!trackedKeys.has(e.key)) return;
+  renderProgressBars();
+  renderLessonNav();
+});
+
+// ② Periodic poll — same-tab iframe writes + Firestore sync
 setInterval(async () => {
   renderProgressBars();
+  renderLessonNav();
   await syncProgressToFirestore();
 }, PROGRESS_POLL_INTERVAL);
+
+// ③ postMessage handler — lesson-to-lesson navigation from inside the iframe
+// Ported from module-shell.js. Strategy:
+//   • Registered route → open via openLesson() so the sidebar highlights and
+//     progress is tracked correctly.
+//   • Unregistered route (deep-dive / reference file not in the registry) →
+//     load directly into the iframe; sidebar keeps its current state.
+window.addEventListener('message', (e) => {
+  if (e.data?.type !== 'lms:openLesson') return;
+  const route = e.data.route;
+  if (!route || typeof route !== 'string') return;
+
+  const mod = getActiveFieldModules().find(m => m.id === activeModuleId);
+  if (!mod) return;
+
+  const registered = mod.lessons.find(l => l.route === route);
+  if (registered) {
+    // Registered lesson — use the normal path so the sidebar highlights correctly.
+    openLesson(registered.id);
+  } else {
+    // Unregistered file (deep-dive, reference doc, etc.) — load into the iframe
+    // directly. The sidebar stays as-is; progress bar is unaffected.
+    activeLessonId = null;
+    frame.src = route;
+    frame.classList.add('visible');
+    welcomePanel.classList.add('hidden');
+    renderLessonNav();   // clears the active highlight
+  }
+});

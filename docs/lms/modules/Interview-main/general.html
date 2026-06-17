@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>General Interview Questions | Treuhandstelle Interview Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:        #0f172a;
+  --navy2:       #1e293b;
+  --slate:       #475569;
+  --muted:       #94a3b8;
+  --border:      #e2e8f0;
+  --bg:          #f8fafc;
+  --white:       #ffffff;
+  --amber-bg:    #fffbeb;
+  --amber-border:#f59e0b;
+  --amber-text:  #92400e;
+  --green-bg:    #f0fdf4;
+  --green-border:#86efac;
+  --green-text:  #166534;
+  --blue-bg:     #eff6ff;
+  --blue-border: #bfdbfe;
+  --blue-text:   #1e40af;
+  --radius:      10px;
+  --shadow:      0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  background: var(--bg);
+  color: var(--navy);
+}
+
+/* HEADER */
+.header { background: var(--navy); color: #fff; padding: 28px 24px 20px; }
+.header-inner { max-width: 860px; margin: 0 auto; }
+.header-meta {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+}
+.header h1 {
+  font-size: clamp(20px, 4vw, 28px); font-weight: 700;
+  line-height: 1.25; margin-bottom: 8px;
+}
+.header-sub { font-size: 13.5px; color: #94a3b8; max-width: 640px; }
+
+/* TABS */
+.tabs-bar {
+  background: var(--navy); position: sticky; top: 0; z-index: 100;
+  border-bottom: 2px solid rgba(255,255,255,0.07);
+}
+.tabs-inner { max-width: 860px; margin: 0 auto; padding: 0 24px; display: flex; }
+.tab-btn {
+  font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; font-weight: 600;
+  padding: 10px 22px; border-radius: 8px 8px 0 0; background: transparent;
+  color: var(--muted); border: none; cursor: pointer; transition: background .15s, color .15s;
+}
+.tab-btn.active { background: var(--bg); color: var(--navy); }
+.tab-btn:not(.active):hover { color: #fff; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* BODY */
+.body { max-width: 860px; margin: 0 auto; padding: 28px 20px 72px; }
+
+/* PROGRESS BAR */
+.progress-bar {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 18px; margin-bottom: 24px;
+  box-shadow: var(--shadow); display: flex; align-items: center; gap: 16px;
+  flex-wrap: wrap;
+}
+.progress-label { font-size: 11.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--slate); white-space: nowrap; }
+.progress-track { flex: 1; min-width: 120px; height: 7px; background: var(--border);
+  border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 99px; background: #2563eb;
+  transition: width .4s ease; }
+.progress-count { font-size: 12px; font-weight: 600; color: var(--slate); white-space: nowrap; }
+
+/* SECTION HEADER */
+.section-header {
+  display: flex; align-items: center; gap: 12px;
+  margin: 32px 0 14px;
+}
+.section-icon {
+  width: 34px; height: 34px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.section-title { font-size: 16px; font-weight: 700; color: var(--navy); }
+.section-subtitle { font-size: 12.5px; color: var(--slate); margin-top: 2px; }
+
+/* QUESTION CARD */
+.q-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  margin-bottom: 10px; overflow: hidden;
+}
+.q-trigger {
+  width: 100%; display: flex; align-items: flex-start; gap: 12px;
+  padding: 15px 16px; background: transparent; border: none; cursor: pointer;
+  text-align: left; font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px; font-weight: 600; color: var(--navy);
+  transition: background .12s;
+}
+.q-trigger:hover { background: var(--bg); }
+.q-trigger.open { background: var(--blue-bg); border-bottom: 1px solid var(--blue-border); }
+.q-num {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500;
+  color: var(--muted); padding-top: 2px; flex-shrink: 0; min-width: 24px;
+}
+.q-text { flex: 1; line-height: 1.45; }
+.q-badges { display: flex; gap: 6px; flex-shrink: 0; align-items: flex-start; padding-top: 1px; }
+.badge {
+  font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 4px;
+  white-space: nowrap;
+}
+.badge-must { background: #fef3c7; color: #92400e; }
+.badge-common { background: #dbeafe; color: #1e40af; }
+.badge-tricky { background: #fce7f3; color: #9d174d; }
+.q-arrow { font-size: 12px; color: var(--muted); padding-top: 3px; flex-shrink: 0;
+  transition: transform .2s; }
+.q-trigger.open .q-arrow { transform: rotate(180deg); }
+
+/* ANSWER PANEL */
+.q-panel {
+  display: none; padding: 18px 20px 16px 52px;
+  border-top: 1px solid var(--border);
+}
+.q-panel.open { display: block; }
+
+.strategy-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+}
+.strategy-text { font-size: 13.5px; color: var(--navy2); line-height: 1.65; margin-bottom: 14px; }
+
+.answer-box {
+  background: var(--green-bg); border: 1px solid var(--green-border);
+  border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;
+}
+.answer-box-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--green-text); margin-bottom: 8px;
+}
+.answer-box-text { font-size: 13.5px; color: #14532d; line-height: 1.65; }
+
+.warning-box {
+  background: var(--amber-bg); border: 1px solid #fde68a;
+  border-radius: 8px; padding: 12px 14px; margin-bottom: 12px;
+}
+.warning-box-text { font-size: 13px; color: var(--amber-text); line-height: 1.55; }
+
+.key-points { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+.key-point {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 13.5px; color: var(--navy2); line-height: 1.55;
+}
+.key-point-dot { width: 7px; height: 7px; border-radius: 50%; background: #2563eb;
+  flex-shrink: 0; margin-top: 7px; }
+
+.phrase-row {
+  background: #f8fafc; border: 1px solid var(--border); border-radius: 8px;
+  padding: 11px 14px; margin-bottom: 8px;
+}
+.phrase-de { font-weight: 600; font-size: 13.5px; color: var(--navy); margin-bottom: 2px; }
+.phrase-en { font-size: 12.5px; color: var(--slate); }
+
+/* MUST-KNOW BLOCK */
+.must-block {
+  background: var(--amber-bg); border: 1.5px solid var(--amber-border);
+  border-radius: var(--radius); padding: 18px 20px; margin: 28px 0 0;
+}
+.must-block-title {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--amber-text); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 7px;
+}
+.must-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  font-size: 13.5px; color: #78350f; line-height: 1.6;
+  padding: 9px 0; border-bottom: 1px solid #fde68a;
+}
+.must-item:last-child { border-bottom: none; padding-bottom: 0; }
+.must-bullet { font-size: 15px; flex-shrink: 0; }
+
+/* QUESTIONS TO ASK */
+.ask-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 8px; padding: 13px 16px; margin-bottom: 8px;
+  box-shadow: var(--shadow); display: flex; gap: 10px; align-items: flex-start;
+}
+.ask-icon { font-size: 15px; flex-shrink: 0; padding-top: 1px; }
+.ask-content { flex: 1; }
+.ask-q { font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 3px; }
+.ask-why { font-size: 12.5px; color: var(--slate); line-height: 1.5; }
+
+/* CHEAT SHEET */
+.cheat-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.cheat-table th {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--muted);
+  padding: 8px 12px; text-align: left; border-bottom: 2px solid var(--border);
+}
+.cheat-table td {
+  font-size: 13px; padding: 10px 12px;
+  border-bottom: 1px solid var(--border); vertical-align: top;
+  line-height: 1.5;
+}
+.cheat-table tr:last-child td { border-bottom: none; }
+.cheat-table tr:hover td { background: var(--bg); }
+.cheat-de { font-weight: 600; color: var(--navy); }
+.cheat-en { color: var(--slate); font-size: 12.5px; }
+
+@media (max-width: 600px) {
+  .q-panel { padding-left: 20px; }
+  .q-badges { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <nav style="margin-bottom:14px;">
+      <a href="./index.html" style="color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;">&#8592; Back to main page</a>
+    </nav>
+    <div class="header-meta">Treuhandstelle Interview Prep &mdash; General</div>
+    <h1>General Interview Questions</h1>
+    <p class="header-sub">Self-introduction, motivation, leadership, language, and the questions you ask them — covering everything beyond the technical topics.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+  </div>
+</div>
+
+<main>
+  <div class="body">
+
+    <!-- ═══════════════════════════════════════════════════
+         ENGLISH TAB
+    ════════════════════════════════════════════════════ -->
+    <div id="tab-en" class="tab-content active">
+
+      <!-- Progress bar -->
+      <div class="progress-bar">
+        <span class="progress-label">Study progress</span>
+        <div class="progress-track"><div class="progress-fill" id="prog-en" style="width:0%"></div></div>
+        <span class="progress-count" id="prog-count-en">0 / 0 opened</span>
+      </div>
+
+      <!-- ── SECTION 1: Self-introduction ── -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#eff6ff;">👤</div>
+        <div>
+          <div class="section-title">Self-Introduction</div>
+          <div class="section-subtitle">The first 90 seconds set the tone for everything that follows</div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">01</span>
+          <span class="q-text">"Please introduce yourself briefly." — Stellen Sie sich bitte kurz vor.</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Must</span><span class="badge badge-common">Always asked</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">
+            Structure your answer in three layers: <strong>who you are</strong>, <strong>what you bring that is unique</strong>, and <strong>why you are here for this specific role</strong>. Keep it under 90 seconds. In a German academic hospital interview this is expected to be professional and structured — not casual. Do not read your CV chronologically. Emphasise the triple combination that makes you rare: clinical domain knowledge, health IT at scale, and technical execution capability.
+          </div>
+          <div class="answer-box">
+            <div class="answer-box-label">Your prepared answer (adapt as needed)</div>
+            <div class="answer-box-text">
+              "I am a licensed pharmacist with a professional permit under §11 BApO in Bavaria and an M.Sc. in Digital Health from DIT, with a grade of 1.6. My thesis was clinically supervised at LMU Klinikum Munich by Prof. Dr. Klaus Parhofer — it received an excellent rating and a clinical utility score of 8.7 out of 10.<br><br>
+              Before my Master's, I spent two years as a Senior Digital Transformation Officer at the Egyptian Health Authority — where I led the national EHR rollout across hospital networks, deploying HL7-FHIR R4, ICD-10, SNOMED CT, and DRG standards in production. I also developed three live digital health systems that are currently in use or under active implementation.<br><br>
+              What brings me here specifically is the Treuhandstelle. Consent management and pseudonymisation are not abstract concepts for me — they sit exactly at the intersection of patient rights, GDPR compliance, and health data infrastructure, which is precisely where I have been working. I see this role as the natural next step where I can contribute leadership as well as technical depth."
+            </div>
+          </div>
+          <div class="warning-box">
+            <div class="warning-box-text">⚠️ Do NOT say "full approbation" — you hold a professional permit §11 BApO (supervised). Do NOT say your German is C1 — it is B2 plus the pharmaceutical specialist language exam (BLAK 2025).</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 2: Motivation ── -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#f0fdf4;">🎯</div>
+        <div>
+          <div class="section-title">Motivation &amp; Fit</div>
+          <div class="section-subtitle">They want to know why this role, why this institution, why now</div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">02</span>
+          <span class="q-text">"Why are you applying for this position?" — Warum bewerben Sie sich für diese Stelle?</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">Be specific — not "I'm interested in digital health" but "I want to be the person responsible for gICS and gPAS at one of Germany's leading university hospitals." Connect every point to something concrete in the job posting. Show institutional awareness: UCDHC, MII, MIRACUM, the DIZ at Frankfurt, NUM — these names signal you have done your homework.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Core talking points</div>
+            <div class="answer-box-text">
+              "The Treuhandstelle sits at a point in the healthcare data ecosystem that I find genuinely important: between patients who have rights over their data and researchers who need access to improve medicine. I have built consent management workflows in my own projects and deployed pseudonymisation architecture at national scale — but operating this infrastructure with real accountability at a university hospital is a different order of magnitude, and that is what I am looking for.<br><br>
+              Specifically, the connection to MII, MIRACUM, and NUM is compelling. I understand the federated data infrastructure and I know what gICS and gPAS do within it. The DIZ at Frankfurt adds a FHIR integration layer I have direct experience with. And the leadership scope — managing the team, the budget, the service portfolio — is a responsibility I am ready to take on."
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">03</span>
+          <span class="q-text">"Why Universitätsmedizin Frankfurt specifically?"</span>
+          <span class="q-badges"><span class="badge badge-common">Common</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">Show you know the institution — not just "it's a good hospital." Frankfurt is a MIRACUM site. It has an active DIZ. The UCDHC (University Center for Digital Healthcare) is where this role sits — mention it by name.</div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>Frankfurt is a founding member of the MIRACUM consortium — multi-site FHIR-based research infrastructure I understand and have worked with.</div>
+            <div class="key-point"><div class="key-point-dot"></div>The UCDHC positions this role at the intersection of clinical care and research infrastructure — exactly the space I want to operate in.</div>
+            <div class="key-point"><div class="key-point-dot"></div>The Rhine-Main area is where I am currently based — this is not a speculative relocation.</div>
+            <div class="key-point"><div class="key-point-dot"></div>TV-UKF collective agreement, 38.5 hours, mobile working options — these signal an institution that takes its staff seriously.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">04</span>
+          <span class="q-text">"What do you know about the role and what the Treuhandstelle does?"</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">This is a soft technical question disguised as a general one. Show you understand not just the job title but the operational reality: the THS handles IDAT (identifying data), not MDAT (medical data). It manages gICS for consent, gPAS for pseudonymisation. It is organisationally independent. It must coordinate with the Datenschutzaufsicht, the Zentrale Studienkoordination, and the DIZ.</div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>The THS is the organisational firewall between patient identity and research data.</div>
+            <div class="key-point"><div class="key-point-dot"></div>It operates gICS (consent management) and gPAS (pseudonymisation) — the MOSAIC open-source tools that are the national standard.</div>
+            <div class="key-point"><div class="key-point-dot"></div>It is structurally independent — no single department can control both identity data and medical data.</div>
+            <div class="key-point"><div class="key-point-dot"></div>As Leitung I would be accountable for the full service portfolio: operations, team, budget, policy documentation, and stakeholder coordination.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 3: Leadership ── -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#fdf4ff;">🏛️</div>
+        <div>
+          <div class="section-title">Leadership &amp; Team</div>
+          <div class="section-subtitle">This is a Leitung role — they will probe your leadership thinking hard</div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">05</span>
+          <span class="q-text">"How would you describe your leadership style?" — Wie würden Sie Ihren Führungsstil beschreiben?</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">In a German academic hospital context, leadership is expected to be structured, transparent, and professionally grounded. Avoid vague terms like "servant leader" without substance. Be specific about your approach and anchor it in real experience — your role as Deputy Administrative Director at the chest hospital and your national rollout with 500+ trained professionals are genuine leadership evidence.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Your prepared answer</div>
+            <div class="answer-box-text">
+              "I lead by making expectations clear and giving people the context to work independently. I believe a team in a compliance-sensitive environment like a Treuhandstelle needs to understand not just what to do, but why — because when unusual situations arise, they need to make the right decision without waiting for me to approve every step.<br><br>
+              In practical terms: I set clear SOPs, I hold regular structured check-ins, I give direct feedback, and I protect the team's autonomy on routine decisions while keeping accountability central for anything involving data protection risk. I have led large multi-site training programmes and coordinated between clinical, IT, and administrative stakeholders at national level — that gave me a realistic view of how much of leadership is actually communication and not just authority."
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">06</span>
+          <span class="q-text">"How do you handle conflict within your team?"</span>
+          <span class="q-badges"><span class="badge badge-common">Common</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">Show maturity and process — not a "I never have conflict" answer. Describe a real approach: address it early, name the issue directly in a private setting, distinguish between task conflict (often productive) and relationship conflict (always address). In a regulated environment like a THS, unresolved interpersonal tension creates compliance risk.</div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>Address early, privately — do not let tension become a pattern.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Separate the behaviour from the person — describe impact, not intent.</div>
+            <div class="key-point"><div class="key-point-dot"></div>In a THS context: unresolved conflict around access procedures or SOP compliance is a data protection risk — that escalates the urgency.</div>
+            <div class="key-point"><div class="key-point-dot"></div>If needed, involve HR or the Personalrat transparently — no back-channel maneuvering.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">07</span>
+          <span class="q-text">"How would you develop the THS's service portfolio?" — Eigenverantwortliche Fortentwicklung des Dienstleistungsspektrums</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Must</span><span class="badge badge-tricky">From posting</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">This is directly from the job posting ("eigenverantwortliche Fortentwicklung") — they are testing whether you have thought strategically about where THS services are heading, not just operationally about running what already exists.</div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div><strong>Needs assessment first:</strong> Survey research teams, the DIZ, and the Studienkoordination — what are they waiting weeks for that the THS could solve?</div>
+            <div class="key-point"><div class="key-point-dot"></div><strong>Broader consent workflows:</strong> As the European Health Data Space (EHDS) regulation advances, the THS needs consent policies that go beyond MII broad consent.</div>
+            <div class="key-point"><div class="key-point-dot"></div><strong>API-first integration:</strong> Direct FHIR-native endpoints from gICS/gPAS into the DIZ pipeline reduce manual coordination bottlenecks.</div>
+            <div class="key-point"><div class="key-point-dot"></div><strong>Harmonise with MII peers:</strong> Coordinate via MII and NUM to ensure Frankfurt's THS policies are compatible with multi-site studies.</div>
+            <div class="key-point"><div class="key-point-dot"></div><strong>MDR positioning:</strong> As gICS/gPAS mature toward SaMD classification, prepare documentation processes accordingly.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">08</span>
+          <span class="q-text">"You have not worked directly as a Treuhandstelle employee before. How will you get up to speed?"</span>
+          <span class="q-badges"><span class="badge badge-tricky">Tricky</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">Do not be defensive. Acknowledge the gap directly and immediately pivot to what you do have: you understand gICS and gPAS architecturally, you have operated comparable systems at national scale, you have implemented FHIR R4 in production, and you have the clinical and regulatory domain knowledge required. Then show a credible 90-day plan.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">90-day plan framing</div>
+            <div class="answer-box-text">
+              "Days 1–30: Shadow every active process — consent intake, pseudonymisation pipeline, data release, withdrawal handling. Map existing SOPs. Meet the Datenschutzbeauftragter, the DIZ leads, and the Studienkoordination.<br><br>
+              Days 31–60: Take operational ownership of routine processes. Identify bottlenecks. Begin gap analysis on SOP documentation and compliance with HDSIG and DSGVO.<br><br>
+              Days 61–90: Propose first set of service improvements with stakeholder input. Set team objectives aligned with the UCDHC strategy."
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 4: Strengths / Weaknesses ── -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#fff7ed;">⚖️</div>
+        <div>
+          <div class="section-title">Strengths, Weaknesses &amp; Self-Awareness</div>
+          <div class="section-subtitle">Show reflection — not a list of virtues</div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">09</span>
+          <span class="q-text">"What are your greatest strengths?" — Was sind Ihre größten Stärken?</span>
+          <span class="q-badges"><span class="badge badge-common">Common</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">Pick two or three genuine strengths that are specifically relevant to this role. Anchor each one in an example. For a Treuhandstelle Leitung role, the most relevant strengths are: technical depth combined with the ability to explain it simply, structured process thinking, and credibility with both clinical and IT stakeholders.</div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div><strong>Rare dual credibility:</strong> I can discuss GDPR Art. 9 with the data protection officer, gPAS domain architecture with the IT team, and MII consent policies with the research team — as the same person, in the same meeting.</div>
+            <div class="key-point"><div class="key-point-dot"></div><strong>Execution at scale:</strong> Not just strategic framing — I have built and deployed real systems with production data under compliance requirements.</div>
+            <div class="key-point"><div class="key-point-dot"></div><strong>Documentation discipline:</strong> From pharmacy training and national EHR governance, I understand that in regulated environments what is not documented does not exist.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">10</span>
+          <span class="q-text">"What is your greatest weakness?" — Was ist Ihre größte Schwäche?</span>
+          <span class="q-badges"><span class="badge badge-tricky">Tricky</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">Name a real weakness — not a disguised strength ("I work too hard"). Show what you are actively doing about it. A good weakness for this role acknowledges something genuine that will not make them question your core competency.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Credible answer</div>
+            <div class="answer-box-text">
+              "I can sometimes invest too much time in building something robustly when a quick interim solution would serve the immediate need better. In environments with strict compliance requirements I have learned that thoroughness is usually the right call — but in team leadership situations, being able to say 'good enough for now, we will improve it in version two' is a skill I have consciously worked on developing. I now time-box design decisions more deliberately."
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 5: Language ── -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#fef2f2;">🇩🇪</div>
+        <div>
+          <div class="section-title">German Language &amp; Work Permit</div>
+          <div class="section-subtitle">Address this proactively — do not wait to be asked</div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">11</span>
+          <span class="q-text">"Your German is listed as B2. Is that sufficient for this role?"</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Must</span><span class="badge badge-tricky">Sensitive</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">Do not minimise this — address it confidently and factually. B2 plus the pharmaceutical specialist language exam (BLAK) is a stronger profile than it sounds. You have completed a German Master's degree, worked in German professional environments, and passed a regulated language exam in medical-scientific German. Show active ongoing improvement.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Your prepared answer</div>
+            <div class="answer-box-text">
+              "My general German is B2, but that understates the relevant capability for this role. I passed the pharmaceutical specialist language exam (Fachsprachprüfung, BLAK) in 2025 — that test is specifically designed for medical-scientific communication in German, and passing it requires a level of domain-specific German that goes beyond general B2.<br><br>
+              I completed my entire Master's programme in Germany, including seminars, presentations, and written work in German-speaking academic contexts. I have been working and living in Germany since 2023. I am actively continuing to improve — especially in the leadership and legal register that this role demands. I am confident I can lead team meetings, write policy documents, and communicate with the Datenschutzbeauftragter professionally in German."
+            </div>
+          </div>
+          <div class="warning-box">
+            <div class="warning-box-text">⚠️ Never say "C1" — your verified level is B2 + FSP (BLAK). Always name the FSP explicitly — most interviewers do not know it unless you explain it.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">12</span>
+          <span class="q-text">"Do you have a valid work permit for Germany?"</span>
+          <span class="q-badges"><span class="badge badge-common">Common</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">Answer clearly and confidently — do not leave room for ambiguity.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Your answer</div>
+            <div class="answer-box-text">"Yes — I hold a valid German residence permit with unrestricted work authorisation. There are no restrictions on sector, employer type, or working hours. I can provide the relevant documentation at any point in the process."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 6: Practical / Logistics ── -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#ecfdf5;">📋</div>
+        <div>
+          <div class="section-title">Practical &amp; Logistics</div>
+          <div class="section-subtitle">Salary, availability, remote work — handle these cleanly</div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">13</span>
+          <span class="q-text">"What are your salary expectations?"</span>
+          <span class="q-badges"><span class="badge badge-common">Common</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">This role is at Universitätsmedizin Frankfurt under TV-UKF (Tarifvertrag UK Frankfurt). Salaries are largely determined by collective agreement (Entgeltgruppe). You are unlikely to negotiate a wildly different number — but you can ask about the Entgeltgruppe classification and whether there is room for a higher step within the band based on your experience.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Your answer</div>
+            <div class="answer-box-text">
+              "I understand the role is covered by the TV-UKF collective agreement, so I trust the Entgeltgruppe classification reflects the scope. I would be grateful to understand which group this position is classified under and whether my experience in national EHR leadership and digital health development is reflected in the step determination. I am primarily motivated by the scope of the role rather than negotiating above the collective agreement framework."
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">14</span>
+          <span class="q-text">"When can you start?" — Wann können Sie beginnen?</span>
+          <span class="q-badges"><span class="badge badge-common">Common</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">The posting says "zum nächstmöglichen Zeitpunkt" (as soon as possible). Show willingness to start quickly while being realistic.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Your answer</div>
+            <div class="answer-box-text">"I am available at short notice and can discuss start dates flexibly. As I am currently in a freelance capacity, I am not bound by a notice period at an employer. I am ready to begin discussions about a concrete start date as soon as you are."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">15</span>
+          <span class="q-text">"The role has mobile working options. What is your preference?"</span>
+          <span class="q-badges"><span class="badge badge-common">Common</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">For a Leitung role at a university hospital, demonstrating presence at the institution — especially in the early months — signals commitment and is expected. Show you value on-site without rejecting the mobile work option.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Your answer</div>
+            <div class="answer-box-text">"In a leadership role, especially in the first six to twelve months, I would prioritise being on-site. Building trust with the team, understanding the existing processes, and establishing working relationships with the Datenschutzaufsicht and the DIZ happens most effectively in person. Once the team and processes are running well, I would use remote days selectively for focused work. I live in the Rhine-Main area, so commuting is not a practical constraint."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 7: Where do you see yourself ── -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#f5f3ff;">🔭</div>
+        <div>
+          <div class="section-title">Career Direction</div>
+          <div class="section-subtitle">Show ambition that aligns with this role — not flight risk</div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">16</span>
+          <span class="q-text">"Where do you see yourself in five years?"</span>
+          <span class="q-badges"><span class="badge badge-common">Common</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">Do not say "in your chair" — that is a cliché. Do not say something so ambitious it implies you are using this role as a stepping stone. The ideal answer: you want to develop this THS into a reference centre for German university hospital Treuhandstellen, potentially contribute to MII standards, and grow with the UCDHC.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Your answer</div>
+            <div class="answer-box-text">"Five years from now, I want the Frankfurt Treuhandstelle to be one of the most efficient and well-documented THS operations in the MII network — one that other institutions look to for best practices. I want to have developed the service portfolio in ways that make it easier and faster for researchers to access data responsibly, and to have built a team that can operate independently of any single person. I am also interested in contributing to the MII and NUM working groups on consent and pseudonymisation standards — the Frankfurt position would give me the credibility to do that."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">17</span>
+          <span class="q-text">"Why not stay in freelance / why do you want an employed role?"</span>
+          <span class="q-badges"><span class="badge badge-tricky">Tricky</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Answer strategy</div>
+          <div class="strategy-text">Be honest — freelance gives technical breadth but not sustained institutional impact. This role offers the depth you cannot get from project-to-project work.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Your answer</div>
+            <div class="answer-box-text">"Freelance work gave me the ability to work across multiple projects and see different architectures — I developed three live systems and built real clinical AI. But what you cannot do as a freelancer is take responsibility for a living infrastructure over years. You cannot build a team, shape an institution's data culture, or see an SOP through three revision cycles. That kind of sustained responsibility is what this role offers, and it is what I am looking for at this stage."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 8: Questions to ask them ── -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#fffbeb;">❓</div>
+        <div>
+          <div class="section-title">Questions to Ask the Interviewers</div>
+          <div class="section-subtitle">Asking the right questions is half the interview — it signals depth and genuine interest</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">🔧</div>
+        <div class="ask-content">
+          <div class="ask-q">"Are gICS and gPAS already deployed and in production here, or is this role expected to lead their initial implementation?"</div>
+          <div class="ask-why">Shows you know what the tools are and understand the difference between running an existing system and setting one up from scratch — two very different jobs.</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">👥</div>
+        <div class="ask-content">
+          <div class="ask-q">"How many people are currently in the THS team, and what is the balance of technical versus administrative roles?"</div>
+          <div class="ask-why">Legitimate Leitung question — you need to understand what you are inheriting before you can plan.</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">🔗</div>
+        <div class="ask-content">
+          <div class="ask-q">"What does the working relationship with the DIZ look like in practice — shared infrastructure, shared data releases, or separate parallel processes?"</div>
+          <div class="ask-why">Shows you understand the MII architecture and want to understand how Frankfurt specifically has implemented the THS-DIZ boundary.</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">📋</div>
+        <div class="ask-content">
+          <div class="ask-q">"What does success look like in the first twelve months — what would you want this role to have achieved?"</div>
+          <div class="ask-why">Classic strong closer. Gets them talking about their priorities and helps you understand whether your 90-day plan matches their expectations.</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">🌐</div>
+        <div class="ask-content">
+          <div class="ask-q">"How actively does the Frankfurt THS participate in MII, MIRACUM, and NUM working groups — is that something this Leitung role is expected to drive?"</div>
+          <div class="ask-why">Shows national ecosystem awareness and asks them to be explicit about the scope of the external-facing element of the role.</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">📄</div>
+        <div class="ask-content">
+          <div class="ask-q">"The posting mentions developing anonymisation and pseudonymisation guidelines — is there an existing policy framework, or is this largely to be built?"</div>
+          <div class="ask-why">Directly references the job posting and shows you have read it carefully. Also tells you how much greenfield work is involved.</div>
+        </div>
+      </div>
+
+      <!-- Must-know block -->
+      <div class="must-block">
+        <div class="must-block-title"><span>⚑</span> Non-negotiable facts to have locked in before you walk in</div>
+        <div class="must-item"><span class="must-bullet">⚑</span>Your German level is B2 plus the pharmaceutical specialist language exam (FSP, BLAK 2025) — always name both. Never say C1.</div>
+        <div class="must-item"><span class="must-bullet">⚑</span>Your pharmacy licence is §11 BApO (professional permit, supervised) — never "Approbation" or "full licence."</div>
+        <div class="must-item"><span class="must-bullet">⚑</span>Your M.Sc. grade is 1.6, completed and defended — never leave it ambiguous.</div>
+        <div class="must-item"><span class="must-bullet">⚑</span>DiaTwin clinical utility is 8.7/10, assessed by Prof. Dr. Klaus Parhofer at LMU Klinikum Großhadern — not TU Munich, not DIT.</div>
+        <div class="must-item"><span class="must-bullet">⚑</span>You are based in Oberursel (Rhine-Main area) — commuting to Frankfurt is not an issue, no relocation needed.</div>
+        <div class="must-item"><span class="must-bullet">⚑</span>Work permit: valid German residence permit, unrestricted work authorisation, no sector or hour limits.</div>
+        <div class="must-item"><span class="must-bullet">⚑</span>You are currently freelance — no employer notice period, can start soon.</div>
+        <div class="must-item"><span class="must-bullet">⚑</span>Masern immunity: the posting requires proof. If you have documentation, confirm it. If not, arrange it before the interview date.</div>
+      </div>
+
+    </div><!-- end tab-en -->
+
+
+    <!-- ═══════════════════════════════════════════════════
+         GERMAN TAB
+    ════════════════════════════════════════════════════ -->
+    <div id="tab-de" class="tab-content">
+
+      <div class="progress-bar">
+        <span class="progress-label">Lernfortschritt</span>
+        <div class="progress-track"><div class="progress-fill" id="prog-de" style="width:0%"></div></div>
+        <span class="progress-count" id="prog-count-de">0 / 0 geöffnet</span>
+      </div>
+
+      <!-- SECTION 1 -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#eff6ff;">👤</div>
+        <div>
+          <div class="section-title">Selbstvorstellung</div>
+          <div class="section-subtitle">Die ersten 90 Sekunden bestimmen den Ton für das gesamte Gespräch</div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">01</span>
+          <span class="q-text">„Stellen Sie sich bitte kurz vor."</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Muss</span><span class="badge badge-common">Immer</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Antwortstrategie</div>
+          <div class="strategy-text">
+            Drei Ebenen: <strong>Wer Sie sind</strong> — <strong>Was Sie einzigartiges mitbringen</strong> — <strong>Warum genau diese Stelle</strong>. Maximal 90 Sekunden. Kein chronologischer Lebenslauf. Die Trippel-Kombination betonen: klinisches Domänenwissen + Health-IT im großen Maßstab + technische Umsetzungskompetenz.
+          </div>
+          <div class="answer-box">
+            <div class="answer-box-label">Formulierungshilfe auf Deutsch</div>
+            <div class="answer-box-text">
+              „Ich bin approbierter Apotheker mit Berufserlaubnis nach §11 BApO in Bayern und habe meinen M.Sc. in Digital Health am DIT mit der Note 1,6 abgeschlossen. Meine Masterarbeit wurde klinisch am LMU Klinikum München von Prof. Dr. Klaus Parhofer betreut — sie erhielt die Bewertung ‚Excellent' und eine klinische Nutzbewertung von 8,7 von 10 Punkten.<br><br>
+              Vor dem Masterstudium habe ich zwei Jahre als Senior Digital Transformation Officer bei der Ägyptischen Gesundheitsbehörde gearbeitet, wo ich den nationalen KIS-Rollout über ein Klinikverbundnetz geleitet habe — mit Produktiveinsatz von HL7-FHIR R4, ICD-10, SNOMED CT und DRG-Kodierung.<br><br>
+              Was mich an dieser Stelle besonders anspricht, ist die Treuhandstelle selbst. Einwilligungsmanagement und Pseudonymisierung sind für mich keine abstrakten Konzepte — sie liegen genau an der Schnittstelle zwischen Patientenrechten, DSGVO-Konformität und Forschungsdateninfrastruktur. Hier möchte ich jetzt Führungsverantwortung übernehmen."
+            </div>
+          </div>
+          <div class="warning-box">
+            <div class="warning-box-text">⚠️ Nie „Vollapprobation" sagen — es handelt sich um eine Berufserlaubnis nach §11 BApO (unter Aufsicht). Deutsch nicht als C1 bezeichnen — es ist B2 plus Fachsprachprüfung Pharmazie (BLAK 2025).</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2 -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#f0fdf4;">🎯</div>
+        <div>
+          <div class="section-title">Motivation &amp; Passung</div>
+          <div class="section-subtitle">Warum diese Stelle — warum diese Einrichtung — warum jetzt</div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">02</span>
+          <span class="q-text">„Warum bewerben Sie sich für diese Stelle?"</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Muss</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Antwortstrategie</div>
+          <div class="strategy-text">Konkret bleiben — nicht „Ich interessiere mich für Digital Health", sondern spezifisch auf die THS-Funktion, das UCDHC und die MII-Vernetzung eingehen.</div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>Die THS steht an einem gesellschaftlich relevanten Punkt: zwischen Patienten mit Datenschutzrechten und der Forschung, die medizinischen Fortschritt ermöglicht. Genau dort möchte ich arbeiten.</div>
+            <div class="key-point"><div class="key-point-dot"></div>gICS und gPAS kenne ich architektonisch — ich verstehe, was diese Tools im MII-Kontext leisten und wo die Integrationsherausforderungen liegen.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Die Anbindung an MII, MIRACUM, NUM und das DIZ Frankfurt bietet genau das Umfeld, in dem Führung und technische Tiefe gleichermaßen gefordert sind.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">03</span>
+          <span class="q-text">„Was wissen Sie über die Treuhandstelle und ihre Aufgaben?"</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Muss</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Antwortstrategie</div>
+          <div class="strategy-text">Diese Frage ist technisch verkleidet als allgemeine Frage. IDAT vs. MDAT erklären, gICS und gPAS benennen, organisatorische Selbstständigkeit ansprechen, Koordination mit Datenschutzaufsicht und DIZ erwähnen.</div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>Die THS verwaltet ausschließlich IDAT — identifizierende Daten. Die inhaltlichen Forschungsdaten (MDAT) liegen beim DIZ.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Sie betreibt gICS für das elektronische Einwilligungsmanagement und gPAS für die Pseudonymisierung — MOSAIC-Open-Source-Standard der Universitätsmedizin Greifswald.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Organisatorisch selbstständig — kein Abteilungszugriff auf beide Seiten der Daten (Identität + Inhalt) gleichzeitig.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Als Leitung wäre ich verantwortlich für Betrieb, Team, Budget, Richtlinienentwicklung und Stakeholderkommunikation.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3 -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#fdf4ff;">🏛️</div>
+        <div>
+          <div class="section-title">Führung &amp; Team</div>
+          <div class="section-subtitle">Dies ist eine Leitungsrolle — Führungsdenken wird intensiv geprüft</div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">04</span>
+          <span class="q-text">„Wie würden Sie Ihren Führungsstil beschreiben?"</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Muss</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Antwortstrategie</div>
+          <div class="strategy-text">Im deutschen Universitätsklinikum-Umfeld wird strukturierte, transparente, fachlich fundierte Führung erwartet. Vage Schlagworte vermeiden — konkret bleiben und in echten Erfahrungen verankern.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Formulierungshilfe</div>
+            <div class="answer-box-text">
+              „Ich führe, indem ich Erwartungen klar formuliere und meinem Team den Kontext gebe, selbstständig zu arbeiten. In einer compliance-sensiblen Umgebung wie der Treuhandstelle müssen Mitarbeitende nicht nur wissen, was sie zu tun haben, sondern warum — damit sie bei ungewöhnlichen Situationen die richtige Entscheidung treffen können, ohne auf meine Genehmigung zu warten.<br><br>
+              In der Praxis: klare SOPs, regelmäßige strukturierte Gespräche, direkte Rückmeldung, und Schutz der Handlungsautonomie des Teams bei Routineentscheidungen — während die Verantwortlichkeit für datenschutzrelevante Entscheidungen zentral bleibt. Ich habe nationale Schulungsprogramme geleitet und zwischen klinischen, IT- und Verwaltungsakteuren koordiniert — das hat mir ein realistisches Bild davon gegeben, dass Führung zu großen Teilen Kommunikation ist."
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">05</span>
+          <span class="q-text">„Wie gehen Sie mit Konflikten im Team um?"</span>
+          <span class="q-badges"><span class="badge badge-common">Häufig</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Antwortstrategie</div>
+          <div class="strategy-text">Reife und Prozessbewusstsein zeigen — kein „Ich habe nie Konflikte"-Antwort. Frühzeitig, direkt, unter vier Augen ansprechen. In der THS ist ungelöste Spannung um Zugangsprozesse oder SOP-Einhaltung ein Datenschutzrisiko — das erhöht die Dringlichkeit.</div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>Früh ansprechen — bevor eine Spannung zum Muster wird.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Verhalten von Person trennen — Auswirkung beschreiben, nicht Absicht bewerten.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Bei Bedarf transparent HR oder Personalrat einbeziehen — keine informellen Umgehungen.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">06</span>
+          <span class="q-text">„Wie würden Sie das Dienstleistungsspektrum der THS fortentwickeln?"</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Muss</span><span class="badge badge-tricky">Aus Ausschreibung</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Antwortstrategie</div>
+          <div class="strategy-text">Direkt aus der Stellenbeschreibung: „eigenverantwortliche Fortentwicklung". Sie prüfen, ob Sie strategisch über den Leistungsumfang nachgedacht haben.</div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div><strong>Bedarfsanalyse zuerst:</strong> Welche Engpässe berichten Forschungsteams, DIZ und Studienkoordination?</div>
+            <div class="key-point"><div class="key-point-dot"></div><strong>API-first-Integration:</strong> FHIR-native Schnittstellen aus gICS/gPAS in die DIZ-Pipeline reduzieren manuelle Koordination.</div>
+            <div class="key-point"><div class="key-point-dot"></div><strong>EHDS-Vorbereitung:</strong> Der European Health Data Space wird breitere Einwilligungsmodelle erfordern — Frankfurt sollte sich frühzeitig positionieren.</div>
+            <div class="key-point"><div class="key-point-dot"></div><strong>MII-Harmonisierung:</strong> Koordination über MII und NUM für kompatible THS-Policies bei Mehrzentren-Studien.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4 -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#fef2f2;">🇩🇪</div>
+        <div>
+          <div class="section-title">Sprachsituation &amp; Aufenthaltsrecht</div>
+          <div class="section-subtitle">Proaktiv ansprechen — nicht abwarten bis Sie gefragt werden</div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">07</span>
+          <span class="q-text">„Ihr Deutsch ist auf B2-Niveau. Reicht das für diese Stelle?"</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Muss</span><span class="badge badge-tricky">Heikel</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Antwortstrategie</div>
+          <div class="strategy-text">Sachlich und selbstsicher beantworten. Die Fachsprachprüfung (FSP) der BLAK ist ein offiziell anerkannter Nachweis für medizinisch-wissenschaftliches Deutsch — das geht über allgemeines B2 hinaus. Aktive Weiterbildung erwähnen.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Formulierungshilfe</div>
+            <div class="answer-box-text">
+              „Mein allgemeines Deutschniveau ist B2 — aber das unterschätzt die für diese Stelle relevante Kompetenz. Ich habe 2025 die Fachsprachprüfung Pharmazie (FSP) der BLAK abgelegt und bestanden. Diese Prüfung ist explizit für die medizinisch-wissenschaftliche Kommunikation konzipiert und verlangt ein fachbezogenes Sprachniveau, das deutlich über allgemeines B2 hinausgeht.<br><br>
+              Ich habe meinen Masterstudiengang in Deutschland absolviert, seit 2023 in Deutschland gelebt und gearbeitet, und arbeite aktiv an meinem Deutsch — insbesondere im Bereich Führungskommunikation und rechtlichem Fachregister. Ich bin überzeugt, Teammeetings zu leiten, Richtliniendokumente zu verfassen und mit dem Datenschutzbeauftragten fachlich kompetent auf Deutsch zu kommunizieren."
+            </div>
+          </div>
+          <div class="warning-box">
+            <div class="warning-box-text">⚠️ Niemals „C1" sagen — das zertifizierte Niveau ist B2 plus FSP (BLAK). Die FSP immer explizit nennen — die meisten Gesprächsführenden kennen sie nicht ohne Erklärung.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 5: Practical -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#ecfdf5;">📋</div>
+        <div>
+          <div class="section-title">Praktisches &amp; Logistik</div>
+          <div class="section-subtitle">Gehaltsvorstellung, Verfügbarkeit, Homeoffice — klar und souverän beantworten</div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">08</span>
+          <span class="q-text">„Was sind Ihre Gehaltsvorstellungen?"</span>
+          <span class="q-badges"><span class="badge badge-common">Häufig</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Antwortstrategie</div>
+          <div class="strategy-text">Die Stelle unterliegt dem TV-UKF. Gehälter werden größtenteils durch die Entgeltgruppeneingruppierung bestimmt. Fragen Sie nach der Entgeltgruppe und ob Erfahrungsschritte berücksichtigt werden.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Formulierungshilfe</div>
+            <div class="answer-box-text">„Ich verstehe, dass die Stelle dem TV-UKF unterliegt und vertraue auf eine faire Eingruppierung entsprechend dem Stellenprofil. Ich würde gerne verstehen, in welche Entgeltgruppe die Stelle eingestuft ist und ob meine Erfahrung — nationaler KIS-Rollout, Leitungstätigkeit, Digital-Health-Entwicklung — bei der Stufenzuordnung berücksichtigt werden kann. Primär bin ich durch den inhaltlichen Zuschnitt der Stelle motiviert, nicht durch eine Verhandlung über dem Tarifergebnis."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">09</span>
+          <span class="q-text">„Wann könnten Sie beginnen?"</span>
+          <span class="q-badges"><span class="badge badge-common">Häufig</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="answer-box">
+            <div class="answer-box-label">Formulierungshilfe</div>
+            <div class="answer-box-text">„Ich stehe kurzfristig zur Verfügung und kann Starttermine flexibel besprechen. Da ich derzeit freiberuflich tätig bin, bin ich an keine Kündigungsfrist bei einem Arbeitgeber gebunden. Ich bin bereit, einen konkreten Eintrittstermin zu besprechen, sobald Sie dies wünschen."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 6: Questions to ask -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#fffbeb;">❓</div>
+        <div>
+          <div class="section-title">Ihre Fragen an die Gesprächsführenden</div>
+          <div class="section-subtitle">Die richtigen Fragen zu stellen ist die halbe Interviewleistung</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">🔧</div>
+        <div class="ask-content">
+          <div class="ask-q">„Sind gICS und gPAS hier bereits im Produktivbetrieb, oder erwartet man, dass diese Stelle die Ersteinführung gestaltet?"</div>
+          <div class="ask-why">Zeigt, dass Sie den Unterschied zwischen Betrieb eines bestehenden Systems und einer Neuimplementierung kennen — zwei grundlegend verschiedene Aufgaben.</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">👥</div>
+        <div class="ask-content">
+          <div class="ask-q">„Wie groß ist das Team der Treuhandstelle aktuell, und wie ist das Verhältnis zwischen technischen und administrativen Aufgaben verteilt?"</div>
+          <div class="ask-why">Legitime Leitungsfrage — Sie müssen verstehen, was Sie übernehmen, um planen zu können.</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">🔗</div>
+        <div class="ask-content">
+          <div class="ask-q">„Wie gestaltet sich die Zusammenarbeit mit dem DIZ in der Praxis — geteilte Infrastruktur, gemeinsame Datenfreigabeprozesse oder parallele Abläufe?"</div>
+          <div class="ask-why">Zeigt MII-Architekturkenntnisse und das Interesse zu verstehen, wie Frankfurt die THS-DIZ-Grenze konkret definiert hat.</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">📋</div>
+        <div class="ask-content">
+          <div class="ask-q">„Was wären aus Ihrer Sicht die wichtigsten Erfolge dieser Stelle in den ersten zwölf Monaten?"</div>
+          <div class="ask-why">Klassischer starker Abschluss. Bringt die Gesprächsführenden dazu, ihre Prioritäten zu benennen und zeigt, dass Sie ergebnisorientiert denken.</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">📄</div>
+        <div class="ask-content">
+          <div class="ask-q">„Die Ausschreibung erwähnt die Ausarbeitung von Richtlinien zur Anonymisierung und Pseudonymisierung — gibt es ein bestehendes Rahmenwerk, oder ist das weitgehend neu aufzubauen?"</div>
+          <div class="ask-why">Direkte Referenz auf die Stellenbeschreibung — zeigt, dass Sie sie genau gelesen haben.</div>
+        </div>
+      </div>
+
+      <!-- German Phrases Cheat Sheet -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#f0f9ff;">💬</div>
+        <div>
+          <div class="section-title">Nützliche Formulierungen für das Gespräch</div>
+          <div class="section-subtitle">Register und Phrasen für das formelle Gesprächsumfeld</div>
+        </div>
+      </div>
+
+      <table class="cheat-table">
+        <thead>
+          <tr>
+            <th>Situation</th>
+            <th>Deutsche Formulierung</th>
+            <th>Englische Entsprechung</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Eröffnung</td><td class="cheat-de">Vielen Dank für die Einladung zum Gespräch.</td><td class="cheat-en">Thank you very much for the invitation to interview.</td></tr>
+          <tr><td>Nachfragen</td><td class="cheat-de">Darf ich kurz nachfragen, ob ich Ihre Frage richtig verstanden habe?</td><td class="cheat-en">May I just clarify whether I understood your question correctly?</td></tr>
+          <tr><td>Zeit gewinnen</td><td class="cheat-de">Das ist eine interessante Frage — ich möchte einen Moment darüber nachdenken.</td><td class="cheat-en">That's an interesting question — I'd like to take a moment to think about it.</td></tr>
+          <tr><td>Lücke einräumen</td><td class="cheat-de">Ich hatte bisher keinen direkten Einsatz mit gICS, aber ich kenne die Architektur gut und habe vergleichbare Systeme implementiert.</td><td class="cheat-en">I haven't worked directly with gICS yet, but I know the architecture well and have implemented comparable systems.</td></tr>
+          <tr><td>Stärke betonen</td><td class="cheat-de">Was mich von vielen Bewerbenden unterscheidet, ist die Kombination aus klinischem Fachwissen, Health-IT-Erfahrung und technischer Umsetzungskompetenz.</td><td class="cheat-en">What distinguishes me from many applicants is the combination of clinical expertise, health IT experience, and technical execution capability.</td></tr>
+          <tr><td>Sprache ansprechen</td><td class="cheat-de">Mein Deutsch ist B2, ergänzt durch die Fachsprachprüfung der BLAK im pharmazeutischen Bereich — fachlich bin ich stärker als allgemeines B2 vermuten lässt.</td><td class="cheat-en">My German is B2, supplemented by the BLAK specialist language exam in pharmacy — my domain-specific German is stronger than general B2 suggests.</td></tr>
+          <tr><td>Abschluss</td><td class="cheat-de">Ich freue mich auf die Möglichkeit, zur Weiterentwicklung der Treuhandstelle beizutragen.</td><td class="cheat-en">I look forward to the opportunity to contribute to the development of the Treuhandstelle.</td></tr>
+        </tbody>
+      </table>
+
+      <!-- Must-know block DE -->
+      <div class="must-block">
+        <div class="must-block-title"><span>⚑</span> Unverzichtbare Fakten — vor dem Gespräch fest im Kopf haben</div>
+        <div class="must-item"><span class="must-bullet">⚑</span>Deutschkenntnisse: B2 plus Fachsprachprüfung Pharmazie (FSP, BLAK 2025) — immer beides nennen. Niemals C1 sagen.</div>
+        <div class="must-item"><span class="must-bullet">⚑</span>Approbation: Berufserlaubnis nach §11 BApO (Bayerisch, unter Aufsicht) — niemals „Vollapprobation".</div>
+        <div class="must-item"><span class="must-bullet">⚑</span>M.Sc.-Note: 1,6 — abgeschlossen und verteidigt. Nie offen lassen.</div>
+        <div class="must-item"><span class="must-bullet">⚑</span>DiaTwin klinische Nutzenbewertung: 8,7/10 — bewertet von Prof. Dr. Klaus Parhofer, LMU Klinikum Großhadern (nicht TU München, nicht DIT).</div>
+        <div class="must-item"><span class="must-bullet">⚑</span>Wohnort: Oberursel, Rhein-Main-Gebiet — Pendeln nach Frankfurt kein Problem, kein Umzug notwendig.</div>
+        <div class="must-item"><span class="must-bullet">⚑</span>Aufenthaltstitel: Gültige Niederlassungserlaubnis mit uneingeschränkter Arbeitserlaubnis.</div>
+        <div class="must-item"><span class="must-bullet">⚑</span>Verfügbarkeit: Freiberuflich tätig, keine Kündigungsfrist — kurzfristig verfügbar.</div>
+        <div class="must-item"><span class="must-bullet">⚑</span>Masernimmunität: Die Ausschreibung verlangt einen Nachweis. Rechtzeitig sicherstellen.</div>
+      </div>
+
+    </div><!-- end tab-de -->
+
+  </div><!-- end body -->
+</main>
+
+<script>
+// ── Tab switching ──
+function switchTab(lang, btn) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + lang).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── Accordion toggle ──
+function toggle(btn) {
+  const card   = btn.closest('.q-card');
+  const panel  = card.querySelector('.q-panel');
+  const isOpen = btn.classList.contains('open');
+
+  btn.classList.toggle('open', !isOpen);
+  panel.classList.toggle('open', !isOpen);
+
+  updateProgress();
+}
+
+// ── Progress tracking ──
+function updateProgress() {
+  ['en', 'de'].forEach(lang => {
+    const tab    = document.getElementById('tab-' + lang);
+    const cards  = tab.querySelectorAll('.q-card');
+    const opened = tab.querySelectorAll('.q-trigger.open');
+    const total  = cards.length;
+    const count  = opened.length;
+    const pct    = total > 0 ? Math.round((count / total) * 100) : 0;
+
+    document.getElementById('prog-' + lang).style.width = pct + '%';
+    const label = lang === 'en'
+      ? count + ' / ' + total + ' opened'
+      : count + ' / ' + total + ' geöffnet';
+    document.getElementById('prog-count-' + lang).textContent = label;
+  });
+}
+
+// Initialise counts
+updateProgress();
+</script>
+</body>
+</html>

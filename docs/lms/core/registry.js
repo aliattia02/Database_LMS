@@ -22,7 +22,7 @@ export const LMS_CONFIG = {
       subtitle: 'Databases, server logic, and infrastructure',
       icon: '🗄️',
       theme: { accent: '#2563eb', accentSoft: '#dbeafe' },
-      moduleIds: ['database', 'python']
+      moduleIds: ['database', 'python', 'interview']
     },
     {
       id: 'frontend',
@@ -173,6 +173,70 @@ export const LMS_CONFIG = {
       ]
     },
     {
+      id: 'interview',
+      title: 'Interview Prep',
+      subtitle: 'Medical informatics, governance, and leadership topics',
+      theme: { accent: '#b45309', accentSoft: '#fef3c7' },
+      lessons: [
+        {
+          id: 'interview-general',
+          title: 'General Overview',
+          subtitle: 'Introduction and orientation',
+          route: 'lms/modules/Interview-main/general.html',
+          progress: { type: 'untracked', total: 0 }
+        },
+        {
+          id: 'interview-mindmap',
+          title: 'Mind Map',
+          subtitle: 'Full topic overview',
+          route: 'lms/modules/Interview-main/topic0-mindmap.html',
+          progress: { type: 'untracked', total: 0 }
+        },
+        {
+          id: 'interview-gics',
+          title: 'GICS / GPAs',
+          subtitle: 'Governance and performance structures',
+          route: 'lms/modules/Interview-main/topic1-gics-gpas.html',
+          progress: { type: 'untracked', total: 0 }
+        },
+        {
+          id: 'interview-mii',
+          title: 'MII / MIRACUM / NUM',
+          subtitle: 'Medical informatics initiatives',
+          route: 'lms/modules/Interview-main/topic2-mii-miracum-num-1.html',
+          progress: { type: 'untracked', total: 0 }
+        },
+        {
+          id: 'interview-hdsig',
+          title: 'HDSIG',
+          subtitle: 'Health data standards and interoperability',
+          route: 'lms/modules/Interview-main/topic3-hdsig.html',
+          progress: { type: 'untracked', total: 0 }
+        },
+        {
+          id: 'interview-din',
+          title: 'DIN 62304 / 14971',
+          subtitle: 'Medical software and risk management standards',
+          route: 'lms/modules/Interview-main/topic4-din62304-14971.html',
+          progress: { type: 'untracked', total: 0 }
+        },
+        {
+          id: 'interview-leitung',
+          title: 'Academic Leadership',
+          subtitle: 'Leading within academic institutions',
+          route: 'lms/modules/Interview-main/topic5-leitung-academic-institution.html',
+          progress: { type: 'untracked', total: 0 }
+        },
+        {
+          id: 'interview-register',
+          title: 'German Leadership Register',
+          subtitle: 'Leadership structures and registration',
+          route: 'lms/modules/Interview-main/topic6-german-leadership-register.html',
+          progress: { type: 'untracked', total: 0 }
+        }
+      ]
+    },
+    {
       id: 'react-native',
       title: 'Basic React Native',
       subtitle: 'Mobile components, navigation, state',
@@ -203,3 +267,7 @@ export const LMS_CONFIG = {
     }
   ]
 };
+
+// Derived constants — computed once here so every file imports the same value
+// rather than hardcoding strings like 'lms_lang' independently.
+export const LANG_KEY = `${LMS_CONFIG.storagePrefix}_lang`;

@@ -2,8 +2,8 @@
 // Drives lms/modules/module.html — reads ?id=<moduleId>&from=<fieldId>
 // Renders the lesson sidebar and hosts the lesson iframe.
 
-import { LMS_CONFIG } from './registry.js';
-import { loadLanguage, applyTranslations, t } from './i18n.js';
+import { LMS_CONFIG } from '../core/registry.js';
+import { loadLanguage, applyTranslations, t } from '../core/i18n.js';
 
 const IFRAME_RELOAD_DELAY    = 50;
 const PROGRESS_UPDATE_DELAY  = 150;

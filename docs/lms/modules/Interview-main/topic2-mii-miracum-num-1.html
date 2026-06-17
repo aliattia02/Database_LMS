@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Topic 2 — MII, MIRACUM & NUM | Treuhandstelle Interview Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="./site-nav.css"/>
+<style>
+  :root {
+    --navy: #0f172a;
+    --navy2: #1e293b;
+    --slate: #475569;
+    --muted: #94a3b8;
+    --border: #e2e8f0;
+    --bg: #f8fafc;
+    --white: #ffffff;
+    --amber-bg: #fffbeb;
+    --amber-border: #f59e0b;
+    --amber-text: #92400e;
+    --amber-icon: #d97706;
+    --blue: #2563eb;
+    --blue-light: #eff6ff;
+    --pill-l1: #94a3b8; --pill-l1t: #fff;
+    --pill-l2: #3b82f6; --pill-l2t: #fff;
+    --pill-l3: #16a34a; --pill-l3t: #fff;
+    --pill-l4: #7c3aed; --pill-l4t: #fff;
+    --accent: #0ea5e9;
+    --radius: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--bg);
+    color: var(--navy);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* ── HEADER (not sticky) ── */
+  .header {
+    background: var(--navy);
+    color: #fff;
+    padding: 28px 24px 20px;
+  }
+  .header-inner { max-width: 820px; margin: 0 auto; }
+  .header-meta {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-size: clamp(22px, 4vw, 30px);
+    font-weight: 700;
+    letter-spacing: -.02em;
+    line-height: 1.2;
+  }
+  .header h1 span { color: var(--accent); }
+  .header-sub {
+    margin-top: 8px;
+    color: #94a3b8;
+    font-size: 13.5px;
+    max-width: 580px;
+    line-height: 1.6;
+  }
+
+  /* ── TABS BAR (sticky only this row) ── */
+  .tabs-bar {
+    background: var(--navy);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 2px solid rgba(255,255,255,0.07);
+  }
+  .tabs-inner {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    gap: 2px;
+  }
+  .tab-btn {
+    padding: 10px 22px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    border-radius: 8px 8px 0 0;
+    transition: all .15s;
+    letter-spacing: .01em;
+  }
+  .tab-btn.active {
+    background: var(--bg);
+    color: var(--navy);
+  }
+
+  /* ── BODY ── */
+  .body { max-width: 820px; margin: 0 auto; padding: 32px 24px 64px; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── COLLAPSIBLE SECTION ── */
+  .section {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .section-toggle {
+    width: 100%;
+    padding: 20px 28px;
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    transition: background .15s;
+  }
+  .section-toggle:hover { background: #f8fafc; }
+  .toggle-left { display: flex; flex-direction: column; gap: 3px; }
+  .section-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .section-toggle h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: -.01em;
+  }
+  .section-toggle.open {
+    border-bottom: 1px solid var(--border);
+  }
+  .section-chevron {
+    flex-shrink: 0;
+    color: var(--muted);
+    font-size: 18px;
+    transition: transform .2s;
+    line-height: 1;
+    user-select: none;
+  }
+  .section-toggle:not(.open) .section-chevron { transform: rotate(-90deg); }
+  .section-body { padding: 22px 28px 26px; }
+  .section-body.hidden { display: none; }
+  .section-body p { color: #334155; line-height: 1.7; font-size: 14.5px; }
+  .section-body p + p { margin-top: 10px; }
+
+  /* ── MUST-KNOW (collapsible variant) ── */
+  .must-know {
+    background: var(--amber-bg);
+    border: 1px solid #fde68a;
+    border-left: 4px solid var(--amber-border);
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .must-know .section-toggle { background: transparent; }
+  .must-know .section-toggle:hover { background: rgba(245,158,11,.06); }
+  .must-know .section-toggle.open { border-bottom: 1px solid #fde68a; }
+  .must-know .section-label { color: #b45309; }
+  .must-know .section-toggle h2 { color: #78350f; }
+  .must-know .section-chevron { color: #d97706; }
+  .must-know-list { display: flex; flex-direction: column; gap: 10px; }
+  .must-know-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13.5px;
+    color: var(--amber-text);
+    line-height: 1.55;
+  }
+  .flag { color: var(--amber-icon); font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── WHY-CARD bullets ── */
+  .why-list { list-style: none; display: flex; flex-direction: column; gap: 7px; margin-top: 12px; }
+  .why-list li {
+    font-size: 14px;
+    color: #334155;
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.6;
+  }
+  .why-list li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ── LADDER ── */
+  .ladder { display: flex; flex-direction: column; gap: 14px; }
+  .ladder-level { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .level-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+  }
+  .level-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    white-space: nowrap;
+  }
+  .l1 { background: var(--pill-l1); color: var(--pill-l1t); }
+  .l2 { background: var(--pill-l2); color: var(--pill-l2t); }
+  .l3 { background: var(--pill-l3); color: var(--pill-l3t); }
+  .l4 { background: var(--pill-l4); color: var(--pill-l4t); }
+  .level-title { font-weight: 600; font-size: 14px; color: var(--navy2); }
+  .level-bullets { padding: 14px 16px; }
+  .level-bullets ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .level-bullets li {
+    font-size: 13.5px;
+    color: #334155;
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.55;
+  }
+  .level-bullets li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  /* ── GLOSSARY ── */
+  .glossary-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .glossary-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--border);
+  }
+  .glossary-table td {
+    padding: 10px 12px;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border);
+    color: #334155;
+    line-height: 1.55;
+  }
+  .glossary-table tr:last-child td { border-bottom: none; }
+  .glossary-table tr:nth-child(even) td { background: #f8fafc; }
+  .term-cell {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--navy);
+    white-space: nowrap;
+    width: 30%;
+  }
+
+  /* ── ACCORDION (interview questions) ── */
+  .accordion { display: flex; flex-direction: column; gap: 8px; }
+  .acc-item { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .acc-trigger {
+    width: 100%;
+    text-align: left;
+    padding: 14px 16px;
+    background: #f8fafc;
+    border: none;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy2);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    line-height: 1.45;
+    transition: background .15s;
+  }
+  .acc-trigger:hover { background: #f1f5f9; }
+  .acc-trigger.open { background: var(--blue-light); color: var(--blue); }
+  .acc-chevron { flex-shrink: 0; font-size: 16px; transition: transform .2s; margin-top: 1px; }
+  .acc-trigger.open .acc-chevron { transform: rotate(180deg); }
+  .acc-body {
+    display: none;
+    padding: 16px;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    font-size: 13.5px;
+    color: #334155;
+    line-height: 1.65;
+  }
+  .acc-body.open { display: block; }
+  .acc-strategy-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 6px;
+  }
+
+  /* ── CONNECTIONS ── */
+  .connections-grid { display: flex; flex-direction: column; gap: 10px; }
+  .connection-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .conn-badge {
+    flex-shrink: 0;
+    background: var(--blue-light);
+    color: var(--blue);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 99px;
+    white-space: nowrap;
+    margin-top: 2px;
+    letter-spacing: .02em;
+  }
+  .conn-text { font-size: 13.5px; color: #334155; line-height: 1.55; }
+
+  /* ── STUDY PLAN ── */
+  .study-plan { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 14px; }
+  .day-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--white);
+  }
+  .day-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 16px;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+  }
+  .day-num {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .day-focus {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--slate);
+  }
+  .day-tasks { list-style: none; padding: 12px 16px; display: flex; flex-direction: column; gap: 12px; }
+  .day-task { font-size: 13px; color: #334155; line-height: 1.55; }
+  .task-time {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #d97706;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin-bottom: 4px;
+  }
+  .task-link {
+    display: inline-block;
+    margin-top: 3px;
+    color: var(--blue);
+    font-size: 12px;
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(37,99,235,.35);
+  }
+  .task-link:hover { border-color: var(--blue); }
+
+  @media(max-width:540px) {
+    .header { padding: 20px 16px 16px; }
+    .body { padding: 20px 14px 48px; }
+    .section-body { padding: 16px 16px 20px; }
+    .section-toggle { padding: 16px 16px; }
+    .term-cell { width: 36%; white-space: normal; }
+    .study-plan { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./index.html">← Back to main page</a>
+</div>
+
+<!-- ─── HEADER (not sticky) ─── -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-meta">Treuhandstelle Interview Prep &nbsp;·&nbsp; Topic 2 of 6</div>
+    <h1><span>MII</span>, <span>MIRACUM</span> &amp; <span>NUM</span></h1>
+    <p class="header-sub">Germany's medical informatics infrastructure — the ecosystem your team operates inside.</p>
+  </div>
+</div>
+
+<!-- ─── TABS BAR (sticky only) ─── -->
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn" onclick="switchTab('de', this)">Deutsch</button>
+  </div>
+</div>
+
+<!-- ─── CONTENT ─── -->
+<div class="body">
+
+<!-- ══════════════════════ ENGLISH ══════════════════════ -->
+<div id="tab-en" class="tab-content active">
+
+  <!-- 1. What is it -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <span class="section-label">Section 1</span>
+        <h2>What is it</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <p>Germany's university hospitals sit on vast stores of patient data — diagnoses, lab results, medication histories — but historically this data lived in siloed systems that could not talk to each other or be used for research at scale. The <strong>Medizininformatik-Initiative (MII)</strong> was launched in 2016 with federal funding from the BMBF to solve exactly this problem. Its goal: make health data from university hospitals interoperable, findable, and legally usable for research across institutions.</p>
+      <p>To achieve that, the MII organised Germany's 36 university hospitals into four regional consortia. Frankfurt's Universitätsmedizin belongs to <strong>MIRACUM</strong> (Medical Informatics in Research and Care in University Medicine), a consortium of 11 partner sites. At the national level, the <strong>Netzwerk Universitätsmedizin (NUM)</strong> — launched in 2020 initially to coordinate COVID-19 research — has become the permanent infrastructure layer for cross-site clinical research networks. All three share the same philosophy: standardise data (using HL7 FHIR and MII Core Data Set profiles), build shared Datenintegrationszentren (DIZ), and make that data available for approved research through trusted, governed access — which is precisely where the Treuhandstelle comes in.</p>
+    </div>
+  </div>
+
+  <!-- 2. Why it matters -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <span class="section-label">Section 2</span>
+        <h2>Why it matters for this role</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <p>The Treuhandstelle at Universitätsmedizin Frankfurt is the identity and consent management node inside a larger ecosystem: the DIZ handles data integration, MIRACUM sets consortium-wide data governance rules, and MII defines the overarching framework (including what consent forms must contain and how pseudonyms are structured). As Leitung, you will need to:</p>
+      <ul class="why-list">
+        <li>Align the THS's consent and pseudonymisation workflows to the MII Core Data Set and MIRACUM specifications.</li>
+        <li>Represent Frankfurt's Treuhandstelle in national MII and NUM governance bodies.</li>
+        <li>Coordinate with the DIZ on data release requests — deciding what can be shared, with whom, and under what conditions.</li>
+        <li>Adapt local processes when MII/MIRACUM update their standards (which they do regularly).</li>
+      </ul>
+      <p style="margin-top:12px;">The interviewer will bring this up because it reveals whether you understand the structural context of the job, not just the technical tools.</p>
+    </div>
+  </div>
+
+  <!-- 3. Learning ladder -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <span class="section-label">Section 3</span>
+        <h2>Zero to hero — learning ladder</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="ladder">
+
+        <div class="ladder-level">
+          <div class="level-head">
+            <span class="level-pill l1">Level 1</span>
+            <span class="level-title">Basic awareness — can define it</span>
+          </div>
+          <div class="level-bullets"><ul>
+            <li>MII = Medizininformatik-Initiative; BMBF-funded since 2016, connecting 36 German university hospitals across four consortia.</li>
+            <li>The four consortia are MIRACUM, HiGHmed, SMITH, and DIFUTURE.</li>
+            <li>Frankfurt's hospital belongs to MIRACUM (11 partner sites).</li>
+            <li>NUM (Netzwerk Universitätsmedizin) is a parallel national network for clinical research coordination, originally stood up for COVID-19.</li>
+            <li>The shared technical standard is HL7 FHIR with MII Core Data Set profiles.</li>
+          </ul></div>
+        </div>
+
+        <div class="ladder-level">
+          <div class="level-head">
+            <span class="level-pill l2">Level 2</span>
+            <span class="level-title">Working knowledge — can describe how it works</span>
+          </div>
+          <div class="level-bullets"><ul>
+            <li>Each MII hospital runs a DIZ (Datenintegrationszentrum) that extracts, harmonises, and stores data in FHIR format according to MII modules (Person, Diagnose, Prozedur, Medikation, Laborbefund, etc.).</li>
+            <li>The MII Core Data Set (Kerndatensatz) defines the minimum structured data every DIZ must provide — the common denominator for cross-site queries.</li>
+            <li>Patient consent is managed by the Treuhandstelle using the MII-standard broad consent form (Modellvorhaben Einwilligung); gICS implements the logic.</li>
+            <li>Pseudonymisation is handled by gPAS; the pseudonym links the DIZ record to the consented patient without exposing identity to researchers.</li>
+            <li>Data use requests go through a Data Access Committee process; the THS validates consent and provides pseudonymised linkage keys.</li>
+            <li>MIRACUM runs a federated query infrastructure (FDPG — Forschungsdatenportal für Gesundheit) where researchers can query data across all consortium sites simultaneously.</li>
+          </ul></div>
+        </div>
+
+        <div class="ladder-level">
+          <div class="level-head">
+            <span class="level-pill l3">Level 3</span>
+            <span class="level-title">Applied understanding — connects to job tasks</span>
+          </div>
+          <div class="level-bullets"><ul>
+            <li>When MII updates its broad consent model (e.g. adding new use-case policies), the THS must update gICS policy trees and re-audit impacted consent records — this is your team's operational responsibility.</li>
+            <li>MIRACUM consortium governance meetings are where cross-site interoperability decisions are made; you would represent Frankfurt's THS, reporting conflicts or gaps to the consortium.</li>
+            <li>NUM projects (e.g. NAPKON, CODEX) required rapid consent and data release at scale in 2020–2021 — this experience shaped current German THS best practices; knowing this history matters for credibility.</li>
+            <li>The FDPG portal relies on the THS having correctly structured pseudonymisation so that cross-site record linkage is possible — a configuration error at THS level breaks the entire distributed query.</li>
+            <li>Budget justification for THS headcount and infrastructure is easier when framed against MIRACUM deliverables — know how to use consortium obligations as internal leverage.</li>
+          </ul></div>
+        </div>
+
+        <div class="ladder-level">
+          <div class="level-head">
+            <span class="level-pill l4">Level 4</span>
+            <span class="level-title">Interview-ready — can handle tough questions</span>
+          </div>
+          <div class="level-bullets"><ul>
+            <li>Can articulate the tension between federated and centralised data models, and explain why MII chose federated — political trust, legal jurisdiction, GDPR data minimisation.</li>
+            <li>Can explain what happens when a patient withdraws consent mid-project: which systems are involved, in what order, and what the THS obligation is under MIRACUM rules.</li>
+            <li>Can name at least two ongoing MIRACUM research projects and explain what data they use and what THS involvement looks like.</li>
+            <li>Can describe the distinction between the DIZ role and the THS role — who controls what, why separation of functions matters for data protection, and how they collaborate without merging.</li>
+            <li>Can critique current MII/MIRACUM pain points (e.g. heterogeneous consent implementations across sites) and propose what Frankfurt's THS should do about them.</li>
+          </ul></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Must-know -->
+  <div class="must-know">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <span class="section-label">Section 4</span>
+        <h2>Must-know facts</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="must-know-list">
+        <div class="must-know-item"><span class="flag">⚑</span><span>MII = Medizininformatik-Initiative, BMBF-funded since 2016, 36 university hospitals, four consortia. Frankfurt = MIRACUM (11 sites).</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span>The MII broad consent (Modellvorhaben) is the standard consent form for research use of health data across all MII sites — the Treuhandstelle implements and manages it using gICS.</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span>DIZ ≠ Treuhandstelle. The DIZ integrates and stores clinical data; the THS manages identity, consent, and pseudonyms. They cooperate but are organisationally separate — intentionally, for data protection.</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span>NUM (Netzwerk Universitätsmedizin) is the federal-level coordination body for university medicine research networks. The THS must be compatible with NUM governance requirements, not just MIRACUM's.</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span>The FDPG (Forschungsdatenportal für Gesundheit) is the central access portal for researchers to query federated MII data. The THS's pseudonymisation must meet FDPG technical specs for cross-site linkage to work.</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span>MII Core Data Set modules: Person, Fall (encounter), Diagnose, Prozedur, Medikation, Laborbefund, Molekulargenetischer Befund — know these by name.</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span>Consent withdrawal in MII must be propagated: THS flags the pseudonym, DIZ marks data as restricted, downstream research projects are notified. This is a multi-system workflow the THS coordinates.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Glossary -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <span class="section-label">Section 5</span>
+        <h2>Key terms glossary</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <table class="glossary-table">
+        <thead><tr><th>Term</th><th>Plain-language definition</th></tr></thead>
+        <tbody>
+          <tr><td class="term-cell">MII</td><td>Medizininformatik-Initiative — the BMBF programme that funds and coordinates digital research data infrastructure across all 36 German university hospitals.</td></tr>
+          <tr><td class="term-cell">MIRACUM</td><td>Frankfurt's MII consortium (11 sites). Sets joint data governance, runs shared services, and coordinates research projects across member hospitals.</td></tr>
+          <tr><td class="term-cell">NUM</td><td>Netzwerk Universitätsmedizin — national network originally for COVID research, now a permanent coordination layer for university medicine clinical studies.</td></tr>
+          <tr><td class="term-cell">DIZ</td><td>Datenintegrationszentrum — the hospital unit that extracts, harmonises, and stores clinical data in FHIR format. Partner to, not the same as, the THS.</td></tr>
+          <tr><td class="term-cell">Kerndatensatz (KDS)</td><td>MII Core Data Set — the standard FHIR profiles defining which clinical data fields every DIZ must provide for cross-site research queries.</td></tr>
+          <tr><td class="term-cell">Broad consent</td><td>The standard MII consent form permitting use of patient data for a wide range of future research scenarios, not just a single study.</td></tr>
+          <tr><td class="term-cell">FDPG</td><td>Forschungsdatenportal für Gesundheit — the central researcher-facing portal for querying and requesting access to federated data across MII sites.</td></tr>
+          <tr><td class="term-cell">Federated model</td><td>Data stays at each hospital site; researchers run queries that go to each site separately and return aggregate or de-identified results — no central data warehouse.</td></tr>
+          <tr><td class="term-cell">Data Access Committee</td><td>The governance body that reviews and approves researcher requests to access data from the DIZ. THS provides the consent validation input.</td></tr>
+          <tr><td class="term-cell">Pseudonymisation</td><td>Replacing patient identity with a code so data can be used for research without directly identifying the person. Reversible by the THS under controlled conditions.</td></tr>
+          <tr><td class="term-cell">BMBF</td><td>Bundesministerium für Bildung und Forschung — the federal ministry that funds MII and similar research infrastructure programmes.</td></tr>
+          <tr><td class="term-cell">HL7 FHIR</td><td>The international standard for exchanging health data electronically. MII uses FHIR profiles as the shared data format across all DIZ systems.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 6. Interview questions -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <span class="section-label">Section 6</span>
+        <h2>Likely interview questions</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="accordion">
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>Can you explain what the MII is and how Frankfurt's Universitätsmedizin fits into it?</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Answer strategy</div>
+            Start with the MII's purpose (interoperable research data across university hospitals), name the four consortia, place Frankfurt in MIRACUM, and immediately connect it to the THS role: the Treuhandstelle is the identity management node that makes research access legally and technically possible within this infrastructure.
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>What is the relationship between the Treuhandstelle and the DIZ at your institution?</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Answer strategy</div>
+            Emphasise the separation of functions: DIZ handles data (extraction, harmonisation, storage); THS handles identity (consent, pseudonyms, linkage keys). This separation is not just organisational convenience — it is a data protection requirement, since combining both functions in one unit would undermine the independence of identity management. Describe the workflow interface: THS validates consent, provides pseudonym keys; DIZ releases data.
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>A patient who consented to MII broad consent withdraws their consent. Walk me through what happens.</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Answer strategy</div>
+            This is a process question — they want to see systems thinking. Cover: (1) THS receives withdrawal, updates gICS — consent record flagged; (2) THS notifies DIZ to restrict pseudonymised data; (3) Downstream projects with active data use are notified; (4) Already published/anonymised data is generally not affected — explain why (legal basis); (5) The audit trail in gICS is the legal proof the withdrawal was processed. Show you know the multi-system cascade.
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>Why did MII choose a federated data model rather than a national central database?</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Answer strategy</div>
+            Three reasons to hit: (1) Legal — each hospital is the data controller under GDPR; sending data to a central pool would require additional legal basis; (2) Political trust — hospitals and state governments were unwilling to cede control of patient data to a central authority; (3) Data minimisation (GDPR principle) — federated queries return only aggregate or de-identified outputs, reducing exposure. Note the trade-off: federated models are technically harder and slower for some use cases.
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>How would you represent Frankfurt's Treuhandstelle interests in MIRACUM consortium governance meetings?</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Answer strategy</div>
+            Frame it as a dual mandate: you represent Frankfurt's specific operational needs (local legal constraints, system landscape, team capacity) while also contributing to shared standards that benefit all sites. Mention concrete examples: flagging when a proposed consent update conflicts with Hessian data protection law (HDSIG), or advocating for a shared pseudonymisation pattern that reduces inter-site linkage errors. Show that you understand governance as a collaborative negotiation, not just attendance.
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>What do you know about NUM and how does it relate to MII?</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Answer strategy</div>
+            NUM started in March 2020 as a rapid-response network to coordinate COVID research across university hospitals — it stress-tested the MII infrastructure at speed. Since then NUM has become a permanent coordination layer for multi-site clinical studies. The key point for the THS: NUM projects require the same consent/pseudonymisation workflows as MII projects — the THS must be NUM-compatible. NUM and MII are complementary, not duplicates.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Connections -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <span class="section-label">Section 7</span>
+        <h2>Connections to your existing experience</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="connections-grid">
+        <div class="connection-card">
+          <span class="conn-badge">EHR rollout</span>
+          <span class="conn-text">Leading a national EHR rollout required exactly the kind of multi-stakeholder coordination that MIRACUM governance demands — managing different sites with different legacy systems, compliance cultures, and capacities, while enforcing a shared standard.</span>
+        </div>
+        <div class="connection-card">
+          <span class="conn-badge">FHIR work</span>
+          <span class="conn-text">The MII Core Data Set is FHIR-native. Your FHIR implementation experience translates directly to understanding what the DIZ produces and what the THS pseudonymisation layer must be compatible with — a technical literacy most administrative THS leads lack.</span>
+        </div>
+        <div class="connection-card">
+          <span class="conn-badge">GDPR / DiaTwin</span>
+          <span class="conn-text">Implementing GDPR-compliant data flows in DiaTwin and Morafek means you already know what lawful basis, data minimisation, and consent management look like in practice — the same legal logic that drives MII's federated architecture and broad consent model.</span>
+        </div>
+        <div class="connection-card">
+          <span class="conn-badge">M.Sc. Digital Health</span>
+          <span class="conn-text">Graduate-level study in digital health systems gives you the conceptual vocabulary to engage in MII policy discussions — understanding the interoperability stack, health data standards, and governance frameworks that most clinicians treat as black boxes.</span>
+        </div>
+        <div class="connection-card">
+          <span class="conn-badge">Pharmacy licence</span>
+          <span class="conn-text">A §11 BApO pharmacy licence signals clinical credibility. In MIRACUM governance meetings, where most participants are either clinicians or IT engineers, a pharmacist-informatician brings a rare hybrid perspective on medication data quality — an MII Core Data Set module.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Study plan -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <span class="section-label">Section 8</span>
+        <h2>3-day study plan</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="study-plan">
+
+        <div class="day-card">
+          <div class="day-head">
+            <span class="day-num">Day 1</span>
+            <span class="day-focus">Foundation</span>
+          </div>
+          <ul class="day-tasks">
+            <li class="day-task">
+              <span class="task-time">45 min</span><br>
+              Read the official MII overview page and the consortia descriptions. Focus on what each consortium is responsible for.<br>
+              <a class="task-link" href="https://www.medizininformatik-initiative.de/en/start" target="_blank">medizininformatik-initiative.de</a>
+            </li>
+            <li class="day-task">
+              <span class="task-time">30 min</span><br>
+              Read MIRACUM's website — note the 11 partner sites, the FDPG portal, and current research projects listed.<br>
+              <a class="task-link" href="https://www.miracum.org" target="_blank">miracum.org</a>
+            </li>
+            <li class="day-task">
+              <span class="task-time">30 min</span><br>
+              Read the MII Core Data Set overview (FHIR modules). Write the module names from memory after reading.<br>
+              <a class="task-link" href="https://www.medizininformatik-initiative.de/en/basic-modules-mii-core-data-set" target="_blank">MII Core Data Set modules</a>
+            </li>
+            <li class="day-task">
+              <span class="task-time">20 min</span><br>
+              Read the NUM overview and how it relates to MII.<br>
+              <a class="task-link" href="https://www.netzwerk-universitaetsmedizin.de" target="_blank">netzwerk-universitaetsmedizin.de</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="day-card">
+          <div class="day-head">
+            <span class="day-num">Day 2</span>
+            <span class="day-focus">THS mechanics</span>
+          </div>
+          <ul class="day-tasks">
+            <li class="day-task">
+              <span class="task-time">60 min</span><br>
+              Study the MII broad consent documentation — what it covers, the policy tree, how withdrawal is handled. This is gICS's input.<br>
+              <a class="task-link" href="https://www.medizininformatik-initiative.de/en/patients/broad-consent" target="_blank">MII broad consent page</a>
+            </li>
+            <li class="day-task">
+              <span class="task-time">45 min</span><br>
+              Read the FDPG portal documentation — understand what researchers see and what THS inputs are required.<br>
+              <a class="task-link" href="https://forschen-fuer-gesundheit.de" target="_blank">forschen-fuer-gesundheit.de (FDPG)</a>
+            </li>
+            <li class="day-task">
+              <span class="task-time">30 min</span><br>
+              Review the DIZ concept page on MII's website — write a 5-sentence explanation of how THS and DIZ differ.<br>
+              <a class="task-link" href="https://www.medizininformatik-initiative.de/en/what-we-do/data-integration-centers" target="_blank">MII DIZ page</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="day-card">
+          <div class="day-head">
+            <span class="day-num">Day 3</span>
+            <span class="day-focus">Interview simulation</span>
+          </div>
+          <ul class="day-tasks">
+            <li class="day-task">
+              <span class="task-time">45 min</span><br>
+              Read a recent MII or MIRACUM publication to have a concrete example ready. Search "MIRACUM 2023 OR 2024" on PubMed.<br>
+              <a class="task-link" href="https://pubmed.ncbi.nlm.nih.gov/?term=MIRACUM+consortium" target="_blank">PubMed — MIRACUM</a>
+            </li>
+            <li class="day-task">
+              <span class="task-time">30 min</span><br>
+              Read Frankfurt UKF's own digital medicine / MIRACUM page. Know what projects are live at your future employer.<br>
+              <a class="task-link" href="https://www.unimedizin-frankfurt.de" target="_blank">Universitätsmedizin Frankfurt</a>
+            </li>
+            <li class="day-task">
+              <span class="task-time">45 min</span><br>
+              Work through all 6 interview questions above without notes. Record yourself if possible. Check against the answer strategies.
+            </li>
+            <li class="day-task">
+              <span class="task-time">15 min</span><br>
+              Prepare one specific question to ask the panel about Frankfurt's MIRACUM involvement — shows genuine research.
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-en -->
+
+
+<!-- ══════════════════════ DEUTSCH ══════════════════════ -->
+<div id="tab-de" class="tab-content">
+
+  <!-- 1. Was ist das -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <span class="section-label">Abschnitt 1</span>
+        <h2>Was ist das</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <p>Die deutschen Universitätskliniken verfügen über riesige Mengen an Patientendaten — Diagnosen, Laborbefunde, Medikationsverläufe. Diese Daten lagen jedoch jahrzehntelang in voneinander isolierten Systemen, die weder miteinander kommunizieren noch für die Forschung im großen Maßstab genutzt werden konnten. Die <strong>Medizininformatik-Initiative (MII)</strong> wurde 2016 mit Förderung des BMBF ins Leben gerufen, um genau dieses Problem zu lösen. Ihr Ziel: Gesundheitsdaten aus Universitätskliniken interoperabel, auffindbar und rechtssicher für die institutionsübergreifende Forschung zu machen.</p>
+      <p>Dazu wurden Deutschlands 36 Universitätskliniken in vier regionale Konsortien organisiert. Das Universitätsklinikum Frankfurt gehört zu <strong>MIRACUM</strong> (Medical Informatics in Research and Care in University Medicine), einem Konsortium von elf Partnerstandorten. Auf nationaler Ebene ergänzt das <strong>Netzwerk Universitätsmedizin (NUM)</strong> — 2020 ursprünglich zur Koordination der COVID-19-Forschung gegründet — die MII als permanente Infrastrukturschicht für standortübergreifende klinische Forschungsnetze. Alle drei — MII, MIRACUM, NUM — folgen derselben Grundidee: Daten standardisieren (per HL7 FHIR und MII-Kerndatensatz-Profilen), Datenintegrationszentren (DIZ) aufbauen und diese Daten über geregelte Zugangswege für die Forschung nutzbar machen — genau hier setzt die Treuhandstelle an.</p>
+    </div>
+  </div>
+
+  <!-- 2. Relevanz -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <span class="section-label">Abschnitt 2</span>
+        <h2>Relevanz für diese Stelle</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <p>Die Treuhandstelle am Universitätsklinikum Frankfurt ist der Identitäts- und Einwilligungsknoten innerhalb eines größeren Ökosystems: Das DIZ übernimmt die Datenintegration, MIRACUM gibt die konsortiumsweiten Datenschutzregeln vor, und die MII definiert den übergeordneten Rahmen — einschließlich der Anforderungen an Einwilligungsformulare und die Struktur von Pseudonymen. Als Leitung werden Sie folgende Aufgaben wahrnehmen müssen:</p>
+      <ul class="why-list">
+        <li>Einwilligungs- und Pseudonymisierungsworkflows an den MII-Kerndatensatz und die MIRACUM-Spezifikationen anpassen.</li>
+        <li>Die Frankfurter Treuhandstelle in nationalen MII- und NUM-Gremien vertreten.</li>
+        <li>Datenfreigabeanfragen gemeinsam mit dem DIZ koordinieren — entscheiden, was unter welchen Bedingungen an wen weitergegeben werden darf.</li>
+        <li>Lokale Prozesse anpassen, wenn MII oder MIRACUM ihre Standards weiterentwickeln (was regelmäßig geschieht).</li>
+      </ul>
+      <p style="margin-top:12px;">Die Interviewerinnen werden dieses Thema aufgreifen, weil es zeigt, ob Sie den strukturellen Kontext der Stelle verstehen — nicht nur die technischen Werkzeuge.</p>
+    </div>
+  </div>
+
+  <!-- 3. Lernleiter -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <span class="section-label">Abschnitt 3</span>
+        <h2>Von null zur Expertin — Lernleiter</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="ladder">
+
+        <div class="ladder-level">
+          <div class="level-head">
+            <span class="level-pill l1">Stufe 1</span>
+            <span class="level-title">Grundlegendes Verständnis — Begriffe definieren können</span>
+          </div>
+          <div class="level-bullets"><ul>
+            <li>MII = Medizininformatik-Initiative; BMBF-gefördertes Programm seit 2016 für 36 Universitätskliniken in vier Konsortien.</li>
+            <li>Die vier Konsortien sind MIRACUM, HiGHmed, SMITH und DIFUTURE.</li>
+            <li>Frankfurt gehört zu MIRACUM mit elf Partnerstandorten.</li>
+            <li>NUM (Netzwerk Universitätsmedizin) ist ein paralleles nationales Netzwerk, das aus der COVID-19-Pandemie hervorgegangen ist und heute klinische Forschungsnetze koordiniert.</li>
+            <li>Gemeinsamer technischer Standard: HL7 FHIR mit MII-Kerndatensatz-Profilen.</li>
+          </ul></div>
+        </div>
+
+        <div class="ladder-level">
+          <div class="level-head">
+            <span class="level-pill l2">Stufe 2</span>
+            <span class="level-title">Anwendungswissen — Funktionsweise beschreiben</span>
+          </div>
+          <div class="level-bullets"><ul>
+            <li>Jede MII-Universitätsklinik betreibt ein DIZ, das klinische Daten extrahiert, harmonisiert und nach MII-Modulen in FHIR-Format speichert (Person, Diagnose, Prozedur, Medikation, Laborbefund usw.).</li>
+            <li>Der MII-Kerndatensatz (KDS) definiert das Mindestset strukturierter Daten, das jedes DIZ liefern muss — die gemeinsame Basis für standortübergreifende Abfragen.</li>
+            <li>Patienteneinwilligungen werden von der Treuhandstelle auf Basis des MII-Modellvorhabens (Breite Einwilligung) mit gICS verwaltet.</li>
+            <li>Die Pseudonymisierung erfolgt über gPAS; das Pseudonym verknüpft den DIZ-Datensatz mit dem eingewilligten Patienten, ohne die Identität an Forschende weiterzugeben.</li>
+            <li>Datenzugangsanfragen durchlaufen ein Data-Access-Committee-Verfahren; die THS validiert die Einwilligung und liefert pseudonymisierte Verknüpfungsschlüssel.</li>
+            <li>MIRACUM betreibt eine föderierte Abfrageinfrastruktur über das FDPG (Forschungsdatenportal für Gesundheit), über das Forschende Daten aller Konsortiumstandorte gleichzeitig abfragen können.</li>
+          </ul></div>
+        </div>
+
+        <div class="ladder-level">
+          <div class="level-head">
+            <span class="level-pill l3">Stufe 3</span>
+            <span class="level-title">Angewandtes Verständnis — Bezug zu konkreten Aufgaben</span>
+          </div>
+          <div class="level-bullets"><ul>
+            <li>Wenn die MII ihr Einwilligungsmodell aktualisiert, muss die THS die gICS-Politikbäume anpassen und betroffene Einwilligungseinträge neu prüfen — operative Verantwortung Ihres Teams.</li>
+            <li>In MIRACUM-Konsortialgremien werden konsortiumsweite Interoperabilitätsentscheidungen getroffen; Sie würden dort Frankfurt vertreten und Konflikte oder Lücken rückmelden.</li>
+            <li>NUM-Projekte (z. B. NAPKON, CODEX) erforderten 2020–2021 rasche Einwilligung und Datenfreigabe im großen Maßstab — diese Erfahrungen prägen bis heute die deutschen THS-Standards.</li>
+            <li>Das FDPG-Portal ist auf eine korrekte Pseudonymstruktur durch die THS angewiesen; ein Konfigurationsfehler auf THS-Ebene bricht die gesamte föderierte Abfrageinfrastruktur.</li>
+            <li>Personalentscheidungen und Investitionsanträge für die THS lassen sich besser begründen, wenn sie an MIRACUM-Lieferverpflichtungen geknüpft werden — nutzen Sie Konsortiumspflichten als internes Argument.</li>
+          </ul></div>
+        </div>
+
+        <div class="ladder-level">
+          <div class="level-head">
+            <span class="level-pill l4">Stufe 4</span>
+            <span class="level-title">Interviewreif — anspruchsvolle Fragen souverän beantworten</span>
+          </div>
+          <div class="level-bullets"><ul>
+            <li>Kann die Spannung zwischen föderiertem und zentralisiertem Datenmodell erläutern und begründen, warum die MII das föderierte Modell gewählt hat (politisches Vertrauen, Rechtszuständigkeit, DSGVO-Datensparsamkeit).</li>
+            <li>Kann erklären, was passiert, wenn ein Patient mid-Projekt seine Einwilligung zurückzieht — welche Systeme in welcher Reihenfolge betroffen sind und welche THS-Pflichten bestehen.</li>
+            <li>Kennt mindestens zwei laufende MIRACUM-Forschungsprojekte und kann darlegen, welche Daten genutzt werden und welche THS-Beteiligung erforderlich ist.</li>
+            <li>Kann den Unterschied zwischen DIZ und THS klar abgrenzen — wer was kontrolliert, warum die Funktionstrennung datenschutzrechtlich notwendig ist und wie beide kooperieren.</li>
+            <li>Kann aktuelle Schwachstellen von MII/MIRACUM benennen (z. B. heterogene Einwilligungsimplementierungen) und Lösungsansätze für Frankfurt vorschlagen.</li>
+          </ul></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Unverzichtbares Wissen -->
+  <div class="must-know">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <span class="section-label">Abschnitt 4</span>
+        <h2>Unverzichtbares Wissen</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="must-know-list">
+        <div class="must-know-item"><span class="flag">⚑</span><span>MII = Medizininformatik-Initiative, BMBF-gefördert seit 2016, 36 Universitätskliniken, vier Konsortien. Frankfurt = MIRACUM (11 Standorte).</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span>Die MII-Breite Einwilligung (Modellvorhaben) ist das Standardeinwilligungsformular für die Forschungsnutzung von Gesundheitsdaten an allen MII-Standorten — die THS implementiert und verwaltet sie mit gICS.</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span>DIZ ≠ Treuhandstelle. Das DIZ integriert und speichert klinische Daten; die THS verwaltet Identität, Einwilligung und Pseudonyme. Beide kooperieren, sind aber organisatorisch getrennt — aus Datenschutzgründen.</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span>NUM (Netzwerk Universitätsmedizin) ist die bundesweite Koordinationsebene für Forschungsnetze der Universitätsmedizin. Die THS muss NUM-Governance-Anforderungen erfüllen, nicht nur die MIRACUM-internen.</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span>Das FDPG (Forschungsdatenportal für Gesundheit) ist das zentrale Forschungsportal für föderierte Abfragen. Die Pseudonymisierung der THS muss den technischen FDPG-Spezifikationen entsprechen.</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span>MII-Kerndatensatz-Module: Person, Fall, Diagnose, Prozedur, Medikation, Laborbefund, Molekulargenetischer Befund — diese Bezeichnungen kennen.</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span>Ein Einwilligungswiderruf im MII-Kontext muss systemübergreifend propagiert werden: THS kennzeichnet das Pseudonym in gICS, DIZ sperrt die Daten, laufende Forschungsprojekte werden benachrichtigt — ein mehrstufiger Workflow unter THS-Koordination.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Glossar -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <span class="section-label">Abschnitt 5</span>
+        <h2>Glossar der wichtigsten Begriffe</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <table class="glossary-table">
+        <thead><tr><th>Begriff</th><th>Erklärung in einfacher Sprache</th></tr></thead>
+        <tbody>
+          <tr><td class="term-cell">MII</td><td>Medizininformatik-Initiative — BMBF-gefördertes Programm, das seit 2016 die digitale Forschungsdateninfrastruktur aller 36 deutschen Universitätskliniken koordiniert.</td></tr>
+          <tr><td class="term-cell">MIRACUM</td><td>Das MII-Konsortium von Frankfurt (11 Standorte). Setzt gemeinsame Datenschutzregeln um, betreibt gemeinsame Dienste und koordiniert Forschungsprojekte.</td></tr>
+          <tr><td class="term-cell">NUM</td><td>Netzwerk Universitätsmedizin — nationales Netzwerk, ursprünglich für COVID-Forschung gegründet, heute dauerhafte Koordinationsebene für klinische Studien der Universitätsmedizin.</td></tr>
+          <tr><td class="term-cell">DIZ</td><td>Datenintegrationszentrum — Klinikeinheit, die klinische Daten in FHIR-Format extrahiert, harmonisiert und speichert. Partner der THS, aber organisatorisch von ihr getrennt.</td></tr>
+          <tr><td class="term-cell">Kerndatensatz (KDS)</td><td>Standard-FHIR-Profile, die festlegen, welche klinischen Datenfelder jedes DIZ für standortübergreifende Forschungsabfragen bereitstellen muss.</td></tr>
+          <tr><td class="term-cell">Breite Einwilligung</td><td>Standardisiertes MII-Einwilligungsformular, das die Nutzung von Patientendaten für ein breites Spektrum künftiger Forschungsvorhaben erlaubt.</td></tr>
+          <tr><td class="term-cell">FDPG</td><td>Forschungsdatenportal für Gesundheit — zentrales Forschungsportal, über das Forschende föderierte Daten aller MII-Standorte abfragen und Datenzugang beantragen können.</td></tr>
+          <tr><td class="term-cell">Föderiertes Modell</td><td>Daten verbleiben am jeweiligen Klinikstandort; Abfragen werden an alle Standorte verteilt und liefern aggregierte oder anonymisierte Ergebnisse zurück — kein zentrales Datenlager.</td></tr>
+          <tr><td class="term-cell">Data Access Committee</td><td>Gremium, das Datenzugangsanfragen von Forschenden prüft und genehmigt. Die THS liefert die Einwilligungsvalidierung als Voraussetzung für die Freigabe.</td></tr>
+          <tr><td class="term-cell">Pseudonymisierung</td><td>Ersatz der Patientenidentität durch einen Code, sodass Forschende die Daten nutzen können, ohne die Person direkt zu identifizieren. Unter kontrollierten Bedingungen durch die THS reversibel.</td></tr>
+          <tr><td class="term-cell">BMBF</td><td>Bundesministerium für Bildung und Forschung — fördert die MII und ähnliche Forschungsinfrastrukturprogramme.</td></tr>
+          <tr><td class="term-cell">HL7 FHIR</td><td>Internationaler Standard für den elektronischen Austausch von Gesundheitsdaten. Die MII verwendet FHIR-Profile als gemeinsames Datenformat in allen DIZ-Systemen.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 6. Mögliche Interviewfragen -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <span class="section-label">Abschnitt 6</span>
+        <h2>Mögliche Interviewfragen</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="accordion">
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>Können Sie erklären, was die MII ist und welche Rolle das Universitätsklinikum Frankfurt darin spielt?</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Antwortstrategie</div>
+            Mit dem Zweck der MII beginnen (interoperable Forschungsdaten über Universitätskliniken hinweg), die vier Konsortien nennen, Frankfurt in MIRACUM verorten und direkt den THS-Bezug herstellen: Die Treuhandstelle ist der Identitätsmanagementknoten, der Forschungszugang innerhalb dieser Infrastruktur rechtlich und technisch erst ermöglicht.
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>Was ist das Verhältnis zwischen Treuhandstelle und DIZ an Ihrer Einrichtung?</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Antwortstrategie</div>
+            Die Funktionstrennung betonen: Das DIZ verwaltet Daten (Extraktion, Harmonisierung, Speicherung); die THS verwaltet Identität (Einwilligung, Pseudonyme, Verknüpfungsschlüssel). Diese Trennung ist keine organisatorische Bequemlichkeit — sie ist datenschutzrechtlich geboten, da eine Zusammenlegung beider Funktionen die Unabhängigkeit des Identitätsmanagements untergraben würde. Den Workflow-Schnittpunkt beschreiben: THS validiert Einwilligung und liefert Pseudonymschlüssel; DIZ gibt die Daten frei.
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>Ein Patient, der in die MII-Breite Einwilligung eingewilligt hat, widerruft seine Einwilligung. Was passiert dann?</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Antwortstrategie</div>
+            Dies ist eine Prozessfrage — gesucht ist systemisches Denken. Abfolge: (1) THS nimmt Widerruf entgegen, aktualisiert gICS — Einwilligungsdatensatz gesperrt; (2) THS informiert das DIZ, pseudonymisierte Daten zu sperren; (3) Laufende Projekte mit aktivem Datenzugang werden benachrichtigt; (4) Bereits veröffentlichte oder anonymisierte Daten sind in der Regel nicht betroffen — erläutern warum; (5) Der Auditpfad in gICS ist der rechtliche Nachweis der ordnungsgemäßen Verarbeitung des Widerrufs.
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>Warum hat die MII ein föderiertes Datenmodell gewählt und keine nationale Zentraldatenbank?</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Antwortstrategie</div>
+            Drei Argumente treffen: (1) Rechtlich — jede Klinik ist Verantwortliche nach DSGVO; eine Übermittlung an eine zentrale Stelle würde eine zusätzliche Rechtsgrundlage erfordern; (2) Politisches Vertrauen — Kliniken und Länderregierungen wollten die Kontrolle über Patientendaten nicht abgeben; (3) Datensparsamkeit (DSGVO-Prinzip) — föderierte Abfragen liefern nur aggregierte oder anonymisierte Ergebnisse zurück. Den Trade-off ansprechen: Föderierte Modelle sind technisch anspruchsvoller und für manche Anwendungsfälle langsamer.
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>Wie würden Sie die Interessen der Treuhandstelle Frankfurt in MIRACUM-Konsortialgremien vertreten?</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Antwortstrategie</div>
+            Als doppeltes Mandat formulieren: einerseits die spezifischen operativen Belange Frankfurts vertreten (lokale Datenschutzanforderungen nach HDSIG, Systemlandschaft, Teamkapazitäten), andererseits zur Entwicklung gemeinsamer Standards beitragen. Konkrete Beispiele nennen: darauf hinweisen, wenn eine geplante Einwilligungsänderung dem Hessischen Datenschutzgesetz widerspricht, oder für ein gemeinsames Pseudonymisierungsmuster eintreten. Gremienarbeit als kooperative Aushandlung verstehen, nicht als bloße Anwesenheit.
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>Was wissen Sie über das NUM und wie verhält es sich zur MII?</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Antwortstrategie</div>
+            NUM startete im März 2020 als Schnellreaktionsnetzwerk zur Koordination der COVID-Forschung — und hat dabei die MII-Infrastruktur unter Realbedingungen getestet. Seither ist NUM zur dauerhaften Koordinationsebene für standortübergreifende klinische Studien geworden. Der entscheidende Punkt für die THS: NUM-Projekte erfordern dieselben Einwilligungs- und Pseudonymisierungsworkflows wie MII-Projekte. NUM und MII sind komplementär, nicht redundant.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Bezüge zur Erfahrung -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <span class="section-label">Abschnitt 7</span>
+        <h2>Verbindungen zu Ihrer bisherigen Erfahrung</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="connections-grid">
+        <div class="connection-card">
+          <span class="conn-badge">Nationale EHR-Einführung</span>
+          <span class="conn-text">Die Leitung einer nationalen Krankenakte-Einführung erfordert genau die Art von Mehrstakeholder-Koordination, die in MIRACUM-Gremien gefragt ist — unterschiedliche Standorte mit unterschiedlichen Systemen, Compliance-Kulturen und Kapazitäten auf einen gemeinsamen Standard einzuschwören.</span>
+        </div>
+        <div class="connection-card">
+          <span class="conn-badge">FHIR-Implementierung</span>
+          <span class="conn-text">Der MII-Kerndatensatz ist FHIR-nativ. Ihre FHIR-Praxiserfahrung ermöglicht es Ihnen, genau zu verstehen, was das DIZ produziert und welche Kompatibilitätsanforderungen die THS-Pseudonymisierungsschicht erfüllen muss.</span>
+        </div>
+        <div class="connection-card">
+          <span class="conn-badge">DSGVO / DiaTwin</span>
+          <span class="conn-text">Die Implementierung DSGVO-konformer Datenflüsse in DiaTwin und Morafek bedeutet, dass Sie Rechtmäßigkeit, Datensparsamkeit und Einwilligungsmanagement aus der Praxis kennen — dieselbe Rechtslogik, die der föderativen Architektur der MII zugrunde liegt.</span>
+        </div>
+        <div class="connection-card">
+          <span class="conn-badge">M.Sc. Digital Health</span>
+          <span class="conn-text">Ein weiterbildender Studiengang in Digital Health vermittelt das konzeptionelle Vokabular, um an MII-Politikdiskussionen teilnehmen zu können — das Verständnis des Interoperabilitätsstacks und der Governance-Rahmenwerke, die die meisten Kliniker als Black Box behandeln.</span>
+        </div>
+        <div class="connection-card">
+          <span class="conn-badge">Approbation (§11 BApO)</span>
+          <span class="conn-text">Eine Apothekerapprobation signalisiert klinische Glaubwürdigkeit. In MIRACUM-Gremien, wo die meisten Teilnehmenden entweder Kliniker oder IT-Ingenieure sind, bringt eine Apothekerin mit Informatikkompetenz eine seltene Hybridperspektive auf Medikationsdatenqualität ein — ein Modul des MII-Kerndatensatzes.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. 3-Tage-Lernplan -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <span class="section-label">Abschnitt 8</span>
+        <h2>3-Tage-Lernplan</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="study-plan">
+
+        <div class="day-card">
+          <div class="day-head">
+            <span class="day-num">Tag 1</span>
+            <span class="day-focus">Grundlagen</span>
+          </div>
+          <ul class="day-tasks">
+            <li class="day-task">
+              <span class="task-time">45 Min.</span><br>
+              Offizielle MII-Übersichtsseite und Konsortialbeschreibungen lesen. Fokus auf die Zuständigkeiten der einzelnen Konsortien.<br>
+              <a class="task-link" href="https://www.medizininformatik-initiative.de" target="_blank">medizininformatik-initiative.de</a>
+            </li>
+            <li class="day-task">
+              <span class="task-time">30 Min.</span><br>
+              MIRACUM-Website lesen — die 11 Partnerstandorte, das FDPG-Portal und laufende Forschungsprojekte notieren.<br>
+              <a class="task-link" href="https://www.miracum.org" target="_blank">miracum.org</a>
+            </li>
+            <li class="day-task">
+              <span class="task-time">30 Min.</span><br>
+              MII-Kerndatensatz-Übersicht (FHIR-Module) lesen. Nach dem Lesen die Modulbezeichnungen aus dem Gedächtnis aufschreiben.<br>
+              <a class="task-link" href="https://www.medizininformatik-initiative.de/de/der-kerndatensatz-der-mii" target="_blank">MII-Kerndatensatz</a>
+            </li>
+            <li class="day-task">
+              <span class="task-time">20 Min.</span><br>
+              NUM-Übersicht lesen und das Verhältnis zu MII erfassen.<br>
+              <a class="task-link" href="https://www.netzwerk-universitaetsmedizin.de" target="_blank">netzwerk-universitaetsmedizin.de</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="day-card">
+          <div class="day-head">
+            <span class="day-num">Tag 2</span>
+            <span class="day-focus">THS-Mechanik</span>
+          </div>
+          <ul class="day-tasks">
+            <li class="day-task">
+              <span class="task-time">60 Min.</span><br>
+              MII-Breite-Einwilligung-Dokumentation studieren — Inhalte, Politikbaumstruktur, Widerrufsverfahren. Das ist der Input für gICS.<br>
+              <a class="task-link" href="https://www.medizininformatik-initiative.de/de/patientinnen/einwilligung" target="_blank">MII-Einwilligungsseite</a>
+            </li>
+            <li class="day-task">
+              <span class="task-time">45 Min.</span><br>
+              FDPG-Portaldokumentation lesen — aus der Perspektive der Forschenden verstehen, welche THS-Vorleistungen erforderlich sind.<br>
+              <a class="task-link" href="https://forschen-fuer-gesundheit.de" target="_blank">forschen-fuer-gesundheit.de (FDPG)</a>
+            </li>
+            <li class="day-task">
+              <span class="task-time">30 Min.</span><br>
+              DIZ-Konzeptseite der MII lesen — anschließend den Unterschied zwischen THS und DIZ in fünf Sätzen formulieren.<br>
+              <a class="task-link" href="https://www.medizininformatik-initiative.de/de/was-wir-tun/datenintegrationszentren" target="_blank">MII-DIZ-Seite</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="day-card">
+          <div class="day-head">
+            <span class="day-num">Tag 3</span>
+            <span class="day-focus">Interviewsimulation</span>
+          </div>
+          <ul class="day-tasks">
+            <li class="day-task">
+              <span class="task-time">45 Min.</span><br>
+              Eine aktuelle MII- oder MIRACUM-Publikation lesen. Suche: "MIRACUM 2023 OR 2024" auf PubMed.<br>
+              <a class="task-link" href="https://pubmed.ncbi.nlm.nih.gov/?term=MIRACUM+consortium" target="_blank">PubMed — MIRACUM</a>
+            </li>
+            <li class="day-task">
+              <span class="task-time">30 Min.</span><br>
+              Öffentliche Seite des UKF zu Digital Medicine / MIRACUM lesen, um zu wissen, welche Projekte am künftigen Arbeitgeber laufen.<br>
+              <a class="task-link" href="https://www.unimedizin-frankfurt.de" target="_blank">Universitätsmedizin Frankfurt</a>
+            </li>
+            <li class="day-task">
+              <span class="task-time">45 Min.</span><br>
+              Alle sechs Interviewfragen ohne Notizen beantworten. Wenn möglich aufnehmen und mit den Antwortstrategien abgleichen.
+            </li>
+            <li class="day-task">
+              <span class="task-time">15 Min.</span><br>
+              Eine gezielte Rückfrage an das Gremium zu Frankfurts MIRACUM-Beteiligung formulieren — zeigt echtes Interesse und Vorbereitung.
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-de -->
+
+</div><!-- /body -->
+
+<script>
+  function switchTab(lang, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + lang).classList.add('active');
+    btn.classList.add('active');
+    // close all accordions on tab switch
+    document.querySelectorAll('.acc-body.open').forEach(b => b.classList.remove('open'));
+    document.querySelectorAll('.acc-trigger.open').forEach(t => t.classList.remove('open'));
+  }
+
+  function toggleSection(trigger) {
+    const isOpen = trigger.classList.contains('open');
+    const body = trigger.nextElementSibling;
+    if (isOpen) {
+      trigger.classList.remove('open');
+      body.classList.add('hidden');
+    } else {
+      trigger.classList.add('open');
+      body.classList.remove('hidden');
+    }
+  }
+
+  function toggleAcc(trigger) {
+    const body = trigger.nextElementSibling;
+    const isOpen = body.classList.contains('open');
+    const parentTab = trigger.closest('.tab-content');
+    parentTab.querySelectorAll('.acc-body.open').forEach(b => b.classList.remove('open'));
+    parentTab.querySelectorAll('.acc-trigger.open').forEach(t => t.classList.remove('open'));
+    if (!isOpen) {
+      body.classList.add('open');
+      trigger.classList.add('open');
+    }
+  }
+</script>
+</body>
+</html>

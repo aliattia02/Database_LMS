@@ -2,8 +2,8 @@
 // Drives lms/fields/field.html — reads ?id=<fieldId>, renders module cards,
 // each linking to lms/modules/module.html?id=<moduleId>&from=<fieldId>
 
-import { LMS_CONFIG } from './registry.js';
-import { loadLanguage, applyTranslations, t } from './i18n.js';
+import { LMS_CONFIG } from '../core/registry.js';
+import { loadLanguage, applyTranslations, t } from '../core/i18n.js';
 
 // ── i18n startup ─────────────────────────────────────────────────────────────
 const savedLang = localStorage.getItem('lms_lang') || 'en';

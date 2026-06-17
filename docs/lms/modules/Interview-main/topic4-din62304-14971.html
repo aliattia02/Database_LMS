@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 4: DIN EN 62304 &amp; DIN ISO 14971 — Medical Software &amp; Risk Standards | Treuhandstelle Interview Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:        #0f172a;
+  --navy2:       #1e293b;
+  --slate:       #475569;
+  --muted:       #94a3b8;
+  --border:      #e2e8f0;
+  --bg:          #f8fafc;
+  --white:       #ffffff;
+  --amber-bg:    #fffbeb;
+  --amber-border:#f59e0b;
+  --amber-text:  #92400e;
+  --amber-icon:  #d97706;
+  --blue:        #2563eb;
+  --blue-light:  #eff6ff;
+  --pill-l1: #94a3b8; --pill-l1t: #fff;
+  --pill-l2: #3b82f6; --pill-l2t: #fff;
+  --pill-l3: #16a34a; --pill-l3t: #fff;
+  --pill-l4: #7c3aed; --pill-l4t: #fff;
+  --accent:      #0ea5e9;
+  --radius:      10px;
+  --shadow:      0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  background: var(--bg);
+  color: var(--navy);
+}
+
+/* HEADER */
+.header {
+  background: var(--navy);
+  color: #fff;
+  padding: 28px 24px 20px;
+}
+.header-inner { max-width: 820px; margin: 0 auto; }
+.header-meta {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.header h1 {
+  font-size: clamp(22px, 4vw, 30px);
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+.header h1 abbr {
+  text-decoration: underline dotted rgba(255,255,255,.35);
+  cursor: help;
+}
+.header-sub {
+  font-size: 13.5px;
+  color: #94a3b8;
+  max-width: 580px;
+}
+
+/* TABS BAR */
+.tabs-bar {
+  background: var(--navy);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 2px solid rgba(255,255,255,0.07);
+}
+.tabs-inner {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+}
+.tab-btn {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.tab-btn.active {
+  background: var(--bg);
+  color: var(--navy);
+}
+.tab-btn:not(.active):hover { color: #fff; }
+
+/* BODY */
+.body {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* COLLAPSIBLE SECTIONS */
+.section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.section-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 28px;
+  border: none;
+  background: transparent;
+  font-family: 'IBM Plex Sans', sans-serif;
+  cursor: pointer;
+  text-align: left;
+  gap: 12px;
+}
+.section-toggle.open { border-bottom: 1px solid var(--border); }
+.section-toggle:hover { background: #f8fafc; }
+.toggle-left { display: flex; flex-direction: column; gap: 3px; }
+.section-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.section-toggle h2 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.section-chevron {
+  color: var(--muted);
+  font-size: 18px;
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.section-toggle:not(.open) .section-chevron { transform: rotate(-90deg); }
+.section-body { padding: 22px 28px 26px; }
+.section-body.hidden { display: none; }
+
+/* MUST-KNOW */
+.must-know {
+  background: var(--amber-bg);
+  border: 1px solid #fde68a;
+  border-left: 4px solid var(--amber-border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.must-know .section-label { color: #b45309; }
+.must-know .section-toggle h2 { color: #78350f; }
+.must-know .section-chevron { color: #d97706; }
+.must-know .section-body { padding: 22px 28px 26px; }
+.must-know-items { display: flex; flex-direction: column; gap: 10px; }
+.must-know-item {
+  display: flex;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--amber-text);
+  align-items: flex-start;
+}
+.flag { color: var(--amber-icon); font-size: 15px; flex-shrink: 0; line-height: 1.65; }
+
+/* LEARNING LADDER */
+.ladder { display: flex; flex-direction: column; gap: 14px; }
+.ladder-level {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.level-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border);
+}
+.level-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.l1 .level-pill { background: var(--pill-l1); color: var(--pill-l1t); }
+.l2 .level-pill { background: var(--pill-l2); color: var(--pill-l2t); }
+.l3 .level-pill { background: var(--pill-l3); color: var(--pill-l3t); }
+.l4 .level-pill { background: var(--pill-l4); color: var(--pill-l4t); }
+.level-title { font-weight: 600; font-size: 14px; color: var(--navy2); }
+.level-bullets { padding: 14px 16px; }
+.level-bullets ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.level-bullets li {
+  font-size: 13.5px;
+  color: #334155;
+  padding-left: 18px;
+  position: relative;
+}
+.level-bullets li::before {
+  content: '›';
+  color: var(--muted);
+  position: absolute;
+  left: 0;
+}
+
+/* GLOSSARY */
+.glossary-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.glossary-table th {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--border);
+  text-align: left;
+}
+.glossary-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: #334155;
+  vertical-align: top;
+}
+.glossary-table tr:nth-child(even) td { background: #f8fafc; }
+.term-cell {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--navy);
+  white-space: nowrap;
+  width: 28%;
+}
+
+/* ACCORDION */
+.accordion { display: flex; flex-direction: column; gap: 8px; }
+.acc-item {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.acc-trigger {
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  background: #f8fafc;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  transition: background .15s, color .15s;
+}
+.acc-trigger.open { background: var(--blue-light); color: var(--blue); }
+.acc-trigger:not(.open):hover { background: #f1f5f9; }
+.acc-chevron {
+  font-size: 16px;
+  flex-shrink: 0;
+  transition: transform .2s;
+  margin-top: 2px;
+}
+.acc-trigger.open .acc-chevron { transform: rotate(180deg); }
+.acc-body {
+  display: none;
+  padding: 16px;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  font-size: 13.5px;
+  color: #334155;
+}
+.acc-body.open { display: block; }
+.acc-strategy-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 6px;
+}
+
+/* CONNECTIONS GRID */
+.connections-grid { display: flex; flex-direction: column; gap: 10px; }
+.connection-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--white);
+}
+.conn-badge {
+  background: var(--blue-light);
+  color: var(--blue);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 99px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.conn-text { font-size: 13.5px; color: #334155; }
+
+/* STUDY PLAN */
+.study-plan {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.day-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--white);
+}
+.day-head {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 11px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border);
+}
+.day-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.day-focus {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--slate);
+}
+.day-tasks {
+  list-style: none;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.day-task { font-size: 13px; color: #334155; }
+.task-time {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #d97706;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 4px;
+  padding: 1px 6px;
+  margin-bottom: 4px;
+  display: inline-block;
+}
+.task-link {
+  color: var(--blue);
+  font-size: 12px;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(37,99,235,.35);
+  display: inline-block;
+  margin-top: 3px;
+}
+.task-link:hover { border-bottom-style: solid; }
+
+/* WHY LIST */
+.why-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0;
+  padding-left: 4px;
+}
+.why-list li {
+  font-size: 14px;
+  color: #334155;
+  padding-left: 20px;
+  position: relative;
+}
+.why-list li::before {
+  content: '›';
+  color: var(--blue);
+  font-weight: 700;
+  position: absolute;
+  left: 0;
+}
+.closing { font-size: 14px; color: var(--slate); margin-top: 12px; font-style: italic; }
+
+/* PROSE */
+.section-body p { color: #334155; font-size: 14px; margin-bottom: 12px; }
+.section-body p:last-child { margin-bottom: 0; }
+.section-body abbr {
+  text-decoration: underline dotted rgba(71,85,105,.4);
+  cursor: help;
+}
+
+/* RESPONSIVE */
+@media(max-width:540px) {
+  .header { padding: 20px 16px 16px; }
+  .body { padding: 20px 14px 48px; }
+  .section-body { padding: 16px 16px 20px; }
+  .section-toggle { padding: 16px; }
+  .term-cell { width: 36%; white-space: normal; }
+  .study-plan { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Treuhandstelle Interview Prep &middot; Topic 4 of 6</div>
+    <h1><abbr title="Deutsches Institut für Normung / International Electrotechnical Commission">DIN EN 62304</abbr> &amp; <abbr title="Deutsches Institut für Normung / International Organization for Standardization">DIN ISO 14971</abbr> — Medical software &amp; risk standards</h1>
+    <p class="header-sub">How the two key medical-device standards apply to Treuhandstelle software — and why the interviewer will expect Ali to know them.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn" onclick="switchTab('de', this)">Deutsch</button>
+  </div>
+</div>
+
+<main>
+  <div class="body">
+
+    <!-- ═══════════════ ENGLISH TAB ═══════════════ -->
+    <div class="tab-content active" id="tab-en">
+
+      <!-- Section 1: What is it -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Section 1</span>
+            <h2>What is it</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <p><abbr title="DIN EN 62304: Medical device software — software life cycle processes">DIN EN 62304</abbr> is the European adoption of IEC 62304, the international standard that governs how software used in or as a medical device must be developed and maintained. It defines a lifecycle framework covering planning, requirements, architecture, unit implementation, integration, testing, and maintenance. Software is assigned to one of three safety classes (A, B, or C) based on the severity of harm that could result from a software failure — Class A carries the lowest risk (no injury possible), Class C the highest (death or serious injury possible). The class determines how much documentation, testing, and change-control rigour the development team must apply.</p>
+
+          <p><abbr title="DIN ISO 14971: Application of risk management to medical devices">DIN ISO 14971</abbr> is the companion standard for risk management. It applies not just to software but to any medical device or its components. The standard mandates a documented risk-management process that runs from initial concept through post-market surveillance: identify hazards, estimate the probability and severity of harm, evaluate whether the risk is acceptable, implement risk controls, and verify their effectiveness. Residual risks must be weighed against the clinical benefit of the device.</p>
+
+          <p>Together, the two standards define the quality and safety baseline for any software system that handles clinical data in a way that could influence patient care. This is directly relevant to <abbr title="Treuhandstelle">THS</abbr> software such as <abbr title="generic Informed Consent Service">gICS</abbr> and <abbr title="generic Pseudonym Administration Service">gPAS</abbr>: if consent records are lost or pseudonyms are mis-linked, patients could be wrongly included in or excluded from studies, and re-identification could occur — outcomes that regulators may classify as patient safety events.</p>
+
+          <p>In Germany, the standards are enforced via the <abbr title="Medizinprodukterecht-Durchführungsgesetz">MPDG</abbr> (Medizinprodukterecht-Durchführungsgesetz), which implements the EU Medical Device Regulation (<abbr title="Medical Device Regulation">MDR</abbr> 2017/745) at national level. The MDR broadened the definition of a medical device to explicitly include software that is intended to be used for a medical purpose — a category that THS platforms may fall into depending on their integration with clinical decision-making workflows.</p>
+        </div>
+      </div>
+
+      <!-- Section 2: Why it matters -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Section 2</span>
+            <h2>Why it matters for this role</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <p>The Treuhandstelle at Universitätsmedizin Frankfurt operates software — gICS and gPAS — that sits at the intersection of patient data and clinical research. Whether or not these systems are formally classified as medical devices under the MDR, the hospital's quality management and legal teams will expect the Treuhandstelle leader to apply equivalent rigour. As Leitung, Ali will need to engage with DIN EN 62304 and DIN ISO 14971 in concrete, operational ways.</p>
+          <ul class="why-list">
+            <li>Maintaining a <strong>software lifecycle documentation set</strong> for gICS and gPAS: requirements specifications, architecture documents, test plans, and change logs.</li>
+            <li>Assigning and justifying the correct <strong>safety class</strong> for each THS software component — and defending that classification to auditors or the hospital's Medizinproduktebeauftragter.</li>
+            <li>Running a <strong>risk management process</strong> (ISO 14971) for every new THS service or significant software update: hazard identification, risk estimation, and control verification.</li>
+            <li>Ensuring that software changes go through a <strong>change-control procedure</strong> that traces requirements to tests — a direct DIN EN 62304 obligation for Class B/C systems.</li>
+            <li>Collaborating with the <abbr title="Datenintegrationszentrum">DIZ</abbr> and IT teams to ensure that integration interfaces (HL7 FHIR endpoints, API gateways) are covered by the same quality framework.</li>
+            <li>Briefing the <abbr title="Datenschutzbeauftragter">DSB</abbr> and hospital management when a risk assessment identifies a residual risk requiring executive sign-off.</li>
+          </ul>
+          <p class="closing">The interviewer will likely ask how Ali would approach a safety classification decision for gICS, or how they would structure a risk assessment for a new integration with a clinical trial management system.</p>
+        </div>
+      </div>
+
+      <!-- Section 3: Learning ladder -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Section 3</span>
+            <h2>Zero to hero: learning ladder</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="ladder">
+            <div class="ladder-level l1">
+              <div class="level-head">
+                <span class="level-pill">Level 1</span>
+                <span class="level-title">Basic awareness — can define it</span>
+              </div>
+              <div class="level-bullets">
+                <ul>
+                  <li>Know that DIN EN 62304 governs the software development lifecycle for medical device software, and DIN ISO 14971 governs risk management for medical devices.</li>
+                  <li>Understand that "DIN EN" means a European standard adopted by Germany, while "DIN ISO" means an ISO standard adopted by Germany — both are harmonised under MDR.</li>
+                  <li>Recognise the three software safety classes (A, B, C) and their plain-language meanings.</li>
+                  <li>Know that MDR 2017/745 and MPDG are the regulatory instruments that make these standards mandatory in the EU/Germany.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="ladder-level l2">
+              <div class="level-head">
+                <span class="level-pill">Level 2</span>
+                <span class="level-title">Working knowledge — can describe how it works</span>
+              </div>
+              <div class="level-bullets">
+                <ul>
+                  <li>Describe the eight lifecycle activities defined by DIN EN 62304 and the documentation artefacts each requires.</li>
+                  <li>Explain the DIN ISO 14971 risk management process: hazard identification → risk estimation → risk evaluation → risk control → residual risk review.</li>
+                  <li>Articulate how safety class affects the minimum required test coverage and change-control depth (e.g. Class A requires fewer tests than Class C).</li>
+                  <li>Explain the SOUP (Software of Unknown Provenance) concept and why open-source components like the Greifswald THS tools require explicit SOUP documentation.</li>
+                  <li>Describe what a risk management file contains and who owns it in a hospital setting.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="ladder-level l3">
+              <div class="level-head">
+                <span class="level-pill">Level 3</span>
+                <span class="level-title">Applied understanding — can connect it to the job tasks</span>
+              </div>
+              <div class="level-bullets">
+                <ul>
+                  <li>Classify gICS and gPAS by safety class and justify the choice with reference to the specific harms that could result from a consent record error or pseudonym collision.</li>
+                  <li>Draft a hazard analysis for a new gPAS integration, identifying failure modes (e.g. duplicate pseudonym generation, API timeout during a critical query) and their downstream patient-safety implications.</li>
+                  <li>Outline the change-control workflow the THS team should follow when upgrading gICS to a new major version — linking requirements, regression tests, and release notes.</li>
+                  <li>Explain how SOUP management applies to gICS/gPAS and what the THS must document when a new library dependency is introduced.</li>
+                  <li>Map the DIN ISO 14971 risk matrix onto the THS service catalogue to identify which services carry the highest residual risk.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="ladder-level l4">
+              <div class="level-head">
+                <span class="level-pill">Level 4</span>
+                <span class="level-title">Interview-ready — can handle tough questions</span>
+              </div>
+              <div class="level-bullets">
+                <ul>
+                  <li>Argue whether gICS/gPAS should be classified as medical device software under MDR Annex VIII, including the "intended purpose" argument and the significance of integration context.</li>
+                  <li>Discuss how to handle a situation where a post-deployment audit reveals that a gICS version was deployed without adequate Class B documentation — outlining a corrective and preventive action (CAPA) plan.</li>
+                  <li>Explain the tension between agile development practices (rapid releases) and DIN EN 62304's documentation requirements, and describe how THS teams at other German university hospitals manage this.</li>
+                  <li>Articulate how the THS risk management file feeds into the hospital's broader ISO 9001 quality management system and how audit findings are escalated.</li>
+                  <li>Describe how you would build internal competence on DIN EN 62304 in a small THS team without a dedicated regulatory affairs specialist.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Must-know facts -->
+      <div class="must-know section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Section 4</span>
+            <h2>Must-know facts</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="must-know-items">
+            <div class="must-know-item"><span class="flag">⚑</span><span>DIN EN 62304 defines <strong>three safety classes</strong>: Class A (no injury or minor injury possible), Class B (non-serious injury possible), Class C (death or serious injury possible). The classification drives all documentation and testing requirements. gICS and gPAS are typically classified as <strong>Class B</strong> because a consent data error could lead to a patient being harmed indirectly through incorrect study enrolment.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span><strong>SOUP</strong> (Software of Unknown Provenance) is any pre-existing software component — including open-source libraries — that is incorporated into a medical device software system. DIN EN 62304 §8 requires that every SOUP item be identified, its known anomalies documented, and its impact on safety assessed. The Greifswald THS tools (gICS, gPAS) themselves are SOUP when deployed by another institution.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>DIN ISO 14971 requires that <strong>residual risk</strong> — risk remaining after all controls have been applied — be explicitly accepted in writing by a responsible person. In a hospital, this is typically the Medizinproduktebeauftragter or a clinical director, not the THS leader alone. Understanding <em>who</em> signs off matters as much as knowing <em>what</em> the risk is.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>The <strong>EU MDR 2017/745</strong>, implemented in Germany via the MPDG, broadened the definition of a medical device to include standalone software intended for a medical purpose (e.g. diagnosis, treatment, monitoring). Software that merely stores or transfers data without influencing clinical decisions may fall outside this definition — but the classification decision must be documented and defensible.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>DIN EN 62304 requires a <strong>software development plan</strong> that documents the lifecycle model chosen (waterfall, iterative, agile), the tools used, and the standards applied. Without this plan, the organisation cannot demonstrate regulatory compliance — a key audit finding in university hospital IT environments.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Both standards require that <strong>problem and change management</strong> be formally tracked. Every bug fix or feature addition to gICS/gPAS must be assessed for its impact on safety class and risk management file before deployment. Ad-hoc updates without impact assessment are a Class B/C compliance violation.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>DIN ISO 14971 uses the concept of <strong>"benefit-risk"</strong>: a residual risk is acceptable if the clinical benefit of the device outweighs it. In the THS context, this means that even if pseudonym management carries a small re-identification risk, the benefit of enabling large-scale research justifies operating the service — provided all reasonable controls are in place and documented.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>A <strong>Medizinproduktebeauftragter</strong> (medical device officer, §83 MPDG) must be designated by every institution that places or operates a medical device. This person is legally responsible for ensuring compliance with MDR/MPDG. The THS leader must know who this person is, report to them on software risk matters, and provide documentation on request.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5: Glossary -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Section 5</span>
+            <h2>Key terms glossary</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <table class="glossary-table">
+            <thead>
+              <tr><th>Term</th><th>Plain-language definition</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="term-cell">DIN EN 62304</td><td>The German/European standard for medical device software lifecycles. Defines what documentation, testing, and process controls are required at each stage of software development and maintenance.</td></tr>
+              <tr><td class="term-cell">DIN ISO 14971</td><td>The German/international standard for risk management of medical devices. Requires systematic identification of hazards, assessment of harm probability/severity, and documented risk controls.</td></tr>
+              <tr><td class="term-cell">Safety class A/B/C</td><td>The three tiers in DIN EN 62304. Class A: no patient harm possible from failure. Class B: non-serious harm possible. Class C: death or serious harm possible. Higher class = more rigorous process requirements.</td></tr>
+              <tr><td class="term-cell">SOUP</td><td>Software of Unknown Provenance — any pre-built software component (open-source or third-party) integrated into a medical device system. Must be inventoried and risk-assessed under DIN EN 62304 §8.</td></tr>
+              <tr><td class="term-cell">MDR 2017/745</td><td>EU Medical Device Regulation — the EU-wide law that governs medical devices including software. Replaced MDD in 2021. Implemented in Germany through the MPDG.</td></tr>
+              <tr><td class="term-cell">MPDG</td><td>Medizinprodukterecht-Durchführungsgesetz — the German law that implements MDR at national level and assigns responsibilities to institutions and named individuals (Medizinproduktebeauftragter).</td></tr>
+              <tr><td class="term-cell">Hazard</td><td>A potential source of harm in the DIN ISO 14971 sense — e.g. a pseudonym collision in gPAS that causes two patients' data to be merged, leading to wrong treatment decisions.</td></tr>
+              <tr><td class="term-cell">Residual risk</td><td>The risk that remains after all risk-control measures have been applied. DIN ISO 14971 requires this to be explicitly accepted and documented by an authorised person.</td></tr>
+              <tr><td class="term-cell">Risk management file</td><td>The complete set of documents produced by the DIN ISO 14971 process for a given device: hazard log, risk evaluations, control measures, and residual-risk acceptance statements.</td></tr>
+              <tr><td class="term-cell">CAPA</td><td>Corrective and Preventive Action — a formal quality-management process to address a compliance failure or near-miss, identify its root cause, correct it, and prevent recurrence.</td></tr>
+              <tr><td class="term-cell">Medizinprodukte­beauftragter</td><td>The legally designated medical device officer at an institution (§83 MPDG). Responsible for regulatory compliance of all medical devices operated by the institution, including software.</td></tr>
+              <tr><td class="term-cell">Intended purpose</td><td>The specific medical use for which a software system is designed and marketed — the key criterion for deciding whether a software product is a medical device under MDR.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Section 6: Interview questions -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Section 6</span>
+            <h2>Likely interview questions</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="accordion">
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>Are gICS and gPAS medical devices under the EU MDR? How would you decide?</span>
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <div class="acc-strategy-label">Answer strategy</div>
+                <p>Frame this as a classification decision, not a yes/no. Explain that "intended purpose" is the key MDR criterion: if gICS is deployed solely as a data-management tool with no direct influence on clinical decisions, it may fall below the threshold. However, if consent status is used to gate a patient's enrolment in a treatment study, the argument for medical device classification strengthens. In practice, many German university hospitals treat their THS software as Class B under DIN EN 62304 as a precautionary measure, regardless of formal MDR classification, to satisfy internal quality management and avoid audit exposure.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>Walk me through how you would perform a risk assessment for a new gPAS integration with our clinical trial management system.</span>
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <div class="acc-strategy-label">Answer strategy</div>
+                <p>Structure your answer around the DIN ISO 14971 steps: (1) define the integration scope and intended use, (2) identify hazards (e.g. pseudonym duplication, data corruption during transfer, API authentication failure), (3) estimate probability and severity for each hazard, (4) apply controls (validation testing, error-handling logic, audit logging), and (5) document residual risks and have them accepted by the Medizinproduktebeauftragter. Mention that this process would be documented in the risk management file and linked to the relevant DIN EN 62304 change-control record.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>What is SOUP and why does it matter for the Treuhandstelle?</span>
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <div class="acc-strategy-label">Answer strategy</div>
+                <p>Define SOUP clearly — any software component not developed in-house under a controlled process — and note that gICS and gPAS themselves are SOUP when deployed by Universitätsmedizin Frankfurt, since Greifswald developed them. Explain that DIN EN 62304 §8 requires the THS to maintain a SOUP registry documenting the version, known anomalies, and safety impact of every dependency. Practically, this means version-pinning all libraries, reviewing Greifswald release notes for each upgrade, and documenting any anomalies that could affect pseudonym integrity or consent data accuracy.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>A DIN EN 62304 audit reveals that the THS deployed a gICS update without completing a change-impact assessment. What do you do?</span>
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <div class="acc-strategy-label">Answer strategy</div>
+                <p>Demonstrate structured crisis management: immediately contain the finding by freezing further updates, then retrospectively assess whether the deployed change introduced any safety risk. If the risk is low, document the assessment and raise a CAPA to prevent recurrence. If the risk is potentially significant, escalate to the Medizinproduktebeauftragter and DSB, consider notifying the competent authority if required by MPDG, and suspend the affected service if patient safety cannot be assured. Emphasise that transparency and documentation of the corrective process matter as much as the fix itself.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>How do you balance the documentation overhead of DIN EN 62304 with the need to iterate quickly on THS software?</span>
+              <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <div class="acc-strategy-label">Answer strategy</div>
+                <p>Acknowledge the genuine tension, then show how it can be managed. DIN EN 62304 is process-agnostic: it does not mandate waterfall development. Agile sprints can satisfy the standard if each sprint produces the required artefacts (updated requirements, test evidence, change log entry) and risk impact is assessed at the sprint review stage. Practical tools include lightweight risk matrices embedded in the ticket system and templatised documentation that reduces the per-change overhead. Reference that several German university hospitals (e.g. in the MII context) have published internal frameworks for agile Class B compliance.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>How does DIN ISO 14971 benefit-risk thinking apply when a new THS feature carries a small but non-zero re-identification risk?</span>
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <div class="acc-strategy-label">Answer strategy</div>
+                <p>Explain the benefit-risk framework: a residual risk is acceptable when the clinical or societal benefit of the feature outweighs it and all reasonable controls have been applied. Concretely: enabling a new cross-institutional pseudonym bridge may carry a marginal re-identification risk, but the benefit of enabling multi-site cancer research could be substantial. The decision must be documented, controls specified (e.g. k-anonymity thresholds, audit logging, access restrictions), and accepted in writing by the responsible authorised person — not made informally by the THS team alone.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 7: Connections -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Section 7</span>
+            <h2>Connections to Ali's existing experience</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="connections-grid">
+            <div class="connection-card">
+              <span class="conn-badge">EHR rollout</span>
+              <p class="conn-text">Leading the national ePA rollout required managing software deployments across regulated healthcare environments — including coordinating with quality management teams on change-control procedures. The discipline of validating software updates before release and documenting their clinical impact maps directly onto the DIN EN 62304 change-control obligations Ali would own as THS lead.</p>
+            </div>
+            <div class="connection-card">
+              <span class="conn-badge">FHIR work</span>
+              <p class="conn-text">FHIR implementation work involves building API integrations between clinical systems — exactly the integration scenario where SOUP documentation and hazard analysis are most critical under DIN EN 62304. Ali's hands-on experience with HL7 FHIR resource design and error-handling gives a concrete basis for risk-assessing new gICS/gPAS integration endpoints.</p>
+            </div>
+            <div class="connection-card">
+              <span class="conn-badge">GDPR / DiaTwin</span>
+              <p class="conn-text">The DiaTwin project required Privacy by Design architecture and systematic risk assessment of data flows — a methodology that closely parallels the DIN ISO 14971 hazard-and-control approach applied to software safety. Ali can draw explicit parallels between GDPR Data Protection Impact Assessments and ISO 14971 risk management files, since both involve structured documentation of residual risks accepted by a responsible person.</p>
+            </div>
+            <div class="connection-card">
+              <span class="conn-badge">Pharmacy licence</span>
+              <p class="conn-text">As a licensed pharmacist under §11 BApO, Ali works within a profession where documented protocols, batch traceability, and systematic deviation reporting are non-negotiable. This regulatory mindset — meticulous documentation before action, escalation of anomalies, and formal sign-off for high-stakes decisions — is precisely the culture that DIN EN 62304 and DIN ISO 14971 require of anyone operating medical device software in a hospital.</p>
+            </div>
+            <div class="connection-card">
+              <span class="conn-badge">M.Sc. Digital Health</span>
+              <p class="conn-text">A digital health master's programme typically covers health informatics governance, software quality frameworks, and the regulatory landscape for digital health applications. Ali can reference coursework or thesis work on medical device software regulation as evidence of a structured academic grounding in the standards — complementing the practical experience from EHR and FHIR projects.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 8: Study plan -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Section 8</span>
+            <h2>3-day study plan</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="study-plan">
+            <div class="day-card">
+              <div class="day-head">
+                <span class="day-num">Day 1</span>
+                <span class="day-focus">Foundation</span>
+              </div>
+              <ul class="day-tasks">
+                <li class="day-task">
+                  <div><span class="task-time">45 min</span></div>
+                  Read the official IEC 62304 scope and lifecycle overview via the ISO preview page, then study the summary published by the DIMDI/BfArM guidance on software as a medical device.
+                  <div><a href="https://www.bfarm.de/EN/Medical-devices/Tasks/Regulatory-topics/Software-as-a-medical-device/_node.html" class="task-link" target="_blank">bfarm.de — Software as a medical device</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">40 min</span></div>
+                  Study the EU MDR Annex VIII rules for classifying software and work through the MDCG 2019-11 guidance on software qualification — the official document that defines when software is a medical device.
+                  <div><a href="https://health.ec.europa.eu/medical-devices-sector/new-regulations/guidance-mdcg-endorsed-documents-and-other-guidance_en" class="task-link" target="_blank">health.ec.europa.eu — MDCG guidance documents</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">30 min</span></div>
+                  Read the BfArM's overview of the MPDG and its obligations for institutions operating medical devices, focusing on the Medizinproduktebeauftragter role (§83 MPDG).
+                  <div><a href="https://www.bfarm.de/DE/Medizinprodukte/_node.html" class="task-link" target="_blank">bfarm.de — Medizinprodukte</a></div>
+                </li>
+              </ul>
+            </div>
+            <div class="day-card">
+              <div class="day-head">
+                <span class="day-num">Day 2</span>
+                <span class="day-focus">THS mechanics</span>
+              </div>
+              <ul class="day-tasks">
+                <li class="day-task">
+                  <div><span class="task-time">45 min</span></div>
+                  Study the Greifswald THS publication on gICS/gPAS architecture to identify SOUP components, integration points, and failure modes relevant to a DIN EN 62304 safety classification exercise.
+                  <div><a href="https://www.ths-greifswald.de/forscher/gics/" class="task-link" target="_blank">ths-greifswald.de — gICS documentation</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">40 min</span></div>
+                  Work through the IMDRF "Software as a Medical Device" framework document to understand international alignment between FDA, EU, and national regulators on software risk classification.
+                  <div><a href="https://www.imdrf.org/documents/software-medical-device-samd-key-definitions" class="task-link" target="_blank">imdrf.org — SaMD key definitions</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">35 min</span></div>
+                  Draft a simplified hazard table for gPAS with five failure modes, their estimated severity and probability, and one risk control per hazard — practice the DIN ISO 14971 format.
+                  <div><a href="https://www.iso.org/standard/72704.html" class="task-link" target="_blank">iso.org — ISO 14971:2019 overview</a></div>
+                </li>
+              </ul>
+            </div>
+            <div class="day-card">
+              <div class="day-head">
+                <span class="day-num">Day 3</span>
+                <span class="day-focus">Interview simulation</span>
+              </div>
+              <ul class="day-tasks">
+                <li class="day-task">
+                  <div><span class="task-time">35 min</span></div>
+                  Practise all six interview questions from Section 6 aloud. For each answer, reference at least one specific standard clause (e.g. "DIN EN 62304 §8 on SOUP" or "DIN ISO 14971 §7 on risk control").
+                  <div><a href="https://www.bfarm.de/EN/Medical-devices/Tasks/Regulatory-topics/Software-as-a-medical-device/_node.html" class="task-link" target="_blank">bfarm.de — reference while practising</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">40 min</span></div>
+                  Write a one-page safety-class justification memo for gICS, arguing for Class B: describe the hazard scenario (consent data error → wrong study enrolment), estimate severity, and list the three controls that keep it at Class B rather than C.
+                  <div><a href="https://health.ec.europa.eu/medical-devices-sector/new-regulations/guidance-mdcg-endorsed-documents-and-other-guidance_en" class="task-link" target="_blank">health.ec.europa.eu — MDCG guidance for reference</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">25 min</span></div>
+                  Read the MII position paper on data quality and software governance to understand how the MII community applies quality standards to THS and DIZ software in practice.
+                  <div><a href="https://www.medizininformatik-initiative.de/de/aktuelles/publikationen" class="task-link" target="_blank">medizininformatik-initiative.de — publications</a></div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab-en -->
+
+    <!-- ═══════════════ DEUTSCH TAB ═══════════════ -->
+    <div class="tab-content" id="tab-de">
+
+      <!-- Abschnitt 1: Was ist das -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Abschnitt 1</span>
+            <h2>Was ist das</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <p><abbr title="DIN EN 62304: Medizingeräte-Software — Prozesse im Software-Lebenszyklus">DIN EN 62304</abbr> ist die europäische und deutsche Fassung des internationalen Standards IEC 62304, der festlegt, wie Software, die in einem Medizinprodukt verwendet wird oder selbst ein Medizinprodukt darstellt, entwickelt und gepflegt werden muss. Er definiert einen Lebenszyklusrahmen mit den Phasen Planung, Anforderungsanalyse, Architektur, Implementierung, Integration, Test und Wartung. Software wird einer von drei Sicherheitsklassen (A, B oder C) zugeordnet — je nachdem, welche Schäden durch einen Softwareausfall eintreten können: Klasse A trägt das geringste Risiko (kein Schaden für Patienten möglich), Klasse C das höchste (Tod oder schwere Verletzung möglich). Die Klasse bestimmt, wie umfangreich Dokumentation, Tests und Änderungsmanagement sein müssen.</p>
+
+          <p><abbr title="DIN ISO 14971: Anwendung des Risikomanagements auf Medizinprodukte">DIN ISO 14971</abbr> ist der komplementäre Standard für das Risikomanagement. Er gilt nicht nur für Software, sondern für Medizinprodukte aller Art. Der Standard schreibt einen dokumentierten Risikomanagementprozess vor, der vom ersten Konzept bis zur Marktüberwachung nach Inbetriebnahme reicht: Gefährdungen identifizieren, Eintrittswahrscheinlichkeit und Schwere des Schadens abschätzen, Risiken bewerten, Maßnahmen ergreifen und deren Wirksamkeit nachweisen. Verbleibende Risiken sind dem klinischen Nutzen des Produkts gegenüberzustellen.</p>
+
+          <p>Beide Standards zusammen definieren den Qualitäts- und Sicherheitsrahmen für Softwaresysteme, die klinische Daten verarbeiten und damit potenziell die Patientenversorgung beeinflussen. Für die <abbr title="Treuhandstelle">THS</abbr> ist das direkt relevant: Wenn <abbr title="generic Informed Consent Service">gICS</abbr>-Einwilligungsdaten verloren gehen oder <abbr title="generic Pseudonym Administration Service">gPAS</abbr>-Pseudonyme falsch zugeordnet werden, könnten Patienten fälschlicherweise in Studien auf- oder ausgenommen werden — ein Sachverhalt, den Aufsichtsbehörden als Patientensicherheitsereignis einstufen können.</p>
+
+          <p>In Deutschland werden diese Standards über das <abbr title="Medizinprodukterecht-Durchführungsgesetz">MPDG</abbr> verbindlich, das die EU-Medizinprodukteverordnung (<abbr title="Medical Device Regulation">MDR</abbr> 2017/745) auf nationaler Ebene umsetzt. Die MDR hat den Begriff des Medizinprodukts ausgeweitet und schließt nun ausdrücklich Software ein, die für einen medizinischen Zweck eingesetzt wird — eine Kategorie, der THS-Plattformen je nach Integrationstiefe in klinische Entscheidungsprozesse zugeordnet werden können.</p>
+        </div>
+      </div>
+
+      <!-- Abschnitt 2: Relevanz -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Abschnitt 2</span>
+            <h2>Relevanz für diese Stelle</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <p>Die Treuhandstelle der Universitätsmedizin Frankfurt betreibt mit gICS und gPAS Software, die an der Schnittstelle von Patientendaten und klinischer Forschung steht. Unabhängig davon, ob diese Systeme formal als Medizinprodukt nach MDR eingestuft werden, erwarten das Qualitätsmanagement und die Rechtsabteilung des Klinikums eine gleichwertige Sorgfalt. Als Leitung muss Ali die Anforderungen beider Normen in konkretes Handeln übersetzen.</p>
+          <ul class="why-list">
+            <li><strong>Lebenszyklusdokumentation</strong> für gICS und gPAS pflegen: Anforderungsspezifikationen, Architekturpläne, Testprotokolle und Änderungsnachweise.</li>
+            <li>Die korrekte <strong>Sicherheitsklasse</strong> für jede THS-Softwarekomponente bestimmen und gegenüber Auditoren oder dem Medizinproduktebeauftragten des Klinikums begründen.</li>
+            <li>Einen <strong>Risikomanagementprozess</strong> (ISO 14971) für jeden neuen THS-Dienst und jede wesentliche Softwareaktualisierung durchführen: Gefährdungsanalyse, Risikoabschätzung, Maßnahmenvalidierung.</li>
+            <li>Sicherstellen, dass Softwareänderungen ein <strong>Änderungsmanagementverfahren</strong> durchlaufen, das Anforderungen und Tests nachvollziehbar verknüpft — eine direkte Anforderung der DIN EN 62304 für Klasse-B/C-Systeme.</li>
+            <li>Mit <abbr title="Datenintegrationszentrum">DIZ</abbr> und IT-Abteilung dafür sorgen, dass Integrationsschnittstellen (HL7-FHIR-Endpunkte, API-Gateways) denselben Qualitätsrahmen abdecken.</li>
+            <li>Den <abbr title="Datenschutzbeauftragter">DSB</abbr> und die Klinikleitung informieren, wenn eine Risikobeurteilung ein verbleibendes Risiko ergibt, das eine Freigabe durch Führungskräfte erfordert.</li>
+          </ul>
+          <p class="closing">Im Interview wird voraussichtlich gefragt werden, wie Ali die Sicherheitsklassifizierung von gICS vornehmen oder eine Risikobeurteilung für eine neue Anbindung an ein klinisches Studienmanagementsystem strukturieren würde.</p>
+        </div>
+      </div>
+
+      <!-- Abschnitt 3: Lernleiter -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Abschnitt 3</span>
+            <h2>Lernleiter</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="ladder">
+            <div class="ladder-level l1">
+              <div class="level-head">
+                <span class="level-pill">Stufe 1</span>
+                <span class="level-title">Grundlegendes Verständnis — Begriffe definieren können</span>
+              </div>
+              <div class="level-bullets">
+                <ul>
+                  <li>Wissen, dass DIN EN 62304 den Software-Lebenszyklus für Medizingeräte-Software regelt und DIN ISO 14971 das Risikomanagement für Medizinprodukte.</li>
+                  <li>Die drei Sicherheitsklassen (A, B, C) und ihre praktische Bedeutung kennen.</li>
+                  <li>Verstehen, dass MDR 2017/745 und MPDG die gesetzlichen Instrumente sind, die diese Normen in der EU bzw. Deutschland verbindlich machen.</li>
+                  <li>Den Begriff SOUP (Software of Unknown Provenance) definieren können.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="ladder-level l2">
+              <div class="level-head">
+                <span class="level-pill">Stufe 2</span>
+                <span class="level-title">Anwendungswissen — Funktionsweise beschreiben</span>
+              </div>
+              <div class="level-bullets">
+                <ul>
+                  <li>Die acht Lebenszyklusphasen der DIN EN 62304 und die jeweils erforderlichen Dokumentationsartefakte beschreiben.</li>
+                  <li>Den DIN ISO 14971-Prozess erklären: Gefährdungsidentifikation → Risikoabschätzung → Risikobewertung → Risikominderung → Restrisikobewertung.</li>
+                  <li>Darlegen, wie die Sicherheitsklasse die Mindestanforderungen an Testabdeckung und Änderungsmanagement bestimmt.</li>
+                  <li>Den Inhalt einer Risikomanagementakte beschreiben und benennen, wer im Krankenhausumfeld dafür verantwortlich ist.</li>
+                  <li>Erklären, warum gICS und gPAS beim Einsatz durch Universitätsmedizin Frankfurt selbst als SOUP nach DIN EN 62304 §8 zu behandeln sind.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="ladder-level l3">
+              <div class="level-head">
+                <span class="level-pill">Stufe 3</span>
+                <span class="level-title">Angewandtes Verständnis — Bezug zu konkreten Aufgaben</span>
+              </div>
+              <div class="level-bullets">
+                <ul>
+                  <li>gICS und gPAS der richtigen Sicherheitsklasse zuordnen und die Entscheidung mit konkreten Schadensszenarien begründen (z.B. Einwilligungsdatenverlust → falsche Studienaufnahme).</li>
+                  <li>Eine Gefährdungsanalyse für eine neue gPAS-Integration entwerfen, inklusive Fehlerszenarien, Schweregradbewertung und Maßnahmenvorschlägen.</li>
+                  <li>Das Änderungsmanagementverfahren beschreiben, das das THS-Team bei einem gICS-Major-Update durchlaufen müsste.</li>
+                  <li>Erklären, wie SOUP-Management im THS-Kontext praktisch umgesetzt wird (Versions-Pinning, Auswertung der Greifswalder Release-Notes, Dokumentation bekannter Anomalien).</li>
+                  <li>Die ISO-14971-Risikomatrix auf den THS-Dienstekatalog anwenden, um Dienste mit dem höchsten Restrisiko zu identifizieren.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="ladder-level l4">
+              <div class="level-head">
+                <span class="level-pill">Stufe 4</span>
+                <span class="level-title">Interviewreif — anspruchsvolle Fragen souverän beantworten</span>
+              </div>
+              <div class="level-bullets">
+                <ul>
+                  <li>Argumentieren, ob gICS/gPAS unter MDR Anhang VIII als Medizinprodukt einzustufen sind — inklusive der Diskussion um den "bestimmungsgemäßen Gebrauch" und den Einfluss des Integrationskontexts auf klinische Entscheidungen.</li>
+                  <li>Einen CAPA-Plan für den Fall entwickeln, dass ein Audit nachträglich fehlende Klasse-B-Dokumentation für eine bereits produktiv gesetzte gICS-Version aufdeckt.</li>
+                  <li>Die Spannung zwischen agiler Entwicklung und den Dokumentationspflichten der DIN EN 62304 diskutieren und Lösungsansätze aus dem MII-Umfeld benennen.</li>
+                  <li>Erläutern, wie die THS-Risikomanagementakte in das übergeordnete ISO-9001-Qualitätsmanagementsystem des Klinikums eingebettet wird.</li>
+                  <li>Beschreiben, wie fachliche DIN-EN-62304-Kompetenz in einem kleinen THS-Team ohne dedizierte Regulatory-Affairs-Stelle aufgebaut werden kann.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Abschnitt 4: Unverzichtbares Wissen -->
+      <div class="must-know section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Abschnitt 4</span>
+            <h2>Unverzichtbares Wissen</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="must-know-items">
+            <div class="must-know-item"><span class="flag">⚑</span><span>DIN EN 62304 kennt <strong>drei Sicherheitsklassen</strong>: Klasse A (kein Patientenschaden möglich), Klasse B (nicht schwerwiegender Schaden möglich), Klasse C (Tod oder schwerwiegender Schaden möglich). gICS und gPAS werden in der Praxis meist als <strong>Klasse B</strong> eingestuft, weil ein Fehler in der Einwilligungsdokumentation indirekt zu Schäden durch falsche Studienaufnahmen führen kann.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span><strong>SOUP</strong> (Software of Unknown Provenance) bezeichnet jede fertige Softwarekomponente — auch Open-Source-Bibliotheken —, die in ein Medizingeräte-Softwaresystem integriert wird. DIN EN 62304 §8 schreibt vor, jede SOUP-Komponente zu inventarisieren, bekannte Anomalien zu dokumentieren und ihren Einfluss auf die Patientensicherheit zu bewerten. Die Greifswalder THS-Werkzeuge sind für die Universitätsmedizin Frankfurt selbst SOUP.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>DIN ISO 14971 verlangt, dass das <strong>Restrisiko</strong> — das Risiko nach Anwendung aller Maßnahmen — schriftlich von einer verantwortlichen Person akzeptiert wird. Im Klinikum ist das typischerweise der Medizinproduktebeauftragte oder eine ärztliche Leitung, nicht die Leitung der Treuhandstelle allein. Wer unterschreibt, ist eine Frage der rechtlichen Verantwortung.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Die <strong>EU-MDR 2017/745</strong>, umgesetzt im MPDG, hat den Medizinproduktebegriff auf Software ausgeweitet, die für einen medizinischen Zweck eingesetzt wird. Software, die lediglich Daten speichert oder überträgt, ohne klinische Entscheidungen zu beeinflussen, fällt möglicherweise nicht darunter — die Klassifizierungsentscheidung muss jedoch dokumentiert und nachvollziehbar begründet werden.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>DIN EN 62304 erfordert einen <strong>Software-Entwicklungsplan</strong>, der das gewählte Lebenszyklusmodell, die verwendeten Werkzeuge und die angewandten Normen dokumentiert. Ohne diesen Plan kann die Organisation gegenüber Auditoren keine Normkonformität nachweisen.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Sowohl DIN EN 62304 als auch DIN ISO 14971 verlangen ein formales <strong>Problem- und Änderungsmanagement</strong>. Jede Fehlerbehebung oder Funktionserweiterung an gICS/gPAS muss vor dem Rollout auf ihren Einfluss auf Sicherheitsklasse und Risikomanagementakte bewertet werden. Ad-hoc-Updates ohne Folgenabschätzung sind ein Compliance-Verstoß.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>DIN ISO 14971 verwendet das <strong>Nutzen-Risiko-Prinzip</strong>: Ein verbleibendes Risiko ist akzeptabel, wenn der klinische oder gesellschaftliche Nutzen des Produkts es überwiegt und alle vertretbaren Maßnahmen ergriffen wurden. Im THS-Kontext bedeutet das: Ein geringes Re-Identifikationsrisiko kann durch den Forschungsnutzen gerechtfertigt sein — sofern die Entscheidung dokumentiert und von der zuständigen Stelle freigegeben wurde.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Ein <strong>Medizinproduktebeauftragter</strong> (§83 MPDG) muss von jeder Institution benannt werden, die ein Medizinprodukt in Betrieb nimmt oder betreibt. Diese Person trägt die rechtliche Verantwortung für die MDR/MPDG-Konformität. Die THS-Leitung muss wissen, wer diese Rolle innehat, und ihr bei Softwarerisiken Bericht erstatten sowie auf Anfrage Dokumentation bereitstellen.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Abschnitt 5: Glossar -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Abschnitt 5</span>
+            <h2>Glossar</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <table class="glossary-table">
+            <thead>
+              <tr><th>Begriff</th><th>Erklärung in einfacher Sprache</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="term-cell">DIN EN 62304</td><td>Deutsche/europäische Norm für Software-Lebenszyklen in Medizinprodukten. Legt fest, welche Dokumentations-, Test- und Prozessanforderungen in jeder Entwicklungs- und Wartungsphase gelten.</td></tr>
+              <tr><td class="term-cell">DIN ISO 14971</td><td>Deutsche/internationale Norm für das Risikomanagement von Medizinprodukten. Verlangt systematische Gefährdungsidentifikation, Risikoabschätzung und dokumentierte Schutzmaßnahmen.</td></tr>
+              <tr><td class="term-cell">Sicherheitsklasse A/B/C</td><td>Die drei Stufen der DIN EN 62304. Klasse A: kein Patientenschaden bei Ausfall möglich. Klasse B: nicht schwerwiegender Schaden möglich. Klasse C: Tod oder schwerwiegender Schaden möglich. Höhere Klasse bedeutet strengere Prozessanforderungen.</td></tr>
+              <tr><td class="term-cell">SOUP</td><td>Software of Unknown Provenance — fertige Softwarekomponente (Open Source oder Drittanbieter), die in ein Medizingeräte-Softwaresystem integriert wird. Muss nach DIN EN 62304 §8 inventarisiert und risikobwertet werden.</td></tr>
+              <tr><td class="term-cell">MDR 2017/745</td><td>EU-Medizinprodukteverordnung — das EU-weite Recht für Medizinprodukte einschließlich Software. In Deutschland durch das MPDG umgesetzt.</td></tr>
+              <tr><td class="term-cell">MPDG</td><td>Medizinprodukterecht-Durchführungsgesetz — das deutsche Gesetz, das die MDR auf nationaler Ebene umsetzt und Verantwortlichkeiten (u.a. Medizinproduktebeauftragter) regelt.</td></tr>
+              <tr><td class="term-cell">Gefährdung (Hazard)</td><td>Potenzielle Schadensquelle im Sinne von DIN ISO 14971 — z.B. ein Pseudonym-Duplikat in gPAS, das zur Zusammenführung von Patientendaten zweier Personen führt.</td></tr>
+              <tr><td class="term-cell">Restrisiko</td><td>Das nach allen Schutzmaßnahmen verbleibende Risiko. DIN ISO 14971 schreibt vor, dass es schriftlich von einer verantwortlichen Person akzeptiert werden muss.</td></tr>
+              <tr><td class="term-cell">Risikomanagementakte</td><td>Die vollständige Dokumentensammlung des DIN-ISO-14971-Prozesses für ein bestimmtes Produkt: Gefährdungsregister, Risikobewertungen, Maßnahmennachweise und Restrisiko-Akzeptanzerklärungen.</td></tr>
+              <tr><td class="term-cell">CAPA</td><td>Corrective and Preventive Action (Korrektur- und Vorbeugemaßnahme) — formales Qualitätsmanagementverfahren zur Behebung eines Compliance-Verstoßes, Ursachenanalyse und Rückfallvermeidung.</td></tr>
+              <tr><td class="term-cell">Medizinprodukte­beauftragter</td><td>Gesetzlich benannte Person nach §83 MPDG, die für die Einhaltung der MDR/MPDG-Anforderungen aller im Haus betriebenen Medizinprodukte — einschließlich Software — verantwortlich ist.</td></tr>
+              <tr><td class="term-cell">Bestimmungs­gemäßer Gebrauch</td><td>Der spezifische medizinische Verwendungszweck, für den eine Software konzipiert und eingesetzt wird — entscheidendes Kriterium dafür, ob ein Softwareprodukt als Medizinprodukt nach MDR gilt.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Abschnitt 6: Interviewfragen -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Abschnitt 6</span>
+            <h2>Mögliche Interviewfragen</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="accordion">
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>Sind gICS und gPAS Medizinprodukte nach EU-MDR? Wie würden Sie das entscheiden?</span>
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <div class="acc-strategy-label">Antwortstrategie</div>
+                <p>Die Frage als Klassifizierungsentscheidung rahmen, nicht als Ja/Nein-Antwort. Erklären, dass der "bestimmungsgemäße Gebrauch" das entscheidende MDR-Kriterium ist: Wenn gICS ausschließlich als Datenverwaltungswerkzeug ohne direkten Einfluss auf klinische Entscheidungen eingesetzt wird, liegt es möglicherweise unterhalb der Medizinprodukte-Schwelle. Sobald der Einwilligungsstatus jedoch die Aufnahme eines Patienten in eine Behandlungsstudie steuert, wird das Argument für eine Medizinprodukte-Klassifizierung stärker. In der Praxis behandeln viele deutsche Universitätskliniken ihre THS-Software vorsorglich als Klasse B nach DIN EN 62304, unabhängig von der formalen MDR-Einstufung, um Audit-Risiken zu vermeiden.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>Beschreiben Sie, wie Sie eine Risikobeurteilung für eine neue gPAS-Integration mit unserem klinischen Studienmanagementsystem durchführen würden.</span>
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <div class="acc-strategy-label">Antwortstrategie</div>
+                <p>Die Antwort an den Schritten der DIN ISO 14971 ausrichten: (1) Integrationsumfang und bestimmungsgemäßen Gebrauch definieren, (2) Gefährdungen identifizieren (Pseudonym-Duplikate, Datenverlust bei der Übertragung, Authentifizierungsfehler am API), (3) Eintrittswahrscheinlichkeit und Schwere abschätzen, (4) Maßnahmen anwenden (Validierungstests, Fehlerbehandlungslogik, Audit-Logging), (5) Restrisiken dokumentieren und vom Medizinproduktebeauftragten freigeben lassen. Hervorheben, dass der gesamte Prozess in der Risikomanagementakte festgehalten und mit dem entsprechenden DIN-EN-62304-Änderungsnachweis verknüpft wird.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>Was ist SOUP und warum ist das für die Treuhandstelle relevant?</span>
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <div class="acc-strategy-label">Antwortstrategie</div>
+                <p>SOUP klar definieren — jede fertige Softwarekomponente, die nicht intern unter einem kontrollierten Prozess entwickelt wurde — und darauf hinweisen, dass gICS und gPAS für die Universitätsmedizin Frankfurt selbst SOUP sind, da sie in Greifswald entwickelt wurden. DIN EN 62304 §8 verlangt, ein SOUP-Register zu führen, das Version, bekannte Anomalien und Sicherheitseinfluss jeder Komponente dokumentiert. Praktisch bedeutet das: alle Bibliotheken versionspinnen, Greifswalder Release-Notes bei jedem Update auswerten und Anomalien dokumentieren, die die Pseudonymsicherheit oder Einwilligungsdatenintegrität beeinflussen könnten.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>Ein DIN-EN-62304-Audit stellt fest, dass die THS ein gICS-Update ohne abgeschlossene Änderungsfolgenabschätzung eingespielt hat. Was tun Sie?</span>
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <div class="acc-strategy-label">Antwortstrategie</div>
+                <p>Strukturiertes Krisenmanagement demonstrieren: sofort weitere Updates einfrieren, dann die eingespielten Änderungen retrospektiv auf Sicherheitsrisiken prüfen. Bei geringem Risiko den Befund dokumentieren und eine CAPA einleiten, um Wiederholungen zu verhindern. Bei potenziell bedeutsamem Risiko sofort an Medizinproduktebeauftragten und DSB eskalieren, bei konkretem Patientensicherheitsrisiko den betroffenen Dienst aussetzen und ggf. die zuständige Behörde nach MPDG informieren. Betonen, dass die transparente Dokumentation des Korrekturprozesses genauso wichtig ist wie die technische Behebung.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>Wie balancieren Sie den Dokumentationsaufwand der DIN EN 62304 mit dem Bedarf, THS-Software schnell weiterzuentwickeln?</span>
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <div class="acc-strategy-label">Antwortstrategie</div>
+                <p>Die echte Spannung anerkennen, dann zeigen, wie sie beherrschbar ist. DIN EN 62304 ist prozessagnostisch: Sie schreibt kein Wasserfallmodell vor. Agile Sprints können die Norm erfüllen, wenn jeder Sprint die erforderlichen Artefakte liefert (aktualisierte Anforderungen, Testnachweise, Änderungsprotokoll) und der Einfluss auf das Risiko beim Sprint-Review bewertet wird. Praktische Hebel: schlanke Risikomatrizen im Ticketsystem und vorstrukturierte Dokumentvorlagen, die den Aufwand pro Änderung reduzieren. Referenz auf MII-Erfahrungswerte anderer Universitätskliniken, die agile Klasse-B-Compliance-Frameworks etabliert haben.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>Wie wenden Sie das Nutzen-Risiko-Prinzip der DIN ISO 14971 an, wenn eine neue THS-Funktion ein geringes, aber nicht null Re-Identifikationsrisiko trägt?</span>
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <div class="acc-strategy-label">Antwortstrategie</div>
+                <p>Den Nutzen-Risiko-Rahmen erläutern: Ein verbleibendes Risiko ist akzeptabel, wenn der klinische oder gesellschaftliche Nutzen es überwiegt und alle vertretbaren Maßnahmen ergriffen wurden. Konkret: Eine neue standortübergreifende Pseudonymbrücke trägt ein marginales Re-Identifikationsrisiko, ermöglicht aber bedeutsame multizentrisches Krebsregisterforschung. Die Entscheidung muss dokumentiert, Maßnahmen festgelegt (k-Anonymisierungsschwellen, Audit-Logging, Zugangsbeschränkungen) und von der verantwortlichen autorisierten Stelle — nicht informell durch das THS-Team allein — schriftlich freigegeben werden.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Abschnitt 7: Verbindungen zur bisherigen Erfahrung -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Abschnitt 7</span>
+            <h2>Verbindungen zu Ihrer bisherigen Erfahrung</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="connections-grid">
+            <div class="connection-card">
+              <span class="conn-badge">Nationale EHR-Einführung</span>
+              <p class="conn-text">Die bundesweite ePA-Einführung erforderte die Steuerung von Software-Deployments in regulierten Gesundheitsumgebungen — einschließlich der Abstimmung mit Qualitätsmanagementteams über Änderungsmanagementverfahren. Die Disziplin, Updates vor dem Rollout zu validieren und ihre klinische Auswirkung zu dokumentieren, deckt sich direkt mit den DIN-EN-62304-Änderungsmanagementpflichten, die Ali als THS-Leitung übernehmen würde.</p>
+            </div>
+            <div class="connection-card">
+              <span class="conn-badge">FHIR-Implementierung</span>
+              <p class="conn-text">FHIR-Implementierungsarbeit umfasst den Aufbau von API-Integrationen zwischen klinischen Systemen — genau das Integrationsszenario, in dem SOUP-Dokumentation und Gefährdungsanalyse nach DIN EN 62304 am kritischsten sind. Alis praktische Erfahrung mit HL7-FHIR-Ressourcendesign und Fehlerbehandlung schafft eine solide Grundlage für die Risikobeurteilung neuer gICS/gPAS-Integrationsendpunkte.</p>
+            </div>
+            <div class="connection-card">
+              <span class="conn-badge">DSGVO / DiaTwin</span>
+              <p class="conn-text">Das DiaTwin-Projekt erforderte Privacy-by-Design-Architektur und systematische Risikobeurteilung von Datenflüssen — eine Methodik, die dem DIN-ISO-14971-Ansatz aus Gefährdungsidentifikation und Maßnahmenkontrolle sehr ähnelt. Ali kann explizite Parallelen zwischen Datenschutz-Folgenabschätzungen nach DSGVO und ISO-14971-Risikomanagementakten ziehen, da beide die strukturierte Dokumentation akzeptierter Restrisiken durch eine verantwortliche Person verlangen.</p>
+            </div>
+            <div class="connection-card">
+              <span class="conn-badge">Approbation (§11 BApO)</span>
+              <p class="conn-text">Als approbierter Apotheker ist Ali es gewohnt, in einem Umfeld zu arbeiten, in dem dokumentierte Protokolle, Chargennachverfolgung und formale Abweichungsmeldung selbstverständlich sind. Diese Haltung — erst dokumentieren, dann handeln, Auffälligkeiten sofort melden und formal eskalieren — entspricht exakt der Compliance-Kultur, die DIN EN 62304 und DIN ISO 14971 von jedem fordern, der Medizingeräte-Software in einem Krankenhaus betreibt.</p>
+            </div>
+            <div class="connection-card">
+              <span class="conn-badge">M.Sc. Digital Health</span>
+              <p class="conn-text">Ein Masterstudiengang in Digital Health deckt typischerweise Gesundheitsinformatik-Governance, Software-Qualitätsrahmen und den regulatorischen Kontext digitaler Gesundheitsanwendungen ab. Ali kann Lehrveranstaltungen oder Abschlussarbeiten zur Regulierung von Medizingeräte-Software als Beleg für eine wissenschaftlich fundierte Auseinandersetzung mit den Normen anführen — ergänzend zur praktischen Erfahrung aus EHR- und FHIR-Projekten.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Abschnitt 8: 3-Tage-Lernplan -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Abschnitt 8</span>
+            <h2>3-Tage-Lernplan</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="study-plan">
+            <div class="day-card">
+              <div class="day-head">
+                <span class="day-num">Tag 1</span>
+                <span class="day-focus">Grundlagen</span>
+              </div>
+              <ul class="day-tasks">
+                <li class="day-task">
+                  <div><span class="task-time">45 Min.</span></div>
+                  Den BfArM-Leitfaden zu Software als Medizinprodukt lesen und verstehen, welche Kriterien über die Klassifizierung als Medizinprodukt entscheiden.
+                  <div><a href="https://www.bfarm.de/DE/Medizinprodukte/Aufgaben/Regulatorische-Themen/Software-als-Medizinprodukt/_node.html" class="task-link" target="_blank">bfarm.de — Software als Medizinprodukt</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">40 Min.</span></div>
+                  Das MDCG-2019-11-Leitliniendokument zur Qualifizierung und Klassifizierung von Software unter der MDR studieren — das offizielle Dokument, das festlegt, wann Software ein Medizinprodukt ist.
+                  <div><a href="https://health.ec.europa.eu/medical-devices-sector/new-regulations/guidance-mdcg-endorsed-documents-and-other-guidance_en" class="task-link" target="_blank">health.ec.europa.eu — MDCG-Leitliniendokumente</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">30 Min.</span></div>
+                  Die BfArM-Übersicht zum MPDG und den Pflichten für Betreiber von Medizinprodukten lesen, mit Fokus auf die Rolle des Medizinproduktebeauftragten (§83 MPDG).
+                  <div><a href="https://www.bfarm.de/DE/Medizinprodukte/_node.html" class="task-link" target="_blank">bfarm.de — Medizinprodukte</a></div>
+                </li>
+              </ul>
+            </div>
+            <div class="day-card">
+              <div class="day-head">
+                <span class="day-num">Tag 2</span>
+                <span class="day-focus">THS-Mechanik</span>
+              </div>
+              <ul class="day-tasks">
+                <li class="day-task">
+                  <div><span class="task-time">45 Min.</span></div>
+                  Die Greifswalder THS-Publikation zu gICS/gPAS-Architektur studieren, um SOUP-Komponenten, Integrationspunkte und Fehlerszenarien für eine Sicherheitsklassifizierungsübung nach DIN EN 62304 zu identifizieren.
+                  <div><a href="https://www.ths-greifswald.de/forscher/gics/" class="task-link" target="_blank">ths-greifswald.de — gICS-Dokumentation</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">40 Min.</span></div>
+                  Das IMDRF-SaMD-Rahmendokument studieren, um die internationale Harmonisierung zwischen FDA, EU und nationalen Regulatoren bei der Softwareklassifizierung zu verstehen.
+                  <div><a href="https://www.imdrf.org/documents/software-medical-device-samd-key-definitions" class="task-link" target="_blank">imdrf.org — SaMD-Schlüsseldefinitionen</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">35 Min.</span></div>
+                  Eine vereinfachte Gefährdungstabelle für gPAS mit fünf Fehlerszenarien, je einer Schwere- und Wahrscheinlichkeitsbewertung sowie je einer Schutzmaßnahme entwerfen — Übung im DIN-ISO-14971-Format.
+                  <div><a href="https://www.iso.org/standard/72704.html" class="task-link" target="_blank">iso.org — ISO 14971:2019 Übersicht</a></div>
+                </li>
+              </ul>
+            </div>
+            <div class="day-card">
+              <div class="day-head">
+                <span class="day-num">Tag 3</span>
+                <span class="day-focus">Interviewsimulation</span>
+              </div>
+              <ul class="day-tasks">
+                <li class="day-task">
+                  <div><span class="task-time">35 Min.</span></div>
+                  Alle sechs Interviewfragen aus Abschnitt 6 laut üben. Jede Antwort soll mindestens eine konkrete Normstelle benennen (z.B. „DIN EN 62304 §8 zu SOUP" oder „DIN ISO 14971 §7 zu Risikominderungsmaßnahmen").
+                  <div><a href="https://www.bfarm.de/DE/Medizinprodukte/Aufgaben/Regulatorische-Themen/Software-als-Medizinprodukt/_node.html" class="task-link" target="_blank">bfarm.de — Referenz beim Üben</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">40 Min.</span></div>
+                  Ein einseitiges Sicherheitsklassen-Begründungsmemoraudum für gICS verfassen (Klasse B): Schadensszenario beschreiben, Schwere einschätzen und drei Maßnahmen benennen, die Klasse B statt C rechtfertigen.
+                  <div><a href="https://health.ec.europa.eu/medical-devices-sector/new-regulations/guidance-mdcg-endorsed-documents-and-other-guidance_en" class="task-link" target="_blank">health.ec.europa.eu — MDCG-Leitlinien als Referenz</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">25 Min.</span></div>
+                  Das MII-Positionspapier zu Datenqualität und Software-Governance lesen, um zu verstehen, wie die MII-Community Qualitätsnormen auf THS- und DIZ-Software anwendet.
+                  <div><a href="https://www.medizininformatik-initiative.de/de/aktuelles/publikationen" class="task-link" target="_blank">medizininformatik-initiative.de — Publikationen</a></div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab-de -->
+
+  </div><!-- /.body -->
+</main>
+
+<script>
+function switchTab(lang, btn) {
+  document.querySelectorAll('.tab-content').forEach(function(tc) {
+    tc.classList.remove('active');
+  });
+  document.querySelectorAll('.tab-btn').forEach(function(tb) {
+    tb.classList.remove('active');
+  });
+  var target = document.getElementById('tab-' + lang);
+  if (target) target.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (target) {
+    target.querySelectorAll('.acc-trigger.open').forEach(function(t) {
+      t.classList.remove('open');
+    });
+    target.querySelectorAll('.acc-body.open').forEach(function(b) {
+      b.classList.remove('open');
+    });
+  }
+}
+
+function toggleSection(trigger) {
+  var body = trigger.nextElementSibling;
+  if (!body) return;
+  var isOpen = trigger.classList.contains('open');
+  if (isOpen) {
+    trigger.classList.remove('open');
+    body.classList.add('hidden');
+  } else {
+    trigger.classList.add('open');
+    body.classList.remove('hidden');
+  }
+}
+
+function toggleAcc(trigger) {
+  var body = trigger.nextElementSibling;
+  if (!body) return;
+  var tab = trigger.closest('.tab-content');
+  if (!tab) return;
+  var isOpen = trigger.classList.contains('open');
+  tab.querySelectorAll('.acc-trigger.open').forEach(function(t) {
+    t.classList.remove('open');
+  });
+  tab.querySelectorAll('.acc-body.open').forEach(function(b) {
+    b.classList.remove('open');
+  });
+  if (!isOpen) {
+    trigger.classList.add('open');
+    body.classList.add('open');
+  }
+}
+</script>
+
+</body>
+</html>

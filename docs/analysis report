@@ -1,113 +1,60 @@
+LMS Platform — Project Summary
+What it is
+A static, bundler-free SPA hosted on GitHub Pages. No server, no build step. Pure ES modules loaded directly in the browser. Firebase (Auth + Firestore) provides the only backend. All lesson content lives in standalone HTML files that work without the shell.
 
-LMS Platform — Audit Report (Chats 1–17)
+File structure
+docs/
+├── index.html                  ← SPA shell (fields landing + module/lesson UI)
+└── lms/
+    ├── core/
+    │   ├── app.js              ← Main controller: state, routing, rendering, sync
+    │   ├── registry.js         ← Single source of truth: modules, fields, config
+    │   ├── auth.js             ← Firebase Auth wrapper (Google + email)
+    │   ├── db.js               ← Firestore: profiles, progress, access, userIndex
+    │   ├── access.js           ← Module visibility logic per user/platform mode
+    │   ├── admin.js            ← Admin panel controller (standalone, never in app.js)
+    │   ├── i18n.js             ← t(), loadLanguage(), applyTranslations()
+    │   ├── firebase-config.js  ← Firebase project credentials
+    │   └── styles.css          ← All shell styles
+    ├── admin/
+    │   └── index.html          ← Admin panel page (separate, requires admin role)
+    ├── i18n/
+    │   └── ar.js               ← Arabic translation overrides
+    └── modules/{id}/lessons/   ← Standalone lesson HTML files (no shell dependency)
 
-1. Cross-File Wiring — DOM IDs
-app.js → index.html
-Every getElementById call in app.js has a matching element in index.html:
-ID in app.jsIn index.html?module-nav, lesson-nav, progress-bars, welcome-panel, welcome-heading, welcome-body, brand-subtitle, lesson-frame, reset-progress, fields-landing, fields-grid, app-shell, btn-back-fields✅ All presentauth-signed-out, auth-signed-in, auth-avatar, auth-display-name, auth-tier-badge, auth-error✅ All presentbtn-google-signin, btn-email-signin, btn-email-signup, btn-signout, auth-email, auth-password✅ All presentbtn-admin-panel✅ Present — inside #auth-signed-in as an <a> tag with hidden attribute
-No broken DOM references between app.js and index.html.
-admin.js → lms/admin/index.html
-admin.js references user-rows, search, status, access-mode-banner, plus dynamic IDs role-${uid} and toggles-${uid}. These are all generated or referenced correctly within admin.js itself.
-⚠️ lms/admin/index.html was not uploaded. Based on the spec's HTML block (which matches what admin.js reads), all four static IDs must be present. Cannot verify the actual file. Flag for manual check.
+Current features (all implemented)
+Phase 0 — Fields hierarchy
 
-2. Import/Export Wiring
-app.js imports
-ImportFromExported?LMS_CONFIG./registry.js✅loadLanguage, applyTranslations, t./i18n.js✅onAuthChange, signInWithGoogle, signUpWithEmail, signInWithEmail, signOutUser./auth.js✅getUserProfile, getLessonProgress, setLessonProgress./db.js✅getVisibleModules, isAdmin./access.js✅
-auth.js imports
-ImportFromExported?ensureUserDocument./db.js✅FIREBASE_CONFIG./firebase-config.js✅
-access.js imports
-ImportFromExported?LMS_CONFIG./registry.js✅getModuleAccess./db.js✅
-admin.js imports
-admin.js is standalone and imports directly from CDN + firebase-config.js + registry.js — no dependency on auth.js, db.js, or access.js. That is by design and correct.
-Two spec-mandated imports are missing from app.js:
+A full-page card grid is the first screen. Each card represents a field (e.g. "Backend Development") grouping multiple modules. Clicking a card enters the module/lesson shell scoped to that field. A back button returns to the landing. If no fields are configured, the shell loads directly — backward-compat mode.
+Phase 1 — Generic platform
 
-updateUserLang from ./db.js — never imported; language switches only persist to localStorage, not Firestore.
-upsertUserIndex from ./db.js — never imported or called from onAuthChange. The spec (Phase 6 shell changes) requires this on every sign-in to keep the admin panel's user list fresh. Currently it only fires during initial registration (ensureUserDocument). For Google users this is called on every signInWithGoogle, but email sign-ins after the first never update the index.
+document.title, the brand heading, and the welcome panel all read from LMS_CONFIG at runtime. No hardcoded content in shell files.
+Phase 2 — Multilingual (EN + AR)
 
+English is the source of truth in-file; Arabic overrides live in ar.js. loadLanguage() fetches the override file, applyTranslations() patches data-i18n elements, and t(key, fallback) handles JS-rendered strings. Switching language persists to localStorage and flips RTL/LTR on <html>. The language switcher is in the sidebar.
+Phase 3 — Authentication
 
-3. Phase 7 Checklist — Phases 0, 1, 2, 3, 4, 6
-Phase 0 — Fields Hierarchy
-ItemStatusNotesFirst screen is fields card grid✅ DonerenderFieldsLanding() fires when hasFields && activeFieldId === nullEach card shows icon, title, subtitle, module count, progress %✅ DoneAll five elements present in card HTMLClicking a card enters shell with only that field's modules✅ DoneenterField() → getActiveFieldModules() scopes everythingShared modules show consistent progress on both field cards✅ DoneProgress is global via localStorageProgress updates immediately reflect on return to landing✅ DonerenderFieldsLanding() recomputes on every call"← Fields" back button works✅ DonebackToFieldsButton.addEventListener('click', exitToFields)Absent/empty fields → shell loads directly (backward compat)✅ Donerender() checks hasFieldsLocked field cards render with 🔒 badge and are non-clickable⚠️ PartialCorrect logic, but flash-of-locked on first paint (see Bug #1 below)Shell accent colours update to active field theme✅ DoneupdateTheme(field) in renderShell()Admin panel toggles grouped by field with Grant/Revoke field buttons✅ DonerenderModuleTogglesForUser() in admin.jsGrant field touches only that field's modules✅ Donemerge: true in handleBulkAction grant-field caseRevoke field touches only that field's modules✅ DoneSameModule in two groups shows same chip state✅ DoneBoth read the same Firestore document keyRTL renders correctly on fields landing✅ DoneRTL CSS includes .field-card, .field-card-meta, .field-locked-badgeAdding a new field requires no other changes✅ DonerenderFieldsLanding() iterates LMS_CONFIG.fields dynamically
-Phase 1 — Genericification
-ItemStatusNotes<title> reflects LMS_CONFIG.appName⚠️ PartialHTML has <title>LMS Platform</title> hardcoded; app.js never sets document.title. Works only because the hardcoded value happens to match appName. If appName changes, the tab title won't follow.Brand subtitle renders from registered module list✅ DonerenderBrandSubtitle() joins getActiveFieldModules().map(m => m.title)Welcome panel copy comes from LMS_CONFIG.welcome✅ DonerenderWelcomePanel() reads LMS_CONFIG.welcome.heading/bodyNo hardcoded DB/interview-specific text in shell files✅ DoneConfirmed clean in all six shell files
-Phase 2 — i18n
-ItemStatusNotesLanguage switcher visible in sidebar✅ DonePresent in index.html .lang-switcherAR switches to RTL and translates data-i18n elements✅ DoneapplyDirection() + applyTranslations()EN restores LTR✅ DoneLanguage preference persists across refresh✅ DonelocalStorage.setItem('lms_lang', lang)Language change syncs to Firestore for signed-in users❌ Not doneupdateUserLang(uid, lang) is never called in switchLanguage(). Firestore lang field set only at account creation.Lesson iframes unaffected✅ DoneLesson files have no i18n dependencyAdding lms/i18n/fr.js + a button makes French work✅ DoneArchitecture supports it with zero other changeslms/i18n/ar.js includes field-level keys⚠️ UnverifiableFile was not uploaded. The Phase 0 spec adds keys fields.tagline, field.modules, field.complete, field.locked, shell.backToFields. Manual check needed.
-Phase 3 — Auth
-ItemStatusNotesGoogle Sign In popup works✅ DonesignInWithGoogle() implemented and wiredEmail sign-up creates account and signs user in✅ DoneEmail sign-in authenticates existing user✅ DoneAuth errors surface clearly✅ DoneshowAuthError() wired to all catch handlersSign-out returns to anonymous mode✅ DoneshowSignedOut() clears all personal dataAuth state persists across refresh✅ DoneFirebase handles persistence
-Phase 4 — Progress Sync
-ItemStatusNotesChecking items while signed in writes to Firestore✅ DonesyncProgressToFirestore() called every 3-second poll tickSign out + sign in on different browser restores progress✅ DonemigrateLocalStorageToFirestore() merges on sign-inReset clears both localStorage and Firestore✅ DoneresetAllProgress() handles bothAnonymous progress preserved on sign-in (merge, not overwrite)✅ Done{ ...local, ...remote } — remote wins on conflict, local-only keys preserved
-Phase 6 — Admin Authorization
-ItemStatusNotes"Admin panel ↗" only visible to admins✅ DoneisAdmin(userProfile) check in onAuthChangeAdmin panel redirects non-admins✅ DoneredirectToLogin() in admin.js sends to ../../index.htmlAdmin panel lists all accounts from userIndex✅ DoneloadUsers() reads collection(db, 'userIndex')Module chips show granted/revoked state; * on defaults✅ DonerenderChip() sets title and appends  * for non-explicit entriesClicking chip toggles module and updates Firestore✅ DonehandleChipToggle() with setDoc merge:true"Grant all" / "Revoke all" work✅ DonehandleBulkAction writes full module map"Reset (default)" restores platform default✅ DoneWrites {} to the access document — functionally equivalent to deletion since all keys become undefined and fall through to accessControl.modePromote button toggles role: 'user' ↔ 'admin'✅ DonehandlePromote() reads current role, writes oppositeSearch bar filters by name or email in real time✅ DonewireSearch() fires on input event'open' mode: no access doc → all modules visible✅ Doneaccess.js falls back to allModules'controlled' mode: no access doc → no modules✅ Doneaccess.js returns []Switching accessControl.mode in registry changes default immediately✅ DoneNo Firestore migration needed by designFirestore rules updated for Phase 6⚠️ Action requiredRules are in the spec but must be pasted into Firebase console manually (replaces Phase 4 rules). The Phase 6 ruleset adds admin read of userIndex and blocks non-owners from reading others' access/modules docs.First admin set via Firebase console✅ Done (procedural)Instructions in spec are correct
+Google Sign-In popup and email/password sign-up + sign-in. Auth state persists across page refresh (Firebase-native). Signed-in users see their avatar, display name, and tier badge in the sidebar. Errors surface inline below the form.
+Phase 4 — Cross-device progress sync
 
-4. Invariants — Must Not Break
-InvariantStatusNoteslocalStorage keys are unchanged✅ HoldsAll storageKeys in registry.js are identicalAnonymous mode is fully functional✅ HoldsgetVisibleModules(null) returns all modules in open mode; entire shell works without signing inLesson HTML files have zero shell dependencies✅ HoldsNo lesson files were touchedRegistry contract is backward-compatible⚠️ Partialfields, welcome, accessControl are all optional and defaulted — but accessControl was never added to registry.js at all (see Bug #3 below). Works only via ?? 'open' fallback.LMS_CONFIG.fields absent or empty → shell loads directly✅ Holdsrender() correctly short-circuitsGitHub Pages / static hosting compatible✅ HoldsNo build step; Firebase from CDN3-second progress poll continues to run✅ HoldssetInterval at the bottom of app.js calls renderProgressBars() + syncProgressToFirestore()Existing users see no change (open mode default)✅ HoldsaccessControl falls through to 'open' defaultModule progress is global, not field-scoped✅ HoldsgetAllStorageKeys() scans all modules (not just active field)
+Lesson HTML files write progress to localStorage only. app.js polls every 3 seconds and syncs to Firestore. On sign-in, Firestore progress is merged into localStorage (Firestore wins on conflict). Reset clears both stores. Anonymous mode works entirely via localStorage.
+Phase 6 — Access control + admin panel
 
-5. Specific Bugs Identified
-Bug #1 — Flash of locked fields on page load (app.js)
+Two modes in registry.js: 'open' (all users see all modules by default) and 'controlled' (users see nothing until granted). Per-user access is stored in users/{uid}/access/modules as { moduleId: true|false }. Missing key falls through to the platform default. The admin panel at /lms/admin/ lists all accounts from the userIndex collection, with module toggles grouped by field and bulk "Grant field / Revoke field" actions. The admin link only appears in the sidebar for users with role: 'admin'.
 
-visibleModules is [] when the synchronous render() fires on line 528, before onAuthChange has resolved and called getVisibleModules(). On an 'open' platform, every field card renders as locked (🔒, grey, non-clickable) for ~100–300 ms until Firebase resolves the auth state and triggers a second render. On slow connections this is visible.
+What's NOT implemented
+Phase 5 — Personalised lessons (designed but not built): AI-generated lesson content gated behind auth/pro tier, stored in Firestore, loaded via Blob URL into the iframe. The registry contract supports requiresAuth, requiresPro, and isPersonalised lesson flags but none of the current lessons use them.
+Pro/payment tier: tier: 'free' | 'pro' exists in the Firestore profile and is displayed as a badge, but there is no payment integration and no pro-gated content yet.
 
-Fix: Skip the line-528 render() call — let onAuthChange (which always fires immediately) own the first render. Or initialise visibleModules = LMS_CONFIG.modules as an optimistic default for 'open' mode.
-Bug #2 — upsertUserIndex not called on sign-in (app.js)
+Firestore data model
+users/{uid}
+  displayName, email, tier, lang, createdAt, lastSeen, role?
 
-The spec (Phase 6 shell changes) requires await upsertUserIndex(user) inside onAuthChange. It's currently absent, meaning the admin panel will show stale displayName/photoURL for any user whose Google profile changes between sessions, and will miss any email-based user who doesn't re-register.
+users/{uid}/progress/{storageKey}
+  { checkboxKey: true|false, ... }
 
-Fix: Import upsertUserIndex from ./db.js and call it inside the if (user) block in onAuthChange.
-Bug #3 — accessControl missing from registry.js
+users/{uid}/access/modules
+  { moduleId: true|false, ... }   ← missing key = platform default
 
-The spec requires accessControl: { mode: 'open' } as an explicit top-level field in LMS_CONFIG. It is absent from the uploaded registry.js. The system works only because all consumers default via ?? 'open'. If you ever want to deploy in 'controlled' mode, you'd need to add it anyway.
-
-Fix: Add accessControl: { mode: 'open' } to LMS_CONFIG in registry.js.
-Bug #4 — Language changes not synced to Firestore (app.js)
-
-switchLanguage() writes to localStorage but never calls updateUserLang(uid, lang). The spec says the Firestore lang field should stay in sync. On a new device, sign-in restores the language from Firestore profile — but if the user never set it there, they always get the default.
-
-Fix: Import updateUserLang from ./db.js; call if (currentUser) await updateUserLang(currentUser.uid, lang) inside switchLanguage().
-Bug #5 — document.title not set dynamically (app.js)
-
-The spec says app.js should set document.title = LMS_CONFIG.appName. Currently the HTML has it hardcoded. It works now because both say "LMS Platform", but changing appName in the registry won't affect the browser tab.
-
-Fix: Add document.title = LMS_CONFIG.appName; early in app.js.
-Minor — activeModuleId initialises to LMS_CONFIG.modules[0]?.id instead of null (app.js, line 42)
-
-The spec says let activeModuleId = null. The current value ('database') is reset to null by enterField(), so it causes no visual problem when fields are defined. In backward-compat mode (no fields) the pre-selection is arguably acceptable behaviour. No urgent fix required, but it diverges from spec.
-
-6. Unexpected Extra Files (Not in Spec)
-The uploaded file list includes three files not described anywhere in Chats 1–17 or the spec:
-
-lms/core/landing.js — claims to "drive index.html" but index.html imports app.js, not landing.js. It implements a multi-page navigation flow that goes to lms/fields/field.html. Currently unreferenced from any HTML entry point — appears to be dead code.
-lms/core/field-page.js — drives lms/fields/field.html. Part of a multi-page architecture parallel to the SPA.
-lms/core/module-shell.js — drives lms/modules/module.html. Also part of the multi-page architecture.
-
-These three files form a self-consistent alternative to the SPA approach but are not wired to the root index.html. They don't break anything, but landing.js in particular is dead weight, and the multi-page approach uses localStorage-only progress (no Firestore sync), missing all Phase 4 logic. If the multi-page path was intentional you should decide which architecture to keep.
-
-7. Phase 5 — What's Left
-Nothing from Phase 5 has been started. The full remaining scope is:
-
-registry.js: Add requiresAuth, requiresPro, and isPersonalised optional lesson fields.
-app.js → renderLessonNav(): Add gating logic — check lesson.requiresAuth && !currentUser and lesson.requiresPro && userProfile?.tier !== 'pro'; render locked buttons with upgrade/sign-in prompt.
-app.js: Add showUpgradePrompt(lesson) function.
-app.js: Add openPersonalisedLesson(lessonId) — fetches HTML from Firestore, renders via blob: URL into the iframe.
-index.html: Add <dialog id="personalise-modal"> with the generation form inputs.
-styles.css: Add .nav-btn.locked styles.
-Firestore schema: users/{uid}/personalised_lessons/{lessonId} with an html string field.
-
-
-8. File Index vs What Was Built
-FileSpec saysStatuslms/core/app.jsMajor edit✅ Done (Bugs #1, #2, #4, #5 need fixing)lms/core/registry.jsMinor edit⚠️ Partial — accessControl missing (Bug #3)lms/core/styles.cssModerate edit✅ Done — all Phase 0–3 CSS presentindex.htmlModerate edit✅ Done — all sections present and wiredlms/core/i18n.jsNew file✅ Done — matches spec exactlylms/core/auth.jsNew file✅ Donelms/core/db.jsNew file✅ Done (note: getAllUsers contains a dynamic import, dead code never called by anything)lms/core/access.jsNew file✅ Done — all four exports presentlms/core/admin.jsNew file✅ Donelms/core/firebase-config.jsNew file✅ Donelms/admin/index.htmlNew file⚠️ Not uploaded — unverifiablelms/i18n/ar.jsNew file⚠️ Not uploaded — verify it includes Phase 0 field-level keys
-
-Summary
-Working (no action needed): Phase 3, Phase 4, Phase 6 logic (auth, progress sync, admin panel actions, access control), all CSS, all DOM wiring, all i18n infrastructure, backward-compat invariants.
-Needs fix — ordered by priority:
-
-Bug #1 — Flash of locked fields on load (app.js — remove or guard the synchronous render() at line 528)
-Bug #3 — Add accessControl: { mode: 'open' } to registry.js
-Bug #4 — Call updateUserLang(uid, lang) in switchLanguage() (app.js)
-Bug #2 — Import and call upsertUserIndex(user) in onAuthChange (app.js)
-Bug #5 — Set document.title = LMS_CONFIG.appName in app.js
-
-Verify manually:
-
-lms/admin/index.html DOM IDs match admin.js
-lms/i18n/ar.js includes the 5 Phase 0 field-level keys
-Phase 6 Firestore security rules deployed in Firebase console
+userIndex/{uid}
+  displayName, email, photoURL    ← admin-readable index of all accounts

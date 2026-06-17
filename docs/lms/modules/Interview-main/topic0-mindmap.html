@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 0: Treuhandstelle — Big Picture | Interview Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:        #0f172a;
+  --navy2:       #1e293b;
+  --slate:       #475569;
+  --muted:       #94a3b8;
+  --border:      #e2e8f0;
+  --bg:          #f8fafc;
+  --white:       #ffffff;
+  --amber-bg:    #fffbeb;
+  --amber-border:#f59e0b;
+  --amber-text:  #92400e;
+  --radius:      10px;
+  --shadow:      0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  background: var(--bg);
+  color: var(--navy);
+}
+
+/* HEADER */
+.header { background: var(--navy); color: #fff; padding: 28px 24px 20px; }
+.header-inner { max-width: 860px; margin: 0 auto; }
+.header-meta {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+}
+.header h1 {
+  font-size: clamp(20px, 4vw, 28px); font-weight: 700;
+  line-height: 1.25; margin-bottom: 8px;
+}
+.header-sub { font-size: 13.5px; color: #94a3b8; max-width: 600px; }
+
+/* TABS */
+.tabs-bar {
+  background: var(--navy); position: sticky; top: 0; z-index: 100;
+  border-bottom: 2px solid rgba(255,255,255,0.07);
+}
+.tabs-inner { max-width: 860px; margin: 0 auto; padding: 0 24px; display: flex; }
+.tab-btn {
+  font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; font-weight: 600;
+  padding: 10px 22px; border-radius: 8px 8px 0 0; background: transparent;
+  color: var(--muted); border: none; cursor: pointer; transition: background .15s, color .15s;
+}
+.tab-btn.active { background: var(--bg); color: var(--navy); }
+.tab-btn:not(.active):hover { color: #fff; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* BODY */
+.body { max-width: 860px; margin: 0 auto; padding: 28px 20px 64px; }
+
+/* GRID */
+.branches-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 680px)  { .branches-grid { grid-template-columns: 1fr; } }
+@media (min-width: 681px) and (max-width: 960px) { .branches-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* BRANCH CARD */
+.branch-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  overflow: hidden; display: flex; flex-direction: column;
+}
+.branch-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 16px 11px; border-bottom: 1px solid var(--border);
+}
+.branch-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+.branch-title { font-size: 13px; font-weight: 700; color: var(--navy); }
+.branch-items { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 6px; }
+
+/* CHILD BUTTON */
+.branch-item {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding: 9px 12px; border-radius: 8px; border: 1.5px solid transparent;
+  cursor: pointer; text-align: left; font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px; color: var(--navy); transition: filter .12s;
+}
+.branch-item:hover { filter: brightness(0.96); }
+.item-label { flex: 1; }
+.must-badge {
+  font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
+  flex-shrink: 0; background: #fef3c7; color: #92400e;
+}
+.branch-item.active .must-badge { background: rgba(255,255,255,0.28); color: #fff; }
+
+/* INFO PANEL — inline, right below the clicked button */
+.item-panel {
+  display: none; border-radius: 8px; border-left: 3px solid #ccc;
+  padding: 14px 14px 12px; font-size: 13px;
+}
+.item-panel.open { display: block; }
+
+.must-know-inline {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
+  margin-bottom: 9px; background: var(--amber-bg); color: var(--amber-text);
+  border: 1px solid #fde68a;
+}
+.panel-info { color: var(--navy2); line-height: 1.6; margin-bottom: 11px; }
+.panel-meta { display: flex; flex-direction: column; gap: 7px; }
+.panel-row { display: flex; flex-direction: column; gap: 2px; }
+.panel-row-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted);
+}
+.panel-row-text { font-size: 12.5px; color: var(--slate); line-height: 1.5; }
+.panel-topic { font-size: 12.5px; font-weight: 600; }
+
+/* LEGEND */
+.legend {
+  margin-top: 24px; padding: 16px 20px;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.legend-title {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+}
+.legend-items { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; }
+.legend-item { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--slate); }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.legend-must {
+  font-size: 12px; color: var(--amber-text); font-weight: 600;
+  padding-left: 16px; margin-left: 4px; border-left: 1px solid var(--border);
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <nav style="margin-bottom:14px;">
+      <a href="./index.html" style="color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;">&#8592; Home</a>
+    </nav>
+    <div class="header-meta">Interview Prep &mdash; Topic 0</div>
+    <h1>Treuhandstelle &mdash; The Big Picture</h1>
+    <p class="header-sub">An interactive overview of the full ecosystem. Tap any item to see what it is, why it matters for the job, and which topic to study next.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+  </div>
+</div>
+
+<main>
+  <div class="body">
+    <div id="tab-en" class="tab-content active">
+      <div class="branches-grid" id="grid-en"></div>
+      <div class="legend"        id="legend-en"></div>
+    </div>
+    <div id="tab-de" class="tab-content">
+      <div class="branches-grid" id="grid-de"></div>
+      <div class="legend"        id="legend-de"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+var DATA = {
+  en: {
+    legendTitle: "Branch index",
+    legendMust:  "⚑ Must-know for the interview",
+    whyLabel:    "Why it matters for the job",
+    studyLabel:  "Study in depth",
+    mustLabel:   "Must-know for the interview",
+    branches: [
+      { color:"#2563eb", bg:"#eff6ff", border:"#bfdbfe", title:"What a THS does", children:[
+        { label:"Core mission", mk:false,
+          info:"The THS protects patient identities in research. It sits between clinical care and research data use as a neutral intermediary — it does not own the data, it manages access to it.",
+          why:"You will articulate this mission daily to clinicians, researchers, ethics committees, and senior leadership.", topic:"Topics 1–2" },
+        { label:"Consent management", mk:true,
+          info:"The THS records each patient's research consent — which studies they agreed to, which data types, and on what conditions. It tracks changes and withdrawals over time.",
+          why:"Consent is the legal and ethical foundation of every single data release your team makes.", topic:"Topic 1: gICS &amp; gPAS" },
+        { label:"Pseudonymisation", mk:true,
+          info:"The THS replaces patient identifiers with pseudonyms before data reaches researchers. Only the THS can re-link a pseudonym to a real patient — this is the core security guarantee.",
+          why:"This is the core technical function you will be responsible for operating, auditing, and developing further.", topic:"Topic 1: gICS &amp; gPAS" },
+        { label:"Organisational independence", mk:false,
+          info:"The THS is structurally separate from clinical IT and research departments to prevent any one team from controlling both patient data and its research use.",
+          why:"As Leitung, you maintain this independence and must justify it to auditors and your data protection officer.", topic:"Topic 3: HDSIG" }
+      ]},
+      { color:"#0891b2", bg:"#ecfeff", border:"#a5f3fc", title:"Software tools", children:[
+        { label:"gICS", mk:true,
+          info:"Generic Informed Consent Service — open-source software from Greifswald. Stores, versions, and queries patient consent decisions. The de-facto German standard for THS consent management.",
+          why:"You will deploy, configure, update, and support gICS. Deep knowledge is non-negotiable.", topic:"Topic 1: gICS &amp; gPAS" },
+        { label:"gPAS", mk:true,
+          info:"Generic Pseudonym Administration Service — companion tool to gICS. Generates and manages pseudonyms across different study domains and time periods.",
+          why:"gPAS is what researchers interact with when requesting de-identified data from your THS.", topic:"Topic 1: gICS &amp; gPAS" },
+        { label:"MOSAIC project", mk:false,
+          info:"The Greifswald open-source framework that produced gICS and gPAS. Widely adopted across German university hospitals as shared infrastructure.",
+          why:"Knowing MOSAIC shows you understand where your tools come from and who else uses them.", topic:"Topic 1: gICS &amp; gPAS" },
+        { label:"HIS / DIZ integration", mk:false,
+          info:"THS tools must connect to the hospital information system (HIS) and the data integration centre (DIZ) to function in live workflows. These integrations require ongoing maintenance.",
+          why:"You are responsible for ensuring these integrations are stable, documented, and tested after updates.", topic:"Topic 2: MII &amp; MIRACUM" }
+      ]},
+      { color:"#dc2626", bg:"#fef2f2", border:"#fecaca", title:"Legal framework", children:[
+        { label:"GDPR / DSGVO", mk:true,
+          info:"The EU data protection regulation setting baseline rules for processing personal and health data. Art. 9 GDPR covers health data as a special category requiring explicit legal basis.",
+          why:"Every THS decision must be defensible under GDPR. You will justify data releases against it.", topic:"Topic 3: HDSIG" },
+        { label:"HDSIG", mk:true,
+          info:"The Hessian Hospital Data Protection and Information Security Act. State-level rules governing patient data use at Frankfurt's university hospital — more specific than GDPR alone.",
+          why:"HDSIG is the law you will cite most often as THS lead in Frankfurt. Expect the interviewer to test this directly.", topic:"Topic 3: HDSIG" },
+        { label:"§75a SGB X", mk:false,
+          info:"A clause in Germany's Social Code Book X creating a legal basis for research use of statutory health insurance data under specific conditions, including pseudonymisation.",
+          why:"Relevant when researchers request data linked to statutory insurer records.", topic:"Topic 3: HDSIG" },
+        { label:"DIN EN 62304 / ISO 14971", mk:true,
+          info:"Standards for medical software lifecycle (62304) and risk management (ISO 14971). Apply if gICS/gPAS are classified as medical devices under EU MDR.",
+          why:"If your tools are regulated as medical software, your team must follow these standards.", topic:"Topic 4: DIN EN 62304 &amp; ISO 14971" }
+      ]},
+      { color:"#7c3aed", bg:"#f5f3ff", border:"#ddd6fe", title:"Research ecosystem", children:[
+        { label:"MII", mk:true,
+          info:"Medizininformatik-Initiative — a federal programme connecting all German university hospitals to share research data. Defined the standard use case for consent and pseudonymisation that THS tools implement.",
+          why:"The THS role exists because of MII requirements. You will represent your hospital in MII working groups.", topic:"Topic 2: MII &amp; MIRACUM" },
+        { label:"MIRACUM", mk:true,
+          info:"Frankfurt's MII consortium, covering university hospitals in Rhine-Main and southern Germany. Coordinates shared infrastructure, data models, and research projects across member sites.",
+          why:"Your THS interacts with MIRACUM partners regularly — know its governance and your obligations within it.", topic:"Topic 2: MII &amp; MIRACUM" },
+        { label:"NUM", mk:false,
+          info:"Netzwerk Universitätsmedizin — a national network of all German university hospitals formed during COVID-19, now a permanent infrastructure for multi-site clinical research.",
+          why:"NUM sets national standards that your THS must comply with and may help shape.", topic:"Topic 2: MII &amp; MIRACUM" },
+        { label:"DIZ", mk:false,
+          info:"Datenintegrationszentrum — the hospital unit that standardises clinical data into FHIR and OMOP formats for research systems. Closely linked to, but distinct from, the THS.",
+          why:"The DIZ is your closest technical partner. A clear scope boundary prevents overlap and conflict.", topic:"Topic 2: MII &amp; MIRACUM" }
+      ]},
+      { color:"#d97706", bg:"#fffbeb", border:"#fde68a", title:"Internal stakeholders", children:[
+        { label:"Data protection officer", mk:false,
+          info:"The hospital's Datenschutzbeauftragter — legal authority on all data use. The THS consults this office on every new consent form, data category, and significant process change.",
+          why:"This relationship must work well from day one. Constructive DPO engagement is a core leadership skill.", topic:"Topic 3: HDSIG" },
+        { label:"Zentrale Studienkoordination", mk:false,
+          info:"The central study coordination office managing clinical trials. They submit consent setup and pseudonymisation requests to your THS — a primary service user.",
+          why:"Understanding their workflow lets you design THS services that fit clinical research practice.", topic:"Topic 5: Leitung" },
+        { label:"CMIO / IT leadership", mk:false,
+          info:"Your likely reporting line. The CMIO bridges clinical and IT strategy and will sponsor your team's work at institutional level.",
+          why:"You must communicate THS strategy clearly upward — in terms of risk, service quality, and institutional value.", topic:"Topic 5: Leitung" },
+        { label:"Clinical departments", mk:false,
+          info:"The wards and specialist units whose patient data the THS processes. They are data providers, not direct customers, but their trust is essential for smooth operations.",
+          why:"Clinicians' confidence in your team supports consent rates and reduces friction.", topic:"Topic 5: Leitung" }
+      ]},
+      { color:"#059669", bg:"#f0fdf4", border:"#a7f3d0", title:"Ali's role as Leitung", children:[
+        { label:"Team &amp; budget leadership", mk:true,
+          info:"Responsible for hiring, developing, and evaluating a small specialist team, and for annual THS budget planning. Includes prioritising across competing demands from multiple research projects.",
+          why:"The interview will test whether you have managed people and resources — draw on your national EHR rollout experience.", topic:"Topic 5: Leitung" },
+        { label:"Service portfolio development", mk:false,
+          info:"Defining and expanding what the THS offers: new consent models, new pseudonym domains, new study types, new researcher-facing interfaces. Strategic work, not just operations.",
+          why:"Your digital health strategy background is directly applicable here.", topic:"Topic 5: Leitung" },
+        { label:"National coordination", mk:true,
+          info:"Representing Frankfurt's THS in MII, NUM, and cross-hospital working groups on consent and pseudonymisation standards. You contribute to national policy, not just local operations.",
+          why:"A senior expectation of this role — your national EHR rollout coordination experience is a direct parallel.", topic:"Topic 2: MII &amp; MIRACUM" },
+        { label:"Policy &amp; SOP authoring", mk:false,
+          info:"Writing and maintaining internal standard operating procedures governing how the THS processes requests, releases data, and responds to incidents.",
+          why:"Clear, legally defensible policy documents are a core deliverable — draw on your pharmacy and GDPR compliance experience.", topic:"Topic 3: HDSIG" }
+      ]}
+    ]
+  },
+
+  de: {
+    legendTitle: "Themenübersicht",
+    legendMust:  "⚑ Im Gespräch unverzichtbar",
+    whyLabel:    "Relevanz für die Stelle",
+    studyLabel:  "Vertiefung",
+    mustLabel:   "Im Gespräch unverzichtbar",
+    branches: [
+      { color:"#2563eb", bg:"#eff6ff", border:"#bfdbfe", title:"Aufgaben der THS", children:[
+        { label:"Kernauftrag", mk:false,
+          info:"Die THS schützt Patientenidentitäten in der Forschung. Als neutrale Instanz steht sie zwischen klinischer Versorgung und Forschungsnutzung von Daten – sie ist nicht Dateneignerin, sondern verwaltet den Zugang.",
+          why:"Diesen Auftrag müssen Sie täglich gegenüber Klinikern, Forschenden, Ethikkommissionen und der Krankenhausleitung klar kommunizieren.", topic:"Themen 1–2" },
+        { label:"Einwilligungsmanagement", mk:true,
+          info:"Die THS erfasst die Forschungseinwilligung jedes Patienten – welche Studien, welche Datenarten, unter welchen Bedingungen. Änderungen und Widerrufe werden lückenlos dokumentiert.",
+          why:"Die Einwilligung ist die rechtliche und ethische Grundlage jeder Datenweitergabe, die Ihr Team vornimmt.", topic:"Thema 1: gICS &amp; gPAS" },
+        { label:"Pseudonymisierung", mk:true,
+          info:"Die THS ersetzt Patientenkennungen durch Pseudonyme, bevor Daten in die Forschung gelangen. Nur die THS kann den Bezug wiederherstellen – das ist die zentrale Sicherheitsgarantie.",
+          why:"Dies ist die Kernfunktion, für deren Betrieb, Auditierung und Weiterentwicklung Sie verantwortlich sind.", topic:"Thema 1: gICS &amp; gPAS" },
+        { label:"Organisatorische Unabhängigkeit", mk:false,
+          info:"Die THS ist strukturell von der klinischen IT und den Forschungsabteilungen getrennt, damit kein Team gleichzeitig über Patientendaten und deren Forschungsnutzung verfügen kann.",
+          why:"Als Leitung wahren Sie diese Unabhängigkeit und müssen sie gegenüber Prüfinstanzen und dem Datenschutzbeauftragten begründen.", topic:"Thema 3: HDSIG" }
+      ]},
+      { color:"#0891b2", bg:"#ecfeff", border:"#a5f3fc", title:"Software-Werkzeuge", children:[
+        { label:"gICS", mk:true,
+          info:"Generic Informed Consent Service – Open-Source-Software der Universität Greifswald. Speichert, versioniert und fragt Einwilligungsentscheidungen ab. De-facto-Standard an deutschen Universitätskliniken.",
+          why:"Sie werden gICS einsetzen, konfigurieren, aktualisieren und betreuen. Fundierte Kenntnisse sind unverzichtbar.", topic:"Thema 1: gICS &amp; gPAS" },
+        { label:"gPAS", mk:true,
+          info:"Generic Pseudonym Administration Service – Ergänzungswerkzeug zu gICS. Erzeugt und verwaltet Pseudonyme über verschiedene Studiendomänen und Zeiträume hinweg.",
+          why:"gPAS ist die Schnittstelle, über die Forschende de-identifizierte Daten bei Ihrer THS anfordern.", topic:"Thema 1: gICS &amp; gPAS" },
+        { label:"MOSAIC-Projekt", mk:false,
+          info:"Das Greifswalder Open-Source-Framework, aus dem gICS und gPAS hervorgegangen sind. Weit verbreitet als gemeinsame Infrastruktur an deutschen Universitätskliniken.",
+          why:"Kenntnisse über MOSAIC zeigen, dass Sie das Ökosystem hinter Ihren Werkzeugen verstehen.", topic:"Thema 1: gICS &amp; gPAS" },
+        { label:"KIS / DIZ-Integration", mk:false,
+          info:"THS-Werkzeuge müssen mit dem Krankenhausinformationssystem (KIS) und dem Datenintegrationszentrum (DIZ) verbunden sein, um in realen Arbeitsabläufen zu funktionieren.",
+          why:"Sie stellen sicher, dass diese Integrationen stabil, dokumentiert und nach Updates getestet sind.", topic:"Thema 2: MII &amp; MIRACUM" }
+      ]},
+      { color:"#dc2626", bg:"#fef2f2", border:"#fecaca", title:"Rechtsrahmen", children:[
+        { label:"DSGVO", mk:true,
+          info:"Die EU-Datenschutzgrundverordnung legt die Basisregeln für die Verarbeitung personenbezogener und Gesundheitsdaten fest. Art. 9 DSGVO erfasst Gesundheitsdaten als besondere Kategorie mit erhöhten Anforderungen.",
+          why:"Jede THS-Entscheidung muss nach DSGVO begründbar sein. Sie werden Datenweitergaben rechtlich rechtfertigen müssen.", topic:"Thema 3: HDSIG" },
+        { label:"HDSIG", mk:true,
+          info:"Das Hessische Datenschutz- und Informationssicherheitsgesetz regelt auf Landesebene den Umgang mit Patientendaten am Universitätsklinikum Frankfurt – konkreter als die DSGVO allein.",
+          why:"Das HDSIG ist das Gesetz, auf das Sie als THS-Leitung am häufigsten verweisen. Die Interviewenden werden es direkt prüfen.", topic:"Thema 3: HDSIG" },
+        { label:"§75a SGB X", mk:false,
+          info:"Eine Vorschrift im SGB X, die unter bestimmten Voraussetzungen – einschließlich Pseudonymisierung – eine Rechtsgrundlage für die Forschungsnutzung von GKV-Daten schafft.",
+          why:"Relevant, wenn Forschende Daten mit GKV-Bezug beantragen.", topic:"Thema 3: HDSIG" },
+        { label:"DIN EN 62304 / ISO 14971", mk:true,
+          info:"Normen für den Lebenszyklus medizinischer Software (62304) und das Risikomanagement (ISO 14971) – anwendbar, wenn gICS/gPAS nach EU-MDR als Medizinprodukte eingestuft werden.",
+          why:"Wenn Ihre Werkzeuge als Medizinsoftware reguliert sind, muss Ihr Team diese Normen einhalten.", topic:"Thema 4: DIN EN 62304 &amp; ISO 14971" }
+      ]},
+      { color:"#7c3aed", bg:"#f5f3ff", border:"#ddd6fe", title:"Forschungsökosystem", children:[
+        { label:"MII", mk:true,
+          info:"Medizininformatik-Initiative – ein Bundesprogramm zur Vernetzung aller Universitätskliniken für interoperable Forschungsdaten. Hat den Standardanwendungsfall für Einwilligungs- und Pseudonymmanagement definiert.",
+          why:"Die THS-Stelle existiert wesentlich aufgrund von MII-Anforderungen. Sie vertreten Ihr Klinikum in MII-Arbeitsgruppen.", topic:"Thema 2: MII &amp; MIRACUM" },
+        { label:"MIRACUM", mk:true,
+          info:"Das MII-Konsortium für Frankfurt und weitere Universitätskliniken in Rhein-Main und Süddeutschland. Koordiniert gemeinsame Infrastruktur, Datenmodelle und Forschungsprojekte.",
+          why:"Ihre THS arbeitet regelmäßig mit MIRACUM-Partnern zusammen – Governance und Verpflichtungen müssen Ihnen vertraut sein.", topic:"Thema 2: MII &amp; MIRACUM" },
+        { label:"NUM", mk:false,
+          info:"Netzwerk Universitätsmedizin – ein nationales Netz aller deutschen Universitätskliniken, das während COVID-19 entstand und heute als dauerhafte Forschungsinfrastruktur betrieben wird.",
+          why:"NUM setzt nationale Standards, die Ihre THS einhalten und mitgestalten muss.", topic:"Thema 2: MII &amp; MIRACUM" },
+        { label:"DIZ", mk:false,
+          info:"Datenintegrationszentrum – die Krankenhauseinheit, die klinische Daten in FHIR- und OMOP-Formate standardisiert und an Forschungssysteme weitergibt. Eng mit der THS verknüpft, aber organisatorisch getrennt.",
+          why:"Das DIZ ist Ihr engster technischer Partner. Klares Rollenverständnis vermeidet Zuständigkeitskonflikte.", topic:"Thema 2: MII &amp; MIRACUM" }
+      ]},
+      { color:"#d97706", bg:"#fffbeb", border:"#fde68a", title:"Interne Stakeholder", children:[
+        { label:"Datenschutzbeauftragter", mk:false,
+          info:"Rechtliche Instanz des Klinikums für alle Datenschutzfragen. Die THS stimmt jeden neuen Einwilligungsbogen und jede wesentliche Prozessänderung mit diesem Amt ab.",
+          why:"Diese Beziehung muss von Anfang an funktionieren. Konstruktiver Umgang mit dem DSB ist eine zentrale Führungskompetenz.", topic:"Thema 3: HDSIG" },
+        { label:"Zentrale Studienkoordination", mk:false,
+          info:"Die Studienzentrale, die klinische Prüfungen koordiniert und Einwilligungs- sowie Pseudonymisierungsanfragen an Ihre THS stellt – einer Ihrer wichtigsten Servicenehmer.",
+          why:"Wer die Abläufe der Studienzentrale kennt, kann THS-Dienste passgenau gestalten.", topic:"Thema 5: Leitung" },
+        { label:"CMIO / IT-Leitung", mk:false,
+          info:"Ihre voraussichtliche Berichtslinie. Der CMIO verbindet klinische und IT-Strategie und ist der institutionelle Sponsor Ihres Teams.",
+          why:"Sie müssen THS-Strategie verständlich nach oben kommunizieren – in Kategorien von Risiko, Servicequalität und Mehrwert.", topic:"Thema 5: Leitung" },
+        { label:"Klinische Abteilungen", mk:false,
+          info:"Die Stationen und Fachbereiche, deren Patientendaten die THS verarbeitet. Sie sind Datengeber, keine direkten Kunden – aber ihr Vertrauen ist für den reibungslosen Betrieb unerlässlich.",
+          why:"Das Vertrauen der Kliniker verbessert die Einwilligungsbereitschaft und reduziert organisatorische Reibung.", topic:"Thema 5: Leitung" }
+      ]},
+      { color:"#059669", bg:"#f0fdf4", border:"#a7f3d0", title:"Alis Rolle als Leitung", children:[
+        { label:"Team &amp; Budget", mk:true,
+          info:"Verantwortung für Einstellung, Entwicklung und Beurteilung eines kleinen Fachteams sowie für die jährliche THS-Budgetplanung. Dazu gehört das Setzen von Prioritäten bei konkurrierenden Anforderungen.",
+          why:"Im Gespräch wird geprüft, ob Sie Personen und Ressourcen bereits geleitet haben – nutzen Sie Ihre Erfahrung aus dem nationalen KIS-Rollout.", topic:"Thema 5: Leitung" },
+        { label:"Serviceportfolio-Entwicklung", mk:false,
+          info:"Definition und Erweiterung des THS-Angebots: neue Einwilligungsmodelle, neue Pseudonymdomänen, neue Studientypen und neue Schnittstellen für Forschende. Strategische Arbeit, keine reine Administration.",
+          why:"Ihr Hintergrund in der Digital-Health-Strategie ist hier unmittelbar anwendbar.", topic:"Thema 5: Leitung" },
+        { label:"Nationale Koordination", mk:true,
+          info:"Vertretung der Frankfurter THS in MII, NUM und institutsübergreifenden Arbeitsgruppen zu Einwilligungs- und Pseudonymisierungsstandards. Sie gestalten nationale Politik mit, nicht nur den lokalen Betrieb.",
+          why:"Eine Erwartung auf Führungsebene – Ihre Koordinationserfahrung im nationalen KIS-Rollout ist eine direkte Parallele.", topic:"Thema 2: MII &amp; MIRACUM" },
+        { label:"Richtlinien &amp; SOPs", mk:false,
+          info:"Erstellung und Pflege interner Standardarbeitsanweisungen für Anfragenbearbeitung, Datenweitergabe und Vorfallmanagement der THS.",
+          why:"Sie werden klare, rechtssichere Richtliniendokumente verfassen müssen – stützen Sie sich auf Ihre Erfahrung in Pharmazie und DSGVO-Compliance.", topic:"Thema 3: HDSIG" }
+      ]}
+    ]
+  }
+};
+
+/* ── RENDER ── */
+function buildGrid(lang) {
+  var d    = DATA[lang];
+  var grid = document.getElementById('grid-' + lang);
+  var leg  = document.getElementById('legend-' + lang);
+  var html = '';
+
+  d.branches.forEach(function(b, bi) {
+    html += '<div class="branch-card">';
+    html += '<div class="branch-header" style="background:' + b.bg + ';border-bottom-color:' + b.border + '">';
+    html += '<span class="branch-dot" style="background:' + b.color + '"></span>';
+    html += '<span class="branch-title">' + b.title + '</span>';
+    html += '</div><div class="branch-items">';
+
+    b.children.forEach(function(c, ci) {
+      var id = lang + '-' + bi + '-' + ci;
+      html += '<button class="branch-item" id="btn-' + id + '"'
+            + ' style="background:' + b.bg + ';border-color:' + b.border + '"'
+            + ' onclick="toggle(\'' + id + '\',\'' + b.color + '\',\'' + b.bg + '\',\'' + b.border + '\')">';
+      html += '<span class="item-label">' + c.label + '</span>';
+      if (c.mk) html += '<span class="must-badge">&#9873;</span>';
+      html += '</button>';
+
+      html += '<div class="item-panel" id="panel-' + id + '"'
+            + ' style="border-left-color:' + b.color + ';background:' + b.bg + '">';
+      if (c.mk) {
+        html += '<div class="must-know-inline">&#9873; ' + d.mustLabel + '</div>';
+      }
+      html += '<p class="panel-info">' + c.info + '</p>';
+      html += '<div class="panel-meta">';
+      html += '<div class="panel-row"><span class="panel-row-label">' + d.whyLabel + '</span>'
+            + '<span class="panel-row-text">' + c.why + '</span></div>';
+      html += '<div class="panel-row"><span class="panel-row-label">' + d.studyLabel + '</span>'
+            + '<span class="panel-topic" style="color:' + b.color + '">' + c.topic + '</span></div>';
+      html += '</div></div>';
+    });
+
+    html += '</div></div>';
+  });
+
+  grid.innerHTML = html;
+
+  var lh = '<div class="legend-title">' + d.legendTitle + '</div><div class="legend-items">';
+  d.branches.forEach(function(b) {
+    lh += '<div class="legend-item"><span class="legend-dot" style="background:' + b.color + '"></span>' + b.title + '</div>';
+  });
+  lh += '<div class="legend-must">' + d.legendMust + '</div></div>';
+  leg.innerHTML = lh;
+}
+
+function toggle(id, color, bg, border) {
+  var panel  = document.getElementById('panel-' + id);
+  var btn    = document.getElementById('btn-'   + id);
+  var isOpen = panel.classList.contains('open');
+
+  // Close all in this tab
+  var tab = btn.closest('.tab-content');
+  tab.querySelectorAll('.item-panel.open').forEach(function(p) { p.classList.remove('open'); });
+  tab.querySelectorAll('.branch-item.active').forEach(function(b) {
+    b.classList.remove('active');
+    b.style.background   = '';
+    b.style.borderColor  = '';
+    b.style.color        = '';
+  });
+
+  if (!isOpen) {
+    panel.classList.add('open');
+    btn.classList.add('active');
+    btn.style.background  = color;
+    btn.style.borderColor = color;
+    btn.style.color       = '#fff';
+    setTimeout(function() {
+      panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }, 50);
+  }
+}
+
+function switchTab(lang, clickedBtn) {
+  document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b)     { b.classList.remove('active'); });
+  document.getElementById('tab-' + lang).classList.add('active');
+  clickedBtn.classList.add('active');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  buildGrid('en');
+  buildGrid('de');
+});
+</script>
+</body>
+</html>

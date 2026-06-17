@@ -14,6 +14,7 @@ import {
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { FIREBASE_CONFIG } from './firebase-config.js';
+import { LANG_KEY } from './registry.js';
 
 // ── Initialise Firebase app ────────────────────────────────────────────────
 // db.js is imported by auth.js, so it may be evaluated BEFORE auth.js calls
@@ -39,14 +40,17 @@ export async function ensureUserDocument(user) {
       displayName: user.displayName || '',
       email: user.email || '',
       tier: 'free',         // 'free' | 'pro'
-      lang: localStorage.getItem('lms_lang') || 'en',
+      lang: localStorage.getItem(LANG_KEY) || 'en',
       createdAt: serverTimestamp(),
       lastSeen: serverTimestamp()
     });
   } else {
     await updateDoc(ref, { lastSeen: serverTimestamp() });
   }
-  await upsertUserIndex(user);
+  // upsertUserIndex is intentionally NOT called here. app.js's onAuthChange
+  // calls it after every sign-in (all auth methods), making this the single
+  // call site. Calling it here too would cause a redundant double-write on
+  // Google sign-in and email sign-up.
 }
 
 export async function getUserProfile(uid) {

@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 5: Leading a team in a German academic medical institution (Leitung) | Treuhandstelle Interview Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:        #0f172a;
+  --navy2:       #1e293b;
+  --slate:       #475569;
+  --muted:       #94a3b8;
+  --border:      #e2e8f0;
+  --bg:          #f8fafc;
+  --white:       #ffffff;
+  --amber-bg:    #fffbeb;
+  --amber-border:#f59e0b;
+  --amber-text:  #92400e;
+  --amber-icon:  #d97706;
+  --blue:        #2563eb;
+  --blue-light:  #eff6ff;
+  --pill-l1: #94a3b8; --pill-l1t: #fff;
+  --pill-l2: #3b82f6; --pill-l2t: #fff;
+  --pill-l3: #16a34a; --pill-l3t: #fff;
+  --pill-l4: #7c3aed; --pill-l4t: #fff;
+  --accent:      #0ea5e9;
+  --radius:      10px;
+  --shadow:      0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  background: var(--bg);
+  color: var(--navy);
+}
+
+/* HEADER */
+.header {
+  background: var(--navy);
+  color: #fff;
+  padding: 28px 24px 20px;
+}
+.header-inner { max-width: 820px; margin: 0 auto; }
+.header-meta {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.header h1 {
+  font-size: clamp(22px, 4vw, 30px);
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+.header h1 abbr {
+  text-decoration: underline dotted rgba(255,255,255,.35);
+  cursor: help;
+}
+.header-sub {
+  font-size: 13.5px;
+  color: #94a3b8;
+  max-width: 580px;
+}
+
+/* TABS BAR */
+.tabs-bar {
+  background: var(--navy);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 2px solid rgba(255,255,255,0.07);
+}
+.tabs-inner {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+}
+.tab-btn {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.tab-btn.active {
+  background: var(--bg);
+  color: var(--navy);
+}
+.tab-btn:not(.active):hover { color: #fff; }
+
+/* BODY */
+.body {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* COLLAPSIBLE SECTIONS */
+.section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.section-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 28px;
+  border: none;
+  background: transparent;
+  font-family: 'IBM Plex Sans', sans-serif;
+  cursor: pointer;
+  text-align: left;
+  gap: 12px;
+}
+.section-toggle.open { border-bottom: 1px solid var(--border); }
+.section-toggle:hover { background: #f8fafc; }
+.toggle-left { display: flex; flex-direction: column; gap: 3px; }
+.section-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.section-toggle h2 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.section-chevron {
+  color: var(--muted);
+  font-size: 18px;
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.section-toggle:not(.open) .section-chevron { transform: rotate(-90deg); }
+.section-body { padding: 22px 28px 26px; }
+.section-body.hidden { display: none; }
+
+/* MUST-KNOW */
+.must-know {
+  background: var(--amber-bg);
+  border: 1px solid #fde68a;
+  border-left: 4px solid var(--amber-border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.must-know .section-label { color: #b45309; }
+.must-know .section-toggle h2 { color: #78350f; }
+.must-know .section-chevron { color: #d97706; }
+.must-know .section-body { padding: 22px 28px 26px; }
+.must-know-items { display: flex; flex-direction: column; gap: 10px; }
+.must-know-item {
+  display: flex;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--amber-text);
+  align-items: flex-start;
+}
+.flag { color: var(--amber-icon); font-size: 15px; flex-shrink: 0; line-height: 1.65; }
+
+/* LEARNING LADDER */
+.ladder { display: flex; flex-direction: column; gap: 14px; }
+.ladder-level {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.level-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border);
+}
+.level-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.l1 .level-pill { background: var(--pill-l1); color: var(--pill-l1t); }
+.l2 .level-pill { background: var(--pill-l2); color: var(--pill-l2t); }
+.l3 .level-pill { background: var(--pill-l3); color: var(--pill-l3t); }
+.l4 .level-pill { background: var(--pill-l4); color: var(--pill-l4t); }
+.level-title { font-weight: 600; font-size: 14px; color: var(--navy2); }
+.level-bullets { padding: 14px 16px; }
+.level-bullets ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.level-bullets li {
+  font-size: 13.5px;
+  color: #334155;
+  padding-left: 18px;
+  position: relative;
+}
+.level-bullets li::before {
+  content: '›';
+  color: var(--muted);
+  position: absolute;
+  left: 0;
+}
+
+/* GLOSSARY */
+.glossary-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.glossary-table th {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--border);
+  text-align: left;
+}
+.glossary-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: #334155;
+  vertical-align: top;
+}
+.glossary-table tr:nth-child(even) td { background: #f8fafc; }
+.term-cell {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--navy);
+  white-space: nowrap;
+  width: 28%;
+}
+
+/* ACCORDION */
+.accordion { display: flex; flex-direction: column; gap: 8px; }
+.acc-item {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.acc-trigger {
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  background: #f8fafc;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  transition: background .15s, color .15s;
+}
+.acc-trigger.open { background: var(--blue-light); color: var(--blue); }
+.acc-trigger:not(.open):hover { background: #f1f5f9; }
+.acc-chevron {
+  font-size: 16px;
+  flex-shrink: 0;
+  transition: transform .2s;
+  margin-top: 2px;
+}
+.acc-trigger.open .acc-chevron { transform: rotate(180deg); }
+.acc-body {
+  display: none;
+  padding: 16px;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  font-size: 13.5px;
+  color: #334155;
+}
+.acc-body.open { display: block; }
+.acc-strategy-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 6px;
+}
+
+/* CONNECTIONS GRID */
+.connections-grid { display: flex; flex-direction: column; gap: 10px; }
+.connection-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--white);
+}
+.conn-badge {
+  background: var(--blue-light);
+  color: var(--blue);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.conn-text { font-size: 13.5px; color: #334155; }
+
+/* STUDY PLAN */
+.study-plan {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.day-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--white);
+}
+.day-head {
+  display: flex;
+  gap: 10px;
+  padding: 11px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+.day-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.day-focus {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--slate);
+}
+.day-tasks {
+  list-style: none;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.day-task { font-size: 13px; color: #334155; }
+.task-time {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #d97706;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 4px;
+  padding: 1px 6px;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+.task-link {
+  color: var(--blue);
+  font-size: 12px;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(37,99,235,.35);
+}
+.task-link:hover { border-bottom-style: solid; }
+
+/* WHY-LIST */
+.why-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0;
+}
+.why-list li {
+  font-size: 14px;
+  color: #334155;
+  padding-left: 20px;
+  position: relative;
+}
+.why-list li::before {
+  content: '›';
+  color: var(--blue);
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+}
+.closing {
+  font-size: 14px;
+  color: var(--slate);
+  font-style: italic;
+  margin-top: 12px;
+}
+
+/* RESPONSIVE */
+@media(max-width:540px) {
+  .header { padding: 20px 16px 16px; }
+  .body { padding: 20px 14px 48px; }
+  .section-body { padding: 16px 16px 20px; }
+  .section-toggle { padding: 16px; }
+  .term-cell { width: 36%; white-space: normal; }
+  .study-plan { grid-template-columns: 1fr; }
+  .connection-card { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <p class="header-meta">Treuhandstelle Interview Prep &middot; Topic 5 of 6</p>
+    <h1>Leading a team in a German academic medical institution (<abbr title="Leitungsfunktion — management/leadership role">Leitung</abbr>)</h1>
+    <p class="header-sub">Governance structures, personnel law, budget cycles, and stakeholder dynamics at a German Universitätsmedizin — everything Ali needs to lead the Treuhandstelle with confidence from day one.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn" onclick="switchTab('de', this)">Deutsch</button>
+  </div>
+</div>
+
+<main>
+  <div class="body">
+
+    <!-- ==================== ENGLISH TAB ==================== -->
+    <div id="tab-en" class="tab-content active">
+
+      <!-- Section 1: What is it -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Section 1</span>
+            <h2>What is it</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <p>A <abbr title="Universitätsmedizin — German academic medical centre combining university hospital and medical faculty">Universitätsmedizin</abbr> (academic medical centre) in Germany is simultaneously a hospital, a research institution, and a university faculty. This triple mandate — patient care, research, and teaching — shapes every decision about resources, staffing, and governance. Organisations such as Universitätsmedizin Frankfurt operate under public law (Körperschaft des öffentlichen Rechts or a similar form), which means management practices differ substantially from those in a private-sector company.</p>
+
+          <p>A <strong>Leitung</strong> (leadership position) at this level means formal responsibility for a team, a budget line, and a defined service portfolio. In the case of the Treuhandstelle (<abbr title="Treuhandstelle — data trustee unit managing patient consent and pseudonymisation">THS</abbr>), the Leitung typically oversees a small specialist team (commonly 3–8 staff), coordinates with clinical, IT, and data-protection stakeholders, and maintains accountability to a <abbr title="Chefarzt/Direktorin or CMIO — the senior clinician or chief medical informatics officer to whom the THS reports">CMIO</abbr> or equivalent director.</p>
+
+          <p>Employment law in German public institutions is governed by the <abbr title="Tarifvertrag öffentlicher Dienst — collective pay agreement for public-sector employees">TVöD</abbr> (Tarifvertrag öffentlicher Dienst) for most operational staff, and by professorial pay scales (W-Besoldung) for academic staff. The <abbr title="Personalrat — statutory staff council with co-determination rights">Personalrat</abbr> (staff council) holds statutory co-determination rights (Mitbestimmungsrechte) over hiring, grading, and significant organisational changes — a critical practical constraint for any leader new to the public-sector environment.</p>
+
+          <p>Budget management in a Universitätsmedizin follows a dual-track model. <strong>Grundfinanzierung</strong> (core institutional funding) covers permanent posts and running costs; <strong>Drittmittel</strong> (third-party project funding) from bodies such as the <abbr title="Deutsche Forschungsgemeinschaft — German Research Foundation">DFG</abbr>, <abbr title="Bundesministerium für Bildung und Forschung — German Federal Ministry of Education and Research">BMBF</abbr>, or the EU covers time-limited research projects and often funds a significant share of THS staff and infrastructure. Understanding how to plan, apply for, and account for both types of funding is a core Leitung competence.</p>
+        </div>
+      </div>
+
+      <!-- Section 2: Why it matters -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Section 2</span>
+            <h2>Why it matters for this role</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <p>The Treuhandstelle at Universitätsmedizin Frankfurt is not just a technical service — it is a small organisational unit embedded in a complex, politically sensitive institution. The hiring committee will want to know that Ali can navigate this environment effectively: building a team, managing a public-sector budget, handling Personalrat obligations, and representing the THS credibly to clinical directors, data protection officers, and national research networks. Practical Leitung competence is as important as technical knowledge of gICS, gPAS, or data protection law.</p>
+          <ul class="why-list">
+            <li>Conducting <strong>structured staff appraisals</strong> (Mitarbeitergespräche) and setting <abbr title="Zielvereinbarungen — formally agreed performance targets between a manager and each team member">Zielvereinbarungen</abbr> (performance agreements) that align with MII/MIRACUM deliverables and hospital strategic goals.</li>
+            <li>Navigating <strong>Personalrat co-determination</strong> when hiring new staff, changing job descriptions, or restructuring the team — including understanding which decisions require full Personalrat approval versus mere notification.</li>
+            <li>Planning and defending an <strong>annual budget</strong> to hospital management: distinguishing between recurrent costs (server licences, staff FTEs) and project-funded posts (Drittmittelstellen), and managing carry-forward rules for unused funds.</li>
+            <li>Managing <strong>Drittmittel project cycles</strong>: applying for MII or BMBF funding, meeting reporting deadlines (Verwendungsnachweise), and ensuring that project-funded staff transitions are planned well before grant end dates.</li>
+            <li>Maintaining a <strong>service portfolio</strong> and <abbr title="Service Level Agreement">SLA</abbr> catalogue for THS services offered to clinical departments and the <abbr title="Datenintegrationszentrum — data integration centre">DIZ</abbr>, and communicating service changes through the correct institutional channels.</li>
+            <li>Representing the THS in <strong>internal governance bodies</strong> such as the hospital's IT steering committee, data protection advisory board, and clinical research committee.</li>
+          </ul>
+          <p class="closing">The interviewer will very likely probe how Ali has previously exercised formal leadership responsibility, how they have handled personnel conflicts, and how they would approach building a team in a new institution where processes are already established.</p>
+        </div>
+      </div>
+
+      <!-- Section 3: Learning ladder -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Section 3</span>
+            <h2>Zero to hero: learning ladder</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="ladder">
+            <div class="ladder-level l1">
+              <div class="level-head">
+                <span class="level-pill">Level 1</span>
+                <span class="level-title">Basic awareness — can define it</span>
+              </div>
+              <div class="level-bullets">
+                <ul>
+                  <li>Know that Universitätsmedizin institutions operate under public law with a triple mandate (care, research, teaching) that directly shapes how budgets are allocated and decisions are made.</li>
+                  <li>Understand that TVöD is the collective pay agreement covering most non-professorial staff and sets salary bands, working hours, and entitlements — it cannot be negotiated away individually.</li>
+                  <li>Recognise what a Personalrat is, that it differs from a Betriebsrat (works council in private firms), and that its co-determination rights are statutory under the Hessian Personnel Representation Act (HPVG).</li>
+                  <li>Know the distinction between Grundfinanzierung and Drittmittel, and that Drittmittelstellen are time-limited by the grant period.</li>
+                  <li>Be able to name the key internal stakeholders a THS Leitung must regularly interact with: CMIO, Personalrat, Datenschutzbeauftragter, DIZ, clinical departments, and hospital finance.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="ladder-level l2">
+              <div class="level-head">
+                <span class="level-pill">Level 2</span>
+                <span class="level-title">Working knowledge — can describe how it works</span>
+              </div>
+              <div class="level-bullets">
+                <ul>
+                  <li>Describe the TVöD-K (hospital-specific variant) pay table structure: Entgeltgruppen (pay grades) E9–E15, the experience-based Stufensystem (incremental steps within each grade), and how to determine the correct grade for a new THS data analyst post.</li>
+                  <li>Explain which personnel decisions require Personalrat co-determination (full approval — Zustimmung), which require only notification (Unterrichtung), and how the Stufenvertretung process works if the Personalrat withholds consent.</li>
+                  <li>Describe how a Zielvereinbarungsgespräch is structured: annual cycle, SMART goals linked to institutional priorities, documentation, and the role of the Leitung versus the next level of management.</li>
+                  <li>Outline the typical annual budget planning cycle at a university hospital: Haushaltsplan submission deadlines, cost-centre accounting (Kostenstellenrechnung), and the difference between investive and konsumtive expenditure.</li>
+                  <li>Explain how Drittmittelprojekte are administered: the role of the Forschungsabteilung (research administration office), Verwendungsnachweis requirements, and permissible overhead (Gemeinkostenpauschale) rules.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="ladder-level l3">
+              <div class="level-head">
+                <span class="level-pill">Level 3</span>
+                <span class="level-title">Applied understanding — can connect it to the job tasks</span>
+              </div>
+              <div class="level-bullets">
+                <ul>
+                  <li>Design a team structure for the THS with a mix of core-funded and project-funded posts, with a succession plan for when MII Drittmittel funding cycles end.</li>
+                  <li>Draft the Personalrat notification package required to hire a new software engineer for the THS: post description, pay grade justification, and proposed start date.</li>
+                  <li>Prepare a one-page budget defence for the THS annual Haushaltsplan, distinguishing recurrent operational costs from capital expenditure on server infrastructure.</li>
+                  <li>Design a Zielvereinbarung for a THS team member responsible for gICS operations, with measurable targets linked to SLA uptime, MII deliverable deadlines, and professional development goals.</li>
+                  <li>Identify conflict-of-interest risks that could arise from the THS reporting to a clinical director who is also a major data consumer, and propose a governance safeguard (e.g. an ethics advisory board or a formal independence clause).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="ladder-level l4">
+              <div class="level-head">
+                <span class="level-pill">Level 4</span>
+                <span class="level-title">Interview-ready — can handle tough questions</span>
+              </div>
+              <div class="level-bullets">
+                <ul>
+                  <li>Discuss how you would handle a situation where the Personalrat refuses consent to reclassify a THS staff member's role after a significant expansion of responsibilities — outlining the formal mediation steps and practical alternatives.</li>
+                  <li>Argue the case for a dedicated THS budget line (rather than routing costs through the DIZ or IT department) to a hospital board that is sceptical of creating new cost centres.</li>
+                  <li>Describe how you would manage the team through a transition where a major BMBF grant ends and two Drittmittelstellen must either be converted to core funding or wound down — including communication with affected staff and the Personalrat timeline.</li>
+                  <li>Explain what you would do in the first 90 days as THS Leitung: stakeholder mapping, process inventory, team one-to-ones, and a preliminary service portfolio review.</li>
+                  <li>Articulate how you would build and sustain psychological safety in a small, specialist team where knowledge is concentrated in one or two individuals and departure of a key person would be a serious operational risk.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Must-know facts -->
+      <div class="must-know section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Section 4</span>
+            <h2>Must-know facts</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="must-know-items">
+            <div class="must-know-item"><span class="flag">⚑</span><span>The Personalrat at a Hessian public institution operates under the <strong>Hessisches Personalvertretungsgesetz (HPVG)</strong>. Co-determination (Mitbestimmung) is mandatory for hiring, regrading, disciplinary measures, and significant organisational restructuring. A Leitung who bypasses the Personalrat — even inadvertently — risks having the measure declared null and void (Unwirksamkeit).</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span><strong>TVöD-K Entgeltgruppen E13–E15</strong> cover most senior technical and managerial posts in hospital IT and research infrastructure. A newly recruited data scientist or clinical informatician will typically start at E13 or E14. Pay increments within each grade (Stufen) happen automatically at fixed intervals (1, 3, 6 years) and are not at the Leitung's discretion.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span><strong>Drittmittelstellen are not permanent</strong>. Staff employed on project funding have fixed-term contracts under the Wissenschaftszeitvertragsgesetz (WissZeitVG) or the general Teilzeit- und Befristungsgesetz (TzBfG). The Leitung must plan grant renewals or alternative funding 12–18 months before contract end, as converting a Drittmittelstelle to a Grundfinanzierungsstelle requires hospital board approval and Personalrat consent.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>In German public institutions, a formal <strong>Zielvereinbarung</strong> (performance agreement) is the primary tool for cascading institutional strategy to team level. It is not an informal chat — it is a documented annual process with signatures from both the employee and Leitung, reviewed at mid-year, and used as the basis for any performance-linked pay supplement (Leistungsentgelt) under TVöD.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>The <strong>Gleichstellungsbeauftragte</strong> (equality officer) must be involved in all hiring processes at a German public institution. She has the right to attend interviews and to object to appointments that appear to disadvantage women. Failing to invite her to participate is a procedural error that can invalidate a hiring decision.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Universitätsmedizin Frankfurt is part of the <strong>MIRACUM consortium</strong> within the MII. MIRACUM funding (BMBF Drittmittel) has underwritten significant THS and DIZ infrastructure at Frankfurt. The Leitung must understand the consortium governance structure — how deliverables are negotiated, how Frankfurt's local obligations feed into the national MII work plan, and who the relevant national contacts are.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>A Leitung in a German university hospital does not operate in isolation: there is typically a <strong>matrix reporting structure</strong>. The THS leader reports to a clinical or IT director for operational matters and may report separately to the research dean or vice rector for research-facing activities. Understanding and navigating this dual accountability is essential to avoid conflict and to secure resources effectively.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>When a staff member raises a <strong>Beschwerde</strong> (formal grievance) or invokes the <strong>Fürsorgepflicht</strong> (employer's duty of care) provision, the Leitung must follow a formal procedure: acknowledge receipt in writing, investigate within a defined period, and document the outcome. In a small THS team, interpersonal conflicts can rapidly become operational risks — proactive conflict management is a leadership competence the interviewer will probe.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5: Glossary -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Section 5</span>
+            <h2>Key terms glossary</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <table class="glossary-table">
+            <thead>
+              <tr>
+                <th>Term</th>
+                <th>Plain-language definition</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="term-cell">TVöD-K</td>
+                <td>The collective pay agreement (Tarifvertrag öffentlicher Dienst) for public hospitals in Germany. Sets salary grades (Entgeltgruppen E1–E15), hours, and leave entitlements. Negotiated nationally between the VKA employers' association and ver.di union.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Personalrat</td>
+                <td>The statutory staff representation body in German public institutions, equivalent to — but with broader rights than — a private-sector Betriebsrat. Must be consulted or must consent to a range of personnel and organisational decisions.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Mitbestimmung</td>
+                <td>Co-determination: the legal right of the Personalrat to approve (not merely be consulted on) certain management decisions, including hiring, regrading, and disciplinary measures. A decision taken without required Mitbestimmung is legally void.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Zielvereinbarung</td>
+                <td>A formally agreed performance target document between a Leitung and each team member. Annual cycle, must be documented and signed. Targets feed into the institution's Leistungsentgelt (performance-linked pay supplement) process.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Drittmittel</td>
+                <td>Third-party project funding obtained from external bodies (DFG, BMBF, EU Horizon). Usually time-limited and purpose-restricted. Staff employed on Drittmittel have fixed-term contracts and no automatic right to conversion to permanent employment.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Grundfinanzierung</td>
+                <td>Core institutional budget: the recurrent funding allocated by the hospital or university to cover permanent posts and ongoing operational costs. More stable than Drittmittel but harder to expand without board approval.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Haushaltsplan</td>
+                <td>The annual institutional budget plan. Each cost centre (Kostenstelle) submits its projected expenditure; this is reviewed and approved by hospital finance and the board. The Leitung must justify and defend their team's plan each cycle.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Gleichstellungs&shy;beauftragte</td>
+                <td>The institution's equality officer (usually female), required by law at all German public-sector bodies. Must be invited to all hiring processes and has the right to object to appointments that disadvantage women.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">WissZeitVG</td>
+                <td>Wissenschaftszeitvertragsgesetz: the federal law regulating fixed-term contracts for academic and research staff. Caps total fixed-term employment periods and restricts grounds for contract extension. Relevant to THS staff funded through research grants.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">HPVG</td>
+                <td>Hessisches Personalvertretungsgesetz: the Hesse state law governing staff representation. Defines the specific co-determination and participation rights of the Personalrat at institutions such as Universitätsmedizin Frankfurt.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Leistungsentgelt</td>
+                <td>A performance-linked pay supplement available under TVöD, distributed annually based on individual or team performance assessments and the Zielvereinbarung outcome. The amount is set within a nationally defined budget envelope.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Verwendungsnachweis</td>
+                <td>The financial accountability report submitted to a funding body (e.g. BMBF, DFG) at the end of a grant period or reporting interval. Documents how project funds were spent and proves compliance with grant conditions.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Section 6: Interview questions -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Section 6</span>
+            <h2>Likely interview questions</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="accordion">
+
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                Can you walk us through a situation where you had to exercise formal leadership responsibility — ideally in a regulated or institutional setting?
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <p class="acc-strategy-label">Answer strategy</p>
+                <p>Use a concrete example from the national EHR rollout: describe the team or working group you led, the decision-making authority you held, and a specific challenge you navigated (e.g. conflicting stakeholder priorities or a delayed technical deliverable). Frame the outcome in terms of what the team achieved and what you learned about leadership in a multi-stakeholder environment. Avoid vague generalities — the panel wants specifics about scope, headcount, and accountability.</p>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                How would you approach the first 90 days as Leitung of the Treuhandstelle — what would your priorities be?
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <p class="acc-strategy-label">Answer strategy</p>
+                <p>Structure your answer around three phases: listen and understand (weeks 1–4: one-to-ones with every team member, mapping key stakeholder relationships, reviewing existing documentation and SLAs), assess and prioritise (weeks 5–8: identify operational risks, map the budget and any upcoming Drittmittel deadlines, review open IT/compliance issues), then begin to act (weeks 9–12: one or two early, visible improvements to build credibility without over-committing to change). Mention that you would be careful not to disrupt existing team routines before fully understanding why they exist.</p>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                How would you manage a situation where a key THS team member becomes a flight risk — perhaps because their Drittmittel contract is ending?
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <p class="acc-strategy-label">Answer strategy</p>
+                <p>Show that you understand the structural reality: Drittmittelstellen are finite, and smart staff plan their next move early. Describe a two-pronged response: proactively explore whether the post can be retained (conversion to core funding, bridge funding from another grant, a follow-on project application) and, in parallel, ensure knowledge is documented and spread across the team so that departure does not create a single point of failure. Demonstrate awareness of the HPVG and WissZeitVG constraints, and that any contract extension or reclassification requires Personalrat involvement.</p>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                How would you handle a conflict between the THS team's operational independence and pressure from a senior clinician who is a major data consumer?
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <p class="acc-strategy-label">Answer strategy</p>
+                <p>This is a question about institutional courage and structural thinking. Acknowledge that this tension is inherent to a Treuhandstelle's position — its value rests precisely on being perceived as independent. Propose structural safeguards: a formal terms-of-reference document for the THS that establishes decision-making independence, an escalation path to the hospital's data protection officer or ethics board for contested cases, and transparent documentation of all data access decisions. Avoid framing it as a personality conflict — the panel wants to hear systemic solutions.</p>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                How would you develop the professional capabilities of a small, highly specialised team where external training is limited?
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <p class="acc-strategy-label">Answer strategy</p>
+                <p>Describe a blended approach: peer learning within the team (internal presentations, shared documentation sprints, code or process reviews), engagement with the national THS community (the Greifswald-led workshops, MII working groups, NUM network events), and targeted external training for specific skill gaps (e.g. data protection law updates, FHIR R5 changes). Mention that the Zielvereinbarung is the mechanism for formalising individual development goals and making them visible in performance conversations. Emphasise that in a small team, retaining institutional knowledge is a leadership risk that development planning directly mitigates.</p>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                How do you plan and defend a budget for a service unit in a university hospital, and what would you do if your budget request was cut significantly?
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <p class="acc-strategy-label">Answer strategy</p>
+                <p>Show familiarity with the Haushaltsplan process: cost-centre accounting, the distinction between consumptive (konsumtiv) and capital (investiv) expenditure, and the role of the hospital's finance department in setting Deckungsmittel (budget ceilings). If the budget is cut, describe a triage approach: protect the costs that underpin regulatory compliance and service continuity (server licences, minimum staffing), flag the items that would have to be deferred (infrastructure upgrades, new service development), and document the residual risk formally so that management understands the trade-off they are accepting. Avoid suggesting that you would simply absorb a cut silently.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 7: Connections -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Section 7</span>
+            <h2>Connections to Ali's existing experience</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="connections-grid">
+            <div class="connection-card">
+              <span class="conn-badge">EHR rollout</span>
+              <p class="conn-text">Leading the national ePA rollout required coordinating across multiple institutional actors — health insurers, pharmacies, practices, hospital IT teams — with no formal line authority over most collaborators. This is precisely the influence-without-authority leadership mode that the THS Leitung must exercise daily when working with the DIZ, clinical departments, and the CMIO. Ali can point to specific instances of aligning stakeholders around a shared delivery timeline under institutional and political pressure.</p>
+            </div>
+            <div class="connection-card">
+              <span class="conn-badge">FHIR work</span>
+              <p class="conn-text">Technical leadership in FHIR implementation projects involves setting standards, reviewing others' outputs, and making architectural decisions that affect downstream teams — a direct analogue of the THS service ownership role. Ali's experience making and defending technical decisions in cross-functional environments demonstrates the kind of expert authority that a THS Leitung needs to be taken seriously by clinical informatics colleagues.</p>
+            </div>
+            <div class="connection-card">
+              <span class="conn-badge">GDPR / DiaTwin</span>
+              <p class="conn-text">The DiaTwin project required Ali to work within a formal governance structure involving data protection officers, ethics committees, and institutional sign-offs — very similar to the multi-layer accountability environment of a university hospital. Familiarity with structured risk documentation and formal approval processes translates directly to the THS Leitung role, where every major service change must be cleared through comparable channels.</p>
+            </div>
+            <div class="connection-card">
+              <span class="conn-badge">Pharmacy licence</span>
+              <p class="conn-text">A licensed pharmacist operates under a duty of professional accountability (Berufshaftung) that is non-negotiable and personally enforceable — a mindset that maps well to the fiduciary responsibility of a Treuhandstelle leader. The pharmacy environment also demands strict documentation culture, shift handover protocols, and independent professional judgement within a regulated framework: all directly transferable competences for managing a THS team in a university hospital.</p>
+            </div>
+            <div class="connection-card">
+              <span class="conn-badge">M.Sc. Digital Health</span>
+              <p class="conn-text">A postgraduate degree in Digital Health typically includes modules on health IT governance, organisational aspects of digital transformation in hospitals, and the regulatory environment for digital health services. Ali can draw on this academic foundation to engage credibly with hospital management on the strategic case for THS investment, and to connect the unit's operational work to broader institutional and national health data policy goals.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 8: Study plan -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Section 8</span>
+            <h2>3-day study plan</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="study-plan">
+            <div class="day-card">
+              <div class="day-head">
+                <span class="day-num">Day 1</span>
+                <span class="day-focus">Foundation</span>
+              </div>
+              <ul class="day-tasks">
+                <li class="day-task">
+                  <div><span class="task-time">45 min</span></div>
+                  Read the official TVöD-K Entgelttabelle overview and understand the E-grade structure, pay step intervals, and the difference between TVöD-K (hospitals) and TVöD-VKA (general).
+                  <div><a href="https://www.tvoed.de/tarifvertrag/tvoed-k" class="task-link" target="_blank">tvoed.de — TVöD-K overview</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">40 min</span></div>
+                  Study the key provisions of the Hessisches Personalvertretungsgesetz (HPVG): §§ 68–80 on Mitbestimmung and §§ 81–85 on Mitwirkung. Focus on the list of measures requiring full co-determination consent.
+                  <div><a href="https://www.rv.hessenrecht.hessen.de/bshe/document/jlr-PersVGHE2004rahmen" class="task-link" target="_blank">hessenrecht.hessen.de — HPVG full text</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">30 min</span></div>
+                  Read the Goethe-Universität Frankfurt's research funding pages to understand how Drittmittel projects are administered, what the Forschungsabteilung handles, and what the Leitung is directly responsible for.
+                  <div><a href="https://www.uni-frankfurt.de/69826929/Forschungsfoerderung" class="task-link" target="_blank">uni-frankfurt.de — Forschungsförderung</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">25 min</span></div>
+                  Review the WissZeitVG summary from the BMBF to understand the fixed-term contract limits that affect THS staff employed on research grants.
+                  <div><a href="https://www.bmbf.de/bmbf/shareddocs/bekanntmachungen/de/2023/01/2023-01-23-wisszeitvg.html" class="task-link" target="_blank">bmbf.de — WissZeitVG information</a></div>
+                </li>
+              </ul>
+            </div>
+            <div class="day-card">
+              <div class="day-head">
+                <span class="day-num">Day 2</span>
+                <span class="day-focus">THS mechanics</span>
+              </div>
+              <ul class="day-tasks">
+                <li class="day-task">
+                  <div><span class="task-time">45 min</span></div>
+                  Read the MII framework document on organisational requirements for Treuhandstellen: governance, independence principles, and the relationship with the DIZ. Note which obligations fall on the Leitung specifically.
+                  <div><a href="https://www.medizininformatik-initiative.de/de/konsortien/miracum" class="task-link" target="_blank">medizininformatik-initiative.de — MIRACUM consortium</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">40 min</span></div>
+                  Study the Greifswald THS organisational model publication to understand how an established THS structures its team, defines its service portfolio, and manages its stakeholder relationships.
+                  <div><a href="https://www.ths-greifswald.de/forscher/" class="task-link" target="_blank">ths-greifswald.de — THS for researchers</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">35 min</span></div>
+                  Draft a one-page "stakeholder map" for the THS Leitung at Universitätsmedizin Frankfurt: list each internal and external stakeholder, their primary interest in the THS, and the communication cadence required. Use this as preparation material for the interview.
+                  <div><a href="https://www.unimedizin-ffm.de/forschung-lehre/forschungsinfrastruktur" class="task-link" target="_blank">unimedizin-ffm.de — Research infrastructure</a></div>
+                </li>
+              </ul>
+            </div>
+            <div class="day-card">
+              <div class="day-head">
+                <span class="day-num">Day 3</span>
+                <span class="day-focus">Interview simulation</span>
+              </div>
+              <ul class="day-tasks">
+                <li class="day-task">
+                  <div><span class="task-time">40 min</span></div>
+                  Practise all six interview questions from Section 6 aloud. For each answer, include at least one concrete example from your own career. Aim for answers of 2–3 minutes each — not too short to seem unprepared, not so long as to lose the panel.
+                  <div><a href="https://www.unimedizin-ffm.de/karriere" class="task-link" target="_blank">unimedizin-ffm.de — Karriere (employer context)</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">35 min</span></div>
+                  Write a one-page "90-day plan" for the THS Leitung role: three phases, three priorities each, with a clear rationale. This exercise also produces a document you can reference or even share if asked in the interview.
+                  <div><a href="https://www.medizininformatik-initiative.de/de/aktuelles/publikationen" class="task-link" target="_blank">medizininformatik-initiative.de — MII publications (context for priorities)</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">25 min</span></div>
+                  Review the Universitätsmedizin Frankfurt's current organisational chart and annual report to understand the reporting structure, identify who the THS Leitung would likely report to, and note any recent strategic announcements about research data infrastructure.
+                  <div><a href="https://www.unimedizin-ffm.de/ueber-uns/zahlen-daten-fakten" class="task-link" target="_blank">unimedizin-ffm.de — Zahlen, Daten, Fakten</a></div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab-en -->
+
+
+    <!-- ==================== GERMAN TAB ==================== -->
+    <div id="tab-de" class="tab-content">
+
+      <!-- Abschnitt 1: Was ist das -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Abschnitt 1</span>
+            <h2>Was ist das</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <p>Eine <abbr title="Universitätsmedizin — akademisches medizinisches Zentrum, das Universitätsklinikum und medizinische Fakultät vereint">Universitätsmedizin</abbr> in Deutschland erfüllt gleichzeitig drei Aufgaben: Krankenversorgung, Forschung und Lehre. Dieser Dreifachauftrag prägt jeden Aspekt der Ressourcenverteilung, der Personalentscheidungen und der institutionellen Governance. Einrichtungen wie die Universitätsmedizin Frankfurt sind in der Regel Körperschaften des öffentlichen Rechts — das bedeutet, dass Führungsstrukturen und rechtliche Rahmenbedingungen sich grundlegend von einem privatwirtschaftlichen Unternehmen unterscheiden.</p>
+
+          <p>Eine <strong>Leitungsstelle</strong> auf dieser Ebene bedeutet formale Verantwortung für ein Team, eine Budgetlinie und ein definiertes Leistungsportfolio. Im Fall der Treuhandstelle (<abbr title="Treuhandstelle — Einheit zur datenschutzkonformen Verwaltung von Patienteneinwilligungen und Pseudonymen">THS</abbr>) umfasst die Leitung typischerweise ein kleines Spezialistenteam (in der Regel drei bis acht Mitarbeitende), koordiniert mit klinischen, IT- und datenschutzrechtlichen Stakeholdern und berichtet an einen <abbr title="Chief Medical Informatics Officer oder ärztlichen Direktor — die Führungsperson, der die THS unterstellt ist">CMIO</abbr> oder eine gleichwertige Führungskraft.</p>
+
+          <p>Das Beschäftigungsrecht an deutschen öffentlichen Institutionen wird für den Großteil der Mitarbeitenden durch den <abbr title="Tarifvertrag öffentlicher Dienst — Kollektivvereinbarung für Beschäftigte im öffentlichen Dienst">TVöD</abbr> (Tarifvertrag öffentlicher Dienst) geregelt, für wissenschaftliche Beschäftigte durch die W-Besoldung. Der <abbr title="Personalrat — gesetzliches Gremium der Mitarbeitervertretung mit Mitbestimmungsrechten">Personalrat</abbr> verfügt über gesetzlich verankerte Mitbestimmungsrechte bei Einstellungen, Höhergruppierungen und wesentlichen Organisationsänderungen — eine zentrale Rahmenbedingung für alle, die neu in eine Leitungsrolle im öffentlichen Dienst eintreten.</p>
+
+          <p>Die Budgetplanung an einer Universitätsmedizin folgt einem dualen Modell. Die <strong>Grundfinanzierung</strong> deckt Dauerstellen und laufende Betriebskosten; <strong>Drittmittel</strong> von Fördergebern wie <abbr title="Deutsche Forschungsgemeinschaft">DFG</abbr>, <abbr title="Bundesministerium für Bildung und Forschung">BMBF</abbr> oder EU finanzieren zeitlich befristete Projekte — und damit häufig einen erheblichen Teil der THS-Stellen und -Infrastruktur. Den Unterschied zwischen beiden Finanzierungsquellen zu kennen und sicher mit beiden umzugehen, gehört zu den Kernkompetenzen einer Leitung.</p>
+        </div>
+      </div>
+
+      <!-- Abschnitt 2: Relevanz für diese Stelle -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Abschnitt 2</span>
+            <h2>Relevanz für diese Stelle</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <p>Die Treuhandstelle der Universitätsmedizin Frankfurt ist keine rein technische Serviceeinheit — sie ist eine kleine Organisationseinheit in einem komplexen, politisch sensiblen institutionellen Umfeld. Das Auswahlgremium wird prüfen wollen, ob Ali in diesem Umfeld handlungsfähig ist: ein Team aufbauen, ein öffentliches Budget verantworten, Personalratspflichten kennen und die THS gegenüber Klinikdirektoren, Datenschutzbeauftragten und nationalen Forschungsnetzwerken glaubwürdig vertreten kann. Praktische Leitungskompetenz ist mindestens ebenso wichtig wie technisches Wissen über gICS, gPAS oder das Datenschutzrecht.</p>
+          <ul class="why-list">
+            <li><strong>Mitarbeitergespräche</strong> strukturiert führen und <abbr title="Zielvereinbarungen — formell vereinbarte Leistungsziele zwischen Führungskraft und Beschäftigten">Zielvereinbarungen</abbr> formulieren, die auf die MII/MIRACUM-Lieferverpflichtungen und die strategischen Ziele des Klinikums ausgerichtet sind.</li>
+            <li><strong>Mitbestimmung des Personalrats</strong> bei Neueinstellungen, Änderungen von Stellenbeschreibungen oder Restrukturierungen navigieren — einschließlich des Wissens, welche Maßnahmen volle Zustimmung erfordern und welche nur der Unterrichtung bedürfen.</li>
+            <li>Einen <strong>Jahreshaushaltsplan</strong> vor der Krankenhausleitung planen und verteidigen: laufende Betriebskosten von Investitionen trennen und Drittmittelstellen klar ausweisen.</li>
+            <li><strong>Drittmittelprojektzyklen</strong> steuern: Förderanträge für MII oder BMBF vorbereiten, Verwendungsnachweisfristen einhalten und den Übergang projektfinanzierter Stellen rechtzeitig planen.</li>
+            <li>Ein <strong>Leistungsportfolio</strong> und einen <abbr title="Service Level Agreement">SLA</abbr>-Katalog für THS-Dienste pflegen und Serviceänderungen über die richtigen institutionellen Kanäle kommunizieren.</li>
+            <li>Die THS in <strong>internen Gremien</strong> wie dem IT-Lenkungsausschuss, dem Datenschutzbeirat und dem klinischen Forschungsausschuss vertreten.</li>
+          </ul>
+          <p class="closing">Das Auswahlgremium wird aller Wahrscheinlichkeit nach konkret nachfragen, wie Ali bisher formale Führungsverantwortung ausgeübt hat, wie mit Konflikten im Team umgegangen wurde und wie der Aufbau eines Teams in einer neuen Institution angegangen werden würde.</p>
+        </div>
+      </div>
+
+      <!-- Abschnitt 3: Lernleiter -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Abschnitt 3</span>
+            <h2>Lernleiter: von null zur Interviewreife</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="ladder">
+            <div class="ladder-level l1">
+              <div class="level-head">
+                <span class="level-pill">Stufe 1</span>
+                <span class="level-title">Grundlegendes Verständnis — Begriffe definieren können</span>
+              </div>
+              <div class="level-bullets">
+                <ul>
+                  <li>Verstehen, dass Universitätsmedizin-Einrichtungen unter öffentlichem Recht mit einem Dreifachauftrag (Versorgung, Forschung, Lehre) operieren und dass dies alle Ressourcenentscheidungen prägt.</li>
+                  <li>Wissen, dass der TVöD-K die Entgeltgruppen, Arbeitszeiten und Urlaubsansprüche für Krankenhausbeschäftigte regelt und nicht individuell verhandelt werden kann.</li>
+                  <li>Den Unterschied zwischen Personalrat (öffentlicher Dienst) und Betriebsrat (Privatwirtschaft) kennen und verstehen, dass der Personalrat nach dem HPVG gesetzlich verankerte Mitbestimmungsrechte hat.</li>
+                  <li>Den Unterschied zwischen Grundfinanzierung und Drittmitteln kennen und wissen, dass Drittmittelstellen durch die Laufzeit des jeweiligen Förderprojekts zeitlich begrenzt sind.</li>
+                  <li>Die wichtigsten internen Stakeholder einer THS-Leitung benennen können: CMIO, Personalrat, Datenschutzbeauftragter, DIZ, klinische Abteilungen und die Krankenhausfinanzierung.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="ladder-level l2">
+              <div class="level-head">
+                <span class="level-pill">Stufe 2</span>
+                <span class="level-title">Anwendungswissen — Funktionsweise beschreiben</span>
+              </div>
+              <div class="level-bullets">
+                <ul>
+                  <li>Die TVöD-K Entgeltgruppen E9–E15, das Stufensystem innerhalb jeder Gruppe und die Kriterien für die Eingruppierung einer neuen THS-Stelle erläutern.</li>
+                  <li>Erklären, welche Personalmaßnahmen volle Mitbestimmung (Zustimmung) des Personalrats erfordern, welche nur der Mitwirkung oder Unterrichtung bedürfen, und wie das Stufenvertretungsverfahren bei verweigerter Zustimmung abläuft.</li>
+                  <li>Den Ablauf eines Zielvereinbarungsgesprächs beschreiben: Jahresrhythmus, SMART-Ziele, Dokumentation, Midyear-Review und die Rolle des Leistungsentgelts nach TVöD.</li>
+                  <li>Den Haushaltsplanprozess an einem Universitätsklinikum skizzieren: Einreichungsfristen, Kostenstellenrechnung und den Unterschied zwischen investiven und konsumtiven Ausgaben.</li>
+                  <li>Erklären, wie Drittmittelprojekte administrativ abgewickelt werden: Rolle der Forschungsabteilung, Verwendungsnachweispflichten und Gemeinkostenpauschalen.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="ladder-level l3">
+              <div class="level-head">
+                <span class="level-pill">Stufe 3</span>
+                <span class="level-title">Angewandtes Verständnis — Bezug zu konkreten Aufgaben</span>
+              </div>
+              <div class="level-bullets">
+                <ul>
+                  <li>Eine Teamstruktur für die THS entwerfen, die Grundfinanzierungsstellen und Drittmittelstellen kombiniert und einen Nachfolgeplan für auslaufende MII-Förderphasen enthält.</li>
+                  <li>Die Personalratsunterlagen für die Neubesetzung einer THS-Softwareingenieursstelle zusammenstellen: Stellenbeschreibung, Eingruppierungsbegründung und geplanter Eintrittstermin.</li>
+                  <li>Eine einseitige Budgetverteidigung für den THS-Haushaltsplan vorbereiten, in der laufende Betriebskosten klar von Investitionsausgaben getrennt sind.</li>
+                  <li>Eine Zielvereinbarung für eine THS-Mitarbeiterin entwerfen, die für den gICS-Betrieb zuständig ist — mit messbaren Zielen zu SLA-Verfügbarkeit, MII-Lieferpflichten und persönlicher Weiterentwicklung.</li>
+                  <li>Potenzielle Interessenkonflikte identifizieren, die entstehen, wenn die THS einem klinischen Direktor unterstellt ist, der gleichzeitig ein zentraler Datenkonsument ist, und eine Governance-Lösung vorschlagen.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="ladder-level l4">
+              <div class="level-head">
+                <span class="level-pill">Stufe 4</span>
+                <span class="level-title">Interviewreif — anspruchsvolle Fragen souverän beantworten</span>
+              </div>
+              <div class="level-bullets">
+                <ul>
+                  <li>Darlegen, wie vorzugehen wäre, wenn der Personalrat die Zustimmung zur Neubewertung einer THS-Stelle verweigert — einschließlich der formalen Einigungsstellenverfahren und praktischer Alternativen.</li>
+                  <li>Den Antrag auf eine eigenständige THS-Budgetlinie vor einem skeptischen Krankenhausvorstand argumentativ begründen, anstatt die Kosten über die DIZ oder IT-Abteilung laufen zu lassen.</li>
+                  <li>Beschreiben, wie das Team durch den Übergang nach Auslaufen einer BMBF-Förderung geführt werden würde, wenn zwei Drittmittelstellen entweder in Dauerstellen umgewandelt oder abgebaut werden müssten.</li>
+                  <li>Erläutern, was in den ersten 90 Tagen als THS-Leitung konkret getan werden würde: Stakeholder-Mapping, Prozessinventur, Einzelgespräche mit allen Teammitgliedern und ein erster Überblick über das Leistungsportfolio.</li>
+                  <li>Darstellen, wie in einem kleinen Spezialistenteam psychologische Sicherheit aufgebaut und aufrechterhalten wird, wenn das Wissen auf wenige Personen konzentriert ist und der Abgang einer Schlüsselperson ein ernstes operatives Risiko darstellt.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Abschnitt 4: Unverzichtbares Wissen -->
+      <div class="must-know section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Abschnitt 4</span>
+            <h2>Unverzichtbares Wissen</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="must-know-items">
+            <div class="must-know-item"><span class="flag">⚑</span><span>Der Personalrat an einer hessischen öffentlichen Einrichtung handelt auf Grundlage des <strong>Hessischen Personalvertretungsgesetzes (HPVG)</strong>. Die Mitbestimmung ist zwingend bei Einstellungen, Höhergruppierungen, Disziplinarmaßnahmen und wesentlichen Organisationsänderungen. Eine Maßnahme, die ohne die erforderliche Mitbestimmung durchgeführt wird, ist rechtlich unwirksam.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span><strong>TVöD-K Entgeltgruppen E13–E15</strong> decken die meisten leitenden technischen und wissenschaftlichen Stellen in der Krankenhaus-IT und Forschungsinfrastruktur ab. Stufenaufstiege innerhalb einer Entgeltgruppe erfolgen automatisch nach festgelegten Zeitintervallen (1, 3, 6 Jahre) und liegen nicht im Ermessen der Leitung.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span><strong>Drittmittelstellen sind nicht dauerhaft.</strong> Mitarbeitende auf Projektfinanzierung erhalten befristete Verträge nach dem WissZeitVG oder dem TzBfG. Die Leitung muss Anschlusslösungen 12 bis 18 Monate vor Vertragsende aktiv planen, da die Umwandlung einer Drittmittelstelle in eine Grundfinanzierungsstelle die Genehmigung des Krankenhausvorstands und die Zustimmung des Personalrats erfordert.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Eine <strong>Zielvereinbarung</strong> ist kein informelles Gespräch, sondern ein dokumentierter Jahresprozess mit Unterschriften von Beschäftigten und Leitung. Die Ergebnisse fließen in die Leistungsentgeltverteilung nach TVöD ein. Ohne regelmäßige Zielvereinbarungen können weder Leistungsprobleme strukturiert adressiert noch Entwicklungsmaßnahmen formal begründet werden.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Die <strong>Gleichstellungsbeauftragte</strong> muss in alle Einstellungsverfahren an öffentlichen Einrichtungen einbezogen werden. Sie hat das Recht, an Vorstellungsgesprächen teilzunehmen und Einwände gegen Besetzungsentscheidungen zu erheben, die Frauen benachteiligen könnten. Die Nichtbeteiligung ist ein Verfahrensfehler, der zur Unwirksamkeit der Entscheidung führen kann.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Die Universitätsmedizin Frankfurt gehört dem <strong>MIRACUM-Konsortium</strong> der Medizininformatik-Initiative an. MIRACUM-Fördermittel (BMBF-Drittmittel) haben wesentliche THS- und DIZ-Infrastrukturen in Frankfurt mitfinanziert. Die Leitung muss die Konsortialgoverance kennen: wie Lieferpflichten ausgehandelt werden, wie die Frankfurter Beiträge in den nationalen MII-Arbeitsplan einfließen und wer die relevanten nationalen Ansprechpartner sind.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Eine Leitung an einem Universitätsklinikum agiert häufig in einer <strong>Matrixstruktur</strong>: fachlich berichtet die THS an einen klinischen oder IT-Direktor, forschungsseitig möglicherweise an den Forschungsdekan oder Prorektor. Diese doppelte Berichtslinie souverän zu navigieren und Ressourcen trotz geteilter Zuständigkeiten zu sichern, ist eine zentrale Führungsaufgabe.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Wenn ein Teammitglied eine <strong>formelle Beschwerde</strong> einreicht oder sich auf die <strong>Fürsorgepflicht</strong> des Arbeitgebers beruft, muss die Leitung einem definierten Verfahren folgen: schriftliche Eingangsbestätigung, Untersuchung in festgelegter Frist, dokumentiertes Ergebnis. In kleinen THS-Teams können interpersonelle Konflikte schnell zu operativen Risiken werden — proaktives Konfliktmanagement ist eine Führungskompetenz, nach der aktiv gefragt werden wird.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Abschnitt 5: Glossar -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Abschnitt 5</span>
+            <h2>Glossar</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <table class="glossary-table">
+            <thead>
+              <tr>
+                <th>Begriff</th>
+                <th>Erklärung in einfacher Sprache</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="term-cell">TVöD-K</td>
+                <td>Tarifvertrag öffentlicher Dienst für Krankenhäuser. Regelt Entgeltgruppen (E1–E15), Arbeitszeiten und Urlaubsansprüche für Beschäftigte in kommunalen Krankenhäusern. Wird zwischen der VKA und der Gewerkschaft ver.di ausgehandelt.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Personalrat</td>
+                <td>Gesetzliches Gremium der Mitarbeitervertretung an öffentlichen Einrichtungen. Hat weitergehende Mitbestimmungsrechte als ein privatwirtschaftlicher Betriebsrat. Zuständigkeit und Rechte richten sich im Land Hessen nach dem HPVG.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Mitbestimmung</td>
+                <td>Das gesetzliche Recht des Personalrats, bestimmten Maßnahmen zuzustimmen (nicht nur angehört zu werden) — darunter Einstellungen, Höhergruppierungen und Disziplinarmaßnahmen. Eine ohne Mitbestimmung durchgeführte Maßnahme ist rechtlich unwirksam.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Zielvereinbarung [Performance agreement]</td>
+                <td>Dokumentiertes, jährlich vereinbartes Leistungszieldokument zwischen Leitung und Beschäftigten. Muss unterschrieben werden. Bildet die Grundlage für die Leistungsentgeltverteilung nach TVöD.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Drittmittel [Third-party funding]</td>
+                <td>Projektmittel von externen Fördergebern (DFG, BMBF, EU Horizon). In der Regel zeitlich befristet und zweckgebunden. Auf Drittmitteln beschäftigte Mitarbeitende haben befristete Arbeitsverträge ohne automatischen Anspruch auf Übernahme in ein unbefristetes Arbeitsverhältnis.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Grundfinanzierung [Core funding]</td>
+                <td>Institutionelles Kernbudget: die laufende Finanzierung durch das Krankenhaus oder die Universität für Dauerstellen und laufende Betriebskosten. Stabiler als Drittmittel, aber eine Aufstockung erfordert Vorstandsgenehmigung.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Haushaltsplan [Budget plan]</td>
+                <td>Jährlicher Budgetplan der Einrichtung. Jede Kostenstelle reicht ihre geplanten Ausgaben ein; der Plan wird von der Krankenhausfinanzierung und dem Vorstand geprüft und genehmigt.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Gleichstellungs&shy;beauftragte [Equality officer]</td>
+                <td>Gesetzlich vorgeschriebene Gleichstellungsbeauftragte an allen öffentlichen Einrichtungen. Muss bei Einstellungsverfahren einbezogen werden und hat ein Widerspruchsrecht bei Entscheidungen, die Frauen benachteiligen.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">WissZeitVG</td>
+                <td>Wissenschaftszeitvertragsgesetz — Bundesgesetz zur Regelung befristeter Arbeitsverträge im akademischen Bereich. Begrenzt Gesamtlaufzeiten und Verlängerungsgründe. Gilt für THS-Mitarbeitende auf Forschungsdrittmitteln.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">HPVG</td>
+                <td>Hessisches Personalvertretungsgesetz — das hessische Landesgesetz zur Mitarbeitervertretung. Regelt die konkreten Mitbestimmungs- und Mitwirkungsrechte des Personalrats an Einrichtungen wie der Universitätsmedizin Frankfurt.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Leistungsentgelt [Performance pay]</td>
+                <td>Leistungsabhängige Vergütungsprämie nach TVöD, die jährlich auf Basis von Mitarbeitergesprächen und Zielvereinbarungsergebnissen ausgezahlt wird. Der Gesamtbetrag ist durch ein nationales Budget-Envelope begrenzt.</td>
+              </tr>
+              <tr>
+                <td class="term-cell">Verwendungsnachweis [Grant accountability report]</td>
+                <td>Abschlussbericht gegenüber dem Fördergeber (z.B. BMBF, DFG) nach Ablauf einer Förderperiode. Dokumentiert die Mittelverwendung und belegt die Einhaltung der Förderbedingungen.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Abschnitt 6: Mögliche Interviewfragen -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Abschnitt 6</span>
+            <h2>Mögliche Interviewfragen</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="accordion">
+
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                Schildern Sie bitte eine Situation, in der Sie formale Führungsverantwortung übernommen haben — idealerweise in einem regulierten oder institutionellen Kontext.
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <p class="acc-strategy-label">Antwortstrategie</p>
+                <p>Aus dem nationalen ePA-Rollout ein konkretes Beispiel wählen: das geleitete Team oder die koordinierte Arbeitsgruppe beschreiben, den eigenen Entscheidungsspielraum benennen und eine spezifische Herausforderung schildern — etwa konkurrierende Stakeholder-Prioritäten oder einen technischen Verzug. Das Ergebnis sollte in Teamleistungen und gewonnenen Lerneffekten formuliert sein. Vage Allgemeinaussagen vermeiden — das Gremium will Konkretes: Teamgröße, Verantwortungsumfang, erzielte Ergebnisse.</p>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                Wie würden Sie die ersten 90 Tage als THS-Leitung gestalten — was wären Ihre Prioritäten?
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <p class="acc-strategy-label">Antwortstrategie</p>
+                <p>Die Antwort in drei Phasen gliedern: zuhören und verstehen (Wochen 1–4: Einzelgespräche mit allen Teammitgliedern, Stakeholder-Mapping, Sichtung vorhandener Dokumentation und SLAs), einschätzen und priorisieren (Wochen 5–8: operative Risiken identifizieren, Budget und auslaufende Drittmittelfristen überprüfen, offene IT- und Compliance-Punkte erfassen) und behutsam gestalten (Wochen 9–12: ein bis zwei sichtbare Verbesserungen für frühe Glaubwürdigkeit, ohne übermäßige Veränderungsversprechen). Betonen, dass bestehende Routinen erst verstanden werden sollten, bevor sie angetastet werden.</p>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                Wie gehen Sie mit einer Schlüsselperson im Team um, die möglicherweise kündigen will — etwa weil ihr Drittmittelvertrag ausläuft?
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <p class="acc-strategy-label">Antwortstrategie</p>
+                <p>Die strukturelle Realität zeigen: Drittmittelstellen sind befristet, und gute Mitarbeitende planen ihren nächsten Schritt früh. Einen zweigleisigen Ansatz beschreiben: proaktiv prüfen, ob die Stelle erhalten werden kann (Umwandlung in eine Dauerstelle, Überbrückungsfinanzierung aus einem anderen Projekt, Folgeprojektantrag), und parallel sicherstellen, dass Wissen dokumentiert und im Team breit verankert ist, damit ein Abgang keinen kritischen Engpass verursacht. Auf HPVG- und WissZeitVG-Rahmenbedingungen eingehen und deutlich machen, dass jede Vertragsverlängerung oder Umsetzung den Personalrat einbezieht.</p>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                Wie würden Sie mit einem Interessenkonflikt umgehen, wenn ein leitender Kliniker, der gleichzeitig Hauptdatenkonsument der THS ist, Druck auf Ihre Entscheidungen ausübt?
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <p class="acc-strategy-label">Antwortstrategie</p>
+                <p>Dies ist eine Frage nach institutionellem Mut und strukturellem Denken. Anerkennen, dass diese Spannung dem Wesen einer Treuhandstelle inhärent ist — ihr Wert beruht gerade auf ihrer wahrgenommenen Unabhängigkeit. Strukturelle Sicherungen vorschlagen: ein formales Geschäftsordnungsdokument für die THS, das die Entscheidungsautonomie festschreibt, einen Eskalationspfad zum Datenschutzbeauftragten oder Ethikausschuss für strittige Fälle und eine transparente Dokumentation aller Datenzugangsentscheidungen. Das Thema nicht als Persönlichkeitskonflikt formulieren — das Gremium erwartet systemische Lösungsansätze.</p>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                Wie würden Sie die fachliche Weiterentwicklung eines kleinen, hochspezialisierten Teams fördern, in dem externe Weiterbildungsangebote begrenzt sind?
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <p class="acc-strategy-label">Antwortstrategie</p>
+                <p>Einen gemischten Ansatz beschreiben: kollegiales Lernen im Team (interne Vorträge, gemeinsame Dokumentations-Sprints, Code- oder Prozessreviews), aktive Einbindung in die nationale THS-Community (Greifswalder Workshops, MII-Arbeitsgruppen, NUM-Netzwerkveranstaltungen) und gezielte externe Weiterbildung für spezifische Lücken (z.B. Datenschutzrechtsaktualisierungen, FHIR-R5-Neuerungen). Betonen, dass die Zielvereinbarung das Instrument ist, um individuelle Entwicklungsziele zu formalisieren und in Mitarbeitergesprächen sichtbar zu machen. In kleinen Teams ist die Sicherung von institutionellem Wissen ein Führungsrisiko, dem gezieltes Kompetenzmanagement direkt entgegenwirkt.</p>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button class="acc-trigger" onclick="toggleAcc(this)">
+                Wie planen und verteidigen Sie ein Budget für eine Serviceeinheit im Universitätsklinikum — und was tun Sie, wenn Ihr Budgetantrag erheblich gekürzt wird?
+                <span class="acc-chevron">▾</span>
+              </button>
+              <div class="acc-body">
+                <p class="acc-strategy-label">Antwortstrategie</p>
+                <p>Vertrautheit mit dem Haushaltsplanprozess zeigen: Kostenstellenrechnung, Unterschied zwischen konsumtiven und investiven Ausgaben, Rolle der Finanzabteilung bei der Deckungsmittelfestlegung. Bei Kürzungen einen Triageansatz beschreiben: Kosten schützen, die für regulatorische Compliance und Servicekontinuität unerlässlich sind (Serverlizenzen, Mindestbesetzung), darzustellende Posten benennen, die aufgeschoben werden müssten (Infrastrukturausbau, neue Serviceleistungen), und das verbleibende Risiko formal dokumentieren, damit die Krankenhausleitung den Trade-off versteht und bewusst akzeptiert. Nie den Eindruck erwecken, eine Kürzung still hinzunehmen.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Abschnitt 7: Verbindungen zur bisherigen Erfahrung -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Abschnitt 7</span>
+            <h2>Verbindungen zu Ihrer bisherigen Erfahrung</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="connections-grid">
+            <div class="connection-card">
+              <span class="conn-badge">Nationale EHR-Einführung</span>
+              <p class="conn-text">Die bundesweite ePA-Einführung erforderte die Koordination zahlreicher institutioneller Akteure — Krankenkassen, Apotheken, Praxen, Krankenhaus-IT — ohne formale Weisungsbefugnis gegenüber den meisten Beteiligten. Genau dieser Führungsmodus — Wirkung durch Überzeugung statt durch Hierarchie — ist der Alltag einer THS-Leitung beim Umgang mit DIZ, Kliniken und CMIO. Ali kann konkrete Beispiele nennen, wie unter institutionellem und politischem Druck unterschiedliche Stakeholder auf gemeinsame Lieferziele ausgerichtet wurden.</p>
+            </div>
+            <div class="connection-card">
+              <span class="conn-badge">FHIR-Implementierung</span>
+              <p class="conn-text">Technische Leitungsarbeit in FHIR-Implementierungsprojekten beinhaltet das Setzen von Standards, die Prüfung der Arbeitsergebnisse anderer und das Treffen von Architekturentscheidungen mit Auswirkungen auf nachgelagerte Teams — ein direktes Analogon zur THS-Serviceownership-Rolle. Die Erfahrung, technische Entscheidungen in cross-funktionalen Umgebungen begründen und verteidigen zu können, verleiht in Gesprächen mit klinisch-informatischen Kolleginnen und Kollegen die nötige fachliche Autorität.</p>
+            </div>
+            <div class="connection-card">
+              <span class="conn-badge">DSGVO / DiaTwin</span>
+              <p class="conn-text">Das DiaTwin-Projekt erforderte die Arbeit innerhalb einer formalen Governance-Struktur mit Datenschutzbeauftragten, Ethikkommissionen und institutionellen Freigabeprozessen — ein der Universitätsmedizin sehr ähnliches Umfeld. Die Vertrautheit mit strukturierter Risikobeurteilung und formalen Genehmigungsverfahren ist direkt auf die THS-Leitungsrolle übertragbar, in der jede wesentliche Serviceänderung vergleichbare Freigabewege durchlaufen muss.</p>
+            </div>
+            <div class="connection-card">
+              <span class="conn-badge">Approbation (§11 BApO)</span>
+              <p class="conn-text">Als approbierter Apotheker ist Ali das Arbeiten in einem Umfeld gewohnt, in dem professionelle Haftung, lückenlose Dokumentation und verbindliche Protokolle keine Optionen, sondern Selbstverständlichkeiten sind. Diese Grundhaltung — erst dokumentieren, dann handeln, Auffälligkeiten sofort und formal eskalieren — entspricht exakt der Führungskultur, die in einer öffentlichen Universitätsklinik erwartet wird, und prägt das Selbstverständnis einer Treuhandstellenleitung.</p>
+            </div>
+            <div class="connection-card">
+              <span class="conn-badge">M.Sc. Digital Health</span>
+              <p class="conn-text">Ein Masterstudiengang Digital Health umfasst typischerweise Module zu Governance digitaler Gesundheitssysteme, organisatorischen Aspekten der Digitalisierung im Krankenhaus und dem regulatorischen Rahmen für digitale Gesundheitsanwendungen. Ali kann diese akademische Grundlage nutzen, um gegenüber der Krankenhausleitung die strategische Bedeutung von THS-Investitionen zu argumentieren und die Arbeit der Einheit in den übergeordneten nationalen Gesundheitsdaten-Policy-Kontext einzubetten.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Abschnitt 8: 3-Tage-Lernplan -->
+      <div class="section">
+        <button class="section-toggle open" onclick="toggleSection(this)">
+          <div class="toggle-left">
+            <span class="section-label">Abschnitt 8</span>
+            <h2>3-Tage-Lernplan</h2>
+          </div>
+          <span class="section-chevron">▾</span>
+        </button>
+        <div class="section-body">
+          <div class="study-plan">
+            <div class="day-card">
+              <div class="day-head">
+                <span class="day-num">Tag 1</span>
+                <span class="day-focus">Grundlagen</span>
+              </div>
+              <ul class="day-tasks">
+                <li class="day-task">
+                  <div><span class="task-time">45 Min.</span></div>
+                  Die TVöD-K-Entgelttabelle und die wichtigsten Regelungen zu Entgeltgruppen, Stufensystem und Sonderzahlungen lesen. Verstehen, welche Gruppen für THS-Stellen relevant sind und nach welchen Kriterien eingruppiert wird.
+                  <div><a href="https://www.tvoed.de/tarifvertrag/tvoed-k" class="task-link" target="_blank">tvoed.de — TVöD-K Übersicht</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">40 Min.</span></div>
+                  Die Mitbestimmungstatbestände des HPVG (§§ 68–80) im Volltext studieren. Eine eigene Liste der zustimmungspflichtigen Maßnahmen anlegen — als Checkliste für künftige Personalentscheidungen.
+                  <div><a href="https://www.rv.hessenrecht.hessen.de/bshe/document/jlr-PersVGHE2004rahmen" class="task-link" target="_blank">hessenrecht.hessen.de — HPVG Volltext</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">30 Min.</span></div>
+                  Die Informationen zur Drittmittelverwaltung der Goethe-Universität Frankfurt lesen: welche Schritte die Forschungsabteilung übernimmt, welche Pflichten bei der Leitung verbleiben und welche Fristen für Verwendungsnachweise typischerweise gelten.
+                  <div><a href="https://www.uni-frankfurt.de/69826929/Forschungsfoerderung" class="task-link" target="_blank">uni-frankfurt.de — Forschungsförderung</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">25 Min.</span></div>
+                  Die BMBF-Informationen zum WissZeitVG lesen, um die Befristungsregeln für THS-Mitarbeitende auf Forschungsdrittmitteln zu verstehen — insbesondere die Höchstgrenzen für Vertragslaufzeiten und Verlängerungsmöglichkeiten.
+                  <div><a href="https://www.bmbf.de/bmbf/shareddocs/bekanntmachungen/de/2023/01/2023-01-23-wisszeitvg.html" class="task-link" target="_blank">bmbf.de — WissZeitVG Information</a></div>
+                </li>
+              </ul>
+            </div>
+            <div class="day-card">
+              <div class="day-head">
+                <span class="day-num">Tag 2</span>
+                <span class="day-focus">THS-Mechanik</span>
+              </div>
+              <ul class="day-tasks">
+                <li class="day-task">
+                  <div><span class="task-time">45 Min.</span></div>
+                  Die MII-Konsortialseite für MIRACUM studieren: Governance-Struktur, Lieferverpflichtungen der Frankfurter Standortpartner und Berührungspunkte zwischen THS, DIZ und dem nationalen MII-Arbeitsplan.
+                  <div><a href="https://www.medizininformatik-initiative.de/de/konsortien/miracum" class="task-link" target="_blank">medizininformatik-initiative.de — MIRACUM</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">40 Min.</span></div>
+                  Auf der Greifswalder THS-Website das Organisationsmodell und die Servicekategorien der dortigen Treuhandstelle studieren — als Vergleichsreferenz für die eigene Serviceportfolio-Planung in Frankfurt.
+                  <div><a href="https://www.ths-greifswald.de/forscher/" class="task-link" target="_blank">ths-greifswald.de — THS für Forschende</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">35 Min.</span></div>
+                  Eine einseitige Stakeholder-Übersicht für die THS-Leitung an der Universitätsmedizin Frankfurt erstellen: alle internen und externen Stakeholder auflisten, ihr primäres Interesse an der THS beschreiben und den erforderlichen Kommunikationsrhythmus festlegen. Das Dokument als Interviewvorbereitung nutzen.
+                  <div><a href="https://www.unimedizin-ffm.de/forschung-lehre/forschungsinfrastruktur" class="task-link" target="_blank">unimedizin-ffm.de — Forschungsinfrastruktur</a></div>
+                </li>
+              </ul>
+            </div>
+            <div class="day-card">
+              <div class="day-head">
+                <span class="day-num">Tag 3</span>
+                <span class="day-focus">Interviewsimulation</span>
+              </div>
+              <ul class="day-tasks">
+                <li class="day-task">
+                  <div><span class="task-time">40 Min.</span></div>
+                  Alle sechs Interviewfragen aus Abschnitt 6 laut üben. Jede Antwort sollte mindestens ein konkretes Beispiel aus der eigenen Berufspraxis enthalten und nicht länger als drei Minuten dauern.
+                  <div><a href="https://www.unimedizin-ffm.de/karriere" class="task-link" target="_blank">unimedizin-ffm.de — Karriere (Arbeitgeberprofil)</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">35 Min.</span></div>
+                  Einen einseitigen 90-Tage-Plan für die THS-Leitungsrolle schreiben: drei Phasen mit je drei Prioritäten und einer klaren Begründung. Das Dokument kann im Interview als Gesprächsgrundlage genutzt oder auf Nachfrage vorgestellt werden.
+                  <div><a href="https://www.medizininformatik-initiative.de/de/aktuelles/publikationen" class="task-link" target="_blank">medizininformatik-initiative.de — MII-Publikationen</a></div>
+                </li>
+                <li class="day-task">
+                  <div><span class="task-time">25 Min.</span></div>
+                  Den aktuellen Jahresbericht und die Organisationsseite der Universitätsmedizin Frankfurt sichten: Berichtsstrukturen, strategische Schwerpunkte und aktuelle Ankündigungen zur Forschungsdateninfrastruktur, um im Interview institutionskontextbezogene Antworten geben zu können.
+                  <div><a href="https://www.unimedizin-ffm.de/ueber-uns/zahlen-daten-fakten" class="task-link" target="_blank">unimedizin-ffm.de — Zahlen, Daten, Fakten</a></div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab-de -->
+
+  </div><!-- /.body -->
+</main>
+
+<script>
+function switchTab(lang, btn) {
+  document.querySelectorAll('.tab-content').forEach(function(tc) {
+    tc.classList.remove('active');
+  });
+  document.querySelectorAll('.tab-btn').forEach(function(tb) {
+    tb.classList.remove('active');
+  });
+  var target = document.getElementById('tab-' + lang);
+  if (target) target.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (target) {
+    target.querySelectorAll('.acc-trigger.open').forEach(function(t) {
+      t.classList.remove('open');
+    });
+    target.querySelectorAll('.acc-body.open').forEach(function(b) {
+      b.classList.remove('open');
+    });
+  }
+}
+
+function toggleSection(trigger) {
+  var body = trigger.nextElementSibling;
+  if (!body) return;
+  var isOpen = trigger.classList.contains('open');
+  if (isOpen) {
+    trigger.classList.remove('open');
+    body.classList.add('hidden');
+  } else {
+    trigger.classList.add('open');
+    body.classList.remove('hidden');
+  }
+}
+
+function toggleAcc(trigger) {
+  var body = trigger.nextElementSibling;
+  if (!body) return;
+  var tab = trigger.closest('.tab-content');
+  if (!tab) return;
+  var isOpen = trigger.classList.contains('open');
+  tab.querySelectorAll('.acc-trigger.open').forEach(function(t) {
+    t.classList.remove('open');
+  });
+  tab.querySelectorAll('.acc-body.open').forEach(function(b) {
+    b.classList.remove('open');
+  });
+  if (!isOpen) {
+    trigger.classList.add('open');
+    body.classList.add('open');
+  }
+}
+</script>
+
+</body>
+</html>

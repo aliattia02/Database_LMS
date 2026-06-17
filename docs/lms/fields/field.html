@@ -3,34 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LMS Platform</title>
-  <link rel="stylesheet" href="../core/styles.css" />
+  <title>Redirecting…</title>
+  <!--
+    field.html — redirect shim (Issue 1 fix)
+
+    This file previously drove a standalone multi-page view via field-page.js.
+    The canonical entry point is now index.html (the SPA / app.js), which
+    handles field selection internally via the ?field= query param.
+
+    Old URL: lms/fields/field.html?id=<fieldId>
+    New URL: ../../index.html?field=<fieldId>
+
+    field-page.js is no longer imported here. It can be removed from the repo
+    once you confirm no other page links to it directly.
+  -->
+  <script>
+    (function () {
+      var id = new URLSearchParams(location.search).get('id');
+      // Build the path to index.html from lms/fields/ — two levels up.
+      var base = '../../index.html';
+      // Redirect, preserving the field id so app.js restores the right view.
+      // If no id was given (e.g. a stale bookmark), go to the root.
+      location.replace(id ? base + '?field=' + encodeURIComponent(id) : base);
+    })();
+  </script>
 </head>
 <body>
-
-  <div class="fields-landing">
-    <header class="fields-header">
-
-      <div class="field-page-nav">
-        <a href="../../index.html" class="back-link">
-          ← <span data-i18n="fields.tagline">Fields</span>
-        </a>
-        <div class="lang-switcher" aria-label="Language">
-          <button data-lang="en" class="lang-btn active" type="button">EN</button>
-          <button data-lang="ar" class="lang-btn"        type="button">AR</button>
-        </div>
-      </div>
-
-      <div id="field-icon"  class="field-page-icon">📚</div>
-      <h1 id="field-title">Loading…</h1>
-      <p  id="field-subtitle" class="field-page-sub"></p>
-    </header>
-
-    <div id="modules-grid" class="fields-grid">
-      <!-- module cards injected by field-page.js -->
-    </div>
-  </div>
-
-  <script type="module" src="../core/field-page.js"></script>
+  <!-- Shown only if JS is disabled — extremely unlikely in this app context. -->
+  <p style="font-family:sans-serif;padding:2rem">
+    Redirecting… <a href="../../index.html">Click here if not redirected.</a>
+  </p>
 </body>
 </html>
