@@ -4,148 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Topic 0: Treuhandstelle — Big Picture | Interview Prep</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --navy:        #0f172a;
-  --navy2:       #1e293b;
-  --slate:       #475569;
-  --muted:       #94a3b8;
-  --border:      #e2e8f0;
-  --bg:          #f8fafc;
-  --white:       #ffffff;
-  --amber-bg:    #fffbeb;
-  --amber-border:#f59e0b;
-  --amber-text:  #92400e;
-  --radius:      10px;
-  --shadow:      0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 15px;
-  line-height: 1.65;
-  background: var(--bg);
-  color: var(--navy);
-}
-
-/* HEADER */
-.header { background: var(--navy); color: #fff; padding: 28px 24px 20px; }
-.header-inner { max-width: 860px; margin: 0 auto; }
-.header-meta {
-  font-size: 10.5px; font-weight: 700; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
-}
-.header h1 {
-  font-size: clamp(20px, 4vw, 28px); font-weight: 700;
-  line-height: 1.25; margin-bottom: 8px;
-}
-.header-sub { font-size: 13.5px; color: #94a3b8; max-width: 600px; }
-
-/* TABS */
-.tabs-bar {
-  background: var(--navy); position: sticky; top: 0; z-index: 100;
-  border-bottom: 2px solid rgba(255,255,255,0.07);
-}
-.tabs-inner { max-width: 860px; margin: 0 auto; padding: 0 24px; display: flex; }
-.tab-btn {
-  font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; font-weight: 600;
-  padding: 10px 22px; border-radius: 8px 8px 0 0; background: transparent;
-  color: var(--muted); border: none; cursor: pointer; transition: background .15s, color .15s;
-}
-.tab-btn.active { background: var(--bg); color: var(--navy); }
-.tab-btn:not(.active):hover { color: #fff; }
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-/* BODY */
-.body { max-width: 860px; margin: 0 auto; padding: 28px 20px 64px; }
-
-/* GRID */
-.branches-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-@media (max-width: 680px)  { .branches-grid { grid-template-columns: 1fr; } }
-@media (min-width: 681px) and (max-width: 960px) { .branches-grid { grid-template-columns: repeat(2, 1fr); } }
-
-/* BRANCH CARD */
-.branch-card {
-  background: var(--white); border: 1px solid var(--border);
-  border-radius: var(--radius); box-shadow: var(--shadow);
-  overflow: hidden; display: flex; flex-direction: column;
-}
-.branch-header {
-  display: flex; align-items: center; gap: 10px;
-  padding: 13px 16px 11px; border-bottom: 1px solid var(--border);
-}
-.branch-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
-.branch-title { font-size: 13px; font-weight: 700; color: var(--navy); }
-.branch-items { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 6px; }
-
-/* CHILD BUTTON */
-.branch-item {
-  width: 100%; display: flex; align-items: center; justify-content: space-between;
-  gap: 8px; padding: 9px 12px; border-radius: 8px; border: 1.5px solid transparent;
-  cursor: pointer; text-align: left; font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 13px; color: var(--navy); transition: filter .12s;
-}
-.branch-item:hover { filter: brightness(0.96); }
-.item-label { flex: 1; }
-.must-badge {
-  font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
-  flex-shrink: 0; background: #fef3c7; color: #92400e;
-}
-.branch-item.active .must-badge { background: rgba(255,255,255,0.28); color: #fff; }
-
-/* INFO PANEL — inline, right below the clicked button */
-.item-panel {
-  display: none; border-radius: 8px; border-left: 3px solid #ccc;
-  padding: 14px 14px 12px; font-size: 13px;
-}
-.item-panel.open { display: block; }
-
-.must-know-inline {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
-  margin-bottom: 9px; background: var(--amber-bg); color: var(--amber-text);
-  border: 1px solid #fde68a;
-}
-.panel-info { color: var(--navy2); line-height: 1.6; margin-bottom: 11px; }
-.panel-meta { display: flex; flex-direction: column; gap: 7px; }
-.panel-row { display: flex; flex-direction: column; gap: 2px; }
-.panel-row-label {
-  font-size: 10px; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--muted);
-}
-.panel-row-text { font-size: 12.5px; color: var(--slate); line-height: 1.5; }
-.panel-topic { font-size: 12.5px; font-weight: 600; }
-
-/* LEGEND */
-.legend {
-  margin-top: 24px; padding: 16px 20px;
-  background: var(--white); border: 1px solid var(--border);
-  border-radius: var(--radius); box-shadow: var(--shadow);
-}
-.legend-title {
-  font-size: 10.5px; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
-}
-.legend-items { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; }
-.legend-item { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--slate); }
-.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-.legend-must {
-  font-size: 12px; color: var(--amber-text); font-weight: 600;
-  padding-left: 16px; margin-left: 4px; border-left: 1px solid var(--border);
-}
-</style>
+<link rel="stylesheet" href="./theme.css"/>
 </head>
 <body>
 
+<div class="home-nav">
+  <a class="home-link" href="./index.html">← Back to main page</a>
+</div>
+
 <header class="header">
   <div class="header-inner">
-    <nav style="margin-bottom:14px;">
-      <a href="./index.html" style="color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;">&#8592; Home</a>
-    </nav>
     <div class="header-meta">Interview Prep &mdash; Topic 0</div>
     <h1>Treuhandstelle &mdash; The Big Picture</h1>
     <p class="header-sub">An interactive overview of the full ecosystem. Tap any item to see what it is, why it matters for the job, and which topic to study next.</p>
@@ -362,95 +230,10 @@ var DATA = {
     ]
   }
 };
-
-/* ── RENDER ── */
-function buildGrid(lang) {
-  var d    = DATA[lang];
-  var grid = document.getElementById('grid-' + lang);
-  var leg  = document.getElementById('legend-' + lang);
-  var html = '';
-
-  d.branches.forEach(function(b, bi) {
-    html += '<div class="branch-card">';
-    html += '<div class="branch-header" style="background:' + b.bg + ';border-bottom-color:' + b.border + '">';
-    html += '<span class="branch-dot" style="background:' + b.color + '"></span>';
-    html += '<span class="branch-title">' + b.title + '</span>';
-    html += '</div><div class="branch-items">';
-
-    b.children.forEach(function(c, ci) {
-      var id = lang + '-' + bi + '-' + ci;
-      html += '<button class="branch-item" id="btn-' + id + '"'
-            + ' style="background:' + b.bg + ';border-color:' + b.border + '"'
-            + ' onclick="toggle(\'' + id + '\',\'' + b.color + '\',\'' + b.bg + '\',\'' + b.border + '\')">';
-      html += '<span class="item-label">' + c.label + '</span>';
-      if (c.mk) html += '<span class="must-badge">&#9873;</span>';
-      html += '</button>';
-
-      html += '<div class="item-panel" id="panel-' + id + '"'
-            + ' style="border-left-color:' + b.color + ';background:' + b.bg + '">';
-      if (c.mk) {
-        html += '<div class="must-know-inline">&#9873; ' + d.mustLabel + '</div>';
-      }
-      html += '<p class="panel-info">' + c.info + '</p>';
-      html += '<div class="panel-meta">';
-      html += '<div class="panel-row"><span class="panel-row-label">' + d.whyLabel + '</span>'
-            + '<span class="panel-row-text">' + c.why + '</span></div>';
-      html += '<div class="panel-row"><span class="panel-row-label">' + d.studyLabel + '</span>'
-            + '<span class="panel-topic" style="color:' + b.color + '">' + c.topic + '</span></div>';
-      html += '</div></div>';
-    });
-
-    html += '</div></div>';
-  });
-
-  grid.innerHTML = html;
-
-  var lh = '<div class="legend-title">' + d.legendTitle + '</div><div class="legend-items">';
-  d.branches.forEach(function(b) {
-    lh += '<div class="legend-item"><span class="legend-dot" style="background:' + b.color + '"></span>' + b.title + '</div>';
-  });
-  lh += '<div class="legend-must">' + d.legendMust + '</div></div>';
-  leg.innerHTML = lh;
-}
-
-function toggle(id, color, bg, border) {
-  var panel  = document.getElementById('panel-' + id);
-  var btn    = document.getElementById('btn-'   + id);
-  var isOpen = panel.classList.contains('open');
-
-  // Close all in this tab
-  var tab = btn.closest('.tab-content');
-  tab.querySelectorAll('.item-panel.open').forEach(function(p) { p.classList.remove('open'); });
-  tab.querySelectorAll('.branch-item.active').forEach(function(b) {
-    b.classList.remove('active');
-    b.style.background   = '';
-    b.style.borderColor  = '';
-    b.style.color        = '';
-  });
-
-  if (!isOpen) {
-    panel.classList.add('open');
-    btn.classList.add('active');
-    btn.style.background  = color;
-    btn.style.borderColor = color;
-    btn.style.color       = '#fff';
-    setTimeout(function() {
-      panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
-    }, 50);
-  }
-}
-
-function switchTab(lang, clickedBtn) {
-  document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
-  document.querySelectorAll('.tab-btn').forEach(function(b)     { b.classList.remove('active'); });
-  document.getElementById('tab-' + lang).classList.add('active');
-  clickedBtn.classList.add('active');
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  buildGrid('en');
-  buildGrid('de');
-});
+</script>
+<script src="./lesson-ui.js"></script>
+<script>
+initMindmap(DATA);
 </script>
 </body>
 </html>

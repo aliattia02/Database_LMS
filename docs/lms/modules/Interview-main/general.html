@@ -4,137 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>General Interview Questions | Treuhandstelle Interview Prep</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./theme.css"/>
 <style>
-:root {
-  --navy:        #0f172a;
-  --navy2:       #1e293b;
-  --slate:       #475569;
-  --muted:       #94a3b8;
-  --border:      #e2e8f0;
-  --bg:          #f8fafc;
-  --white:       #ffffff;
-  --amber-bg:    #fffbeb;
-  --amber-border:#f59e0b;
-  --amber-text:  #92400e;
-  --green-bg:    #f0fdf4;
-  --green-border:#86efac;
-  --green-text:  #166534;
-  --blue-bg:     #eff6ff;
-  --blue-border: #bfdbfe;
-  --blue-text:   #1e40af;
-  --radius:      10px;
-  --shadow:      0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 15px;
-  line-height: 1.65;
-  background: var(--bg);
-  color: var(--navy);
-}
+/* ── General-page-specific styles only — see theme.css for everything else ── */
 
-/* HEADER */
-.header { background: var(--navy); color: #fff; padding: 28px 24px 20px; }
-.header-inner { max-width: 860px; margin: 0 auto; }
-.header-meta {
-  font-size: 10.5px; font-weight: 700; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
-}
-.header h1 {
-  font-size: clamp(20px, 4vw, 28px); font-weight: 700;
-  line-height: 1.25; margin-bottom: 8px;
-}
-.header-sub { font-size: 13.5px; color: #94a3b8; max-width: 640px; }
-
-/* TABS */
-.tabs-bar {
-  background: var(--navy); position: sticky; top: 0; z-index: 100;
-  border-bottom: 2px solid rgba(255,255,255,0.07);
-}
-.tabs-inner { max-width: 860px; margin: 0 auto; padding: 0 24px; display: flex; }
-.tab-btn {
-  font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; font-weight: 600;
-  padding: 10px 22px; border-radius: 8px 8px 0 0; background: transparent;
-  color: var(--muted); border: none; cursor: pointer; transition: background .15s, color .15s;
-}
-.tab-btn.active { background: var(--bg); color: var(--navy); }
-.tab-btn:not(.active):hover { color: #fff; }
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-/* BODY */
-.body { max-width: 860px; margin: 0 auto; padding: 28px 20px 72px; }
-
-/* PROGRESS BAR */
-.progress-bar {
-  background: var(--white); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 14px 18px; margin-bottom: 24px;
-  box-shadow: var(--shadow); display: flex; align-items: center; gap: 16px;
-  flex-wrap: wrap;
-}
-.progress-label { font-size: 11.5px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: .08em; color: var(--slate); white-space: nowrap; }
-.progress-track { flex: 1; min-width: 120px; height: 7px; background: var(--border);
-  border-radius: 99px; overflow: hidden; }
-.progress-fill { height: 100%; border-radius: 99px; background: #2563eb;
-  transition: width .4s ease; }
-.progress-count { font-size: 12px; font-weight: 600; color: var(--slate); white-space: nowrap; }
-
-/* SECTION HEADER */
-.section-header {
-  display: flex; align-items: center; gap: 12px;
-  margin: 32px 0 14px;
-}
-.section-icon {
-  width: 34px; height: 34px; border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; flex-shrink: 0;
-}
-.section-title { font-size: 16px; font-weight: 700; color: var(--navy); }
-.section-subtitle { font-size: 12.5px; color: var(--slate); margin-top: 2px; }
-
-/* QUESTION CARD */
-.q-card {
-  background: var(--white); border: 1px solid var(--border);
-  border-radius: var(--radius); box-shadow: var(--shadow);
-  margin-bottom: 10px; overflow: hidden;
-}
-.q-trigger {
-  width: 100%; display: flex; align-items: flex-start; gap: 12px;
-  padding: 15px 16px; background: transparent; border: none; cursor: pointer;
-  text-align: left; font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 14px; font-weight: 600; color: var(--navy);
-  transition: background .12s;
-}
-.q-trigger:hover { background: var(--bg); }
-.q-trigger.open { background: var(--blue-bg); border-bottom: 1px solid var(--blue-border); }
-.q-num {
-  font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500;
-  color: var(--muted); padding-top: 2px; flex-shrink: 0; min-width: 24px;
-}
-.q-text { flex: 1; line-height: 1.45; }
-.q-badges { display: flex; gap: 6px; flex-shrink: 0; align-items: flex-start; padding-top: 1px; }
+/* Question badges (must / common / tricky) */
 .badge {
   font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 4px;
   white-space: nowrap;
 }
-.badge-must { background: #fef3c7; color: #92400e; }
-.badge-common { background: #dbeafe; color: #1e40af; }
-.badge-tricky { background: #fce7f3; color: #9d174d; }
-.q-arrow { font-size: 12px; color: var(--muted); padding-top: 3px; flex-shrink: 0;
-  transition: transform .2s; }
+.badge-must    { background: #fef3c7; color: #92400e; }
+.badge-common  { background: #dbeafe; color: #1e40af; }
+.badge-tricky  { background: #fce7f3; color: #9d174d; }
+.q-arrow {
+  font-size: 12px; color: var(--muted); padding-top: 3px; flex-shrink: 0;
+  transition: transform .2s;
+}
 .q-trigger.open .q-arrow { transform: rotate(180deg); }
 
-/* ANSWER PANEL */
-.q-panel {
-  display: none; padding: 18px 20px 16px 52px;
-  border-top: 1px solid var(--border);
-}
-.q-panel.open { display: block; }
+/* Answer panel on this page is indented to align with .q-num */
+.q-panel { padding: 18px 20px 16px 52px; }
 
 .strategy-label {
   font-size: 10px; font-weight: 700; letter-spacing: .1em;
@@ -163,8 +52,10 @@ body {
   display: flex; gap: 10px; align-items: flex-start;
   font-size: 13.5px; color: var(--navy2); line-height: 1.55;
 }
-.key-point-dot { width: 7px; height: 7px; border-radius: 50%; background: #2563eb;
-  flex-shrink: 0; margin-top: 7px; }
+.key-point-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: #2563eb;
+  flex-shrink: 0; margin-top: 7px;
+}
 
 .phrase-row {
   background: #f8fafc; border: 1px solid var(--border); border-radius: 8px;
@@ -173,7 +64,8 @@ body {
 .phrase-de { font-weight: 600; font-size: 13.5px; color: var(--navy); margin-bottom: 2px; }
 .phrase-en { font-size: 12.5px; color: var(--slate); }
 
-/* MUST-KNOW BLOCK */
+/* Must-know block — amber callout variant, scoped so it doesn't
+   collide with theme.css's plain .must-item / .must-bullet */
 .must-block {
   background: var(--amber-bg); border: 1.5px solid var(--amber-border);
   border-radius: var(--radius); padding: 18px 20px; margin: 28px 0 0;
@@ -183,26 +75,26 @@ body {
   text-transform: uppercase; color: var(--amber-text); margin-bottom: 14px;
   display: flex; align-items: center; gap: 7px;
 }
-.must-item {
+.must-block .must-item {
   display: flex; gap: 12px; align-items: flex-start;
   font-size: 13.5px; color: #78350f; line-height: 1.6;
   padding: 9px 0; border-bottom: 1px solid #fde68a;
 }
-.must-item:last-child { border-bottom: none; padding-bottom: 0; }
-.must-bullet { font-size: 15px; flex-shrink: 0; }
+.must-block .must-item:last-child { border-bottom: none; padding-bottom: 0; }
+.must-block .must-bullet { font-size: 15px; flex-shrink: 0; }
 
-/* QUESTIONS TO ASK */
+/* Questions to ask */
 .ask-card {
   background: var(--white); border: 1px solid var(--border);
   border-radius: 8px; padding: 13px 16px; margin-bottom: 8px;
   box-shadow: var(--shadow); display: flex; gap: 10px; align-items: flex-start;
 }
-.ask-icon { font-size: 15px; flex-shrink: 0; padding-top: 1px; }
+.ask-icon    { font-size: 15px; flex-shrink: 0; padding-top: 1px; }
 .ask-content { flex: 1; }
-.ask-q { font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 3px; }
-.ask-why { font-size: 12.5px; color: var(--slate); line-height: 1.5; }
+.ask-q       { font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 3px; }
+.ask-why     { font-size: 12.5px; color: var(--slate); line-height: 1.5; }
 
-/* CHEAT SHEET */
+/* Cheat sheet table */
 .cheat-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
 .cheat-table th {
   font-size: 10.5px; font-weight: 700; letter-spacing: .08em;
@@ -220,18 +112,19 @@ body {
 .cheat-en { color: var(--slate); font-size: 12.5px; }
 
 @media (max-width: 600px) {
-  .q-panel { padding-left: 20px; }
+  .q-panel  { padding-left: 20px; }
   .q-badges { display: none; }
 }
 </style>
 </head>
 <body>
 
+<div class="home-nav">
+  <a class="home-link" href="./index.html">← Back to main page</a>
+</div>
+
 <header class="header">
   <div class="header-inner">
-    <nav style="margin-bottom:14px;">
-      <a href="./index.html" style="color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;">&#8592; Back to main page</a>
-    </nav>
     <div class="header-meta">Treuhandstelle Interview Prep &mdash; General</div>
     <h1>General Interview Questions</h1>
     <p class="header-sub">Self-introduction, motivation, leadership, language, and the questions you ask them — covering everything beyond the technical topics.</p>
@@ -1050,46 +943,9 @@ body {
   </div><!-- end body -->
 </main>
 
+<script src="./lesson-ui.js"></script>
 <script>
-// ── Tab switching ──
-function switchTab(lang, btn) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById('tab-' + lang).classList.add('active');
-  btn.classList.add('active');
-}
-
-// ── Accordion toggle ──
-function toggle(btn) {
-  const card   = btn.closest('.q-card');
-  const panel  = card.querySelector('.q-panel');
-  const isOpen = btn.classList.contains('open');
-
-  btn.classList.toggle('open', !isOpen);
-  panel.classList.toggle('open', !isOpen);
-
-  updateProgress();
-}
-
-// ── Progress tracking ──
-function updateProgress() {
-  ['en', 'de'].forEach(lang => {
-    const tab    = document.getElementById('tab-' + lang);
-    const cards  = tab.querySelectorAll('.q-card');
-    const opened = tab.querySelectorAll('.q-trigger.open');
-    const total  = cards.length;
-    const count  = opened.length;
-    const pct    = total > 0 ? Math.round((count / total) * 100) : 0;
-
-    document.getElementById('prog-' + lang).style.width = pct + '%';
-    const label = lang === 'en'
-      ? count + ' / ' + total + ' opened'
-      : count + ' / ' + total + ' geöffnet';
-    document.getElementById('prog-count-' + lang).textContent = label;
-  });
-}
-
-// Initialise counts
+// Initialise progress bar counts on first load
 updateProgress();
 </script>
 </body>

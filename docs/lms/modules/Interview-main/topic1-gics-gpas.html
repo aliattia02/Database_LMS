@@ -1,305 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Topic 1 — gICS & gPAS | Treuhandstelle Interview Prep</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="./site-nav.css"/>
-<style>
-  :root {
-    --navy: #0f172a;
-    --navy2: #1e293b;
-    --slate: #475569;
-    --muted: #94a3b8;
-    --border: #e2e8f0;
-    --bg: #f8fafc;
-    --white: #ffffff;
-    --amber-bg: #fffbeb;
-    --amber-border: #f59e0b;
-    --amber-text: #92400e;
-    --amber-icon: #d97706;
-    --blue: #2563eb;
-    --blue-light: #eff6ff;
-    --pill-l1: #94a3b8; --pill-l1t: #fff;
-    --pill-l2: #3b82f6; --pill-l2t: #fff;
-    --pill-l3: #16a34a; --pill-l3t: #fff;
-    --pill-l4: #7c3aed; --pill-l4t: #fff;
-    --accent: #0ea5e9;
-    --radius: 10px;
-    --shadow: 0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'IBM Plex Sans', sans-serif;
-    background: var(--bg);
-    color: var(--navy);
-    font-size: 15px;
-    line-height: 1.65;
-  }
-  /* HEADER */
-  .header {
-    background: var(--navy);
-    color: #fff;
-    padding: 28px 24px 0;
-  }
-  .header-inner { max-width: 820px; margin: 0 auto; }
-  .header-meta {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-  .header h1 {
-    font-size: clamp(22px, 4vw, 30px);
-    font-weight: 700;
-    letter-spacing: -.02em;
-    line-height: 1.2;
-  }
-  .header h1 span { color: var(--accent); }
-  .header-sub {
-    margin-top: 8px;
-    color: #94a3b8;
-    font-size: 13.5px;
-    max-width: 580px;
-    line-height: 1.6;
-  }
-  /* TABS */
-  .tabs {
-    display: flex;
-    gap: 2px;
-    margin-top: 20px;
-  }
-  .tab-btn {
-    padding: 10px 22px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    color: var(--muted);
-    border-radius: 8px 8px 0 0;
-    transition: all .15s;
-    letter-spacing: .01em;
-  }
-  .tab-btn.active {
-    background: var(--bg);
-    color: var(--navy);
-  }
-  /* BODY */
-  .body { max-width: 820px; margin: 0 auto; padding: 32px 24px 64px; }
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Topic 1 — gICS &amp; gPAS | Treuhandstelle Interview Prep</title>
+  <link rel="stylesheet" href="./theme.css"/>
+  <style>
+    /* ── Topic 1 page-specific styles ── */
+    .section-label {
+      font-size: 10.5px; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+    }
+    /* Colour pill variants for learning ladder */
+    .l1 { background: var(--pill-l1); color: var(--pill-l1t); }
+    .l2 { background: var(--pill-l2); color: var(--pill-l2t); }
+    .l3 { background: var(--pill-l3); color: var(--pill-l3t); }
+    .l4 { background: var(--pill-l4); color: var(--pill-l4t); }
 
-  /* SECTION */
-  .section {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 26px 28px;
-    margin-bottom: 20px;
-    box-shadow: var(--shadow);
-  }
-  .section-label {
-    font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 10px;
-  }
-  .section h2 {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--navy);
-    margin-bottom: 14px;
-    letter-spacing: -.01em;
-  }
-  .section p { color: #334155; line-height: 1.7; font-size: 14.5px; }
-  .section p + p { margin-top: 10px; }
+    .ladder { display: flex; flex-direction: column; gap: 14px; }
+    .ladder-level { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .level-head {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px; background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+    }
+    .level-pill {
+      display: inline-block; padding: 3px 10px; border-radius: 99px;
+      font-size: 11px; font-weight: 700; letter-spacing: .04em; white-space: nowrap;
+    }
+    .level-title  { font-weight: 600; font-size: 14px; color: var(--navy2); }
+    .level-bullets { padding: 14px 16px; }
+    .level-bullets ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .level-bullets li {
+      font-size: 13.5px; color: #334155;
+      padding-left: 18px; position: relative; line-height: 1.55;
+    }
+    .level-bullets li::before { content: '›'; position: absolute; left: 0; color: var(--muted); font-weight: 700; }
 
-  /* LADDER */
-  .ladder { display: flex; flex-direction: column; gap: 14px; }
-  .ladder-level {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .level-head {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    background: #f8fafc;
-    border-bottom: 1px solid var(--border);
-  }
-  .level-pill {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 99px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .04em;
-    white-space: nowrap;
-  }
-  .l1 { background: var(--pill-l1); color: var(--pill-l1t); }
-  .l2 { background: var(--pill-l2); color: var(--pill-l2t); }
-  .l3 { background: var(--pill-l3); color: var(--pill-l3t); }
-  .l4 { background: var(--pill-l4); color: var(--pill-l4t); }
-  .level-title { font-weight: 600; font-size: 14px; color: var(--navy2); }
-  .level-bullets { padding: 14px 16px; }
-  .level-bullets ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
-  .level-bullets li {
-    font-size: 13.5px;
-    color: #334155;
-    padding-left: 18px;
-    position: relative;
-    line-height: 1.55;
-  }
-  .level-bullets li::before {
-    content: '›';
-    position: absolute;
-    left: 0;
-    color: var(--muted);
-    font-weight: 700;
-  }
+    .must-know {
+      background: var(--amber-bg); border: 1px solid #fde68a;
+      border-left: 4px solid var(--amber-border);
+      border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px;
+    }
+    .must-know .section-label { color: #b45309; }
+    .must-know h2 { color: #78350f; margin-bottom: 14px; }
+    .must-know-list { display: flex; flex-direction: column; gap: 10px; }
+    .must-know-item {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 13.5px; color: var(--amber-text); line-height: 1.55;
+    }
+    .flag { color: var(--amber-icon); font-size: 15px; flex-shrink: 0; margin-top: 1px; }
 
-  /* MUST-KNOW */
-  .must-know {
-    background: var(--amber-bg);
-    border: 1px solid #fde68a;
-    border-left: 4px solid var(--amber-border);
-    border-radius: var(--radius);
-    padding: 22px 24px;
-    margin-bottom: 20px;
-  }
-  .must-know .section-label { color: #b45309; }
-  .must-know h2 { color: #78350f; margin-bottom: 14px; }
-  .must-know-list { display: flex; flex-direction: column; gap: 10px; }
-  .must-know-item {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    font-size: 13.5px;
-    color: var(--amber-text);
-    line-height: 1.55;
-  }
-  .flag { color: var(--amber-icon); font-size: 15px; flex-shrink: 0; margin-top: 1px; }
-
-  /* GLOSSARY */
-  .glossary-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-  .glossary-table th {
-    text-align: left;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    padding: 8px 12px;
-    border-bottom: 2px solid var(--border);
-  }
-  .glossary-table td {
-    padding: 10px 12px;
-    vertical-align: top;
-    border-bottom: 1px solid var(--border);
-    color: #334155;
-    line-height: 1.55;
-  }
-  .glossary-table tr:last-child td { border-bottom: none; }
-  .glossary-table tr:nth-child(even) td { background: #f8fafc; }
-  .term-cell {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12.5px;
-    font-weight: 500;
-    color: var(--navy);
-    white-space: nowrap;
-    width: 28%;
-  }
-
-  /* ACCORDION */
-  .accordion { display: flex; flex-direction: column; gap: 8px; }
-  .acc-item { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-  .acc-trigger {
-    width: 100%;
-    text-align: left;
-    padding: 14px 16px;
-    background: #f8fafc;
-    border: none;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--navy2);
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-    line-height: 1.45;
-    transition: background .15s;
-  }
-  .acc-trigger:hover { background: #f1f5f9; }
-  .acc-trigger.open { background: var(--blue-light); color: var(--blue); }
-  .acc-chevron {
-    flex-shrink: 0;
-    font-size: 16px;
-    transition: transform .2s;
-    margin-top: 1px;
-  }
-  .acc-trigger.open .acc-chevron { transform: rotate(180deg); }
-  .acc-body {
-    display: none;
-    padding: 16px;
-    background: var(--white);
-    border-top: 1px solid var(--border);
-    font-size: 13.5px;
-    color: #334155;
-    line-height: 1.65;
-  }
-  .acc-body.open { display: block; }
-  .acc-strategy-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--blue);
-    margin-bottom: 6px;
-  }
-
-  /* CONNECTIONS */
-  .connections-grid { display: flex; flex-direction: column; gap: 10px; }
-  .connection-card {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 16px;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-  .conn-badge {
-    flex-shrink: 0;
-    background: var(--blue-light);
-    color: var(--blue);
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 9px;
-    border-radius: 99px;
-    white-space: nowrap;
-    margin-top: 2px;
-    letter-spacing: .02em;
-  }
-  .conn-text { font-size: 13.5px; color: #334155; line-height: 1.55; }
-
-  @media(max-width:540px) {
-    .header { padding: 20px 16px 0; }
-    .body { padding: 20px 14px 48px; }
-    .section { padding: 18px 16px; }
-    .term-cell { width: 36%; white-space: normal; }
-  }
-</style>
+    .section { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px 28px; margin-bottom: 20px; box-shadow: var(--shadow); }
+    .section h2 { font-size: 18px; font-weight: 700; margin-bottom: 14px; }
+    .section p  { font-size: 14px; color: #334155; line-height: 1.65; margin-bottom: 12px; }
+    .section p:last-child { margin-bottom: 0; }
+  </style>
 </head>
 <body>
 
@@ -312,10 +68,13 @@
     <div class="header-meta">Treuhandstelle Interview Prep &nbsp;·&nbsp; Topic 1 of 6</div>
     <h1><span>gICS</span> and <span>gPAS</span> — the Greifswald tools</h1>
     <p class="header-sub">The open-source software backbone of almost every German hospital Treuhandstelle — and the tools you will be responsible for operating at Universitätsmedizin Frankfurt.</p>
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
-      <button class="tab-btn" onclick="switchTab('de', this)">Deutsch</button>
-    </div>
+  </div>
+</div>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn" onclick="switchTab('de', this)">Deutsch</button>
   </div>
 </div>
 
@@ -506,31 +265,16 @@
     </div>
   </div>
 
-  <!-- 7. Connections to Ali's background -->
+  <!-- 7. Connections to your background -->
   <div class="section">
     <div class="section-label">Section 7</div>
     <h2>Connections to your existing experience</h2>
     <div class="connections-grid">
-      <div class="connection-card">
-        <span class="conn-badge">EHR rollout</span>
-        <span class="conn-text">Leading a national EHR implementation is the same class of problem as deploying gICS/gPAS: REST API integration with hospital systems, stakeholder alignment across departments, phased rollout, and post-go-live support. Use this directly when asked about integration experience.</span>
-      </div>
-      <div class="connection-card">
-        <span class="conn-badge">FHIR work</span>
-        <span class="conn-text">The DIZ uses FHIR for data standardisation; gICS and gPAS expose REST APIs that plug into FHIR workflows. Your FHIR experience means the integration architecture is not new territory — you understand how these services communicate.</span>
-      </div>
-      <div class="connection-card">
-        <span class="conn-badge">GDPR / DiaTwin</span>
-        <span class="conn-text">Designing consent flows and data minimisation architecture in your digital health projects is directly analogous to configuring consent policies in gICS. You have already thought through what "informed consent" means technically — translate that into gICS vocabulary.</span>
-      </div>
-      <div class="connection-card">
-        <span class="conn-badge">Pharmacy licence</span>
-        <span class="conn-text">A pharmacist operates under strict documentation requirements and audit trails — the same mindset required for gICS consent versioning and gPAS access logging. Regulated documentation discipline is a transferable strength, not a separate domain.</span>
-      </div>
-      <div class="connection-card">
-        <span class="conn-badge">M.Sc. Digital Health</span>
-        <span class="conn-text">Your academic programme covers health data interoperability and informatics — gICS and gPAS sit at precisely this intersection. Frame your theoretical foundation as the reason you could get up to speed on the tools quickly and evaluate architectural decisions critically.</span>
-      </div>
+      <div class="connection-card"><span class="conn-badge">EHR rollout</span><span class="conn-text">Leading a national EHR implementation is the same class of problem as deploying gICS/gPAS: REST API integration with hospital systems, stakeholder alignment across departments, phased rollout, and post-go-live support. Use this directly when asked about integration experience.</span></div>
+      <div class="connection-card"><span class="conn-badge">FHIR work</span><span class="conn-text">The DIZ uses FHIR for data standardisation; gICS and gPAS expose REST APIs that plug into FHIR workflows. Your FHIR experience means the integration architecture is not new territory — you understand how these services communicate.</span></div>
+      <div class="connection-card"><span class="conn-badge">GDPR / DiaTwin</span><span class="conn-text">Designing consent flows and data minimisation architecture in your digital health projects is directly analogous to configuring consent policies in gICS. You have already thought through what "informed consent" means technically — translate that into gICS vocabulary.</span></div>
+      <div class="connection-card"><span class="conn-badge">Pharmacy licence</span><span class="conn-text">A pharmacist operates under strict documentation requirements and audit trails — the same mindset required for gICS consent versioning and gPAS access logging. Regulated documentation discipline is a transferable strength, not a separate domain.</span></div>
+      <div class="connection-card"><span class="conn-badge">M.Sc. Digital Health</span><span class="conn-text">Your academic programme covers health data interoperability and informatics — gICS and gPAS sit at precisely this intersection. Frame your theoretical foundation as the reason you could get up to speed on the tools quickly and evaluate architectural decisions critically.</span></div>
     </div>
   </div>
 
@@ -540,25 +284,22 @@
 <!-- ═══════════════════ DEUTSCH ═══════════════════ -->
 <div id="tab-de" class="tab-content">
 
-  <!-- 1. Was ist das -->
   <div class="section">
     <div class="section-label">Abschnitt 1</div>
     <h2>Was ist das</h2>
     <p><strong>gICS</strong> (Generic Informed Consent Service) und <strong>gPAS</strong> (Generic Pseudonym Administration Service) sind zwei Open-Source-Softwaretools, die von der Universitätsmedizin Greifswald im Rahmen des <strong>MOSAIC-Projekts</strong> entwickelt wurden. Gemeinsam bilden sie das technische Rückgrat der meisten deutschen Krankenhaustreuhandstellen.</p>
-    <p><strong>gICS</strong> verwaltet die Patienteneinwilligung. Wenn ein Patient der Nutzung seiner Daten für die Forschung zustimmt, erfasst gICS genau, was er eingewilligt hat — welche Studie, welche Datenarten, unter welchen Bedingungen — und dokumentiert spätere Änderungen oder Widerrufe. Das System unterstützt mehrere Versionen eines Einwilligungsbogens: Ändert sich ein Studienprotokoll und wird ein neuer Bogen ausgegeben, weiß gICS, welche Patienten welche Version unterzeichnet haben.</p>
-    <p><strong>gPAS</strong> verwaltet Pseudonyme. Bevor Patientendaten an Forschende gelangen, ersetzt gPAS alle identifizierenden Angaben (Name, Geburtsdatum, Versicherungsnummer) durch einen Code. Nur die Treuhandstelle — über gPAS — kann diesen Code einer realen Person zuordnen. Um die Verknüpfung von Daten über verschiedene Forschungsprojekte hinweg zu verhindern, vergibt gPAS je nach Studie oder Domäne einen <em>anderen</em> Pseudonymcode für dieselbe Person.</p>
+    <p><strong>gICS</strong> verwaltet die Patienteneinwilligung. Wenn ein Patient der Nutzung seiner Daten für die Forschung zustimmt, erfasst gICS genau, was er eingewilligt hat — welche Studie, welche Datenarten, unter welchen Bedingungen — und dokumentiert spätere Änderungen oder Widerrufe.</p>
+    <p><strong>gPAS</strong> verwaltet Pseudonyme. Bevor Patientendaten an Forschende gelangen, ersetzt gPAS alle identifizierenden Angaben durch einen Code. Nur die Treuhandstelle — über gPAS — kann diesen Code einer realen Person zuordnen. Um die Verknüpfung von Daten über verschiedene Forschungsprojekte hinweg zu verhindern, vergibt gPAS je nach Studie oder Domäne einen <em>anderen</em> Pseudonymcode für dieselbe Person.</p>
     <p>Beide Tools sind kostenlos, werden aktiv weiterentwickelt, bieten REST-APIs zur Integration und haben sich als De-facto-Standard im deutschen MII-Netzwerk etabliert.</p>
   </div>
 
-  <!-- 2. Relevanz -->
   <div class="section">
     <div class="section-label">Abschnitt 2</div>
     <h2>Relevanz für die Stelle</h2>
-    <p>An der Universitätsmedizin Frankfurt sind gICS und gPAS entweder bereits im Einsatz oder die erwarteten Werkzeuge für die Treuhandstelle. Als Leitung sind Sie die verantwortliche Person für deren Betrieb: Software aktuell halten, Team schulen, Einwilligungsrichtlinien für neue Studien konfigurieren, Integration mit dem KIS und den FHIR-Pipelines des DIZ sicherstellen — und das gesamte System verständlich gegenüber Forschenden, Klinikern, Prüfinstanzen und dem Datenschutzbeauftragten erklären.</p>
-    <p>Die Gesprächsführenden erwarten keine Programmiererfahrung mit gICS. Sie erwarten jedoch, dass Sie erklären können, wie die Tools funktionieren, welche Risiken sie mit sich bringen und wie Sie sie in einer laufenden Krankenhausumgebung verantwortungsvoll betreiben würden. Wer gICS und gPAS souverän beschreibt, signalisiert damit, dass er die Stelle wirklich versteht.</p>
+    <p>An der Universitätsmedizin Frankfurt sind gICS und gPAS entweder bereits im Einsatz oder die erwarteten Werkzeuge für die Treuhandstelle. Als Leitung sind Sie die verantwortliche Person für deren Betrieb: Software aktuell halten, Team schulen, Einwilligungsrichtlinien für neue Studien konfigurieren, Integration mit dem KIS und den FHIR-Pipelines des DIZ sicherstellen.</p>
+    <p>Die Gesprächsführenden erwarten keine Programmiererfahrung mit gICS. Sie erwarten jedoch, dass Sie erklären können, wie die Tools funktionieren, welche Risiken sie mit sich bringen und wie Sie sie in einer laufenden Krankenhausumgebung verantwortungsvoll betreiben würden.</p>
   </div>
 
-  <!-- 3. Lernleiter -->
   <div class="section">
     <div class="section-label">Abschnitt 3</div>
     <h2>Vom Einsteiger zum Profi — Lernleiter</h2>
@@ -583,11 +324,11 @@
           <span class="level-title">Anwendungswissen — kann die Funktionsweise beschreiben</span>
         </div>
         <div class="level-bullets"><ul>
-          <li>gICS speichert Einwilligungen als strukturierte Datensätze: Patienten-ID, Policy (das Eingewilligte), Version, Status (zugestimmt / abgelehnt / widerrufen) und Zeitstempel</li>
-          <li>gICS unterstützt den MII-Broad-Consent — eine standardisierte Vorlage, die mehrere Forschungsnutzungen mit einer Unterschrift abdeckt — sowie studiespezifische Einwilligungsbögen</li>
-          <li>gPAS erstellt Pseudonyme je „Domäne" (eine pro Studie oder Register), sodass dieselbe Person in jeder Domäne einen anderen Code erhält — eine Cross-Studie-Zuordnung ist damit konstruktionsbedingt ausgeschlossen</li>
+          <li>gICS speichert Einwilligungen als strukturierte Datensätze: Patienten-ID, Policy, Version, Status und Zeitstempel</li>
+          <li>gICS unterstützt den MII-Broad-Consent sowie studiespezifische Einwilligungsbögen</li>
+          <li>gPAS erstellt Pseudonyme je „Domäne" — eine pro Studie oder Register</li>
           <li>Beide Tools bieten REST-APIs zur direkten Integration mit KIS, FHIR-Servern und Forschungsportalen</li>
-          <li>gPAS unterstützt mehrstufige Pseudonymhierarchien: ein klinikinternes Pseudonym sowie ein konsortiumsweites Pseudonym für MIRACUM-übergreifende Auswertungen</li>
+          <li>gPAS unterstützt mehrstufige Pseudonymhierarchien für MIRACUM-übergreifende Auswertungen</li>
         </ul></div>
       </div>
 
@@ -597,11 +338,11 @@
           <span class="level-title">Angewandtes Verständnis — kann es mit konkreten Aufgaben verbinden</span>
         </div>
         <div class="level-bullets"><ul>
-          <li>Realer Ablauf: Patient unterzeichnet Einwilligungsbogen → gICS erfasst Einwilligung → System bestätigt Gültigkeit → gPAS vergibt Pseudonym für die Studiendomäne → pseudonymisierter Datensatz gelangt zum DIZ oder Forschungssystem</li>
-          <li>Ein in gICS erfasster Widerruf löscht nachgelagerte Daten nicht automatisch — Sie benötigen eine SOP, die festlegt, wie Forschungsteams informiert werden und wie bereits übermittelte Daten nach Art. 17 DSGVO behandelt werden</li>
-          <li>Versionskontrolle in gICS ist operativ relevant: Ändert sich ein Studienprotokoll, decken bestehende Einwilligungen möglicherweise neue Datennutzungen nicht ab — die THS muss Gültigkeit vor jeder Datenweitergabe prüfen</li>
-          <li>Für MIRACUM-MehrzentrumsStudien muss gPAS ein konsortiumsweites Pseudonym erzeugen, das standortbezogene Pseudonyme überbrückt, ohne Identitäten preiszugeben — das erfordert eine durchdachte Domänenarchitektur</li>
-          <li>Administrativer Zugang zu gICS und gPAS muss strikt kontrolliert und protokolliert werden — Ihr Team ist dafür zuständig, der Datenschutzbeauftragte wird dies prüfen</li>
+          <li>Realer Ablauf: Patient unterzeichnet → gICS erfasst → gPAS vergibt Pseudonym → pseudonymisierter Datensatz gelangt zum DIZ</li>
+          <li>Ein Widerruf in gICS löscht nachgelagerte Daten nicht automatisch — SOP erforderlich</li>
+          <li>Versionskontrolle in gICS ist operativ relevant: geänderte Studienprotokolle erfordern Validitätsprüfung</li>
+          <li>Für MIRACUM-Mehrzentrensstudien muss gPAS ein konsortiumsweites Pseudonym erzeugen</li>
+          <li>Administrativer Zugang muss strikt kontrolliert und protokolliert werden</li>
         </ul></div>
       </div>
 
@@ -611,54 +352,51 @@
           <span class="level-title">Gesprächsreif — kann schwierige Fragen souverän beantworten</span>
         </div>
         <div class="level-bullets"><ul>
-          <li>Kann IDAT (Identifizierende Daten) und MDAT (Medizinische Daten) erklären und begründen, warum die THS ausschließlich IDAT verarbeitet — das Pseudonym ist die Brücke zwischen beiden</li>
-          <li>Kann den Widerruf einer Einwilligung rechtlich und technisch vollständig beschreiben: gICS-Statusaktualisierung, Benachrichtigungs-SOP, Art. 17 DSGVO (Recht auf Löschung) und was „Löschung" für bereits pseudonymisierte Daten in einer Forschungsdatenbank bedeutet</li>
-          <li>Kann Risiken benennen: gPAS-Kompromittierung (Re-Identifikationsrisiko), gICS-Ausfall während Rekrutierungsphasen, Integrationsbrüche nach Software-Updates — und diese DIN ISO 14971-Risikokategorien zuordnen, sofern die Tools als Medizinprodukte klassifiziert sind</li>
-          <li>Kann den MII-Broad-Consent mit Art. 9 DSGVO verknüpfen: Er bildet die Rechtsgrundlage für die Verarbeitung besonderer Kategorien personenbezogener Daten für die Forschung nach Art. 9 Abs. 2 lit. j DSGVO</li>
-          <li>Kann die Integrationsarchitektur beschreiben: gICS und gPAS als containerisierte Microservices im Krankenhausnetz, erreichbar nur für autorisierte Systeme über REST — kein Direktzugang für externe Systeme auf die Pseudonymzuordnungstabelle</li>
+          <li>IDAT vs. MDAT erklären und begründen, warum die THS ausschließlich IDAT verarbeitet</li>
+          <li>Widerruf rechtlich und technisch vollständig beschreiben: gICS-Status, SOP, Art. 17 DSGVO</li>
+          <li>Risiken benennen und DIN ISO 14971-Kategorien zuordnen</li>
+          <li>MII-Broad-Consent mit Art. 9 Abs. 2 lit. j DSGVO verknüpfen</li>
+          <li>Integrationsarchitektur als containerisierte Microservices im Krankenhausnetz beschreiben</li>
         </ul></div>
       </div>
 
     </div>
   </div>
 
-  <!-- 4. Muss sitzen -->
   <div class="must-know">
     <div class="section-label">Abschnitt 4</div>
     <h2>Das muss sitzen</h2>
     <div class="must-know-list">
-      <div class="must-know-item"><span class="flag">⚑</span><span>gICS und gPAS sind Open-Source-Tools der Universitätsmedizin Greifswald, veröffentlicht unter der AGPL-Lizenz im Rahmen des MOSAIC-Projekts — keine Lizenzkosten, aktiv gepflegt.</span></div>
-      <div class="must-know-item"><span class="flag">⚑</span><span>gICS verwaltet Einwilligungen, gPAS verwaltet Pseudonyme. Separate Dienste, aufeinander abgestimmt, fast immer gemeinsam eingesetzt.</span></div>
-      <div class="must-know-item"><span class="flag">⚑</span><span>Der MII-Broad-Consent ist die nationale Standard-Einwilligungsvorlage für deutsche Universitätskliniken. gICS bildet seine Struktur ab. Inhalt kennen: Gesundheitsdaten, Biomaterialien, Genomdaten, Kontaktaufnahme für Folgestudien.</span></div>
-      <div class="must-know-item"><span class="flag">⚑</span><span>gPAS arbeitet mit Domänen: Pro Studie oder Register erhält die Person ein eigenes Pseudonym. Damit ist eine studienübergreifende Zuordnung konstruktionsbedingt ausgeschlossen.</span></div>
-      <div class="must-know-item"><span class="flag">⚑</span><span>Nur die THS — über gPAS — kann ein Pseudonym einer realen Person zuordnen. Forschende sehen diese Zuordnung nie. Das ist die zentrale Sicherheitsgarantie des Pseudonymisierungsmodells.</span></div>
-      <div class="must-know-item"><span class="flag">⚑</span><span>Ein Einwilligungswiderruf in gICS löscht nachgelagerte Forschungsdaten nicht automatisch. Die THS braucht eine SOP, die festlegt, wie Widerrufe kommuniziert und Daten behandelt werden — das ist operative Verantwortung, keine Softwarefunktion.</span></div>
-      <div class="must-know-item"><span class="flag">⚑</span><span>Beide Tools bieten REST-APIs. Die Integration mit KIS, FHIR-Server des DIZ und Forschungsportalen läuft ausschließlich über diese APIs — kein Direktzugriff externer Systeme auf die Datenbanken.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>gICS und gPAS sind Open-Source-Tools der Universitätsmedizin Greifswald, AGPL-Lizenz, MOSAIC-Projekt — keine Lizenzkosten.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>gICS verwaltet Einwilligungen, gPAS verwaltet Pseudonyme. Separate Dienste, fast immer gemeinsam eingesetzt.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>MII-Broad-Consent: nationale Standard-Vorlage. Inhalt kennen: Gesundheitsdaten, Biomaterialien, Genomdaten, Kontaktaufnahme für Folgestudien.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>gPAS-Domänen: pro Studie ein eigenes Pseudonym — studienübergreifende Zuordnung konstruktionsbedingt ausgeschlossen.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>Nur die THS kann ein Pseudonym einer realen Person zuordnen. Forschende sehen diese Zuordnung nie.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>Einwilligungswiderruf löscht nachgelagerte Forschungsdaten nicht automatisch — SOP erforderlich.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>Beide Tools: REST-APIs. Kein Direktzugriff externer Systeme auf die Datenbanken.</span></div>
     </div>
   </div>
 
-  <!-- 5. Glossar -->
   <div class="section">
     <div class="section-label">Abschnitt 5</div>
     <h2>Schlüsselbegriffe</h2>
     <table class="glossary-table">
-      <thead><tr><th>Begriff</th><th>Erklärung in einfacher Sprache</th></tr></thead>
+      <thead><tr><th>Begriff</th><th>Erklärung</th></tr></thead>
       <tbody>
-        <tr><td class="term-cell">gICS</td><td>Generic Informed Consent Service — Software zur Erfassung, Versionierung und Abfrage von Patienteneinwilligungen für die Forschung</td></tr>
-        <tr><td class="term-cell">gPAS</td><td>Generic Pseudonym Administration Service — Software zur Vergabe eindeutiger Pseudonyme und zur Verwaltung ihrer Zuordnung zu realen Patientenkennungen</td></tr>
-        <tr><td class="term-cell">MOSAIC</td><td>Greifswalder Open-Source-Projekt, aus dem gICS, gPAS und weitere THS-Tools hervorgegangen sind; weit verbreitet an deutschen Universitätskliniken</td></tr>
-        <tr><td class="term-cell">IDAT</td><td>Identifizierende Daten — Name, Geburtsdatum, Adresse, Versicherungsnummer; werden ausschließlich von der THS verarbeitet, nie an Forschende weitergegeben</td></tr>
-        <tr><td class="term-cell">MDAT</td><td>Medizinische Daten — Diagnosen, Laborwerte, Bildgebung; werden nach Pseudonymisierung an Forschende weitergegeben</td></tr>
-        <tr><td class="term-cell">Broad Consent</td><td>Eine weitgefasste Einwilligung, die eine Person mit einer Unterschrift für eine Vielzahl künftiger Forschungsnutzungen erteilt; die MII-Vorlage ist der nationale Standard</td></tr>
-        <tr><td class="term-cell">Pseudonymdomäne</td><td>Ein benannter Gültigkeitsbereich in gPAS, innerhalb dessen Pseudonyme eindeutig und konsistent sind — typischerweise eine Domäne pro Studie oder Register</td></tr>
-        <tr><td class="term-cell">Policy</td><td>In gICS ein einzelner Einwilligungspunkt, dem eine Person zustimmen oder den sie ablehnen kann (z. B. „Nutzung von Genomdaten für die Krebsforschung")</td></tr>
-        <tr><td class="term-cell">Einwilligungsversion</td><td>Eine nummerierte Fassung eines Einwilligungsbogens; gICS protokolliert, welche Version ein Patient unterzeichnet hat — relevant bei Protokolländerungen</td></tr>
-        <tr><td class="term-cell">REST-API</td><td>Standardisierte Webschnittstelle, über die gICS und gPAS mit anderen Krankenhaussystemen kommunizieren — ohne direkten Datenbankzugriff externer Systeme</td></tr>
+        <tr><td class="term-cell">gICS</td><td>Software zur Erfassung, Versionierung und Abfrage von Patienteneinwilligungen für die Forschung</td></tr>
+        <tr><td class="term-cell">gPAS</td><td>Software zur Vergabe eindeutiger Pseudonyme und zur Verwaltung ihrer Zuordnung zu realen Patientenkennungen</td></tr>
+        <tr><td class="term-cell">MOSAIC</td><td>Greifswalder Open-Source-Projekt, aus dem gICS, gPAS und weitere THS-Tools hervorgegangen sind</td></tr>
+        <tr><td class="term-cell">IDAT</td><td>Identifizierende Daten — Name, Geburtsdatum, Adresse, Versicherungsnummer; nur von der THS verarbeitet</td></tr>
+        <tr><td class="term-cell">MDAT</td><td>Medizinische Daten — Diagnosen, Laborwerte, Bildgebung; nach Pseudonymisierung an Forschende</td></tr>
+        <tr><td class="term-cell">Broad Consent</td><td>Weitgefasste Einwilligung für eine Vielzahl künftiger Forschungsnutzungen mit einer Unterschrift</td></tr>
+        <tr><td class="term-cell">Pseudonymdomäne</td><td>Gültigkeitsbereich in gPAS — typischerweise eine Domäne pro Studie oder Register</td></tr>
+        <tr><td class="term-cell">Policy</td><td>Einzelner Einwilligungspunkt in gICS (z. B. „Nutzung von Genomdaten für Krebsforschung")</td></tr>
+        <tr><td class="term-cell">Einwilligungsversion</td><td>Nummerierte Fassung eines Einwilligungsbogens; gICS protokolliert, welche Version ein Patient unterzeichnet hat</td></tr>
+        <tr><td class="term-cell">REST-API</td><td>Standardisierte Webschnittstelle zur Integration mit anderen Krankenhaussystemen</td></tr>
       </tbody>
     </table>
   </div>
 
-  <!-- 6. Gesprächsfragen -->
   <div class="section">
     <div class="section-label">Abschnitt 6</div>
     <h2>Mögliche Interviewfragen</h2>
@@ -671,82 +409,54 @@
         </button>
         <div class="acc-body">
           <div class="acc-strategy-label">Antwortstrategie</div>
-          Beide Tools klar und sicher in je zwei Sätzen definieren. Fehlende direkte Erfahrung offen ansprechen — dann sofort umlenken: Sie kennen Architektur und Funktion in der Tiefe, haben vergleichbare Einwilligungs- und Identitätsmanagementsysteme in Ihren Digital-Health-Projekten gestaltet, und können schnell in die operative Nutzung einsteigen. MOSAIC und MII-Verbreitung erwähnen, um ökosystemisches Verständnis zu zeigen.
+          Beide Tools klar in je zwei Sätzen definieren. Fehlende Erfahrung offen ansprechen — dann sofort umlenken: Architektur und Funktion in der Tiefe kennen, vergleichbare Systeme gestaltet, schnell einsatzbereit. MOSAIC und MII-Verbreitung erwähnen.
         </div>
       </div>
 
       <div class="acc-item">
         <button class="acc-trigger" onclick="toggleAcc(this)">
-          <span>„Wie gehen Sie vor, wenn ein Patient seine Einwilligung widerruft, obwohl seine Daten bereits in die Forschung geflossen sind?"</span>
+          <span>„Wie gehen Sie vor, wenn ein Patient seine Einwilligung widerruft?"</span>
           <span class="acc-chevron">▾</span>
         </button>
         <div class="acc-body">
           <div class="acc-strategy-label">Antwortstrategie</div>
-          Technisch und rechtlich strukturiert antworten: gICS erfasst den Widerruf und aktualisiert den Status; anschließend greift die SOP der THS — das zuständige Forschungsteam wird informiert; ob bereits übermittelte Daten zu löschen sind, hängt von Studienphase, Datentyp und Pseudonymisierungsgrad ab. Art. 17 DSGVO (Recht auf Löschung) nennen und klarstellen, dass dieser Prozess nicht automatisch durch die Software abläuft, sondern aktive operative Verantwortung der THS ist.
+          gICS erfasst den Widerruf; SOP greift — Forschungsteam wird informiert; Löschpflicht hängt von Studienphase und Datentyp ab; Art. 17 DSGVO nennen; aktive operative Verantwortung der THS betonen, keine Automatik.
         </div>
       </div>
 
       <div class="acc-item">
         <button class="acc-trigger" onclick="toggleAcc(this)">
-          <span>„Wie würden gICS und gPAS mit unserem KIS und dem DIZ integriert?"</span>
+          <span>„Wie würden gICS und gPAS mit KIS und DIZ integriert?"</span>
           <span class="acc-chevron">▾</span>
         </button>
         <div class="acc-body">
           <div class="acc-strategy-label">Antwortstrategie</div>
-          REST-API-Integrationsmodell beschreiben: gICS und gPAS laufen als Dienste im Krankenhausnetz, werden von autorisierten Systemen aufgerufen — KIS zur Einwilligungsprüfung vor der Datenweitergabe, FHIR-Server des DIZ zur Pseudonymisierung vor der Aufnahme in das Forschungsdatenlager. Betonen, dass kein externes System jemals direkten Zugriff auf die gPAS-Zuordnungstabelle erhält. FHIR-Erfahrung einbringen: Das Integrationsmuster ist vertrautes Terrain.
+          REST-API-Modell: autorisierte Systeme rufen gICS/gPAS auf — KIS für Einwilligungsprüfung, FHIR-Server des DIZ für Pseudonymisierung. Kein Direktzugriff auf die Zuordnungstabelle. FHIR-Erfahrung einbringen.
         </div>
       </div>
 
       <div class="acc-item">
         <button class="acc-trigger" onclick="toggleAcc(this)">
-          <span>„Welche Risiken sehen Sie im Betrieb dieser Tools, und wie würden Sie damit umgehen?"</span>
+          <span>„Welche Risiken sehen Sie im Betrieb dieser Tools?"</span>
           <span class="acc-chevron">▾</span>
         </button>
         <div class="acc-body">
           <div class="acc-strategy-label">Antwortstrategie</div>
-          Strukturiertes Risikomanagement zeigen, keine vage Aufzählung. Vier konkrete Risiken benennen: (1) Verfügbarkeit — Systemausfall in Rekrutierungsphasen; (2) Sicherheit — unbefugter Zugriff auf die gPAS-Zuordnungstabelle ist ein meldepflichtiger Datenschutzvorfall; (3) Änderungsmanagement — Updates können Integrationen brechen; (4) Prozessrisiko — fehlerhafte Einwilligungserfassung durch Mitarbeitende. Für jedes Risiko eine Maßnahme nennen: Redundanz und Monitoring, strenge Zugangskontrolle mit Audit-Log, Integrationstests, Schulung und SOP-Checklisten. Optional DIN ISO 14971 als Rahmenwerk erwähnen, falls die Tools als Medizinprodukte eingestuft werden.
+          Vier Risiken mit Maßnahmen: (1) Verfügbarkeit → Redundanz/Monitoring; (2) Sicherheit → Zugangskontrolle + Audit-Log; (3) Updates → Integrationstests; (4) Prozess → Schulung + SOP-Checklisten. Optional: DIN ISO 14971.
         </div>
       </div>
 
       <div class="acc-item">
         <button class="acc-trigger" onclick="toggleAcc(this)">
-          <span>„Was ist der MII-Broad-Consent, und warum ist er für die Treuhandstelle relevant?"</span>
+          <span>„Was ist der MII-Broad-Consent und warum ist er für die THS relevant?"</span>
           <span class="acc-chevron">▾</span>
         </button>
         <div class="acc-body">
           <div class="acc-strategy-label">Antwortstrategie</div>
-          Präzise definieren: eine standardisierte nationale Einwilligungsvorlage, mit der Patientinnen und Patienten durch eine Unterschrift einer breiten Palette künftiger Forschungsnutzungen zustimmen können — ohne für jede neue Studie erneut einwilligen zu müssen. Relevanz für die THS: Er definiert die Einwilligungsrichtlinien, die Sie in gICS konfigurieren; er liefert die datenschutzrechtliche Grundlage nach Art. 9 Abs. 2 lit. j DSGVO; er ist Voraussetzung für die Teilnahme an der MII-Dateninfrastruktur. Abschließend betonen: Broad Consent ist freiwillig, Widerruf muss jederzeit möglich sein.
+          Nationale Standard-Einwilligungsvorlage für breite künftige Forschungsnutzung — eine Unterschrift. Für THS: konfiguriert gICS-Policies; Rechtsgrundlage nach Art. 9 Abs. 2 lit. j DSGVO; MII-Voraussetzung. Freiwillig — Widerruf muss möglich sein.
         </div>
       </div>
 
-    </div>
-  </div>
-
-  <!-- 7. Verbindungen zur eigenen Erfahrung -->
-  <div class="section">
-    <div class="section-label">Abschnitt 7</div>
-    <h2>Verbindungen zu Ihrer bisherigen Erfahrung</h2>
-    <div class="connections-grid">
-      <div class="connection-card">
-        <span class="conn-badge">KIS-Rollout</span>
-        <span class="conn-text">Die Leitung eines nationalen KIS-Projekts ist dieselbe Problemklasse wie die Einführung von gICS/gPAS: REST-API-Integration mit Krankenhaussystemen, Stakeholder-Alignment über Abteilungen hinweg, stufenweises Rollout und Betrieb nach Go-live. Das direkt als Integrationsreferenz einbringen.</span>
-      </div>
-      <div class="connection-card">
-        <span class="conn-badge">FHIR-Erfahrung</span>
-        <span class="conn-text">Das DIZ nutzt FHIR zur Datenstandardisierung; gICS und gPAS bieten REST-APIs, die sich in FHIR-Workflows einfügen. Ihre FHIR-Kenntnisse bedeuten, dass das Integrationsmuster kein Neuland ist — Sie verstehen, wie diese Dienste kommunizieren.</span>
-      </div>
-      <div class="connection-card">
-        <span class="conn-badge">DSGVO / DiaTwin</span>
-        <span class="conn-text">Einwilligungsworkflows und Datensparsamkeitsarchitekturen in Ihren Digital-Health-Projekten zu gestalten ist direkt analog zur Konfiguration von Einwilligungsrichtlinien in gICS. Sie haben bereits in der Praxis durchdacht, was „informierte Einwilligung" technisch bedeutet — übersetzen Sie das in gICS-Vokabular.</span>
-      </div>
-      <div class="connection-card">
-        <span class="conn-badge">Approbation</span>
-        <span class="conn-text">Als Apotheker sind Sie strenge Dokumentationspflichten und lückenlose Audit-Trails gewohnt — dieselbe Denkweise, die gICS-Einwilligungsversionierung und gPAS-Zugangsprotokolle erfordern. Regulatorische Dokumentationsdisziplin ist eine übertragbare Stärke.</span>
-      </div>
-      <div class="connection-card">
-        <span class="conn-badge">M.Sc. Digital Health</span>
-        <span class="conn-text">Ihr Masterprogramm umfasst Interoperabilität und Gesundheitsinformatik — genau das Feld, in dem gICS und gPAS angesiedelt sind. Das theoretische Fundament erklärt, warum Sie sich schnell einarbeiten und Architekturentscheidungen kritisch bewerten können.</span>
-      </div>
     </div>
   </div>
 
@@ -754,29 +464,6 @@
 
 </div><!-- /body -->
 
-<script>
-  function switchTab(lang, btn) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-' + lang).classList.add('active');
-    btn.classList.add('active');
-    // close all accordions on tab switch
-    document.querySelectorAll('.acc-body.open').forEach(b => b.classList.remove('open'));
-    document.querySelectorAll('.acc-trigger.open').forEach(t => t.classList.remove('open'));
-  }
-
-  function toggleAcc(trigger) {
-    const body = trigger.nextElementSibling;
-    const isOpen = body.classList.contains('open');
-    // close siblings in same tab
-    const parentTab = trigger.closest('.tab-content');
-    parentTab.querySelectorAll('.acc-body.open').forEach(b => b.classList.remove('open'));
-    parentTab.querySelectorAll('.acc-trigger.open').forEach(t => t.classList.remove('open'));
-    if (!isOpen) {
-      body.classList.add('open');
-      trigger.classList.add('open');
-    }
-  }
-</script>
+<script src="./lesson-ui.js"></script>
 </body>
 </html>

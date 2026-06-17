@@ -1,0 +1,555 @@
+/* ============================================================
+   theme.css — Interview-main shared design system
+   All pages link this INSTEAD of embedding :root + body styles
+   ============================================================ */
+
+/* ── Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+/* ── Design tokens ── */
+:root {
+  --navy:          #0f172a;
+  --navy2:         #1e293b;
+  --slate:         #475569;
+  --muted:         #94a3b8;
+  --border:        #e2e8f0;
+  --bg:            #f8fafc;
+  --white:         #ffffff;
+
+  --amber-bg:      #fffbeb;
+  --amber-border:  #f59e0b;
+  --amber-text:    #92400e;
+  --amber-icon:    #d97706;
+
+  --green-bg:      #f0fdf4;
+  --green-border:  #86efac;
+  --green-text:    #166534;
+
+  --blue:          #2563eb;
+  --blue-bg:       #eff6ff;
+  --blue-light:    #eff6ff;
+  --blue-border:   #bfdbfe;
+  --blue-text:     #1e40af;
+  --accent:        #0ea5e9;
+
+  --pill-l1: #94a3b8; --pill-l1t: #fff;
+  --pill-l2: #3b82f6; --pill-l2t: #fff;
+  --pill-l3: #16a34a; --pill-l3t: #fff;
+  --pill-l4: #7c3aed; --pill-l4t: #fff;
+
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Base ── */
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  background: var(--bg);
+  color: var(--navy);
+}
+
+/* ── Back nav (from site-nav.css, promoted here) ── */
+.home-nav {
+  max-width: 820px;
+  margin: 12px auto 0;
+  padding: 0 24px;
+}
+.home-link {
+  font-size: 13px;
+  color: var(--blue);
+  text-decoration: none;
+  font-weight: 500;
+}
+.home-link:hover { text-decoration: underline; }
+
+/* ── Page header ── */
+.header {
+  background: var(--navy);
+  color: #fff;
+  padding: 28px 24px 20px;
+}
+.header-inner  { max-width: 820px; margin: 0 auto; }
+.header-meta {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.header h1 {
+  font-size: clamp(22px, 4vw, 30px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.2;
+}
+.header h1 span { color: var(--accent); }
+.header-sub {
+  margin-top: 8px;
+  color: #94a3b8;
+  font-size: 13.5px;
+  max-width: 580px;
+  line-height: 1.6;
+}
+
+/* ── Tab bar ── */
+.tabs-bar {
+  background: var(--navy);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 2px solid rgba(255,255,255,0.07);
+}
+.tabs-inner {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 2px;
+}
+.tab-btn {
+  padding: 10px 22px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  border-radius: 8px 8px 0 0;
+  transition: all .15s;
+  letter-spacing: .01em;
+}
+.tab-btn.active          { background: var(--bg); color: var(--navy); }
+.tab-btn:not(.active):hover { color: #fff; }
+.tab-content             { display: none; }
+.tab-content.active      { display: block; }
+
+/* ── Page body wrapper ── */
+.body { max-width: 820px; margin: 0 auto; padding: 32px 24px 64px; }
+
+/* ── Accordion: shared trigger / body pattern ── */
+.accordion { display: flex; flex-direction: column; gap: 8px; }
+.acc-item   { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.acc-trigger {
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy2);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  line-height: 1.45;
+  transition: background .15s;
+}
+.acc-trigger:hover          { background: #f1f5f9; }
+.acc-trigger.open           { background: var(--blue-light); color: var(--blue); }
+.acc-chevron                { flex-shrink: 0; font-size: 16px; transition: transform .2s; margin-top: 1px; }
+.acc-trigger.open .acc-chevron { transform: rotate(180deg); }
+.acc-body {
+  display: none;
+  padding: 16px;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  font-size: 13.5px;
+  color: #334155;
+  line-height: 1.65;
+}
+.acc-body.open { display: block; }
+.acc-strategy-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 6px;
+}
+
+/* ── Collapsible section (topic2-style) ── */
+.section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.section-toggle {
+  width: 100%;
+  padding: 20px 28px;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.section-toggle.open .section-chevron { transform: rotate(180deg); }
+.section-body           { }
+.section-body.hidden    { display: none; }
+.section-chevron        { flex-shrink: 0; transition: transform .2s; font-size: 18px; color: var(--muted); }
+
+/* ── Callout boxes ── */
+.callout {
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  border-left: 3px solid;
+}
+.callout-amber {
+  background: var(--amber-bg);
+  border-color: var(--amber-border);
+  color: var(--amber-text);
+}
+.callout-blue {
+  background: var(--blue-bg);
+  border-color: var(--blue);
+  color: var(--blue-text);
+}
+.callout-green {
+  background: var(--green-bg);
+  border-color: var(--green-border);
+  color: var(--green-text);
+}
+
+/* ── Difficulty pills ── */
+.pill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.pill-l1 { background: var(--pill-l1); color: var(--pill-l1t); }
+.pill-l2 { background: var(--pill-l2); color: var(--pill-l2t); }
+.pill-l3 { background: var(--pill-l3); color: var(--pill-l3t); }
+.pill-l4 { background: var(--pill-l4); color: var(--pill-l4t); }
+
+/* ── Connection cards ── */
+.connections-grid { display: flex; flex-direction: column; gap: 10px; }
+.connection-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.conn-badge {
+  flex-shrink: 0;
+  background: var(--blue-light);
+  color: var(--blue);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 99px;
+  white-space: nowrap;
+  margin-top: 2px;
+  letter-spacing: .02em;
+}
+.conn-text { font-size: 13.5px; color: #334155; line-height: 1.55; }
+
+/* ── Glossary table ── */
+.glossary-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.glossary-table th {
+  text-align: left;
+  padding: 9px 12px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--slate);
+  border-bottom: 2px solid var(--border);
+}
+.glossary-table td {
+  padding: 10px 12px;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+  color: #334155;
+  line-height: 1.55;
+}
+.glossary-table tr:last-child td { border-bottom: none; }
+.glossary-table tr:nth-child(even) td { background: #f8fafc; }
+.term-cell {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--navy);
+  white-space: nowrap;
+  width: 28%;
+}
+
+/* ── Section header (icon + title row) ── */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 32px 0 14px;
+}
+.section-icon {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.section-title    { font-size: 16px; font-weight: 700; color: var(--navy); }
+.section-subtitle { font-size: 12.5px; color: var(--slate); margin-top: 2px; }
+
+/* ── Q-card (general.html style) ── */
+.q-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.q-trigger {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+  transition: background .12s;
+}
+.q-trigger:hover          { background: var(--bg); }
+.q-trigger.open           { background: var(--blue-bg); border-bottom: 1px solid var(--blue-border); }
+.q-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  padding-top: 2px;
+  flex-shrink: 0;
+  min-width: 24px;
+}
+.q-text   { flex: 1; line-height: 1.45; }
+.q-badges { display: flex; gap: 6px; flex-shrink: 0; align-items: flex-start; padding-top: 1px; }
+.q-panel  { display: none; padding: 16px; border-top: 1px solid var(--border); font-size: 13.5px; color: #334155; line-height: 1.65; }
+.q-panel.open { display: block; }
+
+/* ── Progress bar (general.html style) ── */
+.progress-bar {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.progress-label {
+  font-size: 11.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--slate); white-space: nowrap;
+}
+.progress-track { flex: 1; min-width: 120px; height: 7px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress-fill  { height: 100%; border-radius: 99px; background: var(--blue); transition: width .4s ease; }
+.progress-count { font-size: 12px; font-weight: 600; color: var(--slate); white-space: nowrap; }
+
+/* ── Must-know list ── */
+.must-list  { display: flex; flex-direction: column; gap: 8px; }
+.must-item  { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: #334155; line-height: 1.55; }
+.must-bullet { font-size: 15px; flex-shrink: 0; }
+
+/* ============================================================
+   BASIC MINDMAP  (topic0 pattern) — use with
+   initMindmap() in lesson-ui.js. Same EN/DE-synced single-open
+   behaviour as the advanced variant below, but with a flatter
+   panel layout (must-know-inline badge + panel-meta/panel-row
+   pairs instead of the advanced grid's richer panel). Classes
+   are un-namespaced ("branch-" / "panel-" / "legend-") since
+   this is the original, simpler mindmap pattern.
+   ============================================================ */
+.branches-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 680px)  { .branches-grid { grid-template-columns: 1fr; } }
+@media (min-width: 681px) and (max-width: 960px) { .branches-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.branch-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  overflow: hidden; display: flex; flex-direction: column;
+}
+.branch-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 16px 11px; border-bottom: 1px solid var(--border);
+}
+.branch-dot   { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+.branch-title { font-size: 13px; font-weight: 700; color: var(--navy); }
+.branch-items { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 6px; }
+
+.branch-item {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding: 9px 12px; border-radius: 8px; border: 1.5px solid transparent;
+  cursor: pointer; text-align: left; font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px; color: var(--navy); transition: filter .12s;
+}
+.branch-item:hover { filter: brightness(0.96); }
+.item-label { flex: 1; }
+.must-badge {
+  font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
+  flex-shrink: 0; background: #fef3c7; color: #92400e;
+}
+.branch-item.active .must-badge { background: rgba(255,255,255,0.28); color: #fff; }
+
+.item-panel {
+  display: none; border-radius: 8px; border-left: 3px solid #ccc;
+  padding: 14px 14px 12px; font-size: 13px;
+}
+.item-panel.open { display: block; }
+
+.must-know-inline {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
+  margin-bottom: 9px; background: var(--amber-bg); color: var(--amber-text);
+  border: 1px solid #fde68a;
+}
+.panel-info  { color: var(--navy2); line-height: 1.6; margin-bottom: 11px; }
+.panel-meta  { display: flex; flex-direction: column; gap: 7px; }
+.panel-row   { display: flex; flex-direction: column; gap: 2px; }
+.panel-row-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted);
+}
+.panel-row-text { font-size: 12.5px; color: var(--slate); line-height: 1.5; }
+.panel-topic    { font-size: 12.5px; font-weight: 600; }
+
+.legend {
+  margin-top: 24px; padding: 16px 20px;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.legend-title {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+}
+.legend-items { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; }
+.legend-item  { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--slate); }
+.legend-dot   { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.legend-must {
+  font-size: 12px; color: var(--amber-text); font-weight: 600;
+  padding-left: 16px; margin-left: 4px; border-left: 1px solid var(--border);
+}
+
+/* ============================================================
+   ADVANCED MINDMAP  (topic0b pattern) — use with
+   initMindmapAdvanced() in lesson-ui.js ONLY.
+   Richer variant of the plain mindmap: must-know pill badge,
+   structured why/study rows inside the panel, colour-filled
+   active button state. Classes are "amap-" namespaced so they
+   never collide with the plain mindmap's branch-card/item-panel
+   classes if both patterns are ever used in the same project.
+   ============================================================ */
+.amap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 680px)  { .amap-grid { grid-template-columns: 1fr; } }
+@media (min-width: 681px) and (max-width: 960px) { .amap-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.amap-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.amap-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 16px 11px; border-bottom: 1px solid var(--border);
+}
+.amap-dot   { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+.amap-title { font-size: 13px; font-weight: 700; color: var(--navy); }
+.amap-items { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 6px; }
+
+.amap-item {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding: 9px 12px; border-radius: 8px; border: 1.5px solid transparent;
+  cursor: pointer; text-align: left; font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px; color: var(--navy); transition: filter .12s, background .12s, color .12s;
+}
+.amap-item:hover { filter: brightness(0.96); }
+.amap-item-label { flex: 1; }
+.amap-badge {
+  font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
+  flex-shrink: 0; background: var(--amber-bg); color: var(--amber-text);
+}
+.amap-item.active .amap-badge { background: rgba(255,255,255,0.28); color: #fff; }
+
+.amap-panel {
+  display: none; border-radius: 8px; border-left: 3px solid #ccc;
+  padding: 14px 14px 12px; font-size: 13px;
+}
+.amap-panel.open { display: block; }
+
+.amap-panel-must {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
+  margin-bottom: 9px; background: var(--amber-bg); color: var(--amber-text);
+  border: 1px solid #fde68a;
+}
+.amap-panel-info  { color: var(--navy2); line-height: 1.6; margin-bottom: 11px; }
+.amap-panel-meta  { display: flex; flex-direction: column; gap: 7px; }
+.amap-panel-row   { display: flex; flex-direction: column; gap: 2px; }
+.amap-row-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted);
+}
+.amap-row-text    { font-size: 12.5px; color: var(--slate); line-height: 1.5; }
+.amap-panel-topic { font-size: 12.5px; font-weight: 600; }
+
+.amap-legend {
+  margin-top: 24px; padding: 16px 20px;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.amap-legend-title {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+}
+.amap-legend-items { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; }
+.amap-legend-item  { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--slate); }
+.amap-legend-dot   { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.amap-legend-must {
+  font-size: 12px; color: var(--amber-text); font-weight: 600;
+  padding-left: 16px; margin-left: 4px; border-left: 1px solid var(--border);
+}
+
+/* ── Mobile ── */
+@media (max-width: 540px) {
+  .header  { padding: 20px 16px 0; }
+  .body    { padding: 20px 14px 48px; }
+  .section { padding: 18px 16px; }
+  .term-cell { width: 36%; white-space: normal; }
+  .tabs-inner { gap: 0; }
+  .tab-btn { padding: 9px 14px; font-size: 12px; }
+}
