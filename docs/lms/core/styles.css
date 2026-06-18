@@ -545,7 +545,7 @@ html, body {
   .sidebar {
     border-right: none;
     border-bottom: 1px solid var(--sb-border);
-    max-height: 44vh;
+    max-height: 30vh;
     gap: 0;
   }
   .brand h1, .brand h2 { font-size: 16px; }
@@ -558,7 +558,7 @@ html, body {
 }
 
 @media (max-width: 500px) {
-  .sidebar { max-height: 40vh; }
+  .sidebar { max-height: 30vh; }
   .panel-block { padding: 10px 14px; }
   .nav-btn small:last-child { display: none; }
 }
