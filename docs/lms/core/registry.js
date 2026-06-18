@@ -256,6 +256,13 @@ export const LMS_CONFIG = {
           subtitle: 'Contract signing & §16 TV-L Stufe request',
           route: 'lms/modules/UKM/topic1-meeting-hoffmann.html',
           progress: { type: 'untracked', total: 0 }
+        },
+        {
+          id: 'ukm-hoffmann-questions',
+          title: 'Frau Hoffmann — Her Side',
+          subtitle: 'Her questions, document requests & tricky moments',
+          route: 'lms/modules/UKM/topic3-hoffmann-questions.html',
+          progress: { type: 'untracked', total: 0 }
         }
         // Add new UKM lessons here as the module grows
       ]

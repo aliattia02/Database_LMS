@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Topic 2 — Self-Introduction | UKM Job Start Prep</title>
+  <link rel="stylesheet" href="./theme.css"/>
+  <style>
+    /* ── Page-specific only ── */
+    .phrase-box {
+      background: #f0f9ff; border: 1px solid #bae6fd;
+      border-left: 4px solid #0284c7; border-radius: 8px;
+      padding: 13px 16px; margin-bottom: 10px;
+    }
+    .phrase-de {
+      display: block; font-style: italic; font-weight: 600;
+      color: #0c4a6e; font-size: 13.5px; line-height: 1.55; margin-bottom: 5px;
+    }
+    .phrase-en { display: block; color: #64748b; font-size: 12px; line-height: 1.5; }
+    .phrase-note {
+      font-size: 12px; color: #64748b; line-height: 1.5;
+      margin-top: 6px; margin-bottom: 10px; padding-left: 2px;
+    }
+    .do-dont-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 4px;
+    }
+    @media (max-width: 640px) { .do-dont-grid { grid-template-columns: 1fr; } }
+    .do-box, .dont-box {
+      border-radius: 8px; padding: 14px 16px;
+    }
+    .do-box {
+      background: var(--green-bg); border: 1px solid var(--green-border);
+      border-left: 4px solid #16a34a;
+    }
+    .dont-box {
+      background: var(--amber-bg); border: 1px solid #fde68a;
+      border-left: 4px solid #d97706;
+    }
+    .do-box .box-label  { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--green-text); margin-bottom: 8px; }
+    .dont-box .box-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #92400e; margin-bottom: 8px; }
+    .do-box ul, .dont-box ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+    .do-box li, .dont-box li { font-size: 13px; line-height: 1.55; padding-left: 16px; position: relative; }
+    .do-box li::before   { content: '✓'; position: absolute; left: 0; color: #16a34a; font-weight: 700; }
+    .dont-box li::before { content: '✗'; position: absolute; left: 0; color: #d97706; font-weight: 700; }
+    .do-box li  { color: var(--green-text); }
+    .dont-box li { color: #92400e; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
+    .tag {
+      display: inline-block; padding: 3px 10px; border-radius: 99px;
+      font-size: 11px; font-weight: 600; letter-spacing: .03em;
+      background: var(--blue-bg); color: var(--blue-text);
+      border: 1px solid var(--blue-border);
+    }
+    .tag.amber { background: var(--amber-bg); color: var(--amber-text); border-color: #fde68a; }
+    .tag.green { background: var(--green-bg); color: var(--green-text); border-color: var(--green-border); }
+    .section-body p + p { margin-top: 10px; }
+    .acc-body p + p { margin-top: 8px; }
+    .highlight-card {
+      background: var(--blue-bg); border: 1px solid var(--blue-border);
+      border-left: 4px solid var(--blue);
+      border-radius: 8px; padding: 14px 16px; margin-bottom: 12px;
+    }
+    .highlight-card strong { color: var(--blue-text); }
+    .highlight-card p { font-size: 13.5px; color: var(--blue-text); margin: 0; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./index.html">← Back to main page</a>
+</div>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-meta">UKM Job Start Prep &nbsp;·&nbsp; Topic 2</div>
+    <h1>Introducing <span>Yourself</span></h1>
+    <p class="header-sub">How to present your background to Frau Hoffmann and anyone you meet on day one — concise, contextually relevant, and confident.</p>
+  </div>
+</div>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English — Strategy</button>
+    <button class="tab-btn" onclick="switchTab('de', this)">Deutsch — Formulierungen</button>
+  </div>
+</div>
+
+<div class="body">
+
+<!-- ═══════════════════ ENGLISH ═══════════════════ -->
+<div id="tab-en" class="tab-content active">
+
+  <!-- S1 — 30-second intro -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Section 1</div>
+        <h2>The 30-second intro — what to say when asked</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <p>Frau Hoffmann is HR — she processes contracts. She will not ask about your technical background in depth. But she may ask a polite opener like <em>"Was haben Sie zuletzt gemacht?"</em> or <em>"Woher kommen Sie?"</em>. Have a clean one-liner ready that is warm and professional without being a lecture.</p>
+      <div class="highlight-card">
+        <p><strong>Core version (for Hoffmann):</strong> "I'm a pharmacist by training, did my M.Sc. in Digital Health here in Germany — Deggendorf, finished last year with a 1.6 — and my background is in health informatics and digital systems, which is what the role at the Institut für Medizinische Informatik is about. I'm really looking forward to starting."</p>
+      </div>
+      <p>That is enough for an HR contact. No need to explain FHIR, DiaTwin, or the Egyptian EHR rollout unless she asks. If she does ask: <em>"Ich habe davor an einem nationalen Gesundheitsinformatik-Projekt in Ägypten gearbeitet — digitale Transformation des Krankenhaussystems. Das ist der direkte Hintergrund für diese Stelle."</em></p>
+    </div>
+  </div>
+
+  <!-- S2 — Who you are for IMI context -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Section 2</div>
+        <h2>Your background — the full picture, IMI-relevant</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <p>For anyone at IMI who asks on day one (Dr. Storck, a colleague), use this three-layer framing:</p>
+
+      <div class="accordion">
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>Layer 1 — Clinical foundation (pharmacist)</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">What to say</div>
+            <p>B.Sc. Pharmacy from Zagazig University (grade 1.5, Anabin H+). Licensed pharmacist in Germany under §11 BApO (issued 2025, Bavaria). Passed the pharmaceutical specialist language exam (Fachsprachprüfung, BLAK 2025).</p>
+            <p>Why it matters at IMI: clinical understanding of medication systems, patient data, coding standards — not a developer who has to ask what ICD-10 is.</p>
+            <div class="tag-row">
+              <span class="tag">§11 BApO</span><span class="tag">B.Sc. Pharmacy</span><span class="tag">Clinical domain</span><span class="tag">FSP BLAK</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>Layer 2 — Health IT at national scale (Egypt UHI)</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">What to say</div>
+            <p>May 2021 – October 2023: Senior Clinical Data Specialist at the Egyptian Ministry of Health's Universal Health Insurance project. Led the EHR digitalisation rollout — 100% paper to electronic, ICD-10, SNOMED CT, FHIR R4, Dedalus HIS — across hospital networks. This is the direct predecessor to MeDIC/MII work.</p>
+            <p>This is your §16 TV-L anchor evidence AND your most relevant professional experience for the role. Use the full title: <em>"Member of the Healthcare Facilities Digital Transformation Unit."</em></p>
+            <div class="tag-row">
+              <span class="tag">FHIR R4</span><span class="tag">ICD-10</span><span class="tag">SNOMED CT</span><span class="tag">Dedalus HIS</span><span class="tag">HIS/LIS/PACS</span><span class="tag">ETL</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>Layer 3 — M.Sc. + independent development (Germany)</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">What to say</div>
+            <p>M.Sc. Digital Health at Deggendorf Institute of Technology, 2023–2025, grade 1.6. Thesis: personalised insulin dosing for Type 1 Diabetes — clinically supervised by Prof. Dr. Klaus Parhofer (LMU Munich), rated EXCELLENT, DiaTwin clinical utility 8.7/10.</p>
+            <p>Post-degree: built and deployed seven clinical software systems — DiaTwin (live at dia-twin.vercel.app), Morafek CareMate EHR (FHIR R4/ISiK, open source), AI-OVR (incident management, active implementation for Egyptian Health Authority).</p>
+            <div class="tag-row">
+              <span class="tag green">M.Sc. 1.6</span><span class="tag green">LMU-validated</span><span class="tag green">FHIR R4/ISiK</span><span class="tag green">React Native</span><span class="tag green">Flask</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 — What is directly relevant for the UKM role -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Section 3</div>
+        <h2>What maps directly to the role (NUM ENRICH + EyeMatics)</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <p>The role has two main project streams. Know how your background connects to each — for introductions with Dr. Storck or colleagues.</p>
+
+      <div class="accordion">
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>NUM ENRICH — Cross-platform app for wearable/mHealth data</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your connection</div>
+            <p><strong>Direct match:</strong> DiaTwin is a live React Native app integrating CGM sensor data (Apple Watch, Samsung), performing on-device clinical calculations, and outputting FHIR-structured data. The NUM ENRICH brief asks for exactly this — cross-platform app, wearable data, FHIR standards.</p>
+            <p>Line to use: <em>"I've built and deployed a clinical cross-platform app — DiaTwin — that integrates CGM wearable data with FHIR R4 output. That's essentially what NUM ENRICH needs technically."</em></p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>EyeMatics — HIS interfaces, multi-site data harmonisation</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your connection</div>
+            <p><strong>Direct match:</strong> Your Egypt UHI role involved designing and executing ETL pipelines for clinical data migration, HIS/LIS/PACS integration, and multi-institution data harmonisation. EyeMatics asks for KIS interface design and data harmonisation across six university hospitals — same problem, different disease domain.</p>
+            <p>Line to use: <em>"At the UHI project I designed and deployed KIS interfaces across multiple hospital networks — different systems, different configurations — which is exactly the integration challenge in EyeMatics."</em></p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>MII / MeDIC broader context</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your connection</div>
+            <p>The MII is Germany's federal health data infrastructure initiative — interoperable hospital data for research. Your Egypt UHI work is the closest real-world analogue: a national health IT project connecting previously siloed institutions under a shared data standard. You've done this at national scale in a resource-constrained setting, which requires more problem-solving than running a vendor solution.</p>
+            <p>Useful framing: <em>"I find the MII particularly interesting because I've seen the same challenge at scale — making EHR data from different institutions talk to each other in a standardised way. It's technically the same problem, a different geography."</em></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 — Sensitive points to handle carefully -->
+  <div class="must-know">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Section 4</div>
+        <h2>Sensitive points — how to frame them</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="accordion">
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>"Your pharmacy licence — is it German?"</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">How to handle</div>
+            <p>The §11 BApO permit is a German professional licence issued by the Government of Upper Bavaria — it is German. But it is NOT a full Approbation (independent pharmacy management). On all UKM forms, mark it correctly as <strong>Berufserlaubnis §11 BApO</strong>, not Approbation.</p>
+            <p><em>"Ich habe eine deutsche Berufserlaubnis für pharmazeutische Tätigkeiten — nach §11 BApO, ausgestellt von der Regierung Oberbayern. Das ist keine Vollapprobation, aber die relevante deutsche Qualifikation für meine Tätigkeit als Apotheker."</em></p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>"Your work experience is from Egypt — is that relevant here?"</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">How to handle</div>
+            <p>This is the core §16 TV-L objection reframed as a general question. Answer the same way: the standards are global (FHIR, ICD-10, SNOMED, HL7), not German. The hospitals I worked in used German enterprise HIS software (Dedalus Orbis). The technical challenges in national health IT are identical regardless of geography.</p>
+            <p><em>"Die technischen Standards sind international — FHIR R4, ICD-10, HL7 v2 — und die Software war dasselbe deutsche System, das auch in deutschen Krankenhäusern eingesetzt wird. Die Erfahrung ist direkt übertragbar."</em></p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>"Why not a pure developer role?"</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">How to handle</div>
+            <p>You've deliberately turned down pure developer positions. What keeps you in a role is intellectual depth, societal relevance, and translating complexity for non-technical stakeholders. Medical informatics at a university hospital is the intersection of all three.</p>
+            <p><em>"Ich finde es wichtig, nicht nur den Code zu schreiben, sondern die medizinische Seite wirklich zu verstehen. Als Apotheker mit Praxiserfahrung im klinischen Bereich kann ich Anforderungen aus beiden Seiten beurteilen — das ist an einer MeDIC-Stelle ein echter Vorteil."</em></p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>"Your German — is it good enough?"</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">How to handle</div>
+            <p>B2 + Fachsprachprüfung (pharmaceutical German, BLAK 2025). Functionally stronger than general B2 in medical-scientific contexts. Completed M.Sc. at a German institution, worked in Germany. The job posting lists good English as the language requirement — German is a bonus, not a prerequisite.</p>
+            <p><em>"Ich habe B2 Deutsch plus die Fachsprachprüfung — pharmazeutische Fachsprache — abgelegt. Im medizinischen Kontext funktioniert mein Deutsch gut. Und die Stellenausschreibung nennt Englischkenntnisse als Anforderung — die erfülle ich auf C1-Niveau."</em></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 — Dos and Don'ts -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Section 5</div>
+        <h2>Dos and don'ts for any first introduction</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="do-dont-grid">
+        <div class="do-box">
+          <div class="box-label">✓ Do</div>
+          <ul>
+            <li>Lead with M.Sc. 1.6 and the German context — it's your most immediately legible credential here</li>
+            <li>Name-drop the LMU clinical supervision and Prof. Parhofer when in medical contexts</li>
+            <li>Connect your Egypt experience to the role's specific projects (NUM, MII, EHR interfaces)</li>
+            <li>Have your Personalnummer (00095010) visible — Hoffmann may ask for it immediately</li>
+            <li>Speak German when you can — even imperfect German signals effort and adaptation</li>
+            <li>Mention your §16 TV-L request is pending — it shows you know the system</li>
+          </ul>
+        </div>
+        <div class="dont-box">
+          <div class="box-label">✗ Don't</div>
+          <ul>
+            <li>Don't over-explain to HR — Hoffmann processes contracts, not CVs. Keep it to one sentence</li>
+            <li>Don't call your BApO a "pharmacy licence" without qualification — always say §11 BApO, not Approbation</li>
+            <li>Don't lead with the Egyptian work to non-technical people — lead with the German M.Sc.</li>
+            <li>Don't mention DiaTwin to HR unless directly asked — it's irrelevant to admin</li>
+            <li>Don't downplay your pharmacy background — it IS directly relevant to clinical data work</li>
+            <li>Don't say "I'm still learning German" — you have B2 + FSP. State it confidently</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-en -->
+
+<!-- ═══════════════════ DEUTSCH ═══════════════════ -->
+<div id="tab-de" class="tab-content">
+
+  <!-- S1 — Kurzvorstellung -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Abschnitt 1</div>
+        <h2>Kurzvorstellung — der 30-Sekunden-Überblick</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <p style="color:#64748b;font-size:13px;margin-bottom:14px;">Für Frau Hoffmann (HR) — kurz und freundlich, kein Vortrag.</p>
+      <div class="phrase-box">
+        <span class="phrase-de">„Ich bin Ali Attia — ich bin Apotheker und habe meinen Master in Digital Health letztes Jahr in Deggendorf abgeschlossen, Note 1,6. Mein Schwerpunkt ist Gesundheitsinformatik und digitale Systeme, das ist auch genau das, womit ich hier am IMI arbeiten werde. Ich freue mich sehr auf den Start."</span>
+        <span class="phrase-en">I'm Ali Attia — I'm a pharmacist and finished my Master's in Digital Health last year in Deggendorf, grade 1.6. My focus is health informatics and digital systems, which is exactly what I'll be working on here at IMI. I'm really looking forward to starting.</span>
+      </div>
+      <p class="phrase-note">→ Mehr nur, wenn sie nachfragt. Dann:</p>
+      <div class="phrase-box">
+        <span class="phrase-de">„Ich habe davor an einem nationalen Gesundheitsinformatik-Projekt in Ägypten gearbeitet — digitale Transformation des Krankenhaussystems, FHIR, ICD-10, Krankenhausinformationssysteme. Das ist der direkte Hintergrund für diese Stelle."</span>
+        <span class="phrase-en">Before that I worked on a national health informatics project in Egypt — digital transformation of the hospital system, FHIR, ICD-10, hospital information systems. That's the direct background for this role.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 — Hintergrund in Schichten -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Abschnitt 2</div>
+        <h2>Hintergrund in drei Schichten erklären</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <p style="color:#64748b;font-size:13px;margin-bottom:14px;">Für Gespräche mit Dr. Storck oder Kollegen am Institut — je nach Gesprächstiefe eine oder alle drei Schichten.</p>
+      <div class="phrase-box">
+        <span class="phrase-de">„Ich habe zuerst Pharmazie studiert — Zagazig University, Note 1,5. In Deutschland habe ich dann die Berufserlaubnis nach §11 BApO erhalten und die Fachsprachprüfung bei der BLAK abgelegt."</span>
+        <span class="phrase-en">I first studied pharmacy — Zagazig University, grade 1.5. In Germany I then received the §11 BApO professional permit and passed the specialist language exam at BLAK.</span>
+      </div>
+      <div class="phrase-box">
+        <span class="phrase-de">„Von 2021 bis 2023 habe ich beim nationalen Krankenversicherungsprojekt des ägyptischen Gesundheitsministeriums gearbeitet — Leitung der digitalen Transformation, Einführung von FHIR R4, ICD-10, SNOMED CT und Dedalus-HIS in Krankenhausnetzwerken."</span>
+        <span class="phrase-en">From 2021 to 2023 I worked on the Egyptian Ministry of Health's national health insurance project — leading digital transformation, implementing FHIR R4, ICD-10, SNOMED CT and Dedalus HIS across hospital networks.</span>
+      </div>
+      <div class="phrase-box">
+        <span class="phrase-de">„Danach habe ich meinen Master in Digital Health an der TH Deggendorf abgeschlossen — Note 1,6 — mit einer klinisch betreuten Masterarbeit zu personalisertem Insulindosieren, extern betreut von Prof. Dr. Parhofer von der LMU München. Das war die Grundlage für meine klinische KI-App DiaTwin."</span>
+        <span class="phrase-en">Then I completed my M.Sc. in Digital Health at DIT Deggendorf — grade 1.6 — with a clinically supervised thesis on personalised insulin dosing, externally supervised by Prof. Dr. Parhofer from LMU Munich. That was the foundation for my clinical AI app DiaTwin.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 — Rollenbezug -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Abschnitt 3</div>
+        <h2>Rollenbezug — NUM ENRICH und EyeMatics</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <p style="color:#64748b;font-size:13px;margin-bottom:14px;">Für das erste Gespräch mit Dr. Storck oder einem Kollegen am IMI.</p>
+      <div class="phrase-box">
+        <span class="phrase-de">„DiaTwin ist eine plattformübergreifende App, die Wearable-Daten — CGM-Sensoren, Apple Watch — in FHIR-R4-Strukturen überführt. Das ist im Wesentlichen die technische Anforderung von NUM ENRICH."</span>
+        <span class="phrase-en">DiaTwin is a cross-platform app that transfers wearable data — CGM sensors, Apple Watch — into FHIR R4 structures. That's essentially the technical requirement of NUM ENRICH.</span>
+      </div>
+      <div class="phrase-box">
+        <span class="phrase-de">„Bei dem UHI-Projekt habe ich KIS-Schnittstellen in mehreren Krankenhausnetzwerken konzipiert und implementiert — unterschiedliche Systeme, unterschiedliche Konfigurationen. Das ist genau das Integrationsproblem, das EyeMatics lösen will."</span>
+        <span class="phrase-en">At the UHI project I designed and implemented KIS interfaces across multiple hospital networks — different systems, different configurations. That's exactly the integration problem EyeMatics is solving.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 — Heikle Punkte -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Abschnitt 4</div>
+        <h2>Heikle Punkte — Formulierungen</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="accordion">
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>Zur Berufserlaubnis: §11 BApO korrekt benennen</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Formulierung</div>
+            <div class="phrase-box" style="margin-top:8px;">
+              <span class="phrase-de">„Ich habe die Berufserlaubnis nach §11 BApO — das ist die offizielle deutsche Erlaubnis zur pharmazeutischen Tätigkeit, ausgestellt von der Regierung Oberbayern. Das ist keine Vollapprobation, aber die relevante Qualifikation für meine Tätigkeit."</span>
+            </div>
+            <p style="color:#64748b;font-size:12px;margin-top:6px;">Auf Formularen immer „Berufserlaubnis §11 BApO" eintragen, nie „Approbation".</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>Zur Auslandserfahrung: Übertragbarkeit betonen</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Formulierung</div>
+            <div class="phrase-box" style="margin-top:8px;">
+              <span class="phrase-de">„Die technischen Standards sind international — FHIR R4, ICD-10, HL7 v2 — und das eingesetzte HIS war dasselbe deutsche System, das auch in deutschen Krankenhäusern läuft. Die Erfahrung ist direkt übertragbar."</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <span>Zum Deutschen: selbstbewusst antworten</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Formulierung</div>
+            <div class="phrase-box" style="margin-top:8px;">
+              <span class="phrase-de">„Ich habe B2 Deutsch plus die Fachsprachprüfung im pharmazeutischen Bereich — im medizinisch-wissenschaftlichen Kontext funktioniert mein Deutsch gut. Und ich lerne weiter."</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-de -->
+</div><!-- /body -->
+
+<script src="./lesson-ui.js"></script>
+</body>
+</html>

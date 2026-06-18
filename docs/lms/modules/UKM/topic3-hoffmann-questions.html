@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Topic 3 — Hoffmann's Questions | UKM Job Start Prep</title>
+  <link rel="stylesheet" href="./theme.css"/>
+  <style>
+    .phrase-box {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 4px solid #0284c7;
+      border-radius: 8px;
+      padding: 13px 16px;
+      margin-bottom: 10px;
+    }
+    .phrase-de {
+      display: block; font-style: italic; font-weight: 600;
+      color: #0c4a6e; font-size: 13.5px; line-height: 1.55; margin-bottom: 5px;
+    }
+    .phrase-en {
+      display: block; color: #64748b; font-size: 12px; line-height: 1.5;
+    }
+    .phrase-note {
+      font-size: 12px; color: #64748b; line-height: 1.5;
+      margin-top: 6px; margin-bottom: 10px; padding-left: 2px;
+    }
+    .acc-body p + p { margin-top: 8px; }
+    .section-body p + p { margin-top: 10px; }
+
+    /* Q-type badges */
+    .q-tag {
+      display: inline-block;
+      font-size: 10.5px; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; padding: 2px 9px; border-radius: 99px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .q-routine  { background: var(--blue-bg);  color: var(--blue-text);  border: 1px solid var(--blue-border); }
+    .q-docs     { background: var(--green-bg); color: var(--green-text); border: 1px solid var(--green-border); }
+    .q-clarify  { background: #f5f3ff; color: #5b21b6; border: 1px solid #ddd6fe; }
+    .q-tricky   { background: var(--amber-bg); color: var(--amber-text); border: 1px solid #fde68a; }
+
+    /* Category dividers inside accordion stacks */
+    .acc-category {
+      font-size: 10.5px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--muted);
+      padding: 14px 0 6px; border-top: 1px solid var(--border);
+      margin-top: 6px;
+    }
+    .acc-category:first-child { border-top: none; padding-top: 0; }
+
+    /* Response box colours per type */
+    .resp-routine  { background: var(--blue-bg);  border-left: 3px solid var(--blue);  border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 13.5px; }
+    .resp-docs     { background: var(--green-bg); border-left: 3px solid #22c55e;      border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 13.5px; }
+    .resp-clarify  { background: #f5f3ff;          border-left: 3px solid #7c3aed;      border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 13.5px; }
+    .resp-tricky   { background: var(--amber-bg); border-left: 3px solid #f59e0b;      border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 13.5px; }
+
+    .resp-routine em,
+    .resp-docs em,
+    .resp-clarify em,
+    .resp-tricky em { font-style: italic; font-weight: 600; color: var(--navy2); }
+
+    /* Situational scenario intros */
+    .scenario-label {
+      font-size: 10.5px; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+    }
+
+    /* Quick-reference card grid */
+    .qref-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 4px;
+    }
+    @media (max-width: 560px) { .qref-grid { grid-template-columns: 1fr; } }
+    .qref-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .qref-card-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+    }
+    .qref-card-val {
+      font-size: 13.5px; font-weight: 700; color: var(--navy);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .qref-card-sub {
+      font-size: 12px; color: var(--slate); margin-top: 2px; line-height: 1.5;
+    }
+
+    /* Confidence meter */
+    .conf-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    .conf-label { font-size: 12.5px; color: #334155; min-width: 170px; }
+    .conf-bar-wrap { flex: 1; height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .conf-bar { height: 100%; border-radius: 99px; }
+    .conf-pct { font-size: 11px; font-weight: 700; color: var(--slate); min-width: 32px; text-align: right; }
+
+    .acc-trigger-row {
+      display: flex; align-items: flex-start; gap: 10px; flex: 1;
+    }
+  </style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./index.html">← Back to main page</a>
+</div>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-meta">UKM Job Start Prep &nbsp;·&nbsp; Topic 3 &nbsp;·&nbsp; 18. Juni 2026</div>
+    <h1>Frau <span>Hoffmann</span> — Her Side</h1>
+    <p class="header-sub">What she is likely to ask, request, or flag · Document clarifications · Tricky moments · Ready-made German answers</p>
+  </div>
+</div>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English — Situations</button>
+    <button class="tab-btn" onclick="switchTab('de', this)">Deutsch — Antwortformulierungen</button>
+  </div>
+</div>
+
+<div class="body">
+
+<!-- ═══════════════════ ENGLISH ═══════════════════ -->
+<div id="tab-en" class="tab-content active">
+
+  <!-- S1 — Overview -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Section 1</div>
+        <h2>What Hoffmann's role actually looks like from her desk</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <p>Janine Hoffmann (Personalservice, Raum 110.023) processes dozens of new contract signings per semester. Her job is to verify documents, log data into the HR system (SAP), issue the signed contract copy, and flag anything incomplete to the responsible Personalsachbearbeiter. She is <strong>not</strong> deciding whether your qualifications are equivalent, whether you deserve a higher Stufe, or whether your Egyptian documents are valid — she is checking a form against a checklist.</p>
+      <p>Her questions fall into four types: <strong>Routine</strong> (data she needs to enter), <strong>Documents</strong> (originals, copies, missing items), <strong>Clarification</strong> (something unusual on your file — e.g. foreign documents, dual names, pending items), and <strong>Tricky</strong> (situations where you need to be careful not to create a problem). All four are covered below.</p>
+      <p>The single most useful thing to know going in: <strong>she will not be surprised by a non-standard file</strong>. International hires at a university hospital are routine. What she needs from you is calm clarity — correct information, stated simply, with no gaps left open that force her to make a call she isn't authorised to make.</p>
+    </div>
+  </div>
+
+  <!-- S2 — Quick-reference data card (amber) -->
+  <div class="must-know">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Section 2</div>
+        <h2>Facts she will ask for — have these ready instantly</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="qref-grid">
+        <div class="qref-card">
+          <div class="qref-card-label">Personalnummer</div>
+          <div class="qref-card-val">00095010</div>
+          <div class="qref-card-sub">On every form she hands you</div>
+        </div>
+        <div class="qref-card">
+          <div class="qref-card-label">Steueridentifikationsnummer</div>
+          <div class="qref-card-val">already registered</div>
+          <div class="qref-card-sub">Have the exact number on paper — she will enter it into SAP</div>
+        </div>
+        <div class="qref-card">
+          <div class="qref-card-label">Sozialversicherungsausweis</div>
+          <div class="qref-card-val">SV-Nummer ready</div>
+          <div class="qref-card-sub">Physical card or digital — she needs the SV-Nummer</div>
+        </div>
+        <div class="qref-card">
+          <div class="qref-card-label">Krankenversicherung</div>
+          <div class="qref-card-val">Name + Mitgliedsnummer</div>
+          <div class="qref-card-sub">Which Kasse, membership number, type (gesetzlich / privat)</div>
+        </div>
+        <div class="qref-card">
+          <div class="qref-card-label">Bankverbindung</div>
+          <div class="qref-card-val">IBAN + Bank name</div>
+          <div class="qref-card-sub">German IBAN required for payroll; have it written down</div>
+        </div>
+        <div class="qref-card">
+          <div class="qref-card-label">Steuerklasse</div>
+          <div class="qref-card-val">Class III or I</div>
+          <div class="qref-card-sub">Married → III (or I until Heiratsurkunde arrives). Know your answer in advance.</div>
+        </div>
+        <div class="qref-card">
+          <div class="qref-card-label">Religionszugehörigkeit</div>
+          <div class="qref-card-val">Kein Eintrag / keine</div>
+          <div class="qref-card-sub">Standard answer for non-German-church members; affects Kirchensteuer</div>
+        </div>
+        <div class="qref-card">
+          <div class="qref-card-label">Impfnachweis Masern</div>
+          <div class="qref-card-val">Nachweisdokument ready</div>
+          <div class="qref-card-sub">Legally required under Masernschutzgesetz; must show 2-dose proof</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 — Question accordion -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Section 3</div>
+        <h2>Her likely questions — and how to answer</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <p style="color:#64748b;font-size:13px;margin-bottom:16px;">Click any question to see the recommended response. Badge colour = question type.</p>
+
+      <div class="accordion">
+
+        <!-- ── ROUTINE ── -->
+        <div class="acc-category">Routine data-entry questions</div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-routine">Routine</span>
+              <span>"Haben Sie Ihre IBAN dabei?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer</div>
+            <div class="resp-routine"><em>"Ja, hier: [IBAN vorlesen / aufschreiben]."</em></div>
+            <p class="phrase-note">Have it written down on paper, not just on your phone — she needs to copy it manually into SAP. Confirm the bank name as well.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-routine">Routine</span>
+              <span>"In welcher Steuerklasse sind Sie?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer</div>
+            <div class="resp-routine"><em>"Ich bin verheiratet — meine Frau ist noch nicht in Deutschland. Ich nehme zunächst Steuerklasse I und wechsle zu III, sobald die Heiratsurkunde mit beglaubigter Übersetzung vorliegt."</em></div>
+            <p class="phrase-note">This is the correct interim answer. Class III requires you and your spouse both to be registered in Germany or a joint Elster submission. She will log Class I for now and expect the change later.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-routine">Routine</span>
+              <span>"Bei welcher Krankenkasse sind Sie versichert?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer</div>
+            <div class="resp-routine"><em>"Ich bin bei [Name der Kasse] versichert — gesetzlich versichert. Mitgliedsnummer: [Nummer]."</em></div>
+            <p class="phrase-note">She needs name, membership number, and whether it is gesetzlich or privat. Have your Versicherungskarte ready.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-routine">Routine</span>
+              <span>"Gehören Sie einer Kirche oder Religionsgemeinschaft an, die Kirchensteuer erhebt?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer</div>
+            <div class="resp-routine"><em>"Nein, kein Eintrag."</em></div>
+            <p class="phrase-note">Short and correct. Kirchensteuer is only levied on members of certain German religious bodies (Catholic, Protestant, Jewish communities, etc.). No further explanation needed.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-routine">Routine</span>
+              <span>"Ich brauche Ihre Personalnummer nochmal."</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer</div>
+            <div class="resp-routine"><em>"00095010."</em></div>
+            <p class="phrase-note">Say it slowly, digit by digit if she is typing. Keep the Einstellungsschreiben in front of you — it is printed there.</p>
+          </div>
+        </div>
+
+        <!-- ── DOCUMENTS ── -->
+        <div class="acc-category">Document requests</div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-docs">Documents</span>
+              <span>"Haben Sie den Masernimpfnachweis dabei?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer (if you have it)</div>
+            <div class="resp-docs"><em>"Ja, hier ist der Nachweis — zwei Impfungen, Daten: [Datum 1] und [Datum 2]."</em></div>
+            <div class="acc-strategy-label" style="margin-top:12px;">If you don't have it yet</div>
+            <div class="resp-tricky"><em>"Der Nachweis liegt noch nicht in Papierform vor — ich reiche ihn bis [konkretes Datum] nach. Gibt es ein Formular dafür?"</em></div>
+            <p class="phrase-note">Masernschutzgesetz §20 Abs. 8 IfSG: proof of 2-dose MMR vaccination is mandatory for employment at medical facilities. She will likely have a specific form or submission path. Missing this can legally delay your start date — prioritise it.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-docs">Documents</span>
+              <span>"Das Führungszeugnis fehlt noch."</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer</div>
+            <div class="resp-docs"><em>"Das habe ich bereits beim Einwohnermeldeamt beantragt — es wird direkt ans UKM zugestellt. Können Sie bestätigen, dass ein Eingang noch aussteht, oder soll ich Ihnen die Quittung des Antrags zeigen?"</em></div>
+            <p class="phrase-note">The Führungszeugnis for employers (Belegart O) goes directly to the requesting institution. She should be able to see a pending entry. If you have the Bürgeramt receipt, show it now.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-docs">Documents</span>
+              <span>"Wo ist die Heiratsurkunde?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer</div>
+            <div class="resp-docs"><em>"Meine Frau ist noch in Ägypten — die beglaubigte deutsche Übersetzung reiche ich nach, sobald sie eingereist ist. Das hatte ich Ihnen im Einstellungsschreiben bereits angekündigt."</em></div>
+            <p class="phrase-note">This is expected — she already knows from the Einstellungsschreiben correspondence. Needed for: Steuerklasse III, Kindergeld, Familienzuschlag. Not needed for contract signing itself.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-docs">Documents</span>
+              <span>"Brauchen wir eine beglaubigte Übersetzung dieses Dokuments?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer (documents already translated)</div>
+            <div class="resp-docs"><em>"Ja — die zertifizierte Übersetzung ist in der Mappe dabei. Für [Mappe X] liegt eine Übersetzung durch einen vereidigten Übersetzer vor."</em></div>
+            <div class="acc-strategy-label" style="margin-top:12px;">If she asks about a document not yet translated</div>
+            <div class="resp-clarify"><em>"Das werde ich nachreichen — welches Dokument genau und bis wann benötigen Sie es?"</em></div>
+            <p class="phrase-note">Files 1–5 all have originals + copies. Certified German translations exist for: B.Sc. Pharmacy, Sharkia Arbeitszeugnis. For documents without a translation, agree a clear deadline rather than leaving it open.</p>
+          </div>
+        </div>
+
+        <!-- ── CLARIFICATION ── -->
+        <div class="acc-category">Clarification questions (file-specific)</div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-clarify">Clarify</span>
+              <span>"Was ist eine Berufserlaubnis §11 BApO — ist das eine Approbation?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer</div>
+            <div class="resp-clarify"><em>"Nein — das ist eine eingeschränkte Berufserlaubnis, kein vollständiger Apothekerzulassung. Sie berechtigt zur Berufsausübung unter bestimmten Bedingungen. Für die Stelle als Wissenschaftlicher Mitarbeiter in der Medizininformatik ist sie ausreichend — ich arbeite nicht klinisch als Apotheker."</em></div>
+            <p class="phrase-note">She may not be familiar with §11 BApO. The key point: it does NOT need to be entered as "Approbation" on any UKM form. Correct labelling is important to avoid a data error in SAP that could create problems later.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-clarify">Clarify</span>
+              <span>"Worin bestand Ihre Beschäftigung in Ägypten — war das eine feste Stelle?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer</div>
+            <div class="resp-clarify"><em>"Ja — festangestellt, Vollzeit, Mai 2021 bis Oktober 2023 beim ägyptischen Gesundheitsministerium, Projekt zur nationalen Krankenversicherung. Und von August 2025 bis Mai 2026 selbstständig im Bereich Health-IT. Beide Tätigkeiten sind durch offizielle Bescheinigungen belegt — die Dokumente liegen in Mappe 3."</em></div>
+            <p class="phrase-note">She is asking to satisfy the HR system, not to evaluate the §16 TV-L claim. Give the facts cleanly. If she looks doubtful, add: <em>"Die einschlägige Tätigkeit betrifft dieselbe Domäne wie die IMI-Stelle — medizinische Dateninfrastrukturen."</em></p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-clarify">Clarify</span>
+              <span>"Was ist der Status Ihrer Promotion — sind Sie eingeschrieben?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer</div>
+            <div class="resp-clarify"><em>"Die Promotion wird am Institut für Medizinische Informatik erfolgen — das Thema und die formale Betreuungssituation werden in den ersten Wochen mit Dr. Storck und einem externen Betreuer (LMU München) konkretisiert. Die entsprechende Bescheinigung reiche ich nach, sobald das Verfahren formal eröffnet ist. Für den §2(1) WissZeitVG-Vertrag ist das im Einstellungsschreiben bereits so vorgesehen."</em></div>
+            <p class="phrase-note">WissZeitVG §2(1) contracts require a qualifying academic activity (Qualifizierungsphase). If the PhD is not yet formally registered, she may flag this. The correct approach: the Promotionsbescheinigung is a standard post-start document — not needed today for contract validity. The Personalrat's June 5 confirmation covers this.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-clarify">Clarify</span>
+              <span>"Ihr Name auf dem Reisepass weicht vom Zeugnisname ab — wie ist das?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer</div>
+            <div class="resp-clarify"><em>"Das liegt an der Transliteration aus dem Arabischen — verschiedene Dokumente wurden zu verschiedenen Zeiten ausgestellt. Es handelt sich um dieselbe Person. Falls ein amtliches Bestätigungsschreiben benötigt wird, kann ich das nachreichen."</em></div>
+            <p class="phrase-note">Name transliteration variation from Arabic is a known administrative issue at German HR offices. If she needs a declaration, ask what format UKM accepts (self-declaration vs. notarised).</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-clarify">Clarify</span>
+              <span>"Welcher Aufenthaltstitel haben Sie aktuell? Dürfen Sie schon arbeiten?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer</div>
+            <div class="resp-clarify"><em>"Ich halte derzeit einen Aufenthaltstitel zur Arbeitsuche, gültig bis 10.02.2027, mit dem Vermerk 'Erwerbstätigkeit erlaubt'. Nach Vertragsbeginn werde ich den Titel eigenständig bei der Ausländerbehörde in eine Beschäftigungserlaubnis umschreiben lassen — das hatte ich bereits im Vorfeld angekündigt."</em></div>
+            <p class="phrase-note">The key phrase she needs to see on the Aufenthaltstitel is "Erwerbstätigkeit erlaubt" — that is what UKM HR needs for payroll clearance. Show her the physical document. The conversion to Beschäftigungserlaubnis is your responsibility post-start and does not block employment commencement.</p>
+          </div>
+        </div>
+
+        <!-- ── TRICKY ── -->
+        <div class="acc-category">Tricky or sensitive moments</div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-tricky">Tricky</span>
+              <span>"Das Dokument ist auf Arabisch — das kann ich leider nicht annehmen."</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer</div>
+            <div class="resp-tricky"><em>"Ich verstehe — ist eine beglaubigte Übersetzung erforderlich, oder reicht zunächst eine einfache Übersetzung als Beilage? Für welche Dokumente genau wäre das notwendig?"</em></div>
+            <p class="phrase-note">Don't argue. Ask which documents specifically and what format is acceptable. Some HR offices accept a simple translation alongside the original for informational purposes; certified translations are only strictly required for documents that affect the legal contract (qualifications, names). Get a clear list from her.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-tricky">Tricky</span>
+              <span>"Zum §16 TV-L — das läuft nicht über mich. Das muss Dr. Storck beantragen."</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer</div>
+            <div class="resp-tricky"><em>"Das verstehe ich vollkommen. Ich möchte den Antrag hier nur formell stellen, damit er im System vermerkt ist. Könnten Sie mir sagen, wie der interne Weg aussieht — und bis wann ich mit einer Rückmeldung rechnen kann?"</em></div>
+            <p class="phrase-note">This is the most likely outcome. It is fine — and actually the correct procedural path. The request is now logged. Follow up with Dr. Storck from July 1. She is right: Stufe decisions ultimately sit with the department and HR leadership, not the Sachbearbeiterin.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-tricky">Tricky</span>
+              <span>"Wir können erst anfangen, wenn alle Unterlagen vollständig sind."</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer</div>
+            <div class="resp-tricky"><em>"Welche Unterlagen fehlen konkret? Für die ausstehenden Dokumente — Führungszeugnis, Heiratsurkunde und Promotionsbescheinigung — wurden die Umstände im Vorfeld kommuniziert. Ich möchte sichergehen, dass das Ihnen vorliegt, und klären, welche Frist ich für fehlende Nachweise habe."</em></div>
+            <p class="phrase-note">Do not panic. German HR offices routinely process new hires with outstanding documents as long as the core legal items (identity, residence, employment eligibility) are present. The three known pending items have all been flagged in advance. Ask for a specific list and specific deadlines — vague blocking is usually procedural caution, not an actual obstacle.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-tricky">Tricky</span>
+              <span>"Haben Sie schon eine Meldebescheinigung aus Münster?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">If you have it</div>
+            <div class="resp-docs"><em>"Ja, hier ist die Meldebescheinigung."</em></div>
+            <div class="acc-strategy-label" style="margin-top:12px;">If you are not yet registered in Münster</div>
+            <div class="resp-tricky"><em>"Ich bin derzeit in [aktueller Wohnort] gemeldet — ich ziehe nach Münster vor Arbeitsbeginn um und melde mich spätestens innerhalb der gesetzlichen Frist von zwei Wochen nach Einzug an. Die Meldebescheinigung reiche ich dann sofort nach."</em></div>
+            <p class="phrase-note">UKM HR needs a Münster address for payroll. If you are relocating, you have up to 2 weeks after moving in to register (Anmeldung). She will note it as pending. Not a blocker for contract signing.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-tricky">Tricky</span>
+              <span>She asks a question you don't understand or can't answer immediately</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-strategy-label">Your answer</div>
+            <div class="resp-tricky"><em>"Entschuldigung — könnten Sie das bitte kurz wiederholen? Ich möchte sichergehen, dass ich richtig verstanden habe."</em> &nbsp;/&nbsp; <em>"Das muss ich kurz nachschauen — darf ich Ihnen das noch heute per Mail nachreichen?"</em></div>
+            <p class="phrase-note">It is far better to ask for clarification than to guess and answer incorrectly. HR mistakes entered into SAP can take weeks to correct. If she asks for a number or document you don't have at hand, offer to follow up by email the same day — and actually do it.</p>
+          </div>
+        </div>
+
+      </div><!-- /accordion -->
+    </div>
+  </div>
+
+  <!-- S4 — Likelihood overview -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Section 4</div>
+        <h2>How likely is each situation?</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <p style="color:#64748b;font-size:13px;margin-bottom:18px;">Estimated likelihood for a non-EU hire with multiple documents in progress at a German university hospital.</p>
+
+      <div class="conf-row"><span class="conf-label">IBAN / bank details asked</span><div class="conf-bar-wrap"><div class="conf-bar" style="width:98%;background:#2563eb;"></div></div><span class="conf-pct">98%</span></div>
+      <div class="conf-row"><span class="conf-label">Krankenversicherung queried</span><div class="conf-bar-wrap"><div class="conf-bar" style="width:95%;background:#2563eb;"></div></div><span class="conf-pct">95%</span></div>
+      <div class="conf-row"><span class="conf-label">Masernimpfnachweis checked</span><div class="conf-bar-wrap"><div class="conf-bar" style="width:90%;background:#2563eb;"></div></div><span class="conf-pct">90%</span></div>
+      <div class="conf-row"><span class="conf-label">Steuerklasse question</span><div class="conf-bar-wrap"><div class="conf-bar" style="width:88%;background:#2563eb;"></div></div><span class="conf-pct">88%</span></div>
+      <div class="conf-row"><span class="conf-label">Führungszeugnis chased</span><div class="conf-bar-wrap"><div class="conf-bar" style="width:85%;background:#2563eb;"></div></div><span class="conf-pct">85%</span></div>
+      <div class="conf-row"><span class="conf-label">Aufenthaltstitel / Arbeitserlaubnis reviewed</span><div class="conf-bar-wrap"><div class="conf-bar" style="width:85%;background:#2563eb;"></div></div><span class="conf-pct">85%</span></div>
+      <div class="conf-row"><span class="conf-label">§16 TV-L referred to Dr. Storck</span><div class="conf-bar-wrap"><div class="conf-bar" style="width:80%;background:#f59e0b;"></div></div><span class="conf-pct">80%</span></div>
+      <div class="conf-row"><span class="conf-label">Berufserlaubnis §11 queried</span><div class="conf-bar-wrap"><div class="conf-bar" style="width:60%;background:#7c3aed;"></div></div><span class="conf-pct">60%</span></div>
+      <div class="conf-row"><span class="conf-label">Promotionsbescheinigung flagged</span><div class="conf-bar-wrap"><div class="conf-bar" style="width:55%;background:#7c3aed;"></div></div><span class="conf-pct">55%</span></div>
+      <div class="conf-row"><span class="conf-label">Foreign document language objection</span><div class="conf-bar-wrap"><div class="conf-bar" style="width:40%;background:#f59e0b;"></div></div><span class="conf-pct">40%</span></div>
+      <div class="conf-row"><span class="conf-label">Name-discrepancy question</span><div class="conf-bar-wrap"><div class="conf-bar" style="width:30%;background:#7c3aed;"></div></div><span class="conf-pct">30%</span></div>
+      <div class="conf-row"><span class="conf-label">Meldebescheinigung Münster needed now</span><div class="conf-bar-wrap"><div class="conf-bar" style="width:25%;background:#7c3aed;"></div></div><span class="conf-pct">25%</span></div>
+
+      <p style="color:#64748b;font-size:12px;margin-top:18px;">Blue = routine; Orange = procedural; Purple = clarification. Tricky situations (40% and below) are worth preparing precisely because they feel unexpected in the room.</p>
+    </div>
+  </div>
+
+  <!-- S5 — Post-meeting -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Section 5</div>
+        <h2>Things she will send you home to do</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="connections-grid">
+        <div class="connection-card"><span class="conn-badge">VBL decision — by ~1 Sep</span><span class="conn-text">She will ask you to decide on VBLextra vs VBLklassik opt-out. For §2(1) WissZeitVG contracts, VBLextra is usually preferable (no 3-year vesting). She may hand you a form today or tell you to request it from VBL (0721 155-0) directly. Deadline: 2 months from 1 Jul = ~1 Sep 2026.</span></div>
+        <div class="connection-card"><span class="conn-badge">Heiratsurkunde — on arrival</span><span class="conn-text">She will note that a certified German translation is needed once your wife is in Germany. Required to trigger Steuerklasse III and Familienzuschlag. No deadline pressure today — but bring it within a few weeks of family arrival.</span></div>
+        <div class="connection-card"><span class="conn-badge">Anmeldung Münster — within 2 weeks of move</span><span class="conn-text">If you are not yet registered in Münster: she will note the address as temporary. Get your Meldebescheinigung and send it to her by email as soon as you complete the Anmeldung — don't wait for her to ask again.</span></div>
+        <div class="connection-card"><span class="conn-badge">Promotionsbescheinigung — post-start</span><span class="conn-text">She knows it is pending. Once the doctoral procedure is formally opened at IMI with Dr. Storck (and Prof. Parhofer as external supervisor), she expects the WissZeitVG-Vordruck + Bescheinigung der Promotionsbetreuung. This is routine — not urgent today.</span></div>
+        <div class="connection-card"><span class="conn-badge">Masernimpfnachweis — URGENT if not brought</span><span class="conn-text">If you couldn't show proof today, she will set a hard deadline before 1 July. Under Masernschutzgesetz this is a legal requirement — not optional. Bring the document or send it digitally the same day if you already have it but forgot it today.</span></div>
+        <div class="connection-card"><span class="conn-badge">Ausländerbehörde conversion — after Jul 1</span><span class="conn-text">She noted today that you will handle the Aufenthaltstitel conversion yourself. Keep her in the loop with a quick email once you have the appointment confirmed — proactive communication avoids her having to chase.</span></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-en -->
+
+
+<!-- ═══════════════════ DEUTSCH ═══════════════════ -->
+<div id="tab-de" class="tab-content">
+
+  <!-- S1 -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Abschnitt 1</div>
+        <h2>Was Frau Hoffmann von Ihrer Seite braucht</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <p>Frau Hoffmann bearbeitet Neueinstellungen administrativ: Sie erfasst die Daten im SAP-System, prüft Unterlagen gegen eine interne Checkliste und gibt das Verfahren weiter. Sie bewertet keine Äquivalenzen und trifft keine Entscheidungen zur Stufenzuordnung. Ihr Ziel ist: alles vollständig und korrekt im System — dann kann die Stelle zum 1. Juli beginnen.</p>
+      <p>Die Fragen unten sind auf Deutsch formuliert, damit du direkt antworten kannst — ohne Übersetzungspause. Sachlich, vollständig und ohne offene Enden antworten: Das ist alles, was zählt.</p>
+    </div>
+  </div>
+
+  <!-- S2 — Schnellreferenz (amber) -->
+  <div class="must-know">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Abschnitt 2</div>
+        <h2>Angaben, die sofort griffbereit sein müssen</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="must-know-list">
+        <div class="must-know-item"><span class="flag">⚑</span><span><strong>Personalnummer:</strong> 00095010 — jederzeit abrufbar</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span><strong>Steuer-ID:</strong> exakte Nummer schriftlich dabei — sie tippt sie live in SAP</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span><strong>IBAN:</strong> auf Papier notiert; Bankname dazu</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span><strong>Krankenkasse:</strong> Name der Kasse + Mitgliedsnummer + Art (gesetzlich / privat)</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span><strong>Steuerklasse:</strong> aktuell Klasse I (Frau noch in Ägypten); Wechsel zu III nach Einreise mit Heiratsurkunde</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span><strong>Kirchensteuer:</strong> kein Eintrag</span></div>
+        <div class="must-know-item"><span class="flag">⚑</span><span><strong>Masernnachweis:</strong> 2-Dosen-Nachweis physisch dabei oder Nachreichungsfrist benennen</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 — Fragen + Antworten auf Deutsch -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Abschnitt 3</div>
+        <h2>Ihre Fragen — deine Antworten auf Deutsch</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+
+      <div class="accordion">
+
+        <div class="acc-category">Routinefragen zur Dateneingabe</div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-routine">Routine</span>
+              <span>„Haben Sie Ihre IBAN dabei?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="phrase-box">
+              <span class="phrase-de">„Ja, hier: [IBAN vorlesen]. Bank: [Bankname]."</span>
+            </div>
+            <p class="phrase-note">Auf Papier notiert mitbringen — nicht nur auf dem Handy. Sie tippt sie direkt ein.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-routine">Routine</span>
+              <span>„In welcher Steuerklasse sind Sie?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="phrase-box">
+              <span class="phrase-de">„Ich bin verheiratet — meine Frau ist noch in Ägypten. Zunächst Steuerklasse I. Sobald die beglaubigte Übersetzung der Heiratsurkunde vorliegt, beantrage ich den Wechsel zu Klasse III."</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-routine">Routine</span>
+              <span>„Bei welcher Krankenkasse sind Sie versichert?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="phrase-box">
+              <span class="phrase-de">„Ich bin gesetzlich versichert bei [Name der Kasse]. Mitgliedsnummer: [Nummer]."</span>
+            </div>
+            <p class="phrase-note">Versicherungskarte physisch mitbringen — schnellste Lösung.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-routine">Routine</span>
+              <span>„Gehören Sie einer Kirche an, die Kirchensteuer erhebt?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="phrase-box">
+              <span class="phrase-de">„Nein, kein Eintrag."</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-category">Unterlagenfragen</div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-docs">Unterlagen</span>
+              <span>„Haben Sie den Masernimpfnachweis dabei?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="phrase-box">
+              <span class="phrase-de">„Ja, hier ist der Nachweis — zwei Impfungen, Datum: [Datum 1] und [Datum 2]."</span>
+            </div>
+            <div class="phrase-box" style="margin-top:6px;background:#fffbeb;border-color:#fde68a;border-left-color:#f59e0b;">
+              <span class="phrase-de" style="color:#78350f;">Falls nicht dabei: „Den Nachweis reiche ich bis [Datum] nach — welchen Weg bevorzugen Sie, per E-Mail oder persönlich?"</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-docs">Unterlagen</span>
+              <span>„Das Führungszeugnis fehlt noch."</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="phrase-box">
+              <span class="phrase-de">„Das habe ich bereits beim Einwohnermeldeamt beantragt — es wird direkt ans UKM zugestellt. Können Sie bestätigen, dass ein Eingang aussteht? Ich habe hier die Quittung des Antrags."</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-docs">Unterlagen</span>
+              <span>„Wo ist die Heiratsurkunde?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="phrase-box">
+              <span class="phrase-de">„Meine Frau ist noch in Ägypten. Die beglaubigte Übersetzung reiche ich nach, sobald sie eingereist ist. Das war im Vorfeld bereits so kommuniziert."</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-category">Klärungsfragen (dokumentspezifisch)</div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-clarify">Klärung</span>
+              <span>„Was ist eine Berufserlaubnis §11 BApO — haben Sie eine Approbation?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="phrase-box">
+              <span class="phrase-de">„Nein — §11 BApO ist eine eingeschränkte Berufserlaubnis, keine Approbation. Für die Wissenschaftler-Stelle in der Medizininformatik ist das ausreichend — ich bin nicht klinisch als Apotheker tätig."</span>
+            </div>
+            <p class="phrase-note">Wichtig: auf Formularen korrekt als „Berufserlaubnis §11 BApO" eingetragen, nicht als Approbation.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-clarify">Klärung</span>
+              <span>„Welchen Aufenthaltstitel haben Sie aktuell?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="phrase-box">
+              <span class="phrase-de">„Aufenthaltstitel zur Arbeitssuche, gültig bis 10.02.2027, Vermerk: 'Erwerbstätigkeit erlaubt'. Nach Arbeitsbeginn werde ich ihn eigenständig bei der Ausländerbehörde umschreiben lassen."</span>
+            </div>
+            <p class="phrase-note">Ausweis physisch vorlegen — sie prüft den Vermerk. Das ist der entscheidende Punkt für die Gehaltsfreigabe im System.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-clarify">Klärung</span>
+              <span>„Was ist der Status Ihrer Promotion?"</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="phrase-box">
+              <span class="phrase-de">„Die Promotion erfolgt am Institut für Medizinische Informatik. Thema und formale Betreuung werden in den ersten Wochen mit Dr. Storck und einem externen Betreuer (LMU München) festgelegt. Die Bescheinigung reiche ich nach, sobald das Verfahren eröffnet ist — das ist im Einstellungsschreiben bereits so vorgesehen."</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-category">Heikle Situationen</div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-tricky">Heikel</span>
+              <span>„Das Dokument ist auf Arabisch — das kann ich leider nicht annehmen."</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="phrase-box">
+              <span class="phrase-de">„Ich verstehe. Ist eine beglaubigte Übersetzung erforderlich, oder reicht eine einfache Beilagenübersetzung? Für welche Dokumente genau — und bis wann?"</span>
+            </div>
+            <p class="phrase-note">Nicht diskutieren. Konkrete Liste + Frist erfragen, dann liefern.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-tricky">Heikel</span>
+              <span>„§16 TV-L — das läuft nicht über mich."</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="phrase-box">
+              <span class="phrase-de">„Das verstehe ich vollkommen. Ich möchte den Antrag nur formell stellen, damit er vermerkt ist. Könnten Sie mir sagen, wie der interne Weg aussieht und bis wann ich mit einer Rückmeldung rechnen kann?"</span>
+            </div>
+            <p class="phrase-note">Antrag ist jetzt gestellt. Ab 1. Juli bei Dr. Storck nachfassen.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            <div class="acc-trigger-row">
+              <span class="q-tag q-tricky">Heikel</span>
+              <span>Frage nicht verstanden oder keine sofortige Antwort möglich</span>
+            </div>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <div class="phrase-box">
+              <span class="phrase-de">„Entschuldigung — könnten Sie das bitte kurz wiederholen? Ich möchte sichergehen, dass ich richtig verstanden habe."</span>
+            </div>
+            <div class="phrase-box" style="margin-top:6px;">
+              <span class="phrase-de">„Das muss ich kurz nachschauen — darf ich Ihnen das noch heute per Mail nachreichen?"</span>
+            </div>
+            <p class="phrase-note">Falsche Angaben in SAP sind aufwendig zu korrigieren. Im Zweifel nachfragen und nachliefern statt raten.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 — Nach dem Gespräch -->
+  <div class="section">
+    <button class="section-toggle open" onclick="toggleSection(this)">
+      <div class="toggle-left">
+        <div class="section-label">Abschnitt 4</div>
+        <h2>Was sie von dir erwartet — nach dem Gespräch</h2>
+      </div>
+      <span class="section-chevron">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="connections-grid">
+        <div class="connection-card"><span class="conn-badge">VBL — bis ~1. Sep</span><span class="conn-text">Entscheidung VBLextra vs. VBLklassik-Befreiung. Frist: 2 Monate ab 1. Juli = ca. 1. September 2026. Bei §2(1) WissZeitVG ist VBLextra i.d.R. vorteilhafter. Formular bei Hoffmann erfragen oder VBL direkt kontaktieren (0721 155-0).</span></div>
+        <div class="connection-card"><span class="conn-badge">Heiratsurkunde — nach Einreise</span><span class="conn-text">Zertifizierte DE-Übersetzung einreichen, sobald Frau nach Deutschland eingereist ist. Relevant für Steuerklasse III und Familienzuschlag. Keine Frist heute — aber zeitnah nach Einreise.</span></div>
+        <div class="connection-card"><span class="conn-badge">Anmeldung Münster — innerhalb 2 Wochen</span><span class="conn-text">Noch nicht in Münster gemeldet? Meldebescheinigung per E-Mail an Hoffmann schicken, sobald Anmeldung erledigt. Nicht abwarten, bis sie nachfragt.</span></div>
+        <div class="connection-card"><span class="conn-badge">Masernnachweis — DRINGEND</span><span class="conn-text">Falls heute nicht vorgelegt: Sie setzt eine harte Frist vor dem 1. Juli. Masernschutzgesetz ist nicht verhandelbar. Noch heute per E-Mail einreichen, wenn bereits vorhanden.</span></div>
+        <div class="connection-card"><span class="conn-badge">Promotionsbescheinigung — nach Start</span><span class="conn-text">WissZeitVG-Vordruck + Bescheinigung der Promotionsbetreuung einreichen, sobald Thema und Betreuer am IMI feststehen. Hoffmann erwartet das — aber kein Druck heute.</span></div>
+        <div class="connection-card"><span class="conn-badge">Ausländerbehörde — nach 1. Juli</span><span class="conn-text">Aufenthaltstitel eigenständig umschreiben lassen. Kurze E-Mail an Hoffmann, sobald Terminbestätigung vorliegt — sie schätzt proaktive Kommunikation.</span></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-de -->
+</div><!-- /body -->
+
+<script src="./lesson-ui.js"></script>
+</body>
+</html>
