@@ -22,7 +22,7 @@ export const LMS_CONFIG = {
       subtitle: 'Databases, server logic, and infrastructure',
       icon: '🗄️',
       theme: { accent: '#2563eb', accentSoft: '#dbeafe' },
-      moduleIds: ['database', 'python', 'interview']
+      moduleIds: ['database', 'python']
     },
     {
       id: 'frontend',
@@ -32,6 +32,14 @@ export const LMS_CONFIG = {
       theme: { accent: '#0369a1', accentSoft: '#e0f2fe' },
       moduleIds: ['react', 'react-native', 'python']
       // python appears here AND in backend — its progress is shared either way
+    },
+    {
+      id: 'career',
+      title: 'Career & Onboarding',
+      subtitle: 'Interview prep, job start, and workplace German',
+      icon: '🎯',
+      theme: { accent: '#b45309', accentSoft: '#fef3c7' },
+      moduleIds: ['interview', 'ukm-prep']
     }
   ],
 
@@ -234,6 +242,22 @@ export const LMS_CONFIG = {
           route: 'lms/modules/Interview-main/topic6-german-leadership-register.html',
           progress: { type: 'untracked', total: 0 }
         }
+      ]
+    },
+    {
+      id: 'ukm-prep',
+      title: 'UKM Job Start',
+      subtitle: 'Contract signing, onboarding, and first weeks at UKM Münster',
+      theme: { accent: '#0284c7', accentSoft: '#e0f9ff' },
+      lessons: [
+        {
+          id: 'ukm-hoffmann',
+          title: 'Meeting: Frau Hoffmann',
+          subtitle: 'Contract signing & §16 TV-L Stufe request',
+          route: 'lms/modules/UKM/topic1-meeting-hoffmann.html',
+          progress: { type: 'untracked', total: 0 }
+        }
+        // Add new UKM lessons here as the module grows
       ]
     },
     {

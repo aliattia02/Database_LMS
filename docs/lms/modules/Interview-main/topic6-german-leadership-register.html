@@ -4,446 +4,52 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Topic 6: German at leadership level — technical vocabulary and register | Treuhandstelle Interview Prep</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./theme.css"/>
 <style>
-:root {
-  --navy:        #0f172a;
-  --navy2:       #1e293b;
-  --slate:       #475569;
-  --muted:       #94a3b8;
-  --border:      #e2e8f0;
-  --bg:          #f8fafc;
-  --white:       #ffffff;
-  --amber-bg:    #fffbeb;
-  --amber-border:#f59e0b;
-  --amber-text:  #92400e;
-  --amber-icon:  #d97706;
-  --blue:        #2563eb;
-  --blue-light:  #eff6ff;
-  --pill-l1: #94a3b8; --pill-l1t: #fff;
-  --pill-l2: #3b82f6; --pill-l2t: #fff;
-  --pill-l3: #16a34a; --pill-l3t: #fff;
-  --pill-l4: #7c3aed; --pill-l4t: #fff;
-  --accent:      #0ea5e9;
-  --radius:      10px;
-  --shadow:      0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
-}
+  /* ── Topic-6-page-specific styles only — see theme.css for everything else ── */
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  .prose p { margin-bottom: 14px; color: #334155; }
+  .prose p:last-child { margin-bottom: 0; }
 
-body {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 15px;
-  line-height: 1.65;
-  background: var(--bg);
-  color: var(--navy);
-}
+  .why-list {
+    list-style: none;
+    margin: 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .why-list li {
+    font-size: 13.5px;
+    color: #334155;
+    padding-left: 20px;
+    position: relative;
+  }
+  .why-list li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .closing-sentence {
+    font-size: 13.5px;
+    color: var(--slate);
+    font-style: italic;
+    margin-top: 12px;
+  }
 
-/* HEADER */
-.header {
-  background: var(--navy);
-  color: #fff;
-  padding: 28px 24px 20px;
-}
-.header-inner { max-width: 820px; margin: 0 auto; }
-.header-meta {
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 10px;
-}
-.header h1 {
-  font-size: clamp(22px, 4vw, 30px);
-  font-weight: 700;
-  line-height: 1.25;
-  margin-bottom: 8px;
-}
-.header h1 abbr {
-  text-decoration: underline dotted rgba(255,255,255,.35);
-  cursor: help;
-}
-.header-sub {
-  font-size: 13.5px;
-  color: #94a3b8;
-  max-width: 580px;
-}
-
-/* TABS BAR */
-.tabs-bar {
-  background: var(--navy);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  border-bottom: 2px solid rgba(255,255,255,0.07);
-}
-.tabs-inner {
-  max-width: 820px;
-  margin: 0 auto;
-  padding: 0 24px;
-  display: flex;
-}
-.tab-btn {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 10px 22px;
-  border-radius: 8px 8px 0 0;
-  background: transparent;
-  color: var(--muted);
-  border: none;
-  cursor: pointer;
-  transition: background .15s, color .15s;
-}
-.tab-btn.active {
-  background: var(--bg);
-  color: var(--navy);
-}
-.tab-btn:not(.active):hover { color: #fff; }
-
-/* BODY */
-.body {
-  max-width: 820px;
-  margin: 0 auto;
-  padding: 32px 24px 64px;
-}
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-/* COLLAPSIBLE SECTIONS */
-.section {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-.section-toggle {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 28px;
-  border: none;
-  background: transparent;
-  font-family: 'IBM Plex Sans', sans-serif;
-  cursor: pointer;
-  text-align: left;
-  gap: 12px;
-}
-.section-toggle.open { border-bottom: 1px solid var(--border); }
-.section-toggle:hover { background: #f8fafc; }
-.toggle-left { display: flex; flex-direction: column; gap: 3px; }
-.section-label {
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.section-toggle h2 {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--navy);
-}
-.section-chevron {
-  color: var(--muted);
-  font-size: 18px;
-  transition: transform .2s;
-  flex-shrink: 0;
-}
-.section-toggle:not(.open) .section-chevron { transform: rotate(-90deg); }
-.section-body { padding: 22px 28px 26px; }
-.section-body.hidden { display: none; }
-
-/* MUST-KNOW */
-.must-know {
-  background: var(--amber-bg);
-  border: 1px solid #fde68a;
-  border-left: 4px solid var(--amber-border);
-  border-radius: var(--radius);
-  margin-bottom: 20px;
-  overflow: hidden;
-}
-.must-know .section-label { color: #b45309; }
-.must-know .section-toggle h2 { color: #78350f; }
-.must-know .section-chevron { color: #d97706; }
-.must-know .section-toggle { background: var(--amber-bg); }
-.must-know .section-toggle:hover { background: #fef3c7; }
-.must-know .section-toggle.open { border-bottom: 1px solid #fde68a; }
-.flag { color: var(--amber-icon); font-size: 15px; flex-shrink: 0; }
-.must-know-item {
-  display: flex;
-  gap: 10px;
-  font-size: 13.5px;
-  color: var(--amber-text);
-  margin-bottom: 10px;
-}
-.must-know-item:last-child { margin-bottom: 0; }
-
-/* LEARNING LADDER */
-.ladder { display: flex; flex-direction: column; gap: 14px; }
-.ladder-level {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-}
-.level-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  background: #f8fafc;
-  border-bottom: 1px solid var(--border);
-}
-.level-pill {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 99px;
-  white-space: nowrap;
-}
-.l1 { background: var(--pill-l1); color: var(--pill-l1t); }
-.l2 { background: var(--pill-l2); color: var(--pill-l2t); }
-.l3 { background: var(--pill-l3); color: var(--pill-l3t); }
-.l4 { background: var(--pill-l4); color: var(--pill-l4t); }
-.level-title { font-weight: 600; font-size: 14px; color: var(--navy2); }
-.level-bullets { padding: 14px 16px; }
-.level-bullets li {
-  font-size: 13.5px;
-  color: #334155;
-  padding-left: 18px;
-  position: relative;
-  margin-bottom: 6px;
-  list-style: none;
-}
-.level-bullets li:last-child { margin-bottom: 0; }
-.level-bullets li::before {
-  content: '›';
-  position: absolute;
-  left: 0;
-  color: var(--muted);
-}
-
-/* GLOSSARY */
-.glossary-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13.5px;
-}
-.glossary-table th {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--muted);
-  padding: 8px 12px;
-  border-bottom: 2px solid var(--border);
-  text-align: left;
-}
-.glossary-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  color: #334155;
-  vertical-align: top;
-}
-.glossary-table tr:nth-child(even) td { background: #f8fafc; }
-.term-cell {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--navy);
-  white-space: nowrap;
-  width: 28%;
-}
-
-/* ACCORDION */
-.accordion { display: flex; flex-direction: column; gap: 8px; }
-.acc-item {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-}
-.acc-trigger {
-  width: 100%;
-  text-align: left;
-  padding: 14px 16px;
-  background: #f8fafc;
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  border: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  cursor: pointer;
-  color: var(--navy);
-  transition: background .15s, color .15s;
-}
-.acc-trigger.open {
-  background: var(--blue-light);
-  color: var(--blue);
-}
-.acc-trigger:hover:not(.open) { background: #f1f5f9; }
-.acc-chevron {
-  font-size: 16px;
-  flex-shrink: 0;
-  transition: transform .2s;
-  color: var(--muted);
-  margin-top: 2px;
-}
-.acc-trigger.open .acc-chevron { transform: rotate(180deg); color: var(--blue); }
-.acc-body {
-  display: none;
-  padding: 16px;
-  background: var(--white);
-  border-top: 1px solid var(--border);
-  font-size: 13.5px;
-  color: #334155;
-}
-.acc-body.open { display: block; }
-.acc-strategy-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--blue);
-  margin-bottom: 6px;
-}
-
-/* CONNECTIONS */
-.connections-grid { display: flex; flex-direction: column; gap: 10px; }
-.connection-card {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 14px 16px;
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-.conn-badge {
-  background: var(--blue-light);
-  color: var(--blue);
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 99px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.conn-text { font-size: 13.5px; color: #334155; }
-
-/* STUDY PLAN */
-.study-plan {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
-}
-.day-card {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--white);
-}
-.day-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 16px;
-  background: #f8fafc;
-  border-bottom: 1px solid var(--border);
-}
-.day-num {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--accent);
-}
-.day-focus {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  color: var(--slate);
-}
-.day-tasks {
-  list-style: none;
-  padding: 12px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.day-task { font-size: 13px; color: #334155; }
-.task-time {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  font-weight: 600;
-  color: #d97706;
-  background: #fffbeb;
-  border: 1px solid #fde68a;
-  border-radius: 4px;
-  padding: 1px 6px;
-  display: inline-block;
-  margin-bottom: 4px;
-}
-.task-link {
-  color: var(--blue);
-  font-size: 12px;
-  text-decoration: none;
-  border-bottom: 1px dashed rgba(37,99,235,.35);
-  display: inline-block;
-  margin-top: 4px;
-}
-.task-link:hover { border-bottom-style: solid; }
-
-/* PROSE UTILITY */
-.prose p { margin-bottom: 14px; color: #334155; }
-.prose p:last-child { margin-bottom: 0; }
-.why-list {
-  list-style: none;
-  margin: 12px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.why-list li {
-  font-size: 13.5px;
-  color: #334155;
-  padding-left: 20px;
-  position: relative;
-}
-.why-list li::before {
-  content: '›';
-  position: absolute;
-  left: 0;
-  color: var(--accent);
-  font-weight: 700;
-}
-.closing-sentence {
-  font-size: 13.5px;
-  color: var(--slate);
-  font-style: italic;
-  margin-top: 12px;
-}
-
-/* RESPONSIVE */
-@media(max-width:540px) {
-  .header { padding: 20px 16px 16px; }
-  .body { padding: 20px 14px 48px; }
-  .section-body { padding: 16px 16px 20px; }
-  .section-toggle { padding: 16px; }
-  .term-cell { width: 36%; white-space: normal; }
-  .study-plan { grid-template-columns: 1fr; }
-  .connection-card { flex-direction: column; gap: 8px; }
-}
+  /* Header on this page is intentionally not sticky, so it gets a touch
+     more bottom breathing room on mobile than theme.css's default. */
+  @media(max-width:540px) {
+    .header { padding: 20px 16px 16px; }
+  }
 </style>
 </head>
 <body>
+
+<div class="home-nav">
+  <a class="home-link" href="./index.html">← Back to main page</a>
+</div>
 
 <header class="header">
   <div class="header-inner">
@@ -525,50 +131,50 @@ body {
                 <span class="level-pill l1">Level 1</span>
                 <span class="level-title">Basic awareness — can define it</span>
               </div>
-              <ul class="level-bullets">
+              <div class="level-bullets"><ul>
                 <li>Know that German professional communication uses formal register as a default in written and institutional contexts.</li>
                 <li>Recognise the key document types: <em>Sachstandsbericht</em>, <em>Dienstanweisung</em>, <em>Protokoll</em>, <em>Verwendungsnachweis</em>.</li>
                 <li>Understand the difference between <em>Haushaltsmittel</em> (institutional budget lines) and <em>Drittmittel</em> (externally funded grants).</li>
                 <li>Know the German terms for the core THS concepts: <em>Einwilligungsmanagement</em>, <em>Pseudonymisierung</em>, <em>Datentreuhänder</em>.</li>
-              </ul>
+              </ul></div>
             </div>
             <div class="ladder-level">
               <div class="level-head">
                 <span class="level-pill l2">Level 2</span>
                 <span class="level-title">Working knowledge — can describe how it works</span>
               </div>
-              <ul class="level-bullets">
+              <div class="level-bullets"><ul>
                 <li>Use the correct register when describing the same concept to a technical colleague vs. a clinical department head vs. hospital management.</li>
                 <li>Explain what goes into each document type: opening, body structure, and closing conventions for a <em>Sachstandsbericht</em> or <em>Protokoll</em>.</li>
                 <li>Correctly use German legal and regulatory vocabulary: <em>Zweckbindung</em>, <em>Datenschutzfolgenabschätzung</em>, <em>Einwilligungserklärung</em>, <em>Betroffenenrechte</em>.</li>
                 <li>Construct grammatically and stylistically correct sentences using German bureaucratic connectors: <em>infolgedessen</em>, <em>gemäß</em>, <em>im Sinne des</em>, <em>vorbehaltlich</em>.</li>
-              </ul>
+              </ul></div>
             </div>
             <div class="ladder-level">
               <div class="level-head">
                 <span class="level-pill l3">Level 3</span>
                 <span class="level-title">Applied understanding — can connect it to the job tasks</span>
               </div>
-              <ul class="level-bullets">
+              <div class="level-bullets"><ul>
                 <li>Draft a short <em>Sachstandsbericht</em> covering the THS service portfolio, including a <em>Handlungsempfehlung</em> addressed to the <em>Klinikdirektion</em>.</li>
                 <li>Articulate in a meeting (<em>Steuerungsrunde</em>) the status of an ongoing project using precise, time-indexed language and naming action items with owners.</li>
                 <li>Explain a <em>Datenschutzfolgenabschätzung</em> (DSFA / DPIA) finding to a non-legal audience in plain but formally correct German.</li>
                 <li>Use <em>Konjunktiv II</em> forms correctly for hedged recommendations: <em>"Es wäre ratsam, …"</em>, <em>"Aus meiner Sicht sollte erwogen werden, …"</em>.</li>
                 <li>Switch seamlessly between acronyms and their full German expansions depending on audience familiarity.</li>
-              </ul>
+              </ul></div>
             </div>
             <div class="ladder-level">
               <div class="level-head">
                 <span class="level-pill l4">Level 4</span>
                 <span class="level-title">Interview-ready — can handle tough questions</span>
               </div>
-              <ul class="level-bullets">
+              <div class="level-bullets"><ul>
                 <li>Answer complex competency questions (e.g., conflict management, risk escalation, budget overruns) entirely in formal German without code-switching.</li>
                 <li>Use domain vocabulary from all three registers (health informatics, public administration, legal/regulatory) naturally within a single answer.</li>
                 <li>Demonstrate <em>Sprachsicherheit</em> (language confidence) through consistent use of passive constructions, nominalisation, and hedged language appropriate to leadership communication.</li>
                 <li>Volunteer precise German formulations for English concepts Ali knows well — showing the panel that the language gap is not a gap at all.</li>
                 <li>Adjust length and formality in real time based on whether the question calls for a strategic overview or a technical deep-dive.</li>
-              </ul>
+              </ul></div>
             </div>
           </div>
         </div>
@@ -584,14 +190,16 @@ body {
           <span class="section-chevron">▾</span>
         </button>
         <div class="section-body">
-          <div class="must-know-item"><span class="flag">⚑</span><span>German professional written communication defaults to the formal <em>Sie</em> form and avoids contractions, colloquialisms, and first-person overuse. A <em>Leitung</em> who writes <em>"ich hab"</em> instead of <em>"ich habe"</em> or <em>"wir wollen"</em> instead of <em>"beabsichtigt ist"</em> signals a register mismatch that will be noticed.</span></div>
-          <div class="must-know-item"><span class="flag">⚑</span><span><em>Datenschutzfolgenabschätzung</em> (DSFA) is the German term for a Data Protection Impact Assessment (DPIA). Any processing of health data at scale requires one under <abbr title="Datenschutz-Grundverordnung">DSGVO</abbr> Art. 35 — the THS Leitung will need to commission, review, and sign off on these documents in German.</span></div>
-          <div class="must-know-item"><span class="flag">⚑</span><span>The compound noun <em>Einwilligungserklärung</em> (literally: declaration of consent) is the formal legal term for a signed patient-consent document. It is distinct from the act of <em>Einwilligungsmanagement</em> (the system for collecting, storing, and managing consents). Mixing these two in an interview signals imprecision.</span></div>
-          <div class="must-know-item"><span class="flag">⚑</span><span>German academic institutions use <em>Protokoll</em> for meeting minutes, but the format is stricter than an English equivalent. A correct <em>Protokoll</em> lists every <em>Tagesordnungspunkt</em> (TOP, agenda item), names the <em>Protokollführer</em> (minutes-taker), records every <em>Beschluss</em> (resolution) verbatim, and assigns every action item with a <em>Verantwortliche/r</em> and <em>Frist</em> (deadline).</span></div>
-          <div class="must-know-item"><span class="flag">⚑</span><span>The term <em>Drittmittel</em> refers to external funding (grants, contracts, industry money) as opposed to <em>Haushaltsmittel</em> (core institutional budget). A THS that runs on <abbr title="Bundesministerium für Bildung und Forschung — Federal Ministry of Education and Research">BMBF</abbr> grants is Drittmittel-financed. This distinction matters for staffing (WissZeitVG restrictions apply to Drittmittel positions) and financial reporting.</span></div>
-          <div class="must-know-item"><span class="flag">⚑</span><span><em>Sachstandsbericht</em> is the standard term for a status or progress report submitted within an institution. It differs from a <em>Zwischenbericht</em> (interim report submitted to a funder) and a <em>Abschlussbericht</em> (final report). Getting the right term for the right context is a basic professional expectation at Leitung level.</span></div>
-          <div class="must-know-item"><span class="flag">⚑</span><span>The phrase <em>"im Rahmen der geltenden Datenschutzbestimmungen"</em> (within the framework of applicable data protection regulations) is near-ubiquitous in THS documentation. Variations include <em>"gemäß DSGVO Art. …"</em>, <em>"vorbehaltlich der datenschutzrechtlichen Prüfung"</em>, and <em>"nach Maßgabe des HDSIG"</em> — each with a subtly different legal weight.</span></div>
-          <div class="must-know-item"><span class="flag">⚑</span><span>Nominalisation is a hallmark of formal German: <em>"zur Durchführung der Pseudonymisierung"</em> rather than <em>"um zu pseudonymisieren"</em>; <em>"die Sicherstellung der Datenqualität"</em> rather than <em>"dass Daten qualitativ gesichert werden"</em>. Using nominalisations correctly signals fluency in the written register expected of a Leitung.</span></div>
+          <div class="must-know-list">
+            <div class="must-know-item"><span class="flag">⚑</span><span>German professional written communication defaults to the formal <em>Sie</em> form and avoids contractions, colloquialisms, and first-person overuse. A <em>Leitung</em> who writes <em>"ich hab"</em> instead of <em>"ich habe"</em> or <em>"wir wollen"</em> instead of <em>"beabsichtigt ist"</em> signals a register mismatch that will be noticed.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span><em>Datenschutzfolgenabschätzung</em> (DSFA) is the German term for a Data Protection Impact Assessment (DPIA). Any processing of health data at scale requires one under <abbr title="Datenschutz-Grundverordnung">DSGVO</abbr> Art. 35 — the THS Leitung will need to commission, review, and sign off on these documents in German.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>The compound noun <em>Einwilligungserklärung</em> (literally: declaration of consent) is the formal legal term for a signed patient-consent document. It is distinct from the act of <em>Einwilligungsmanagement</em> (the system for collecting, storing, and managing consents). Mixing these two in an interview signals imprecision.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>German academic institutions use <em>Protokoll</em> for meeting minutes, but the format is stricter than an English equivalent. A correct <em>Protokoll</em> lists every <em>Tagesordnungspunkt</em> (TOP, agenda item), names the <em>Protokollführer</em> (minutes-taker), records every <em>Beschluss</em> (resolution) verbatim, and assigns every action item with a <em>Verantwortliche/r</em> and <em>Frist</em> (deadline).</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>The term <em>Drittmittel</em> refers to external funding (grants, contracts, industry money) as opposed to <em>Haushaltsmittel</em> (core institutional budget). A THS that runs on <abbr title="Bundesministerium für Bildung und Forschung — Federal Ministry of Education and Research">BMBF</abbr> grants is Drittmittel-financed. This distinction matters for staffing (WissZeitVG restrictions apply to Drittmittel positions) and financial reporting.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span><em>Sachstandsbericht</em> is the standard term for a status or progress report submitted within an institution. It differs from a <em>Zwischenbericht</em> (interim report submitted to a funder) and a <em>Abschlussbericht</em> (final report). Getting the right term for the right context is a basic professional expectation at Leitung level.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>The phrase <em>"im Rahmen der geltenden Datenschutzbestimmungen"</em> (within the framework of applicable data protection regulations) is near-ubiquitous in THS documentation. Variations include <em>"gemäß DSGVO Art. …"</em>, <em>"vorbehaltlich der datenschutzrechtlichen Prüfung"</em>, and <em>"nach Maßgabe des HDSIG"</em> — each with a subtly different legal weight.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Nominalisation is a hallmark of formal German: <em>"zur Durchführung der Pseudonymisierung"</em> rather than <em>"um zu pseudonymisieren"</em>; <em>"die Sicherstellung der Datenqualität"</em> rather than <em>"dass Daten qualitativ gesichert werden"</em>. Using nominalisations correctly signals fluency in the written register expected of a Leitung.</span></div>
+          </div>
         </div>
       </div>
 
@@ -936,50 +544,50 @@ body {
                 <span class="level-pill l1">Stufe 1</span>
                 <span class="level-title">Grundlegendes Verständnis — Begriffe definieren können</span>
               </div>
-              <ul class="level-bullets">
+              <div class="level-bullets"><ul>
                 <li>Wissen, dass die berufliche Kommunikation auf Deutsch im schriftlichen und institutionellen Kontext standardmäßig auf das formale Register zurückgreift.</li>
                 <li>Die wichtigsten Dokumententypen kennen: <em>Sachstandsbericht</em>, <em>Dienstanweisung</em>, <em>Protokoll</em>, <em>Verwendungsnachweis</em>.</li>
                 <li>Den Unterschied zwischen <em>Haushaltsmitteln</em> (institutionellen Budgetlinien) und <em>Drittmitteln</em> (extern finanzierte Förderprojekte) erläutern können.</li>
                 <li>Die deutschen Bezeichnungen für die zentralen THS-Konzepte kennen: <em>Einwilligungsmanagement</em>, <em>Pseudonymisierung</em>, <em>Datentreuhänder</em>.</li>
-              </ul>
+              </ul></div>
             </div>
             <div class="ladder-level">
               <div class="level-head">
                 <span class="level-pill l2">Stufe 2</span>
                 <span class="level-title">Anwendungswissen — Funktionsweise beschreiben</span>
               </div>
-              <ul class="level-bullets">
+              <div class="level-bullets"><ul>
                 <li>Dasselbe Konzept in je angemessenem Register gegenüber einem technischen Kollegen, einem Klinikleitenden und der Krankenhausdirektion darstellen können.</li>
                 <li>Den Aufbau jedes Dokumententyps kennen: Eröffnung, Hauptteilstruktur und Abschlusskonventionen eines Sachstandsberichts oder Protokolls.</li>
                 <li>Die deutsche Rechts- und Regulierungssprache korrekt einsetzen: <em>Zweckbindung</em>, <em>Datenschutzfolgenabschätzung</em>, <em>Einwilligungserklärung</em>, <em>Betroffenenrechte</em>.</li>
                 <li>Grammatikalisch und stilistisch korrekte Sätze mit deutschen bürokratischen Konnektoren bilden: <em>infolgedessen</em>, <em>gemäß</em>, <em>im Sinne des</em>, <em>vorbehaltlich</em>.</li>
-              </ul>
+              </ul></div>
             </div>
             <div class="ladder-level">
               <div class="level-head">
                 <span class="level-pill l3">Stufe 3</span>
                 <span class="level-title">Angewandtes Verständnis — Bezug zu konkreten Aufgaben</span>
               </div>
-              <ul class="level-bullets">
+              <div class="level-bullets"><ul>
                 <li>Einen kurzen Sachstandsbericht zum THS-Serviceportfolio auf Deutsch verfassen, einschließlich einer an die Klinikdirektion gerichteten Handlungsempfehlung.</li>
                 <li>In einer Steuerungsrunde den Projektstatus präzise und zeitlich indexiert kommunizieren sowie Aufgaben mit namentlichen Verantwortlichkeiten festhalten.</li>
                 <li>Ein Ergebnis einer <em>Datenschutzfolgenabschätzung</em> in sprachlich korrektem, aber allgemein verständlichem Deutsch für ein nicht-juristisches Publikum erläutern.</li>
                 <li>Den Konjunktiv II für abgestufte Empfehlungen korrekt einsetzen: <em>„Es wäre ratsam, …"</em>, <em>„Aus meiner Sicht sollte erwogen werden, …"</em>.</li>
                 <li>Je nach Kenntnisstand des Gegenübers fließend zwischen Abkürzungen und vollständigen deutschen Begriffserklärungen wechseln.</li>
-              </ul>
+              </ul></div>
             </div>
             <div class="ladder-level">
               <div class="level-head">
                 <span class="level-pill l4">Stufe 4</span>
                 <span class="level-title">Interviewreif — anspruchsvolle Fragen souverän beantworten</span>
               </div>
-              <ul class="level-bullets">
+              <div class="level-bullets"><ul>
                 <li>Komplexe Kompetenzfragen (z. B. Konfliktmanagement, Risikoeskalation, Budgetüberschreitungen) vollständig im formalen Deutsch ohne Registerwechsel beantworten.</li>
                 <li>Fachvokabular aus allen drei Registern (medizinische Informatik, öffentliche Verwaltung, Recht/Regulierung) natürlich innerhalb einer einzigen Antwort verwenden.</li>
                 <li><em>Sprachsicherheit</em> durch konsistenten Einsatz von Passivkonstruktionen, Nominalisierungen und dem für Leitungskommunikation angemessenen Hedging demonstrieren.</li>
                 <li>Präzise deutsche Formulierungen für englischsprachige Konzepte, die Ali gut kennt, von sich aus einbringen — und so zeigen, dass die Sprachlücke keine ist.</li>
                 <li>Länge und Formalitätsniveau der Antwort situativ anpassen: strategischer Überblick oder technische Tiefe — je nachdem, was die Frage verlangt.</li>
-              </ul>
+              </ul></div>
             </div>
           </div>
         </div>
@@ -995,14 +603,16 @@ body {
           <span class="section-chevron">▾</span>
         </button>
         <div class="section-body">
-          <div class="must-know-item"><span class="flag">⚑</span><span>Schriftliche Kommunikation im deutschen Berufskontext verwendet standardmäßig die Höflichkeitsform <em>Sie</em> und verzichtet auf Kontraktionen, Umgangssprache und übermäßigen Ich-Bezug. Eine Leitung, die <em>„ich hab"</em> statt <em>„ich habe"</em> oder <em>„wir wollen"</em> statt <em>„beabsichtigt ist"</em> schreibt, signalisiert eine Registerinkongruenz, die einem erfahrenen Panel sofort auffällt.</span></div>
-          <div class="must-know-item"><span class="flag">⚑</span><span>Die <em>Datenschutzfolgenabschätzung</em> (DSFA) ist der deutsche Begriff für ein Data Protection Impact Assessment (DPIA). Jede groß angelegte Verarbeitung von Gesundheitsdaten erfordert eine solche Bewertung nach <abbr title="Datenschutz-Grundverordnung">DSGVO</abbr> Art. 35 — die THS-Leitung muss diese Dokumente in Auftrag geben, prüfen und auf Deutsch gegenzeichnen.</span></div>
-          <div class="must-know-item"><span class="flag">⚑</span><span>Das zusammengesetzte Substantiv <em>Einwilligungserklärung</em> bezeichnet das formale, unterzeichnete Dokument, mit dem ein Patient der Nutzung seiner Daten für einen bestimmten Forschungszweck zustimmt. Es ist streng zu unterscheiden vom <em>Einwilligungsmanagement</em> — dem System, das diese Erklärungen erfasst, speichert und verwaltet (gICS). Eine Verwechslung im Interview wirkt unpräzise.</span></div>
-          <div class="must-know-item"><span class="flag">⚑</span><span>Das <em>Protokoll</em> einer Sitzung in deutschen akademischen Einrichtungen folgt einem streng definierten Format: Es listet jeden <em>Tagesordnungspunkt</em> (TOP), benennt den <em>Protokollführer</em>, hält jeden <em>Beschluss</em> im exakten Wortlaut fest und weist jede Aufgabe einer namentlich genannten <em>Verantwortlichen</em> mit <em>Frist</em> zu. Wer dieses Format kennt, demonstriert institutionelle Kompetenz.</span></div>
-          <div class="must-know-item"><span class="flag">⚑</span><span><em>Drittmittel</em> bezeichnet externe Fördermittel (Grants, Aufträge, Industriemittel) im Unterschied zu <em>Haushaltsmitteln</em> (institutionelle Basismittel). Eine THS, die auf <abbr title="Bundesministerium für Bildung und Forschung">BMBF</abbr>-Förderung angewiesen ist, wird über Drittmittel finanziert. Diese Unterscheidung ist entscheidend für die Personalplanung (WissZeitVG-Befristungsregeln gelten für Drittmittelstellen) und das Finanzberichtswesen.</span></div>
-          <div class="must-know-item"><span class="flag">⚑</span><span>Der <em>Sachstandsbericht</em> ist der Standardbegriff für einen internen Fortschrittsbericht gegenüber der Leitungsebene oder einem Gremium. Er unterscheidet sich vom <em>Zwischenbericht</em> (Bericht an einen externen Förderer) und vom <em>Abschlussbericht</em> (Endbericht nach Projektabschluss). Den richtigen Dokumentenbegriff im richtigen Kontext zu verwenden, ist eine professionelle Grunderwartung auf Leitungsebene.</span></div>
-          <div class="must-know-item"><span class="flag">⚑</span><span>Die Formulierung <em>„im Rahmen der geltenden Datenschutzbestimmungen"</em> ist in der THS-Dokumentation nahezu allgegenwärtig. Varianten sind <em>„gemäß DSGVO Art. …"</em>, <em>„vorbehaltlich der datenschutzrechtlichen Prüfung"</em> und <em>„nach Maßgabe des HDSIG"</em> — jede mit einem leicht unterschiedlichen rechtlichen Gewicht, das eine Leitung kennen und situationsgerecht einsetzen muss.</span></div>
-          <div class="must-know-item"><span class="flag">⚑</span><span>Nominalisierung ist ein Kennzeichen des formalen Deutsch: <em>„zur Durchführung der Pseudonymisierung"</em> statt <em>„um zu pseudonymisieren"</em>; <em>„die Sicherstellung der Datenqualität"</em> statt <em>„dass Daten qualitativ gesichert werden"</em>. Der sichere Umgang mit Nominalisierungen ist ein zuverlässiges Signal für Schreibkompetenz im Leitungsregister.</span></div>
+          <div class="must-know-list">
+            <div class="must-know-item"><span class="flag">⚑</span><span>Schriftliche Kommunikation im deutschen Berufskontext verwendet standardmäßig die Höflichkeitsform <em>Sie</em> und verzichtet auf Kontraktionen, Umgangssprache und übermäßigen Ich-Bezug. Eine Leitung, die <em>„ich hab"</em> statt <em>„ich habe"</em> oder <em>„wir wollen"</em> statt <em>„beabsichtigt ist"</em> schreibt, signalisiert eine Registerinkongruenz, die einem erfahrenen Panel sofort auffällt.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Die <em>Datenschutzfolgenabschätzung</em> (DSFA) ist der deutsche Begriff für ein Data Protection Impact Assessment (DPIA). Jede groß angelegte Verarbeitung von Gesundheitsdaten erfordert eine solche Bewertung nach <abbr title="Datenschutz-Grundverordnung">DSGVO</abbr> Art. 35 — die THS-Leitung muss diese Dokumente in Auftrag geben, prüfen und auf Deutsch gegenzeichnen.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Das zusammengesetzte Substantiv <em>Einwilligungserklärung</em> bezeichnet das formale, unterzeichnete Dokument, mit dem ein Patient der Nutzung seiner Daten für einen bestimmten Forschungszweck zustimmt. Es ist streng zu unterscheiden vom <em>Einwilligungsmanagement</em> — dem System, das diese Erklärungen erfasst, speichert und verwaltet (gICS). Eine Verwechslung im Interview wirkt unpräzise.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Das <em>Protokoll</em> einer Sitzung in deutschen akademischen Einrichtungen folgt einem streng definierten Format: Es listet jeden <em>Tagesordnungspunkt</em> (TOP), benennt den <em>Protokollführer</em>, hält jeden <em>Beschluss</em> im exakten Wortlaut fest und weist jede Aufgabe einer namentlich genannten <em>Verantwortlichen</em> mit <em>Frist</em> zu. Wer dieses Format kennt, demonstriert institutionelle Kompetenz.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span><em>Drittmittel</em> bezeichnet externe Fördermittel (Grants, Aufträge, Industriemittel) im Unterschied zu <em>Haushaltsmitteln</em> (institutionelle Basismittel). Eine THS, die auf <abbr title="Bundesministerium für Bildung und Forschung">BMBF</abbr>-Förderung angewiesen ist, wird über Drittmittel finanziert. Diese Unterscheidung ist entscheidend für die Personalplanung (WissZeitVG-Befristungsregeln gelten für Drittmittelstellen) und das Finanzberichtswesen.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Der <em>Sachstandsbericht</em> ist der Standardbegriff für einen internen Fortschrittsbericht gegenüber der Leitungsebene oder einem Gremium. Er unterscheidet sich vom <em>Zwischenbericht</em> (Bericht an einen externen Förderer) und vom <em>Abschlussbericht</em> (Endbericht nach Projektabschluss). Den richtigen Dokumentenbegriff im richtigen Kontext zu verwenden, ist eine professionelle Grunderwartung auf Leitungsebene.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Die Formulierung <em>„im Rahmen der geltenden Datenschutzbestimmungen"</em> ist in der THS-Dokumentation nahezu allgegenwärtig. Varianten sind <em>„gemäß DSGVO Art. …"</em>, <em>„vorbehaltlich der datenschutzrechtlichen Prüfung"</em> und <em>„nach Maßgabe des HDSIG"</em> — jede mit einem leicht unterschiedlichen rechtlichen Gewicht, das eine Leitung kennen und situationsgerecht einsetzen muss.</span></div>
+            <div class="must-know-item"><span class="flag">⚑</span><span>Nominalisierung ist ein Kennzeichen des formalen Deutsch: <em>„zur Durchführung der Pseudonymisierung"</em> statt <em>„um zu pseudonymisieren"</em>; <em>„die Sicherstellung der Datenqualität"</em> statt <em>„dass Daten qualitativ gesichert werden"</em>. Der sichere Umgang mit Nominalisierungen ist ein zuverlässiges Signal für Schreibkompetenz im Leitungsregister.</span></div>
+          </div>
         </div>
       </div>
 
@@ -1288,58 +898,7 @@ body {
   </div><!-- /.body -->
 </main>
 
-<script>
-function switchTab(lang, btn) {
-  document.querySelectorAll('.tab-content').forEach(function(tc) {
-    tc.classList.remove('active');
-  });
-  document.querySelectorAll('.tab-btn').forEach(function(tb) {
-    tb.classList.remove('active');
-  });
-  var target = document.getElementById('tab-' + lang);
-  if (target) target.classList.add('active');
-  if (btn) btn.classList.add('active');
-  if (target) {
-    target.querySelectorAll('.acc-trigger.open').forEach(function(t) {
-      t.classList.remove('open');
-    });
-    target.querySelectorAll('.acc-body.open').forEach(function(b) {
-      b.classList.remove('open');
-    });
-  }
-}
-
-function toggleSection(trigger) {
-  var body = trigger.nextElementSibling;
-  if (!body) return;
-  var isOpen = trigger.classList.contains('open');
-  if (isOpen) {
-    trigger.classList.remove('open');
-    body.classList.add('hidden');
-  } else {
-    trigger.classList.add('open');
-    body.classList.remove('hidden');
-  }
-}
-
-function toggleAcc(trigger) {
-  var body = trigger.nextElementSibling;
-  if (!body) return;
-  var tab = trigger.closest('.tab-content');
-  if (!tab) return;
-  var isOpen = trigger.classList.contains('open');
-  tab.querySelectorAll('.acc-trigger.open').forEach(function(t) {
-    t.classList.remove('open');
-  });
-  tab.querySelectorAll('.acc-body.open').forEach(function(b) {
-    b.classList.remove('open');
-  });
-  if (!isOpen) {
-    trigger.classList.add('open');
-    body.classList.add('open');
-  }
-}
-</script>
+<script src="./lesson-ui.js"></script>
 
 </body>
 </html>

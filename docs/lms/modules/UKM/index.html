@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UKM Münster — Job Start Prep</title>
+  <link rel="stylesheet" href="./theme.css" />
+  <style>
+    /* index-only layout */
+    body { padding: 24px; }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    h1 { margin-top: 0; }
+    p  { color: var(--muted); }
+    ul { padding-left: 20px; }
+    li { margin: 8px 0; }
+    a  { color: var(--blue); text-decoration: none; font-weight: 600; }
+    a:hover { text-decoration: underline; }
+    .note {
+      margin-top: 20px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #f1f5f9;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .meta-pill {
+      display: inline-block;
+      background: var(--blue-bg);
+      color: var(--blue-text);
+      border: 1px solid var(--blue-border);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 99px;
+      margin-bottom: 14px;
+    }
+    .topic-link {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 10px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .topic-link:hover {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px var(--blue-bg);
+      text-decoration: none;
+    }
+    .topic-num {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+    .topic-text strong {
+      display: block;
+      font-size: 14.5px;
+      color: var(--navy);
+      margin-bottom: 3px;
+    }
+    .topic-text span {
+      font-size: 12.5px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+    ul.plain { list-style: none; padding: 0; margin: 0; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <div class="meta-pill">UKM Münster · Institut für Medizinische Informatik</div>
+    <h1>Job Start Prep</h1>
+    <p>Practical preparation material for the first weeks at UKM — meetings, contracts, onboarding steps, and German at work.</p>
+
+    <ul class="plain" style="margin-top: 20px;">
+
+      <li>
+        <a class="topic-link" href="./topic1-meeting-hoffmann.html">
+          <div class="topic-num">1</div>
+          <div class="topic-text">
+            <strong>Meeting with Frau Hoffmann — Contract Signing</strong>
+            <span>7-phase meeting strategy · Document checklist · §16 TV-L Stufe request · DE phrases</span>
+          </div>
+        </a>
+      </li>
+
+      <!-- Add new topic pages here as the module grows -->
+
+    </ul>
+
+    <div class="note">
+      Add new topic pages above as the module grows. Each page only needs content — all styles and scripts are in <code>theme.css</code> and <code>lesson-ui.js</code>.
+    </div>
+  </main>
+</body>
+</html>

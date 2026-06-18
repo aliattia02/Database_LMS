@@ -4,419 +4,39 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Topic 3: HDSIG — Hessian Data Protection Law | Treuhandstelle Interview Prep</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./theme.css"/>
 <style>
-:root {
-  --navy:        #0f172a;
-  --navy2:       #1e293b;
-  --slate:       #475569;
-  --muted:       #94a3b8;
-  --border:      #e2e8f0;
-  --bg:          #f8fafc;
-  --white:       #ffffff;
-  --amber-bg:    #fffbeb;
-  --amber-border:#f59e0b;
-  --amber-text:  #92400e;
-  --amber-icon:  #d97706;
-  --blue:        #2563eb;
-  --blue-light:  #eff6ff;
-  --pill-l1: #94a3b8; --pill-l1t: #fff;
-  --pill-l2: #3b82f6; --pill-l2t: #fff;
-  --pill-l3: #16a34a; --pill-l3t: #fff;
-  --pill-l4: #7c3aed; --pill-l4t: #fff;
-  --accent:      #0ea5e9;
-  --radius:      10px;
-  --shadow:      0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
-}
+  /* ── Topic-3-page-specific styles only — see theme.css for everything else ── */
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  .header h1 abbr {
+    text-decoration: underline dotted rgba(255,255,255,.35);
+    cursor: help;
+  }
 
-body {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 15px;
-  line-height: 1.65;
-  background: var(--bg);
-  color: var(--navy);
-}
+  .why-list { list-style: none; margin: 10px 0; display: flex; flex-direction: column; gap: 6px; }
+  .why-list li {
+    font-size: 13.5px;
+    color: #334155;
+    padding-left: 20px;
+    position: relative;
+  }
+  .why-list li::before { content: '›'; color: var(--blue); position: absolute; left: 0; font-weight: 700; }
 
-/* HEADER */
-.header {
-  background: var(--navy);
-  color: #fff;
-  padding: 28px 24px 20px;
-}
-.header-inner { max-width: 820px; margin: 0 auto; }
-.header-meta {
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 10px;
-}
-.header h1 {
-  font-size: clamp(22px, 4vw, 30px);
-  font-weight: 700;
-  line-height: 1.25;
-  margin-bottom: 8px;
-}
-.header h1 abbr {
-  text-decoration: underline dotted rgba(255,255,255,.35);
-  cursor: help;
-}
-.header-sub {
-  font-size: 13.5px;
-  color: #94a3b8;
-  max-width: 580px;
-}
+  .closing { font-size: 13.5px; color: var(--slate); margin-top: 10px; font-style: italic; }
+  abbr { text-decoration: underline dotted var(--muted); cursor: help; }
 
-/* TABS BAR */
-.tabs-bar {
-  background: var(--navy);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  border-bottom: 2px solid rgba(255,255,255,0.07);
-}
-.tabs-inner {
-  max-width: 820px;
-  margin: 0 auto;
-  padding: 0 24px;
-  display: flex;
-}
-.tab-btn {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 10px 22px;
-  border-radius: 8px 8px 0 0;
-  background: transparent;
-  color: var(--muted);
-  border: none;
-  cursor: pointer;
-  transition: background .15s, color .15s;
-}
-.tab-btn.active {
-  background: var(--bg);
-  color: var(--navy);
-}
-.tab-btn:not(.active):hover {
-  color: #fff;
-}
-
-/* BODY */
-.body {
-  max-width: 820px;
-  margin: 0 auto;
-  padding: 32px 24px 64px;
-}
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-/* COLLAPSIBLE SECTIONS */
-.section {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-.section-toggle {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 28px;
-  border: none;
-  background: transparent;
-  font-family: 'IBM Plex Sans', sans-serif;
-  cursor: pointer;
-  text-align: left;
-  gap: 12px;
-}
-.section-toggle.open { border-bottom: 1px solid var(--border); }
-.section-toggle:hover { background: #f8fafc; }
-.toggle-left { display: flex; flex-direction: column; gap: 3px; }
-.section-label {
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.section-toggle h2 {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--navy);
-}
-.section-chevron {
-  color: var(--muted);
-  font-size: 18px;
-  transition: transform .2s;
-  flex-shrink: 0;
-}
-.section-toggle:not(.open) .section-chevron { transform: rotate(-90deg); }
-.section-body { padding: 22px 28px 26px; }
-.section-body.hidden { display: none; }
-
-/* MUST-KNOW */
-.must-know {
-  background: var(--amber-bg);
-  border: 1px solid #fde68a;
-  border-left: 4px solid var(--amber-border);
-  border-radius: var(--radius);
-  margin-bottom: 20px;
-  overflow: hidden;
-}
-.must-know .section-label { color: #b45309; }
-.must-know .section-toggle h2 { color: #78350f; }
-.must-know .section-chevron { color: #d97706; }
-.must-know .section-body { padding: 22px 28px 26px; }
-.must-know-items { display: flex; flex-direction: column; gap: 10px; }
-.must-know-item {
-  display: flex;
-  gap: 10px;
-  font-size: 13.5px;
-  color: var(--amber-text);
-  align-items: flex-start;
-}
-.flag { color: var(--amber-icon); font-size: 15px; flex-shrink: 0; line-height: 1.65; }
-
-/* LEARNING LADDER */
-.ladder { display: flex; flex-direction: column; gap: 14px; }
-.ladder-level {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-}
-.level-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  background: #f8fafc;
-  border-bottom: 1px solid var(--border);
-}
-.level-pill {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 99px;
-  white-space: nowrap;
-}
-.l1 .level-pill { background: var(--pill-l1); color: var(--pill-l1t); }
-.l2 .level-pill { background: var(--pill-l2); color: var(--pill-l2t); }
-.l3 .level-pill { background: var(--pill-l3); color: var(--pill-l3t); }
-.l4 .level-pill { background: var(--pill-l4); color: var(--pill-l4t); }
-.level-title { font-weight: 600; font-size: 14px; color: var(--navy2); }
-.level-bullets { padding: 14px 16px; }
-.level-bullets ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-.level-bullets li {
-  font-size: 13.5px;
-  color: #334155;
-  padding-left: 18px;
-  position: relative;
-}
-.level-bullets li::before {
-  content: '›';
-  color: var(--muted);
-  position: absolute;
-  left: 0;
-}
-
-/* GLOSSARY */
-.glossary-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-.glossary-table th {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--muted);
-  padding: 8px 12px;
-  border-bottom: 2px solid var(--border);
-  text-align: left;
-}
-.glossary-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  color: #334155;
-  vertical-align: top;
-}
-.glossary-table tr:nth-child(even) td { background: #f8fafc; }
-.term-cell {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--navy);
-  white-space: nowrap;
-  width: 28%;
-}
-
-/* ACCORDION */
-.accordion { display: flex; flex-direction: column; gap: 8px; }
-.acc-item {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-}
-.acc-trigger {
-  width: 100%;
-  text-align: left;
-  padding: 14px 16px;
-  background: #f8fafc;
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--navy);
-  border: none;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  transition: background .15s, color .15s;
-}
-.acc-trigger.open { background: var(--blue-light); color: var(--blue); }
-.acc-trigger:not(.open):hover { background: #f1f5f9; }
-.acc-chevron {
-  font-size: 16px;
-  flex-shrink: 0;
-  transition: transform .2s;
-  margin-top: 2px;
-}
-.acc-trigger.open .acc-chevron { transform: rotate(180deg); }
-.acc-body {
-  display: none;
-  padding: 16px;
-  background: var(--white);
-  border-top: 1px solid var(--border);
-  font-size: 13.5px;
-  color: #334155;
-}
-.acc-body.open { display: block; }
-.acc-strategy-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--blue);
-  margin-bottom: 6px;
-}
-
-/* CONNECTIONS GRID */
-.connections-grid { display: flex; flex-direction: column; gap: 10px; }
-.connection-card {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 14px 16px;
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  background: var(--white);
-}
-.conn-badge {
-  background: var(--blue-light);
-  color: var(--blue);
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 99px;
-  white-space: nowrap;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-.conn-text { font-size: 13.5px; color: #334155; }
-
-/* STUDY PLAN */
-.study-plan {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
-}
-.day-card {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--white);
-}
-.day-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 16px;
-  background: #f8fafc;
-  border-bottom: 1px solid var(--border);
-}
-.day-num {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--accent);
-}
-.day-focus {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  color: var(--slate);
-}
-.day-tasks {
-  list-style: none;
-  padding: 12px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.day-task { font-size: 13px; color: #334155; }
-.task-time {
-  display: inline-block;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  font-weight: 600;
-  color: #d97706;
-  background: #fffbeb;
-  border: 1px solid #fde68a;
-  border-radius: 4px;
-  padding: 1px 6px;
-  margin-bottom: 4px;
-}
-.task-link {
-  color: var(--blue);
-  font-size: 12px;
-  text-decoration: none;
-  border-bottom: 1px dashed rgba(37,99,235,.35);
-  display: inline;
-}
-.task-link:hover { border-bottom-style: solid; }
-
-/* UTILITY */
-p + p { margin-top: .85em; }
-.why-list { list-style: none; margin: 10px 0; display: flex; flex-direction: column; gap: 6px; }
-.why-list li {
-  font-size: 13.5px;
-  color: #334155;
-  padding-left: 20px;
-  position: relative;
-}
-.why-list li::before { content: '›'; color: var(--blue); position: absolute; left: 0; font-weight: 700; }
-.closing { font-size: 13.5px; color: var(--slate); margin-top: 10px; font-style: italic; }
-abbr { text-decoration: underline dotted var(--muted); cursor: help; }
-
-/* RESPONSIVE */
-@media(max-width:540px) {
-  .header { padding: 20px 16px 16px; }
-  .body { padding: 20px 14px 48px; }
-  .section-body { padding: 16px 16px 20px; }
-  .section-toggle { padding: 16px; }
-  .term-cell { width: 36%; white-space: normal; }
-  .study-plan { grid-template-columns: 1fr; }
-}
+  /* Header on this page is intentionally not sticky, so it gets a touch
+     more bottom breathing room on mobile than theme.css's default. */
+  @media(max-width:540px) {
+    .header { padding: 20px 16px 16px; }
+  }
 </style>
 </head>
 <body>
+
+<div class="home-nav">
+  <a class="home-link" href="./index.html">← Back to main page</a>
+</div>
 
 <!-- HEADER -->
 <header class="header">
@@ -491,9 +111,9 @@ abbr { text-decoration: underline dotted var(--muted); cursor: help; }
       </button>
       <div class="section-body">
         <div class="ladder">
-          <div class="ladder-level l1">
+          <div class="ladder-level">
             <div class="level-head">
-              <span class="level-pill">Level 1</span>
+              <span class="level-pill l1">Level 1</span>
               <span class="level-title">Basic awareness — can define it</span>
             </div>
             <div class="level-bullets">
@@ -505,9 +125,9 @@ abbr { text-decoration: underline dotted var(--muted); cursor: help; }
               </ul>
             </div>
           </div>
-          <div class="ladder-level l2">
+          <div class="ladder-level">
             <div class="level-head">
-              <span class="level-pill">Level 2</span>
+              <span class="level-pill l2">Level 2</span>
               <span class="level-title">Working knowledge — can describe how it works</span>
             </div>
             <div class="level-bullets">
@@ -520,9 +140,9 @@ abbr { text-decoration: underline dotted var(--muted); cursor: help; }
               </ul>
             </div>
           </div>
-          <div class="ladder-level l3">
+          <div class="ladder-level">
             <div class="level-head">
-              <span class="level-pill">Level 3</span>
+              <span class="level-pill l3">Level 3</span>
               <span class="level-title">Applied understanding — can connect it to the job tasks</span>
             </div>
             <div class="level-bullets">
@@ -535,9 +155,9 @@ abbr { text-decoration: underline dotted var(--muted); cursor: help; }
               </ul>
             </div>
           </div>
-          <div class="ladder-level l4">
+          <div class="ladder-level">
             <div class="level-head">
-              <span class="level-pill">Level 4</span>
+              <span class="level-pill l4">Level 4</span>
               <span class="level-title">Interview-ready — can handle tough questions</span>
             </div>
             <div class="level-bullets">
@@ -564,7 +184,7 @@ abbr { text-decoration: underline dotted var(--muted); cursor: help; }
         <span class="section-chevron">▾</span>
       </button>
       <div class="section-body">
-        <div class="must-know-items">
+        <div class="must-know-list">
           <div class="must-know-item"><span class="flag">⚑</span><span>HDSIG entered into force on <strong>25 May 2018</strong> — the same day as the GDPR — replacing the 1999 HDSG. It has since been amended; always cite the current consolidated version when writing policies.</span></div>
           <div class="must-know-item"><span class="flag">⚑</span><span>Health data is classified as a <strong>special category</strong> under both GDPR Art. 9 and HDSIG §13. Processing it requires at minimum an explicit legal basis <em>and</em> a documented proportionality assessment.</span></div>
           <div class="must-know-item"><span class="flag">⚑</span><span>HDSIG §§ 25–28 create a <strong>medical-research exception</strong> allowing processing without individual consent, but only when: (1) the research purpose is scientifically justified, (2) the data are pseudonymised as soon as feasible, (3) an ethics committee has approved the study, and (4) the DSB has been notified.</span></div>
@@ -858,9 +478,9 @@ abbr { text-decoration: underline dotted var(--muted); cursor: help; }
       </button>
       <div class="section-body">
         <div class="ladder">
-          <div class="ladder-level l1">
+          <div class="ladder-level">
             <div class="level-head">
-              <span class="level-pill">Stufe 1</span>
+              <span class="level-pill l1">Stufe 1</span>
               <span class="level-title">Grundlegendes Verständnis — Begriffe definieren können</span>
             </div>
             <div class="level-bullets">
@@ -872,9 +492,9 @@ abbr { text-decoration: underline dotted var(--muted); cursor: help; }
               </ul>
             </div>
           </div>
-          <div class="ladder-level l2">
+          <div class="ladder-level">
             <div class="level-head">
-              <span class="level-pill">Stufe 2</span>
+              <span class="level-pill l2">Stufe 2</span>
               <span class="level-title">Anwendungswissen — Funktionsweise beschreiben</span>
             </div>
             <div class="level-bullets">
@@ -887,9 +507,9 @@ abbr { text-decoration: underline dotted var(--muted); cursor: help; }
               </ul>
             </div>
           </div>
-          <div class="ladder-level l3">
+          <div class="ladder-level">
             <div class="level-head">
-              <span class="level-pill">Stufe 3</span>
+              <span class="level-pill l3">Stufe 3</span>
               <span class="level-title">Angewandtes Verständnis — Bezug zu konkreten Aufgaben</span>
             </div>
             <div class="level-bullets">
@@ -902,9 +522,9 @@ abbr { text-decoration: underline dotted var(--muted); cursor: help; }
               </ul>
             </div>
           </div>
-          <div class="ladder-level l4">
+          <div class="ladder-level">
             <div class="level-head">
-              <span class="level-pill">Stufe 4</span>
+              <span class="level-pill l4">Stufe 4</span>
               <span class="level-title">Interviewreif — anspruchsvolle Fragen souverän beantworten</span>
             </div>
             <div class="level-bullets">
@@ -931,7 +551,7 @@ abbr { text-decoration: underline dotted var(--muted); cursor: help; }
         <span class="section-chevron">▾</span>
       </button>
       <div class="section-body">
-        <div class="must-know-items">
+        <div class="must-know-list">
           <div class="must-know-item"><span class="flag">⚑</span><span>Das HDSIG trat am <strong>25. Mai 2018</strong> in Kraft — zeitgleich mit der DSGVO. Es ersetzte das HDSG von 1999 und wird seitdem regelmäßig angepasst; bei der Erstellung interner Richtlinien immer die aktuelle konsolidierte Fassung heranziehen.</span></div>
           <div class="must-know-item"><span class="flag">⚑</span><span>Gesundheitsdaten sind <strong>besondere Kategorien</strong> personenbezogener Daten gemäß DSGVO Art. 9 und HDSIG §13. Ihre Verarbeitung erfordert mindestens eine spezifische Rechtsgrundlage <em>und</em> eine dokumentierte Verhältnismäßigkeitsprüfung.</span></div>
           <div class="must-know-item"><span class="flag">⚑</span><span>§§ 25–28 HDSIG regeln die <strong>Forschungsausnahme</strong>: Verarbeitung ohne Einwilligung ist zulässig, wenn (1) der wissenschaftliche Zweck belegt ist, (2) die Pseudonymisierung so früh wie möglich erfolgt, (3) eine Ethikkommission das Vorhaben gebilligt hat und (4) der DSB informiert wurde.</span></div>
@@ -1174,62 +794,7 @@ abbr { text-decoration: underline dotted var(--muted); cursor: help; }
 
 </main>
 
-<script>
-function switchTab(lang, btn) {
-  document.querySelectorAll('.tab-content').forEach(function(tc) {
-    tc.classList.remove('active');
-  });
-  document.querySelectorAll('.tab-btn').forEach(function(tb) {
-    tb.classList.remove('active');
-  });
-  var target = document.getElementById('tab-' + lang);
-  if (target) target.classList.add('active');
-  if (btn) btn.classList.add('active');
-  // Close all open accordions in new tab
-  if (target) {
-    target.querySelectorAll('.acc-trigger.open').forEach(function(t) {
-      t.classList.remove('open');
-    });
-    target.querySelectorAll('.acc-body.open').forEach(function(b) {
-      b.classList.remove('open');
-    });
-  }
-}
-
-function toggleSection(trigger) {
-  var body = trigger.nextElementSibling;
-  if (!body) return;
-  var isOpen = trigger.classList.contains('open');
-  if (isOpen) {
-    trigger.classList.remove('open');
-    body.classList.add('hidden');
-  } else {
-    trigger.classList.add('open');
-    body.classList.remove('hidden');
-  }
-}
-
-function toggleAcc(trigger) {
-  var body = trigger.nextElementSibling;
-  if (!body) return;
-  // Find parent tab content
-  var tab = trigger.closest('.tab-content');
-  if (!tab) return;
-  var isOpen = trigger.classList.contains('open');
-  // Close all in this tab
-  tab.querySelectorAll('.acc-trigger.open').forEach(function(t) {
-    t.classList.remove('open');
-  });
-  tab.querySelectorAll('.acc-body.open').forEach(function(b) {
-    b.classList.remove('open');
-  });
-  // Open clicked if it was closed
-  if (!isOpen) {
-    trigger.classList.add('open');
-    body.classList.add('open');
-  }
-}
-</script>
+<script src="./lesson-ui.js"></script>
 
 </body>
 </html>
