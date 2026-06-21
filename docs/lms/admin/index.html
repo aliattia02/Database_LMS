@@ -8,7 +8,7 @@
   <style>
     /* ── ADMIN SHELL ──────────────────────────────────────────────────────── */
     .admin-shell {
-      max-width: 960px;
+      max-width: 1040px;
       margin: 0 auto;
       padding: 24px;
     }
@@ -18,7 +18,7 @@
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
     .admin-header h1 {
       margin: 0;
@@ -32,6 +32,28 @@
       font-weight: 400;
     }
 
+    /* ── TABS ─────────────────────────────────────────────────────────────── */
+    .tab-bar {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      padding: 9px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      background: none;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color .15s, border-color .15s;
+    }
+    .tab-btn:hover  { color: var(--text); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
     /* ── SEARCH ───────────────────────────────────────────────────────────── */
     .search-bar {
       padding: 8px 12px;
@@ -43,10 +65,7 @@
       color: var(--text);
       transition: border-color .15s;
     }
-    .search-bar:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
+    .search-bar:focus { outline: none; border-color: var(--accent); }
 
     /* ── ACCESS MODE BANNER ───────────────────────────────────────────────── */
     #access-mode-banner {
@@ -96,12 +115,20 @@
       color: var(--muted);
       background: var(--surface-2);
     }
-    .user-table tr:last-child td {
-      border-bottom: none;
+    .user-table tr:last-child td { border-bottom: none; }
+    .user-table tr:hover td { background: var(--surface-2); }
+
+    /* ── TIER SELECT ──────────────────────────────────────────────────────── */
+    .tier-select {
+      font-size: 12px;
+      padding: 3px 6px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
     }
-    .user-table tr:hover td {
-      background: var(--surface-2);
-    }
+    .tier-select:focus { outline: none; border-color: var(--accent); }
 
     /* ── ROLE COLUMN ──────────────────────────────────────────────────────── */
     .role-label {
@@ -128,9 +155,7 @@
       color: var(--muted);
       transition: background .15s, color .15s, border-color .15s;
     }
-    .toggle-chip:hover {
-      border-color: var(--accent);
-    }
+    .toggle-chip:hover { border-color: var(--accent); }
     .toggle-chip.granted {
       background: var(--accent-soft);
       color: var(--accent);
@@ -143,12 +168,8 @@
     }
 
     /* ── FIELD GROUPS (module access cell) ───────────────────────────────── */
-    .field-group {
-      margin-bottom: 14px;
-    }
-    .field-group:last-child {
-      margin-bottom: 0;
-    }
+    .field-group { margin-bottom: 14px; }
+    .field-group:last-child { margin-bottom: 0; }
     .field-group-header {
       display: flex;
       align-items: center;
@@ -163,9 +184,7 @@
       padding-bottom: 4px;
       border-bottom: 1px solid var(--border);
     }
-    .field-group-label {
-      flex: 1;
-    }
+    .field-group-label { flex: 1; }
 
     /* ── ACTION / PROMOTE BUTTONS ─────────────────────────────────────────── */
     .promote-btn {
@@ -178,80 +197,133 @@
       color: var(--text);
       transition: background .15s, border-color .15s;
     }
-    .promote-btn:hover {
-      background: var(--accent-soft);
-      border-color: var(--accent);
+    .promote-btn:hover { background: var(--accent-soft); border-color: var(--accent); }
+
+    /* ── CATEGORIES TAB ───────────────────────────────────────────────────── */
+    .categories-intro {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
     }
+
+    .tier-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 12px;
+    }
+    .tier-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .tier-icon {
+      font-size: 22px;
+      line-height: 1;
+      margin-top: 1px;
+    }
+    .tier-header > div { flex: 1; }
+    .tier-header strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .tier-desc {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .tier-field-group { margin-bottom: 12px; }
+    .tier-field-group:last-child { margin-bottom: 0; }
+    .tier-field-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      margin-bottom: 6px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tier-chip { /* inherits .toggle-chip */ }
 
     /* ── RESPONSIVE ───────────────────────────────────────────────────────── */
     @media (max-width: 700px) {
       .admin-shell { padding: 16px; }
       .search-bar { width: 100%; }
       .user-table, .user-table thead, .user-table tbody,
-      .user-table th, .user-table td, .user-table tr {
-        display: block;
-      }
+      .user-table th, .user-table td, .user-table tr { display: block; }
       .user-table thead { display: none; }
       .user-table tr {
         border-bottom: 1px solid var(--border);
         padding: 8px 0;
       }
-      .user-table tr:last-child {
-        border-bottom: none;
-      }
-      .user-table td {
-        border-bottom: none;
-        padding: 6px 12px;
-      }
+      .user-table tr:last-child { border-bottom: none; }
+      .user-table td { border-bottom: none; padding: 6px 12px; }
     }
 
     /* ── RTL SUPPORT ──────────────────────────────────────────────────────── */
     [dir="rtl"] .user-table th,
-    [dir="rtl"] .user-table td {
-      text-align: right;
-    }
-    [dir="rtl"] .admin-header {
-      flex-direction: row-reverse;
-    }
-    [dir="rtl"] .field-group-header {
-      flex-direction: row-reverse;
-    }
-    [dir="rtl"] .role-label {
-      margin-right: 0;
-      margin-left: 6px;
-    }
+    [dir="rtl"] .user-table td  { text-align: right; }
+    [dir="rtl"] .admin-header   { flex-direction: row-reverse; }
+    [dir="rtl"] .field-group-header { flex-direction: row-reverse; }
+    [dir="rtl"] .role-label     { margin-right: 0; margin-left: 6px; }
+    [dir="rtl"] .tier-header    { flex-direction: row-reverse; }
   </style>
 </head>
 <body>
   <div class="admin-shell">
 
     <div class="admin-header">
-      <h1>Access Control <span>— LMS Admin Panel</span></h1>
+      <h1>LMS Admin <span>— Access Control</span></h1>
       <div>
         <input id="search" class="search-bar" type="search" placeholder="Filter by name or email…" />
       </div>
     </div>
 
-    <div id="access-mode-banner" class="panel-block" style="margin-bottom:16px">
-      <!-- Populated by admin.js: shows current accessControl.mode and explanation -->
+    <!-- ── TAB BAR ──────────────────────────────────────────────────────── -->
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="users">👥 Users</button>
+      <button class="tab-btn" data-tab="categories">🏷️ Categories</button>
     </div>
 
     <div id="status" class="status-msg"></div>
 
-    <table class="user-table">
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Module access</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="user-rows">
+    <!-- ── USERS TAB ────────────────────────────────────────────────────── -->
+    <div id="tab-users">
+
+      <div id="access-mode-banner" class="panel-block" style="margin-bottom:16px">
         <!-- Populated by admin.js -->
-      </tbody>
-    </table>
+      </div>
+
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Tier</th>
+            <th>Module access <small style="font-weight:400;text-transform:none">(*&nbsp;=&nbsp;default)</small></th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="user-rows">
+          <!-- Populated by admin.js -->
+        </tbody>
+      </table>
+
+    </div>
+
+    <!-- ── CATEGORIES TAB ───────────────────────────────────────────────── -->
+    <div id="tab-categories" hidden>
+      <!-- Populated lazily by admin.js renderCategoriesTab() -->
+    </div>
 
   </div>
 

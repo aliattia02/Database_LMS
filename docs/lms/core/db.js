@@ -29,6 +29,7 @@ export const db = getFirestore(app);
 //   progress/{storageKey}: { <checkboxKey>: true/false, ... }
 //   access/modules: { <moduleId>: true/false, ... }
 // userIndex/{uid}: { displayName, email, photoURL }
+// tiers/{tierId}: { <moduleId>: true/false, ... }   — Phase 7 (category defaults)
 
 // ── PROFILE ─────────────────────────────────────────────────────────────────
 
@@ -125,4 +126,26 @@ export async function upsertUserIndex(user) {
     email: user.email || '',
     photoURL: user.photoURL || ''
   }, { merge: true });
+}
+
+// ── ACCESS CONTROL (Phase 7 — tier/category defaults) ──────────────────────
+
+/**
+ * Returns the default module-access map for a tier (category), e.g.
+ * { database: true, python: false }. Returns null when the tier has never
+ * been saved from the admin Categories tab — callers should fall back to
+ * the platform's accessControl.mode default in that case, exactly like an
+ * unconfigured per-user access doc.
+ *
+ * Mirrors admin.js's own Firestore writes 1:1 — admin.js writes tier docs
+ * directly (it has its own Firebase init and never imports db.js), so this
+ * reader just needs to match: collection 'tiers', doc id = tier id, data =
+ * flat { [moduleId]: boolean } map.
+ *
+ * @param {string} tierId — 'anonymous' | 'free' | 'pro' | 'admin' | ...
+ * @returns {Promise<Object<string, boolean>|null>}
+ */
+export async function getTierAccess(tierId) {
+  const snap = await getDoc(doc(db, 'tiers', tierId));
+  return snap.exists() ? snap.data() : null;
 }

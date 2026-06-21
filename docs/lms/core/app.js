@@ -599,7 +599,9 @@ onAuthChange(async (user) => {
 
   // Recompute which modules this user can see. Anonymous users fall back to
   // the platform's accessControl.mode default (handled inside access.js).
-  visibleModules = await getVisibleModules(user?.uid ?? null);
+  // userProfile is reused here (already fetched above) so tier resolution
+  // doesn't cost a second Firestore read.
+  visibleModules = await getVisibleModules(user?.uid ?? null, userProfile);
 
   // If the currently selected module is no longer visible (access revoked,
   // or user signed out of a 'controlled' platform), reset the selection to
