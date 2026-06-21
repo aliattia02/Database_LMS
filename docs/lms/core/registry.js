@@ -258,6 +258,13 @@ export const LMS_CONFIG = {
           progress: { type: 'untracked', total: 0 }
         },
         {
+          id: 'ukm-self-introduction',
+          title: 'Self-Introduction',
+          subtitle: 'How to introduce yourself at UKM',
+          route: 'lms/modules/UKM/topic2-self-introduction.html',
+          progress: { type: 'untracked', total: 0 }
+        },
+        {
           id: 'ukm-hoffmann-questions',
           title: 'Frau Hoffmann — Her Side',
           subtitle: 'Her questions, document requests & tricky moments',
