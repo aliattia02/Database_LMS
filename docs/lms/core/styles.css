@@ -577,3 +577,411 @@ a.field-card {
 .gate-cta-btn {
   margin-top: 1rem;
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PERSONALIZED LESSONS FIELD — new styles
+   All selectors are prefixed .pl-* to avoid collisions with existing rules.
+══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Personalized panel (main area) ──────────────────────────────────────── */
+.personalized-panel {
+  grid-row: 2;
+  overflow-y: auto;
+  padding: 28px 28px 40px;
+  background: var(--bg);
+}
+
+/* ── Panel header row (title + CTA button) ───────────────────────────────── */
+.pl-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.pl-header h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ── Primary CTA button (Request / Submit) ───────────────────────────────── */
+.pl-cta-btn {
+  padding: 9px 20px;
+  border-radius: 9px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .15s, transform .1s;
+}
+.pl-cta-btn:hover  { opacity: .88; }
+.pl-cta-btn:active { transform: scale(.97); }
+.pl-cta-btn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Empty state ──────────────────────────────────────────────────────────── */
+.pl-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 60px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+.pl-empty-icon { font-size: 52px; margin-bottom: 16px; }
+.pl-empty-state h3 { margin: 0 0 10px; font-size: 20px; color: var(--text); }
+.pl-empty-state p  { margin: 0 0 24px; color: var(--muted); max-width: 400px; line-height: 1.6; }
+
+/* ── Cards grid ───────────────────────────────────────────────────────────── */
+.pl-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* ── Individual lesson/request cards ────────────────────────────────────────
+   Base card — shared by fulfilled, pending, and declined.                    */
+.pl-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.pl-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  border-radius: 14px 14px 0 0;
+}
+
+/* Fulfilled — green accent, fully clickable */
+.pl-card.fulfilled { border-color: #bbf7d0; }
+.pl-card.fulfilled::before { background: #22c55e; }
+
+/* Pending / In-review — amber accent, non-clickable */
+.pl-card.pending { border-color: #fde68a; opacity: .9; }
+.pl-card.pending::before { background: #f59e0b; }
+
+/* Declined — red accent */
+.pl-card.declined { border-color: #fecaca; opacity: .85; }
+.pl-card.declined::before { background: #ef4444; }
+
+.pl-card-status {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--muted);
+}
+.pl-card.fulfilled .pl-card-status { color: #16a34a; }
+.pl-card.pending   .pl-card-status { color: #b45309; }
+.pl-card.declined  .pl-card-status { color: #dc2626; }
+
+.pl-card-title {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+.pl-card-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+}
+.pl-card-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 2px 0 0;
+  line-height: 1.5;
+  padding: 8px 10px;
+  background: #fef2f2;
+  border-radius: 7px;
+  border: 1px solid #fecaca;
+}
+
+/* ── Card action buttons ──────────────────────────────────────────────────── */
+.pl-open-btn,
+.pl-again-btn {
+  align-self: flex-start;
+  margin-top: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.pl-open-btn {
+  background: #dcfce7;
+  color: #15803d;
+}
+.pl-open-btn:hover { opacity: .8; }
+
+.pl-again-btn {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.pl-again-btn:hover { opacity: .8; }
+
+/* ── Sidebar "New Request" button ────────────────────────────────────────── */
+.pl-new-btn strong { color: var(--sb-accent) !important; }
+
+/* ── Request form ────────────────────────────────────────────────────────── */
+.pl-form-wrap {
+  max-width: 700px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 26px 32px 32px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 12px 28px -16px rgba(15, 23, 42, .14);
+}
+.pl-form-header {
+  margin-bottom: 4px;
+}
+.pl-form-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 4px 11px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+}
+.pl-form-header h2 {
+  margin: 0 0 6px;
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  color: var(--text);
+}
+.pl-form-header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 52ch;
+}
+
+.pl-back-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color .15s;
+}
+.pl-back-btn:hover { color: var(--accent); }
+
+.pl-form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 22px;
+}
+
+/* ── Form sections — group related fields, separated by a hairline ───────── */
+.pl-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.pl-section + .pl-section {
+  margin-top: 26px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.pl-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: var(--accent);
+}
+.pl-section-optional {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+  color: var(--muted);
+}
+.pl-section-hint {
+  margin: -8px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.55;
+  max-width: 56ch;
+}
+
+/* ── Two-up field row (e.g. role + experience level) ─────────────────────── */
+.pl-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.pl-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pl-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.pl-field select,
+.pl-field input[type="text"],
+.pl-field input[type="date"],
+.pl-field textarea {
+  padding: 10px 13px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.pl-field select:focus,
+.pl-field input:focus,
+.pl-field textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent);
+}
+.pl-field textarea { resize: vertical; min-height: 80px; line-height: 1.55; }
+.pl-field input[type="file"] {
+  padding: 8px 12px;
+  font-size: 13px;
+  border-radius: 10px;
+  border: 1px dashed var(--border);
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.pl-field input[type="file"]:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.pl-file-hint {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ── "Write or Upload" toggle fields (target job / target abilities) ─────── */
+.pl-toggle-field { gap: 8px; }
+.pl-toggle-field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.pl-mode-switch {
+  display: inline-flex;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 2px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.pl-mode-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  white-space: nowrap;
+}
+.pl-mode-btn:hover { color: var(--text); }
+.pl-mode-btn.active {
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, .1);
+}
+.pl-mode-panel { display: flex; flex-direction: column; gap: 6px; }
+
+/* ── Form-level error message ─────────────────────────────────────────────── */
+.pl-form-error {
+  margin: 22px 0 0;
+  padding: 10px 14px;
+  border-radius: 9px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  font-size: 13px;
+}
+
+/* ── Submit button row ────────────────────────────────────────────────────── */
+.pl-form-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+.pl-submit-btn {
+  padding: 10px 28px;
+  border-radius: 9px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.pl-submit-btn:hover    { opacity: .88; }
+.pl-submit-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── Sidebar section mini-headings inside module-nav (personalized mode) ──── */
+.pl-sidebar-section-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--sb-muted);
+  padding: 10px 12px 2px;
+}
+
+/* ── Responsive adjustments ───────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .personalized-panel { padding: 18px 16px 32px; }
+  .pl-header { flex-direction: column; align-items: flex-start; }
+  .pl-cards-grid { grid-template-columns: 1fr; }
+  .pl-form-wrap { max-width: 100%; padding: 20px 18px 26px; }
+  .pl-field-row { grid-template-columns: 1fr; }
+  .pl-toggle-field-head { align-items: flex-start; }
+}

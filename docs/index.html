@@ -5,8 +5,289 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LMS Platform</title>
   <link rel="stylesheet" href="lms/core/styles.css" />
+  <style>
+    /* ── Account bar (Phase 0 fix) ──────────────────────────────────────────
+       Self-contained styling for the persistent top-right sign-in widget.
+       Not yet merged into lms/core/styles.css (that file wasn't part of this
+       upload) — every rule below uses var(--token, fallback) so it renders
+       correctly whether or not --surface/--border/--text/--muted/--accent/
+       --accent-soft are already defined globally. Safe to delete this block
+       once these rules are moved into styles.css proper.
+    ──────────────────────────────────────────────────────────────────────── */
+    .account-bar {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1000;
+      font-family: inherit;
+    }
+    .account-bar > summary {
+      list-style: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .5rem .9rem;
+      background: var(--surface, #ffffff);
+      border: 1px solid var(--border, #e2e8f0);
+      border-radius: 999px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, .08);
+      color: var(--text, #0f172a);
+      font-size: .85rem;
+      font-weight: 600;
+      user-select: none;
+    }
+    .account-bar > summary::-webkit-details-marker { display: none; }
+    .account-bar > summary::marker { content: ""; }
+    .account-bar > summary:hover,
+    .account-bar[open] > summary {
+      border-color: var(--accent, #2563eb);
+      color: var(--accent, #2563eb);
+    }
+    .account-bar > summary svg { flex-shrink: 0; }
+
+    .account-bar-panel {
+      position: absolute;
+      top: calc(100% + .5rem);
+      right: 0;
+      width: 280px;
+      max-width: calc(100vw - 2rem);
+      box-sizing: border-box;
+      background: var(--surface, #ffffff);
+      border: 1px solid var(--border, #e2e8f0);
+      border-radius: 14px;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, .16);
+      padding: 1.1rem;
+    }
+
+    .account-bar-panel .panel-title {
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-weight: 700;
+      color: var(--muted, #64748b);
+      margin: 0 0 .7rem;
+    }
+
+    .account-bar-panel .auth-btn {
+      width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      padding: .6rem .75rem;
+      border-radius: 10px;
+      border: 1px solid var(--border, #e2e8f0);
+      background: var(--surface, #ffffff);
+      color: var(--text, #0f172a);
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .account-bar-panel .auth-btn:hover { background: var(--accent-soft, #eff6ff); }
+
+    .account-bar-panel .auth-divider {
+      text-align: center;
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--muted, #94a3b8);
+      margin: .7rem 0;
+    }
+
+    .account-bar-panel input {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      padding: .55rem .7rem;
+      margin-bottom: .5rem;
+      border-radius: 8px;
+      border: 1px solid var(--border, #e2e8f0);
+      background: var(--bg, #f8fafc);
+      color: var(--text, #0f172a);
+      font-size: .85rem;
+    }
+    .account-bar-panel input::placeholder { color: var(--muted, #94a3b8); }
+
+    .account-bar-panel .auth-actions {
+      display: flex;
+      gap: .5rem;
+      margin-top: .2rem;
+    }
+    .account-bar-panel .auth-actions button {
+      flex: 1;
+      padding: .55rem;
+      border-radius: 8px;
+      border: 1px solid var(--accent, #2563eb);
+      background: var(--accent, #2563eb);
+      color: #ffffff;
+      font-weight: 600;
+      font-size: .8rem;
+      cursor: pointer;
+    }
+    .account-bar-panel .auth-actions button:last-child {
+      background: var(--surface, #ffffff);
+      color: var(--accent, #2563eb);
+    }
+
+    .account-bar-panel .auth-error {
+      margin: .65rem 0 0;
+      font-size: .78rem;
+      line-height: 1.4;
+      color: #dc2626;
+    }
+
+    .account-bar-panel .auth-user {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: .8rem;
+    }
+    .account-bar-panel .auth-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent-soft, #dbeafe);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .account-bar-panel #auth-display-name {
+      flex: 1;
+      min-width: 0;
+      font-weight: 600;
+      font-size: .85rem;
+      color: var(--text, #0f172a);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .account-bar-panel .tier-badge {
+      flex-shrink: 0;
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: .15rem .5rem;
+      border-radius: 999px;
+      background: var(--accent-soft, #dbeafe);
+      color: var(--accent, #2563eb);
+    }
+    .account-bar-panel .tier-badge.pro { background: #fef3c7; color: #b45309; }
+
+    .account-bar-panel .admin-link {
+      display: block;
+      margin-bottom: .7rem;
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--accent, #2563eb);
+      text-decoration: none;
+    }
+    .account-bar-panel .admin-link:hover { text-decoration: underline; }
+
+    .account-bar-panel .danger-btn {
+      width: 100%;
+      box-sizing: border-box;
+      padding: .55rem;
+      border-radius: 8px;
+      border: 1px solid #fecaca;
+      background: #fef2f2;
+      color: #dc2626;
+      font-weight: 600;
+      font-size: .8rem;
+      cursor: pointer;
+    }
+    .account-bar-panel .danger-btn:hover { background: #fee2e2; }
+
+    @media (max-width: 480px) {
+      .account-bar { top: .6rem; right: .6rem; }
+      .account-bar-panel { width: calc(100vw - 1.2rem); }
+    }
+  </style>
 </head>
 <body>
+
+  <!-- ⓪  Account bar (Phase 0 fix) ───────────────────────────────────────────
+       Lives outside BOTH #fields-landing and #app-shell, as a sibling of both,
+       so sign-in is reachable on the very first screen — not just after a
+       field has been entered. Previously #auth-panel lived inside the
+       sidebar, which is hidden on #fields-landing, so anonymous visitors had
+       no way to sign in (and therefore no way to unlock 🔒 locked fields)
+       without first picking a field they might not even have access to.
+
+       Implemented as a native <details>/<summary> disclosure so the
+       collapsed/expanded toggle needs no JavaScript at all — it floats as a
+       small pill in the top-right corner and expands into the same sign-in /
+       account card either way.
+
+       All element IDs inside (#auth-signed-out, #auth-signed-in, #auth-email,
+       etc.) are UNCHANGED from before — app.js looks them up via
+       document.getElementById, so this move required zero app.js edits.
+  ─────────────────────────────────────────────────────────────────────────── -->
+  <details id="account-bar" class="account-bar">
+    <summary class="account-bar-trigger" aria-label="Account">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
+        <path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span data-i18n="auth.accountMenu">Account</span>
+    </summary>
+
+    <!-- ③  Auth panel (Phase 3) ────────────────────────────────────────────
+         Toggled by app.js based on onAuthChange():
+           • Signed out → #auth-signed-out visible, #auth-signed-in hidden
+           • Signed in  → #auth-signed-in visible,  #auth-signed-out hidden
+    ───────────────────────────────────────────────────────────────────────── -->
+    <section id="auth-panel" class="account-bar-panel">
+
+      <!-- Signed-out view ───────────────────────────────────────────────── -->
+      <div id="auth-signed-out">
+        <div class="panel-title" data-i18n="auth.signInTitle">Sign in to sync progress</div>
+
+        <!-- Google sign-in button -->
+        <button id="btn-google-signin" class="auth-btn google-btn" type="button">
+          <!-- Google "G" logo (official brand colours) -->
+          <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908C16.658 14.018 17.64 11.71 17.64 9.2z" fill="#4285F4"/>
+            <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+            <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
+            <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
+          </svg>
+          <span data-i18n="auth.googleButton">Continue with Google</span>
+        </button>
+
+        <div class="auth-divider" data-i18n="auth.orDivider">or</div>
+
+        <!-- Email / password fields -->
+        <input id="auth-email"    type="email"    placeholder="Email"    autocomplete="email" />
+        <input id="auth-password" type="password" placeholder="Password" autocomplete="current-password" />
+
+        <div class="auth-actions">
+          <button id="btn-email-signin" type="button" data-i18n="auth.signInButton">Sign in</button>
+          <button id="btn-email-signup" type="button" data-i18n="auth.signUpButton">Sign up</button>
+        </div>
+
+        <!-- Inline error message (shown by showAuthError() in app.js) -->
+        <p id="auth-error" class="auth-error" hidden></p>
+      </div>
+
+      <!-- Signed-in view ────────────────────────────────────────────────── -->
+      <div id="auth-signed-in" hidden>
+        <div class="auth-user">
+          <img id="auth-avatar"       src="" alt="" class="auth-avatar" />
+          <span id="auth-display-name"></span>
+          <span id="auth-tier-badge"  class="tier-badge"></span>
+        </div>
+        <a id="btn-admin-panel" href="lms/admin/" target="_blank"
+           class="admin-link" hidden data-i18n="auth.adminPanel">Admin panel ↗</a>
+        <button id="btn-signout" type="button" class="danger-btn" data-i18n="auth.signOut">
+          Sign out
+        </button>
+      </div>
+
+    </section>
+    <!-- end #auth-panel ──────────────────────────────────────────────────── -->
+  </details>
+  <!-- end #account-bar ────────────────────────────────────────────────────── -->
 
   <!-- ①  Fields landing ─────────────────────────────────────────────────────
        Shown when activeFieldId is null (i.e. no field has been entered yet).
@@ -18,7 +299,10 @@
       <p id="fields-tagline" data-i18n="fields.tagline">Choose a field to begin</p>
     </header>
     <div id="fields-grid" class="fields-grid">
-      <!-- Field cards injected by renderFieldsLanding() in app.js -->
+      <!-- Field cards injected by renderFieldsLanding() in app.js.
+           The Personalized Lessons card is appended at the end of this grid
+           by renderFieldsLanding() — it is NOT in LMS_CONFIG.fields because
+           its content is per-user Firestore data, not shared config. -->
     </div>
   </div>
 
@@ -50,17 +334,20 @@
 
       <!-- Module navigation ──────────────────────────────────────────────── -->
       <section class="panel-block">
-        <div class="panel-title" data-i18n="shell.modulesTitle">Modules</div>
+        <div class="panel-title" id="module-nav-label" data-i18n="shell.modulesTitle">Modules</div>
         <nav id="module-nav" class="module-nav">
-          <!-- Module buttons injected by renderModuleNav() in app.js -->
+          <!-- Module buttons injected by renderModuleNav() in app.js.
+               In Personalized Lessons mode, renderPersonalizedSidebarNav()
+               replaces this content with lessons + pending request entries. -->
         </nav>
       </section>
 
       <!-- Lesson navigation ──────────────────────────────────────────────── -->
-      <section class="panel-block">
+      <section class="panel-block" id="lesson-nav-block">
         <div class="panel-title" data-i18n="shell.lessonsTitle">Lessons</div>
         <nav id="lesson-nav" class="lesson-nav">
-          <!-- Lesson buttons injected by renderLessonNav() in app.js -->
+          <!-- Lesson buttons injected by renderLessonNav() in app.js.
+               Hidden in Personalized Lessons mode (no sub-lesson nav). -->
         </nav>
       </section>
 
@@ -71,60 +358,11 @@
         </div>
       </section>
 
-      <!-- ③  Auth panel (Phase 3) ──────────────────────────────────────────
-           Toggled by app.js based on onAuthChange():
-             • Signed out → #auth-signed-out visible, #auth-signed-in hidden
-             • Signed in  → #auth-signed-in visible,  #auth-signed-out hidden
-      ─────────────────────────────────────────────────────────────────────── -->
-      <section id="auth-panel" class="panel-block">
-
-        <!-- Signed-out view ─────────────────────────────────────────────── -->
-        <div id="auth-signed-out">
-          <div class="panel-title" data-i18n="auth.signInTitle">Sign in to sync progress</div>
-
-          <!-- Google sign-in button -->
-          <button id="btn-google-signin" class="auth-btn google-btn" type="button">
-            <!-- Google "G" logo (official brand colours) -->
-            <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-              <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908C16.658 14.018 17.64 11.71 17.64 9.2z" fill="#4285F4"/>
-              <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-              <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
-              <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
-            </svg>
-            <span data-i18n="auth.googleButton">Continue with Google</span>
-          </button>
-
-          <div class="auth-divider" data-i18n="auth.orDivider">or</div>
-
-          <!-- Email / password fields -->
-          <input id="auth-email"    type="email"    placeholder="Email"    autocomplete="email" />
-          <input id="auth-password" type="password" placeholder="Password" autocomplete="current-password" />
-
-          <div class="auth-actions">
-            <button id="btn-email-signin" type="button" data-i18n="auth.signInButton">Sign in</button>
-            <button id="btn-email-signup" type="button" data-i18n="auth.signUpButton">Sign up</button>
-          </div>
-
-          <!-- Inline error message (shown by showAuthError() in app.js) -->
-          <p id="auth-error" class="auth-error" hidden></p>
-        </div>
-
-        <!-- Signed-in view ──────────────────────────────────────────────── -->
-        <div id="auth-signed-in" hidden>
-          <div class="auth-user">
-            <img id="auth-avatar"       src="" alt="" class="auth-avatar" />
-            <span id="auth-display-name"></span>
-            <span id="auth-tier-badge"  class="tier-badge"></span>
-          </div>
-          <a id="btn-admin-panel" href="lms/admin/" target="_blank"
-             class="admin-link" hidden data-i18n="auth.adminPanel">Admin panel ↗</a>
-          <button id="btn-signout" type="button" class="danger-btn" data-i18n="auth.signOut">
-            Sign out
-          </button>
-        </div>
-
-      </section>
-      <!-- end #auth-panel ────────────────────────────────────────────────── -->
+      <!-- Auth panel used to live here (Phase 3). It now lives in the
+           persistent #account-bar at the top of <body> — see the comment
+           there for why — so its DOM elements are no longer in the sidebar.
+           app.js looks everything up via document.getElementById, so the
+           move required zero JS changes. ─────────────────────────────────── -->
 
       <!-- Reset progress (always visible) ───────────────────────────────── -->
       <button id="reset-progress" class="danger-btn" type="button" data-i18n="shell.resetButton">
@@ -140,6 +378,17 @@
       <div id="welcome-panel" class="welcome-panel">
         <h3 id="welcome-heading" data-i18n="welcome.heading">Your learning platform</h3>
         <p  id="welcome-body"    data-i18n="welcome.body">Select a module to begin.</p>
+      </div>
+
+      <!-- ✨  Personalized Lessons panel ─────────────────────────────────────
+           Shown in the main content area when activeFieldId === 'personalized'
+           and no lesson is open in the iframe. Hidden otherwise.
+           Content is injected entirely by renderPersonalizedMainPanel() in app.js.
+           The form markup is generated programmatically — nothing is static here
+           so that the request list and form stay in sync with live Firestore data.
+      ──────────────────────────────────────────────────────────────────────── -->
+      <div id="personalized-panel" class="personalized-panel" hidden>
+        <!-- Populated by renderPersonalizedMainPanel() -->
       </div>
 
       <!-- Lesson iframe ──────────────────────────────────────────────────── -->

@@ -253,6 +253,522 @@
 
     .tier-chip { /* inherits .toggle-chip */ }
 
+    /* ── REQUESTS TAB ─────────────────────────────────────────────────────── */
+
+    /* Toolbar: filter bar + refresh button in one row */
+    .req-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .req-filter-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .req-filter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .req-filter-btn:hover { border-color: var(--accent); color: var(--text); }
+    .req-filter-btn.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .req-filter-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      background: var(--surface-2);
+      color: var(--muted);
+    }
+    .req-filter-btn.active .req-filter-count {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* Per-user request groups */
+    .req-group { margin-bottom: 16px; }
+    .req-group-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+      color: var(--text);
+    }
+    .req-group-header:hover { border-color: var(--accent); }
+    .req-group-avatar {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .req-group-info {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+    }
+    .req-group-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .req-group-email {
+      font-size: 11px;
+      color: var(--muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .req-group-count {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--surface);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .req-group-chevron {
+      flex-shrink: 0;
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .req-group-body {
+      padding: 14px 0 0 16px;
+      border-left: 2px solid var(--border);
+      margin-left: 14px;
+      margin-top: 4px;
+    }
+
+    /* Request cards */
+    .req-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+    }
+    .req-card-pending   { border-left: 3px solid #f59e0b; }
+    .req-card-in_review { border-left: 3px solid var(--accent); }
+    .req-card-fulfilled { border-left: 3px solid #10b981; }
+    .req-card-declined  { border-left: 3px solid #ef4444; }
+
+    .req-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .req-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .req-status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .req-status-pending   { background: #fef3c7; color: #b45309; }
+    .req-status-in_review { background: var(--accent-soft); color: var(--accent); }
+    .req-status-fulfilled { background: #d1fae5; color: #065f46; }
+    .req-status-declined  { background: #fee2e2; color: #991b1b; }
+
+    .req-topic {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .req-user {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .req-date {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .req-file-link {
+      flex-shrink: 0;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    /* Questionnaire answers toggle */
+    .req-answers-section { margin-bottom: 10px; }
+    .req-answers-toggle  { margin-bottom: 8px; }
+    .req-answers {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .req-answer-row { margin-bottom: 4px; }
+    .req-answer-row:last-child { margin-bottom: 0; }
+
+    /* Target job / target abilities — kept always-visible (not collapsed
+       behind .req-answers-toggle like the rest of the questionnaire) since
+       this is the context an admin needs first when authoring the lesson.
+       Each row is either typed text or a download link, depending on
+       whether the user wrote it or uploaded a file — see renderTargetRow()
+       in admin.js. */
+    .req-target-section {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      background: var(--accent-soft);
+      border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+    .req-target-row strong { color: var(--accent); }
+    .req-target-row .req-file-link { margin-left: 2px; }
+
+    /* Admin note (decline reason visible on declined cards) */
+    .req-admin-note {
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--surface-2);
+      border-radius: 6px;
+      padding: 6px 10px;
+      margin-bottom: 10px;
+    }
+
+    /* Lesson authoring section (shown for pending + in_review) */
+    .req-author-section {
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+      margin-top: 12px;
+    }
+    .req-author-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .req-author-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      flex: 1;
+    }
+    .req-title-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 6px 10px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      background: var(--surface);
+      color: var(--text);
+      transition: border-color .15s;
+    }
+    .req-title-input:focus { outline: none; border-color: var(--accent); }
+    .req-html-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+      background: var(--surface);
+      color: var(--text);
+      resize: vertical;
+      transition: border-color .15s;
+    }
+    .req-html-input:focus { outline: none; border-color: var(--accent); }
+    .req-author-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .req-publish-btn {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+    .req-publish-btn:hover { background: var(--accent); color: #fff; }
+    .req-decline-btn { color: #dc2626; border-color: #fecaca; }
+    .req-decline-btn:hover { background: #fee2e2; border-color: #dc2626; }
+    .req-preview-frame {
+      width: 100%;
+      height: 400px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-top: 10px;
+      background: #fff;
+    }
+
+    /* Outcome notes (fulfilled / declined state) */
+    .req-outcome-note {
+      font-size: 12px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .req-fulfilled-note {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    .req-fulfilled-note code {
+      background: rgba(0,0,0,.08);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+    .req-declined-note {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* ── COURSES TAB — LIST VIEW ──────────────────────────────────────────── */
+
+    .courses-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .courses-new-btn {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+    .courses-new-btn:hover { background: var(--accent); color: #fff; }
+
+    .course-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 10px;
+    }
+    .course-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .course-card-icon { font-size: 26px; line-height: 1; margin-top: 2px; flex-shrink: 0; }
+    .course-card-body { flex: 1; min-width: 0; }
+    .course-card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 3px;
+    }
+    .course-card-title  { font-size: 15px; font-weight: 700; color: var(--text); }
+    .course-card-subtitle { font-size: 12px; color: var(--muted); margin-bottom: 3px; }
+    .course-card-meta   { font-size: 12px; color: var(--muted); }
+    .course-card-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .course-status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .course-status-published { background: #d1fae5; color: #065f46; }
+    .course-status-draft {
+      background: var(--surface-2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .courses-delete-btn { color: #dc2626; border-color: #fecaca; }
+    .courses-delete-btn:hover { background: #fee2e2; border-color: #dc2626; }
+
+    /* ── COURSES TAB — EDITOR VIEW ────────────────────────────────────────── */
+
+    .course-editor-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .course-editor-title {
+      flex: 1;
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .course-meta-form {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    .course-form-section-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .course-form-row { margin-bottom: 12px; }
+    .course-form-row:last-child { margin-bottom: 0; }
+    .course-form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .course-form-input,
+    .course-form-select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      background: var(--surface);
+      color: var(--text);
+      transition: border-color .15s;
+    }
+    .course-form-input:focus,
+    .course-form-select:focus { outline: none; border-color: var(--accent); }
+
+    /* ── LESSON LIST (inside course editor) ───────────────────────────────── */
+
+    .course-lessons-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+    .course-lessons-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .lesson-row {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .lesson-row:last-child { margin-bottom: 0; }
+    .lesson-row-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--surface-2);
+      flex-wrap: wrap;
+    }
+    .lesson-order-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .lesson-row-title   { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
+    .lesson-row-subtitle { font-size: 12px; color: var(--muted); }
+    .lesson-row-actions { display: flex; gap: 4px; flex-wrap: wrap; flex-shrink: 0; }
+
+    .lesson-row-editing { background: var(--surface); }
+    .lesson-editor { padding: 14px; }
+
+    .lesson-html-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+      background: var(--surface);
+      color: var(--text);
+      resize: vertical;
+      transition: border-color .15s;
+    }
+    .lesson-html-input:focus { outline: none; border-color: var(--accent); }
+
     /* ── RESPONSIVE ───────────────────────────────────────────────────────── */
     @media (max-width: 700px) {
       .admin-shell { padding: 16px; }
@@ -266,6 +782,7 @@
       }
       .user-table tr:last-child { border-bottom: none; }
       .user-table td { border-bottom: none; padding: 6px 12px; }
+      .req-toolbar { flex-direction: column; align-items: flex-start; }
     }
 
     /* ── RTL SUPPORT ──────────────────────────────────────────────────────── */
@@ -275,6 +792,10 @@
     [dir="rtl"] .field-group-header { flex-direction: row-reverse; }
     [dir="rtl"] .role-label     { margin-right: 0; margin-left: 6px; }
     [dir="rtl"] .tier-header    { flex-direction: row-reverse; }
+    [dir="rtl"] .req-card-header  { flex-direction: row-reverse; }
+    [dir="rtl"] .req-meta         { flex-direction: row-reverse; }
+    [dir="rtl"] .req-group-header { flex-direction: row-reverse; text-align: right; }
+    [dir="rtl"] .req-group-body   { border-left: none; border-right: 2px solid var(--border); margin-left: 0; margin-right: 14px; padding-left: 0; padding-right: 16px; }
   </style>
 </head>
 <body>
@@ -291,6 +812,8 @@
     <div class="tab-bar">
       <button class="tab-btn active" data-tab="users">👥 Users</button>
       <button class="tab-btn" data-tab="categories">🏷️ Categories</button>
+      <button class="tab-btn" data-tab="requests">📬 Requests</button>
+      <button class="tab-btn" data-tab="courses">📚 Courses</button>
     </div>
 
     <div id="status" class="status-msg"></div>
@@ -323,6 +846,16 @@
     <!-- ── CATEGORIES TAB ───────────────────────────────────────────────── -->
     <div id="tab-categories" hidden>
       <!-- Populated lazily by admin.js renderCategoriesTab() -->
+    </div>
+
+    <!-- ── REQUESTS TAB ──────────────────────────────────────────────────── -->
+    <div id="tab-requests" hidden>
+      <!-- Populated lazily by admin.js renderRequestsTab() -->
+    </div>
+
+    <!-- ── COURSES TAB ──────────────────────────────────────────────────── -->
+    <div id="tab-courses" hidden>
+      <!-- Populated lazily by admin.js renderCoursesTab() -->
     </div>
 
   </div>
