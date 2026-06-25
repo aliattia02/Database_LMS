@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Topic 3 — Merge Conflicts | Git &amp; GitHub Team Workflows</title>
+  <link rel="stylesheet" href="../shared/theme.css"/>
+  <style>
+    /* ── Topic 3 page-specific styles ── */
+
+    .badge {
+      font-size: 10.5px; font-weight: 700;
+      padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+    }
+    .badge-must   { background: #fef3c7; color: #92400e; }
+    .badge-common { background: #dbeafe; color: #1e40af; }
+    .badge-tip    { background: #f0fdf4; color: #166534; }
+
+    .q-arrow {
+      font-size: 12px; color: var(--muted);
+      padding-top: 3px; flex-shrink: 0; transition: transform .2s;
+    }
+    .q-trigger.open .q-arrow { transform: rotate(180deg); }
+    .q-panel { padding: 18px 20px 16px 52px; }
+
+    .strategy-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    }
+    .strategy-text {
+      font-size: 13.5px; color: var(--navy2); line-height: 1.65; margin-bottom: 14px;
+    }
+
+    .answer-box {
+      background: var(--green-bg); border: 1px solid var(--green-border);
+      border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;
+    }
+    .answer-box-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--green-text); margin-bottom: 8px;
+    }
+    .answer-box-text { font-size: 13.5px; color: #14532d; line-height: 1.7; }
+
+    .warning-box {
+      background: var(--amber-bg); border: 1px solid #fde68a;
+      border-radius: 8px; padding: 12px 14px; margin-bottom: 12px;
+    }
+    .warning-box-text { font-size: 13px; color: var(--amber-text); line-height: 1.55; }
+
+    .key-points { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+    .key-point {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 13.5px; color: var(--navy2); line-height: 1.55;
+    }
+    .key-point-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #2563eb;
+      flex-shrink: 0; margin-top: 7px;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+      font-size: 12.5px; background: #f1f5f9;
+      padding: 1px 5px; border-radius: 3px; color: var(--navy);
+    }
+    .code-block {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+      font-size: 12px; background: #f8fafc;
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 10px 14px; margin: 10px 0;
+      color: var(--navy); line-height: 1.65;
+      white-space: pre; overflow-x: auto;
+    }
+
+    /* Conflict marker highlighting */
+    .conflict-block {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+      font-size: 12px; border: 1px solid var(--border); border-radius: 6px;
+      margin: 10px 0; overflow-x: auto; line-height: 1.65;
+    }
+    .conflict-ours   { background: #fffbeb; color: #78350f; padding: 6px 14px; display: block; white-space: pre; }
+    .conflict-sep    { background: #f1f5f9; color: #64748b;  padding: 4px 14px; display: block; white-space: pre; font-weight: 700; }
+    .conflict-theirs { background: #eff6ff; color: #1e3a5f; padding: 6px 14px; display: block; white-space: pre; }
+    .conflict-marker { color: #94a3b8; font-size: 11px; }
+
+    .section {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px 28px;
+      margin-bottom: 20px; box-shadow: var(--shadow);
+    }
+    .section h2 { font-size: 18px; font-weight: 700; margin-bottom: 14px; }
+    .section p  { font-size: 14px; color: #334155; line-height: 1.65; margin-bottom: 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .must-block {
+      background: var(--amber-bg); border: 1.5px solid var(--amber-border);
+      border-radius: var(--radius); padding: 18px 20px; margin: 28px 0 0;
+    }
+    .must-block-title {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--amber-text); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .must-block .must-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      font-size: 13.5px; color: #78350f; line-height: 1.6;
+      padding: 9px 0; border-bottom: 1px solid #fde68a;
+    }
+    .must-block .must-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .must-block .must-bullet { font-size: 15px; flex-shrink: 0; }
+
+    /* RTL overrides */
+    [dir="rtl"] .q-panel           { padding: 18px 52px 16px 20px; }
+    [dir="rtl"] .key-point         { flex-direction: row-reverse; }
+    [dir="rtl"] .must-item         { flex-direction: row-reverse; }
+    [dir="rtl"] .must-block-title  { flex-direction: row-reverse; }
+    [dir="rtl"] .code-block,
+    [dir="rtl"] .conflict-block    { direction: ltr; text-align: left; }
+
+    @media (max-width: 600px) {
+      .q-panel { padding-left: 20px; }
+      .q-badges { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Git &amp; GitHub &mdash; Topic 3 of 5</div>
+    <h1><span>Merge Conflicts</span> — Read, Resolve, Move On</h1>
+    <p class="header-sub">A conflict is not an error — it is Git telling you it needs a human decision. Learn to read the markers and you will resolve any conflict calmly in under five minutes.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de', this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar', this)">العربية</button>
+  </div>
+</div>
+
+<main>
+  <div class="body">
+
+<!-- ═══════════════════════════════════════════════════
+     ENGLISH TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff1f2;">⚡</div>
+    <div>
+      <div class="section-title">What a Conflict Actually Is</div>
+      <div class="section-subtitle">Demystify it first — panic is optional, understanding is not</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Git can't decide — so it stops and asks you</h2>
+    <p>A merge conflict happens when <strong>two branches changed the same lines of the same file</strong> in different ways. Git merges everything it can automatically — line additions, deletions in different areas, new files — without any help from you. It only stops when it genuinely cannot know which version to keep.</p>
+    <p>This is not a mistake. It is Git being honest: "Both branches touched line 42. I don't know which version is correct. You do. Please decide."</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>What causes it:</strong> you and a teammate both edited the same lines, or one of you deleted a file the other modified, or both branches added the same filename with different content.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>What Git does:</strong> it pauses the merge, marks the conflicting sections with special markers inside the file, and waits. Your working directory is now in a "mid-merge" state.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>What you do:</strong> edit the file to contain the final correct version, remove the markers, stage it, and complete the merge with a commit.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#faf5ff;">🔍</div>
+    <div>
+      <div class="section-title">Reading the Conflict Markers</div>
+      <div class="section-subtitle">Three lines — once you know what each means, the file tells you exactly what to do</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Anatomy of a conflict block</h2>
+    <p>When Git writes conflict markers into a file, it always uses this three-part structure:</p>
+    <div class="conflict-block">
+      <span class="conflict-ours"><span class="conflict-marker">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD (your branch — what you currently have)</span>
+patient_id = record.get("patient_id")
+device_type = "CGM"</span>
+      <span class="conflict-sep">======= (divider — everything above is yours, everything below is theirs)</span>
+      <span class="conflict-theirs">patient_id = record.get("id")
+device_type = record.get("device_type", "unknown")
+<span class="conflict-marker">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/device-model (incoming branch being merged)</span></span>
+    </div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> — your version (the branch you ran <code>git merge</code> from). Everything between this line and <code>=======</code> is what you had.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>=======</code> — the divider. Above = yours. Below = theirs.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/device-model</code> — the incoming version (the branch being merged in). Everything between <code>=======</code> and this line is what they had.</div>
+      <div class="key-point"><div class="key-point-dot"></div>One file can have <strong>multiple conflict blocks</strong> — one per conflicting section. Resolve each one.</div>
+    </div>
+    <p>Your job: delete all three marker lines and leave only the code that should survive. That might be your version, their version, or a blend of both — you decide based on what is actually correct.</p>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🧰</div>
+    <div>
+      <div class="section-title">Key Concepts — Open Every Card</div>
+      <div class="section-subtitle">The conflict questions every developer faces in their first week on a team</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Walk me through resolving a conflict step by step — CLI</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">The complete CLI workflow</div>
+      <div class="strategy-text">This is the sequence you'll run every time. Learn it once and you will never feel lost mid-conflict again — regardless of which editor or tool you prefer, the underlying steps are always the same.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Step by step</div>
+        <div class="answer-box-text">
+<div class="code-block"># 1. Start the merge (conflict occurs here)
+git switch main
+git merge feature/device-model
+# → CONFLICT (content): Merge conflict in src/models/device.py
+# → Automatic merge failed; fix conflicts and then commit the result.
+
+# 2. See which files have conflicts
+git status
+# → both modified:   src/models/device.py
+
+# 3. Open the conflicting file in your editor
+#    Find every &lt;&lt;&lt;&lt;&lt;&lt;&lt; block, decide what the final code should be,
+#    delete the three marker lines, save the file.
+
+# 4. Stage the resolved file
+git add src/models/device.py
+
+# 5. Confirm no conflicts remain
+git status
+# → All conflicts fixed but you are still merging.
+
+# 6. Complete the merge with a commit
+git commit
+# Git pre-fills the message: "Merge branch 'feature/device-model'"
+# Save and close the editor to accept it.</div>
+          The merge is now complete. The commit history shows both branches converging.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>git status</code> is your compass throughout. Run it after every step to see where you are.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Don't <code>git add .</code> blindly — stage only the files you've resolved. Accidentally staging an unresolved file with markers still in it will commit broken code.</div>
+        <div class="key-point"><div class="key-point-dot"></div>If you staged a file and want to un-stage it: <code>git restore --staged src/models/device.py</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">How do I resolve a conflict in VS Code?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">The visual merge editor — faster for most conflicts</div>
+      <div class="strategy-text">VS Code detects conflict markers and replaces them with a visual editor that lets you click to accept versions instead of editing raw markers. For most conflicts this is faster and less error-prone than editing the markers by hand.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">In VS Code</div>
+        <div class="answer-box-text">
+          1. Open the conflicting file — VS Code highlights conflict blocks in color and shows four action buttons above each block:<br><br>
+          &nbsp;&nbsp;<strong>Accept Current Change</strong> — keep your version (HEAD), discard theirs.<br>
+          &nbsp;&nbsp;<strong>Accept Incoming Change</strong> — keep their version, discard yours.<br>
+          &nbsp;&nbsp;<strong>Accept Both Changes</strong> — append both versions one after the other (useful when both additions should survive).<br>
+          &nbsp;&nbsp;<strong>Compare Changes</strong> — opens a side-by-side diff view.<br><br>
+          2. For complex conflicts, click <strong>"Resolve in Merge Editor"</strong> (VS Code 1.69+) — a three-panel view: yours on the left, theirs on the right, result in the centre. Edit the result panel directly for blended resolutions.<br><br>
+          3. Save the file. Stage it: <code>git add &lt;file&gt;</code>. Then <code>git commit</code>.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>The Source Control panel (Ctrl+Shift+G) lists all conflicting files under "Merge Changes" — click each one to open it.</div>
+        <div class="key-point"><div class="key-point-dot"></div>"Accept Both Changes" stacks the two versions — you usually still need to edit the result to remove duplication.</div>
+        <div class="key-point"><div class="key-point-dot"></div>VS Code does NOT stage or commit for you. After clicking "Accept", you still run <code>git add</code> and <code>git commit</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">How do I abort a merge that's gone wrong?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">The escape hatch — always available before you commit</div>
+      <div class="strategy-text">You are mid-merge and realise the conflict is too complex to resolve right now — you need to talk to your teammate first, or you just want to start over. As long as you haven't run <code>git commit</code> yet, you can always abort.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Abort and return to the pre-merge state</div>
+        <div class="answer-box-text">
+<div class="code-block">git merge --abort</div>
+          This rewinds everything: your working directory returns to exactly how it was before you ran <code>git merge</code>. All conflict markers disappear. No partial state is left behind.<br><br>
+          After aborting, <code>git status</code> should show a clean working tree on your original branch.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code>git merge --abort</code> only works while a merge is in progress (i.e. before <code>git commit</code>). After you commit the merge, the merge is complete — use <code>git revert</code> to undo it if needed (covered in Topic 4).</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Not sure if a merge is in progress? Run <code>git status</code> — it will say "You have unmerged paths" or "All conflicts fixed but you are still merging."</div>
+        <div class="key-point"><div class="key-point-dot"></div>After aborting, pull your teammate's changes, understand what they did, then re-attempt the merge — this time you'll know what to expect.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">I accidentally committed conflict markers. How do I fix it?</span>
+      <span class="q-badges"><span class="badge badge-common">Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">The most common conflict mistake — easy to recover from</div>
+      <div class="strategy-text">You staged and committed a file that still contained <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> markers. Your app now has literal conflict markers in its source code. It happens. Here's how to fix it without panic.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Recovery — not yet pushed</div>
+        <div class="answer-box-text">
+<div class="code-block"># Undo the commit but keep the file changes staged
+git reset --soft HEAD~1
+
+# Now edit the file — remove all conflict markers properly
+# Then re-stage and re-commit
+git add src/models/device.py
+git commit -m "fix: resolve merge conflict in device model"</div>
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ If you already pushed the broken commit, don't use <code>git reset</code> (it rewrites shared history). Instead, edit the file to remove markers, then commit and push a new fix commit. Topic 4 covers the full undo toolkit.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Prevention: configure your editor or CI to search for <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> in staged files before committing. Some teams add this as a pre-commit hook.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>git diff --check</code> detects whitespace errors and conflict markers in staged/unstaged changes — run it before committing after any merge.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">How do I prevent conflicts from getting large and painful?</span>
+      <span class="q-badges"><span class="badge badge-common">Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Conflicts are inevitable — but their size is not</div>
+      <div class="strategy-text">You cannot eliminate conflicts on a team — but you can keep them small and fast to resolve. The techniques below are the habits that separate developers who dread merge day from those who don't notice it.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The four habits</div>
+        <div class="answer-box-text">
+          <strong>1. Merge main into your branch regularly</strong> — not once before your PR, but every day or two. Small, frequent merges surface conflicts early while they're still trivial.<br><br>
+<div class="code-block">git switch main && git pull
+git switch feature/my-feature
+git merge main</div>
+          <strong>2. Keep branches short-lived</strong> — a branch open for a week diverges far less than one open for a month. The longer a branch lives, the more painful the eventual merge.<br><br>
+          <strong>3. One logical change per branch</strong> — narrow branches touch fewer files and conflict less.<br><br>
+          <strong>4. Communicate before touching shared files</strong> — if you know a teammate is about to refactor the same module, coordinate. A 2-minute message saves a 20-minute conflict.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>The conflict you dread most is always the one from the branch nobody merged from main in three weeks.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Trunk-based development (very short-lived branches, merged daily) is the extreme end of this principle — worth reading about after you're comfortable with the basics.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">What is <code>git rerere</code> and when does it help?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Tip</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Reuse Recorded Resolution — Git remembers how you fixed it last time</div>
+      <div class="strategy-text">If you regularly merge a long-lived branch and keep encountering the same conflict in the same file, <code>rerere</code> can remember your resolution and apply it automatically next time. It's an advanced feature — worth knowing it exists.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">How to enable it</div>
+        <div class="answer-box-text">
+<div class="code-block"># Enable globally (recommended — set it once and forget it)
+git config --global rerere.enabled true</div>
+          Once enabled: next time you hit a conflict, resolve it normally. Git records the resolution. The next time the same conflict appears (e.g. on a subsequent merge), Git applies your previous resolution automatically.<br><br>
+          You'll see: <code>Resolved 'src/models/device.py' using previous resolution.</code>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Most useful in long-running integration branches that repeatedly merge the same feature branches.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Don't rely on it blindly — always verify the auto-applied resolution makes sense before committing.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Skip this if you're just starting out — master the manual workflow first.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🛠️</div>
+    <div>
+      <div class="section-title">Hands-On Practice</div>
+      <div class="section-subtitle">Create a real conflict, resolve it — builds the muscle memory in 15 minutes</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Engineer a conflict, then fix it</h2>
+    <p>The best way to be calm about conflicts is to have caused and resolved one deliberately. Run this script — it manufactures a predictable conflict so you can practise the full resolution workflow without any stakes.</p>
+    <div class="code-block"># 1. Fresh practice repo
+git init conflict-practice && cd conflict-practice
+echo "patient_id = record.get('id')" > model.py
+git add . && git commit -m "Initial model"
+
+# 2. Create a feature branch and change the same line
+git switch -c feature/patient-lookup
+echo "patient_id = record.get('patient_id')" > model.py
+git commit -am "feat: use explicit patient_id key"
+
+# 3. Back on main, make a different change to the same line
+git switch main
+echo "patient_id = record.get('pid')" > model.py
+git commit -am "chore: align key name with API spec"
+
+# 4. Now merge — this WILL conflict
+git merge feature/patient-lookup
+# → CONFLICT (content): Merge conflict in model.py
+
+# 5. Inspect the markers
+cat model.py
+
+# 6. Resolve: edit model.py to contain the correct final line,
+#    remove all three marker lines, save
+
+# 7. Stage and commit
+git add model.py
+git commit
+# (accept the pre-filled merge commit message)
+
+# 8. Verify the graph
+git log --all --oneline --graph</div>
+    <p>After this exercise you should be able to look at any conflict file calmly, identify which version to keep (or blend), and complete the merge without hesitation.</p>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You're done with this topic when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain what causes a conflict — same lines changed on two branches — and what Git's three marker lines each mean.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can resolve a conflict from the CLI end-to-end: identify conflicting files, edit markers out, <code>git add</code>, <code>git commit</code> — without looking anything up.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You know how to abort a mid-merge with <code>git merge --abort</code> and understand when it's appropriate.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You've deliberately engineered and resolved at least one conflict in a practice repo, and read the resulting <code>git log --graph</code>.</div>
+  </div>
+
+</div><!-- /tab-en -->
+
+<!-- ═══════════════════════════════════════════════════
+     DEUTSCH TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff1f2;">⚡</div>
+    <div>
+      <div class="section-title">Was ein Konflikt wirklich ist</div>
+      <div class="section-subtitle">Erst entmystifizieren — Panik ist optional, Verständnis nicht</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Git kann nicht entscheiden — also hält es an und fragt dich</h2>
+    <p>Ein Merge-Konflikt entsteht, wenn <strong>zwei Branches dieselben Zeilen derselben Datei</strong> auf unterschiedliche Weise geändert haben. Git merged alles, was es kann, automatisch — Zeilenergänzungen, Löschungen in verschiedenen Bereichen, neue Dateien — ganz ohne deine Hilfe. Es stoppt nur, wenn es genuinen keine Ahnung hat, welche Version zu behalten ist.</p>
+    <p>Das ist kein Fehler. Es ist Git, das ehrlich ist: "Beide Branches haben Zeile 42 angefasst. Ich weiß nicht, welche Version korrekt ist. Du weißt es. Bitte entscheide."</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Was es verursacht:</strong> du und ein Teammitglied haben beide dieselben Zeilen bearbeitet, oder einer hat eine Datei gelöscht, die der andere geändert hat, oder beide Branches haben denselben Dateinamen mit unterschiedlichem Inhalt hinzugefügt.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Was Git tut:</strong> es pausiert den Merge, markiert die konfliktierenden Abschnitte mit speziellen Markierungen innerhalb der Datei und wartet. Dein Arbeitsverzeichnis befindet sich nun in einem "mitten-im-Merge"-Zustand.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Was du tust:</strong> bearbeite die Datei so, dass sie die endgültige korrekte Version enthält, entferne die Markierungen, stage sie, und schließe den Merge mit einem Commit ab.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#faf5ff;">🔍</div>
+    <div>
+      <div class="section-title">Die Konflikt-Markierungen lesen</div>
+      <div class="section-subtitle">Drei Zeilen — sobald du weißt, was jede bedeutet, sagt dir die Datei genau, was zu tun ist</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Anatomie eines Konflikt-Blocks</h2>
+    <p>Wenn Git Konflikt-Markierungen in eine Datei schreibt, verwendet es immer diese dreiteilige Struktur:</p>
+    <div class="conflict-block">
+      <span class="conflict-ours"><span class="conflict-marker">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD (dein Branch — was du aktuell hast)</span>
+patient_id = record.get("patient_id")
+device_type = "CGM"</span>
+      <span class="conflict-sep">======= (Trennlinie — alles darüber ist deins, alles darunter ist deren Version)</span>
+      <span class="conflict-theirs">patient_id = record.get("id")
+device_type = record.get("device_type", "unknown")
+<span class="conflict-marker">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/device-model (eingehender Branch, der gemergt wird)</span></span>
+    </div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> — deine Version (der Branch, von dem aus du <code>git merge</code> ausgeführt hast). Alles zwischen dieser Zeile und <code>=======</code> ist dein Stand.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>=======</code> — die Trennlinie. Oben = deins. Unten = ihres.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/device-model</code> — die eingehende Version (der Branch, der gemergt wird). Alles zwischen <code>=======</code> und dieser Zeile ist ihr Stand.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Eine Datei kann <strong>mehrere Konflikt-Blöcke</strong> haben — einen pro konfliktierende Sektion. Löse jeden einzeln.</div>
+    </div>
+    <p>Deine Aufgabe: lösche alle drei Markierungszeilen und lasse nur den Code übrig, der überleben soll — deine Version, ihre Version, oder eine Mischung aus beiden.</p>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🧰</div>
+    <div>
+      <div class="section-title">Schlüsselkonzepte — Öffne jede Karte</div>
+      <div class="section-subtitle">Die Konflikt-Fragen, denen jeder Entwickler in der ersten Teamwoche begegnet</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Führe mich Schritt für Schritt durch die Konfliktauflösung — CLI</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Pflicht</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Der vollständige CLI-Workflow</div>
+      <div class="strategy-text">Das ist die Sequenz, die du jedes Mal ausführst. Lerne sie einmal und du wirst dich nie mehr mitten in einem Konflikt verloren fühlen.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Schritt für Schritt</div>
+        <div class="answer-box-text">
+<div class="code-block"># 1. Merge starten (Konflikt tritt hier auf)
+git switch main
+git merge feature/device-model
+# → CONFLICT (content): Merge conflict in src/models/device.py
+
+# 2. Welche Dateien haben Konflikte?
+git status
+# → both modified:   src/models/device.py
+
+# 3. Konfliktdatei im Editor öffnen
+#    Jeden &lt;&lt;&lt;&lt;&lt;&lt;&lt;-Block finden, entscheiden, was der finale Code ist,
+#    alle drei Markierungszeilen löschen, Datei speichern.
+
+# 4. Aufgelöste Datei stagen
+git add src/models/device.py
+
+# 5. Bestätigen, dass keine Konflikte mehr vorhanden sind
+git status
+# → All conflicts fixed but you are still merging.
+
+# 6. Merge mit einem Commit abschließen
+git commit
+# Git füllt die Nachricht vor: "Merge branch 'feature/device-model'"</div>
+          Der Merge ist nun abgeschlossen. Der Commit-Verlauf zeigt, wie beide Branches konvergieren.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>git status</code> ist dein Kompass. Führe es nach jedem Schritt aus.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Kein blindes <code>git add .</code> — stage nur die Dateien, die du aufgelöst hast.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Datei wieder entstagen: <code>git restore --staged src/models/device.py</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Wie löse ich einen Konflikt in VS Code?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Pflicht</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Der visuelle Merge-Editor — für die meisten Konflikte schneller</div>
+      <div class="strategy-text">VS Code erkennt Konflikt-Markierungen und ersetzt sie durch einen visuellen Editor, mit dem du per Klick Versionen akzeptieren kannst, statt rohe Markierungen zu bearbeiten.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">In VS Code</div>
+        <div class="answer-box-text">
+          1. Konfliktdatei öffnen — VS Code hebt Konfliktblöcke farbig hervor und zeigt vier Schaltflächen:<br><br>
+          &nbsp;&nbsp;<strong>Accept Current Change</strong> — deine Version behalten (HEAD), ihre verwerfen.<br>
+          &nbsp;&nbsp;<strong>Accept Incoming Change</strong> — ihre Version behalten, deine verwerfen.<br>
+          &nbsp;&nbsp;<strong>Accept Both Changes</strong> — beide Versionen hintereinander anfügen.<br>
+          &nbsp;&nbsp;<strong>Compare Changes</strong> — Seite-an-Seite-Diff-Ansicht öffnen.<br><br>
+          2. Bei komplexen Konflikten: <strong>"Resolve in Merge Editor"</strong> (VS Code 1.69+) — drei-Panel-Ansicht: deine links, ihre rechts, Ergebnis in der Mitte.<br><br>
+          3. Datei speichern. Stagen: <code>git add &lt;file&gt;</code>. Dann <code>git commit</code>.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Das Source-Control-Panel (Strg+Shift+G) listet alle Konfliktdateien unter "Merge Changes".</div>
+        <div class="key-point"><div class="key-point-dot"></div>VS Code staged oder committet NICHT für dich. Nach dem Klick auf "Accept" noch immer <code>git add</code> und <code>git commit</code> ausführen.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Wie breche ich einen Merge ab, der schief läuft?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Pflicht</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Der Notausgang — immer verfügbar, bevor du committetest</div>
+      <div class="strategy-text">Du bist mitten in einem Merge und merkst, dass der Konflikt zu komplex ist, um ihn jetzt zu lösen. Solange du noch kein <code>git commit</code> ausgeführt hast, kannst du jederzeit abbrechen.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Abbruch und Rückkehr zum Zustand vor dem Merge</div>
+        <div class="answer-box-text">
+<div class="code-block">git merge --abort</div>
+          Das macht alles rückgängig: dein Arbeitsverzeichnis kehrt genau in den Zustand zurück, in dem es vor <code>git merge</code> war. Alle Konfliktmarkierungen verschwinden. Kein Teilzustand bleibt zurück.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code>git merge --abort</code> funktioniert nur, solange ein Merge läuft (also vor <code>git commit</code>). Nach dem Commit ist der Merge abgeschlossen — verwende dann <code>git revert</code> (behandelt in Thema 4).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Ich habe versehentlich Konflikt-Markierungen committet. Wie behebe ich das?</span>
+      <span class="q-badges"><span class="badge badge-common">Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Der häufigste Konflikt-Fehler — leicht zu beheben</div>
+      <div class="strategy-text">Du hast eine Datei gestagt und committet, die noch <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>-Markierungen enthielt. Dein App-Code enthält jetzt buchstäbliche Konfliktmarkierungen. Es passiert. So behebst du es.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Behebung — noch nicht gepusht</div>
+        <div class="answer-box-text">
+<div class="code-block"># Commit rückgängig machen, Dateiänderungen gestagt lassen
+git reset --soft HEAD~1
+
+# Datei bearbeiten — alle Konfliktmarkierungen korrekt entfernen
+# Dann neu stagen und committen
+git add src/models/device.py
+git commit -m "fix: Merge-Konflikt in device model auflösen"</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Prävention: <code>git diff --check</code> erkennt Konfliktmarkierungen in staged/unstaged Änderungen — vor jedem Merge-Commit ausführen.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Falls bereits gepusht: Datei bearbeiten, Markierungen entfernen, neuen Fix-Commit pushen (kein <code>git reset</code> auf geteilter History).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Wie verhindere ich, dass Konflikte groß und schmerzhaft werden?</span>
+      <span class="q-badges"><span class="badge badge-common">Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Konflikte sind unvermeidlich — aber ihre Größe ist es nicht</div>
+      <div class="strategy-text">Du kannst Konflikte im Team nicht eliminieren — aber du kannst sie klein und schnell lösbar halten.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die vier Gewohnheiten</div>
+        <div class="answer-box-text">
+          <strong>1. Main regelmäßig in deinen Branch mergen</strong> — nicht einmal kurz vor dem PR, sondern jeden Tag oder jeden zweiten Tag.<br><br>
+<div class="code-block">git switch main && git pull
+git switch feature/my-feature
+git merge main</div>
+          <strong>2. Branches kurzlebig halten</strong> — ein Branch, der eine Woche offen ist, divergiert weit weniger als einer, der einen Monat offen bleibt.<br><br>
+          <strong>3. Eine logische Änderung pro Branch</strong> — schmale Branches berühren weniger Dateien und kollidieren weniger.<br><br>
+          <strong>4. Kommunizieren, bevor gemeinsame Dateien angefasst werden</strong> — eine 2-Minuten-Nachricht spart 20 Minuten Konfliktlösung.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Was ist <code>git rerere</code> und wann hilft es?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Tipp</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Reuse Recorded Resolution — Git merkt sich, wie du es letztes Mal gelöst hast</div>
+      <div class="strategy-text">Wenn du denselben Konflikt in derselben Datei immer wieder siehst, kann <code>rerere</code> deine Lösung speichern und automatisch anwenden. Ein fortgeschrittenes Feature — gut zu wissen, dass es existiert.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Aktivierung</div>
+        <div class="answer-box-text">
+<div class="code-block"># Global aktivieren (einmal einrichten und vergessen)
+git config --global rerere.enabled true</div>
+          Einmal aktiviert: löse den Konflikt normal. Git speichert die Lösung. Beim nächsten gleichen Konflikt wendet Git deine vorherige Lösung automatisch an.<br><br>
+          Du siehst: <code>Resolved 'src/models/device.py' using previous resolution.</code>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Am nützlichsten bei langlebigen Integrations-Branches, die immer wieder dieselben Feature-Branches mergen.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Überspringe das fürs Erste — meistere zuerst den manuellen Workflow.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🛠️</div>
+    <div>
+      <div class="section-title">Praktische Übung</div>
+      <div class="section-subtitle">Einen echten Konflikt erzeugen und lösen — baut das Muskelgedächtnis in 15 Minuten auf</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Einen Konflikt provozieren und beheben</h2>
+    <p>Der beste Weg, Konflikte entspannt zu begegnen, ist, einen absichtlich verursacht und gelöst zu haben. Führe dieses Skript aus — es erzeugt einen vorhersehbaren Konflikt zum Üben ohne Konsequenzen.</p>
+    <div class="code-block"># 1. Frisches Übungs-Repo
+git init conflict-practice && cd conflict-practice
+echo "patient_id = record.get('id')" > model.py
+git add . && git commit -m "Initial model"
+
+# 2. Feature-Branch erstellen und dieselbe Zeile ändern
+git switch -c feature/patient-lookup
+echo "patient_id = record.get('patient_id')" > model.py
+git commit -am "feat: expliziten patient_id-Schlüssel verwenden"
+
+# 3. Zurück auf main, eine andere Änderung an derselben Zeile vornehmen
+git switch main
+echo "patient_id = record.get('pid')" > model.py
+git commit -am "chore: Schlüsselnamen an API-Spec anpassen"
+
+# 4. Jetzt mergen — das WIRD einen Konflikt verursachen
+git merge feature/patient-lookup
+# → CONFLICT (content): Merge conflict in model.py
+
+# 5. Markierungen ansehen
+cat model.py
+
+# 6. Auflösen: model.py bearbeiten, sodass sie die korrekte finale Zeile enthält,
+#    alle drei Markierungszeilen entfernen, speichern
+
+# 7. Stagen und committen
+git add model.py
+git commit
+
+# 8. Graphen überprüfen
+git log --all --oneline --graph</div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist fertig mit diesem Thema, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du erklären kannst, was einen Konflikt verursacht — gleiche Zeilen auf zwei Branches geändert — und was jede der drei Markierungszeilen bedeutet.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du einen Konflikt über die CLI von Anfang bis Ende lösen kannst: Konfliktdateien identifizieren, Markierungen entfernen, <code>git add</code>, <code>git commit</code> — ohne nachschlagen zu müssen.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du weißt, wie du einen laufenden Merge mit <code>git merge --abort</code> abbrichst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du mindestens einen Konflikt absichtlich in einem Übungs-Repo erzeugt und aufgelöst hast.</div>
+  </div>
+
+</div><!-- /tab-de -->
+
+<!-- ═══════════════════════════════════════════════════
+     ARABIC TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff1f2;">⚡</div>
+    <div>
+      <div class="section-title">ما هو تعارض الدمج فعلاً</div>
+      <div class="section-subtitle">أزِل الغموض أولاً — الذعر اختياري، الفهم ليس كذلك</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Git لا يستطيع أن يقرر — فيتوقف ويسألك</h2>
+    <p>يحدث تعارض الدمج عندما <strong>يغيّر branch-ان نفس الأسطر في نفس الملف</strong> بطرق مختلفة. Git يدمج كل ما يستطيع تلقائياً — إضافات الأسطر، الحذف في مناطق مختلفة، الملفات الجديدة — دون أي مساعدة منك. يتوقف فقط عندما لا يعرف فعلاً أي نسخة يحتفظ بها.</p>
+    <p>هذا ليس خطأ. هذا Git يكون صادقاً: "كلا الـ branch-ين لمسا السطر 42. لا أعرف أي نسخة صحيحة. أنت تعرف. من فضلك قرر."</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>ما يسببه:</strong> أنت وزميلك عدّلتما نفس الأسطر، أو أحدكما حذف ملفاً عدّله الآخر، أو أضاف كلاكما نفس اسم الملف بمحتوى مختلف.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>ما يفعله Git:</strong> يوقف الدمج، يضع علامات خاصة داخل الملف، وينتظر. مجلد العمل الآن في حالة "منتصف الدمج".</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>ما تفعله أنت:</strong> عدّل الملف ليحتوي النسخة الصحيحة النهائية، احذف العلامات، stage-ه، وأكمل الدمج بـ commit.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#faf5ff;">🔍</div>
+    <div>
+      <div class="section-title">قراءة علامات التعارض</div>
+      <div class="section-subtitle">ثلاثة أسطر — بمجرد معرفة ما يعنيه كل منها، يخبرك الملف بالضبط ماذا تفعل</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>تشريح كتلة التعارض</h2>
+    <p>عندما يكتب Git علامات التعارض في ملف، يستخدم دائماً هذا الهيكل ثلاثي الأجزاء:</p>
+    <div class="conflict-block" dir="ltr">
+      <span class="conflict-ours"><span class="conflict-marker">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD (branch-ك — ما لديك حالياً)</span>
+patient_id = record.get("patient_id")
+device_type = "CGM"</span>
+      <span class="conflict-sep">======= (الفاصل — كل ما فوقه نسختك، كل ما تحته نسختهم)</span>
+      <span class="conflict-theirs">patient_id = record.get("id")
+device_type = record.get("device_type", "unknown")
+<span class="conflict-marker">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/device-model (الـ branch الوارد المراد دمجه)</span></span>
+    </div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> — نسختك (الـ branch الذي نفّذت منه <code>git merge</code>). كل ما بين هذا السطر و<code>=======</code> هو ما كان لديك.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>=======</code> — الفاصل. ما فوقه = نسختك. ما تحته = نسختهم.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/device-model</code> — النسخة الواردة (الـ branch المراد دمجه). كل ما بين <code>=======</code> وهذا السطر هو ما كان لديهم.</div>
+      <div class="key-point"><div class="key-point-dot"></div>يمكن أن يحتوي الملف على <strong>كتل تعارض متعددة</strong> — واحدة لكل قسم متعارض. أحل كلاً منها.</div>
+    </div>
+    <p>مهمتك: احذف الأسطر الثلاث للعلامات واترك فقط الكود الذي يجب أن يبقى — نسختك، نسختهم، أو مزيجاً منهما.</p>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🧰</div>
+    <div>
+      <div class="section-title">المفاهيم الأساسية — افتح كل بطاقة</div>
+      <div class="section-subtitle">أسئلة التعارض التي يواجهها كل مطور في أسبوعه الأول في الفريق</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">خذني خطوة بخطوة عبر حل التعارض — CLI</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">سير عمل CLI الكامل</div>
+      <div class="strategy-text">هذا هو التسلسل الذي ستنفّذه في كل مرة. تعلّمه مرة واحدة ولن تشعر بالضياع أبداً في منتصف تعارض.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">خطوة بخطوة</div>
+        <div class="answer-box-text">
+<div class="code-block" dir="ltr"># ١. ابدأ الدمج (التعارض يحدث هنا)
+git switch main
+git merge feature/device-model
+# → CONFLICT (content): Merge conflict in src/models/device.py
+
+# ٢. أي ملفات بها تعارضات؟
+git status
+# → both modified:   src/models/device.py
+
+# ٣. افتح الملف المتعارض في محررك
+#    ابحث عن كل كتلة &lt;&lt;&lt;&lt;&lt;&lt;&lt;، قرر ما هو الكود النهائي،
+#    احذف الأسطر الثلاثة للعلامات، احفظ الملف.
+
+# ٤. Stage الملف المحلول
+git add src/models/device.py
+
+# ٥. تأكد من عدم وجود تعارضات متبقية
+git status
+# → All conflicts fixed but you are still merging.
+
+# ٦. أكمل الدمج بـ commit
+git commit
+# Git يملأ الرسالة مسبقاً: "Merge branch 'feature/device-model'"</div>
+          الدمج الآن مكتمل. تاريخ الـ commit يُظهر كلا الـ branch-ين يتقاربان.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git status</code> هو بوصلتك طوال العملية. نفّذه بعد كل خطوة.</div>
+        <div class="key-point"><div class="key-point-dot"></div>لا تستخدم <code dir="ltr">git add .</code> بشكل أعمى — stage فقط الملفات التي حللت تعارضاتها.</div>
+        <div class="key-point"><div class="key-point-dot"></div>لإلغاء stage ملف: <code dir="ltr">git restore --staged src/models/device.py</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">كيف أحل تعارضاً في VS Code؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">محرر الدمج المرئي — أسرع لمعظم التعارضات</div>
+      <div class="strategy-text">VS Code يكتشف علامات التعارض ويستبدلها بمحرر مرئي يتيح لك النقر لقبول النسخ بدلاً من تعديل العلامات الخام.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">في VS Code</div>
+        <div class="answer-box-text">
+          1. افتح الملف المتعارض — VS Code يُبرز كتل التعارض بالألوان ويعرض أربعة أزرار:<br><br>
+          &nbsp;&nbsp;<strong>Accept Current Change</strong> — احتفظ بنسختك (HEAD)، تجاهل نسختهم.<br>
+          &nbsp;&nbsp;<strong>Accept Incoming Change</strong> — احتفظ بنسختهم، تجاهل نسختك.<br>
+          &nbsp;&nbsp;<strong>Accept Both Changes</strong> — أضف كلا النسختين متتاليتين.<br>
+          &nbsp;&nbsp;<strong>Compare Changes</strong> — افتح عرض diff جنباً إلى جنب.<br><br>
+          2. للتعارضات المعقدة: <strong>"Resolve in Merge Editor"</strong> (VS Code 1.69+) — عرض ثلاثي الأقسام: نسختك يساراً، نسختهم يميناً، النتيجة في المركز.<br><br>
+          3. احفظ الملف. Stage-ه: <code dir="ltr">git add &lt;file&gt;</code>. ثم <code dir="ltr">git commit</code>.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>لوحة Source Control (Ctrl+Shift+G) تعرض جميع الملفات المتعارضة تحت "Merge Changes".</div>
+        <div class="key-point"><div class="key-point-dot"></div>VS Code لا يقوم بالـ stage أو الـ commit نيابةً عنك. بعد النقر على "Accept" لا تزال تحتاج إلى <code dir="ltr">git add</code> و<code dir="ltr">git commit</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">كيف أتراجع عن دمج أصبح معقداً؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">مخرج الطوارئ — متاح دائماً قبل الـ commit</div>
+      <div class="strategy-text">أنت في منتصف الدمج وتدرك أن التعارض معقد جداً للحل الآن — تحتاج للتحدث مع زميلك أولاً، أو تريد البداية من جديد. ما دمت لم تنفّذ <code>git commit</code> بعد، يمكنك الإلغاء دائماً.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">إلغاء والعودة لحالة ما قبل الدمج</div>
+        <div class="answer-box-text">
+<div class="code-block" dir="ltr">git merge --abort</div>
+          يُعيد هذا كل شيء: مجلد عملك يعود بالضبط كما كان قبل تنفيذ <code>git merge</code>. تختفي جميع علامات التعارض. لا يبقى أي حالة جزئية.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code dir="ltr">git merge --abort</code> يعمل فقط بينما الدمج جارٍ (أي قبل <code>git commit</code>). بعد الـ commit، استخدم <code dir="ltr">git revert</code> للتراجع (مغطى في الموضوع 4).</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>غير متأكد هل الدمج جارٍ؟ نفّذ <code dir="ltr">git status</code> — سيقول "You have unmerged paths" أو "All conflicts fixed but you are still merging."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">قمت بـ commit على علامات تعارض بالخطأ. كيف أصلح ذلك؟</span>
+      <span class="q-badges"><span class="badge badge-common">شائع</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">الخطأ الأكثر شيوعاً في التعارضات — سهل الإصلاح</div>
+      <div class="strategy-text">قمت بـ stage وcommit لملف لا يزال يحتوي على علامات <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>. يحدث هذا. إليك كيفية الإصلاح.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإصلاح — قبل الـ push</div>
+        <div class="answer-box-text">
+<div class="code-block" dir="ltr"># تراجع عن الـ commit مع الإبقاء على تغييرات الملف مُضافة للـ stage
+git reset --soft HEAD~1
+
+# عدّل الملف — احذف جميع علامات التعارض بشكل صحيح
+# ثم أعد الـ stage والـ commit
+git add src/models/device.py
+git commit -m "fix: resolve merge conflict in device model"</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>للوقاية: <code dir="ltr">git diff --check</code> يكتشف علامات التعارض في التغييرات — نفّذه قبل كل commit بعد دمج.</div>
+        <div class="key-point"><div class="key-point-dot"></div>إذا push-ت بالفعل: عدّل الملف، احذف العلامات، ادفع commit إصلاح جديد (لا تستخدم <code>git reset</code> على تاريخ مشترك).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">كيف أمنع التعارضات من أن تصبح كبيرة ومؤلمة؟</span>
+      <span class="q-badges"><span class="badge badge-common">شائع</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">التعارضات حتمية — لكن حجمها ليس كذلك</div>
+      <div class="strategy-text">لا يمكنك القضاء على التعارضات في الفريق — لكن يمكنك إبقاءها صغيرة وسريعة الحل.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">العادات الأربع</div>
+        <div class="answer-box-text">
+          <strong>١. ادمج main في branch-ك بانتظام</strong> — ليس مرة واحدة قبل الـ PR، بل كل يوم أو يومين. تعارضات صغيرة ومتكررة أفضل من تعارض ضخم واحد.<br><br>
+<div class="code-block" dir="ltr">git switch main && git pull
+git switch feature/my-feature
+git merge main</div>
+          <strong>٢. أبقِ الـ branches قصيرة العمر</strong> — branch مفتوح أسبوعاً يتباعد أقل بكثير من branch مفتوح شهراً.<br><br>
+          <strong>٣. تغيير منطقي واحد لكل branch</strong> — branches ضيقة تلمس ملفات أقل وتتعارض أقل.<br><br>
+          <strong>٤. تواصل قبل لمس الملفات المشتركة</strong> — رسالة دقيقتين توفر 20 دقيقة حل تعارض.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>التعارض الأكثر إرهاقاً هو دائماً الذي جاء من branch لم يُدمج فيه main منذ ثلاثة أسابيع.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">ما هو <code>git rerere</code> ومتى يفيد؟</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 نصيحة</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Reuse Recorded Resolution — Git يتذكر كيف أصلحته في المرة الأخيرة</div>
+      <div class="strategy-text">إذا كنت تواجه نفس التعارض في نفس الملف مراراً، يمكن لـ <code>rerere</code> أن يحفظ حلك ويطبقه تلقائياً في المرة القادمة. ميزة متقدمة — من الجيد معرفة وجودها.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">كيفية التفعيل</div>
+        <div class="answer-box-text">
+<div class="code-block" dir="ltr"># تفعيل عالمياً (اضبطه مرة وانسَه)
+git config --global rerere.enabled true</div>
+          بمجرد التفعيل: احل التعارض بشكل طبيعي. Git يحفظ الحل. في المرة القادمة عند ظهور نفس التعارض، يطبق Git حلك السابق تلقائياً.<br><br>
+          ستظهر: <code dir="ltr">Resolved 'src/models/device.py' using previous resolution.</code>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>الأكثر فائدة في branches التكامل طويلة العمر التي تدمج نفس الـ feature branches مراراً.</div>
+        <div class="key-point"><div class="key-point-dot"></div>تخطَّ هذا في البداية — أتقن سير العمل اليدوي أولاً.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🛠️</div>
+    <div>
+      <div class="section-title">التطبيق العملي</div>
+      <div class="section-subtitle">أنشئ تعارضاً حقيقياً وحلّه — يبني ذاكرة العضلات في 15 دقيقة</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>اصنع تعارضاً ثم أصلحه</h2>
+    <p>أفضل طريقة للهدوء أمام التعارضات هي أن تكون قد تسببت في واحد وحللته عن قصد. نفّذ هذا السكريبت — يصنع تعارضاً متوقعاً للتدريب بدون أي عواقب.</p>
+    <div class="code-block" dir="ltr"># ١. مستودع تدريبي جديد
+git init conflict-practice && cd conflict-practice
+echo "patient_id = record.get('id')" > model.py
+git add . && git commit -m "Initial model"
+
+# ٢. أنشئ feature branch وغيّر نفس السطر
+git switch -c feature/patient-lookup
+echo "patient_id = record.get('patient_id')" > model.py
+git commit -am "feat: use explicit patient_id key"
+
+# ٣. عد إلى main وأجرِ تغييراً مختلفاً على نفس السطر
+git switch main
+echo "patient_id = record.get('pid')" > model.py
+git commit -am "chore: align key name with API spec"
+
+# ٤. ادمج الآن — سيحدث تعارض بالتأكيد
+git merge feature/patient-lookup
+# → CONFLICT (content): Merge conflict in model.py
+
+# ٥. تفحّص العلامات
+cat model.py
+
+# ٦. الحل: عدّل model.py لتحتوي السطر الصحيح النهائي،
+#    احذف الأسطر الثلاثة للعلامات، احفظ
+
+# ٧. Stage وcommit
+git add model.py
+git commit
+
+# ٨. تحقق من الرسم البياني
+git log --all --oneline --graph</div>
+    <p>بعد هذا التمرين يجب أن تتمكن من النظر إلى أي ملف تعارض بهدوء، تحديد أي نسخة تحتفظ بها (أو تمزجها)، وإكمال الدمج دون تردد.</p>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> انتهيت من هذا الموضوع عندما...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع شرح ما يسبب التعارض — نفس الأسطر مُعدَّلة على branch-ين — وما يعنيه كل من أسطر العلامات الثلاثة.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع حل تعارض عبر CLI من البداية للنهاية: تحديد الملفات المتعارضة، إزالة العلامات، <code dir="ltr">git add</code>، <code dir="ltr">git commit</code> — دون البحث عن أي شيء.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تعرف كيف تُلغي دمجاً جارياً بـ <code dir="ltr">git merge --abort</code> وتفهم متى يكون مناسباً.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>أنشأت وحللت تعارضاً واحداً على الأقل عن قصد في مستودع تدريبي، وقرأت <code dir="ltr">git log --graph</code> الناتج.</div>
+  </div>
+
+</div><!-- /tab-ar -->
+
+  </div><!-- /body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'lms_github_03_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+</body>
+</html>

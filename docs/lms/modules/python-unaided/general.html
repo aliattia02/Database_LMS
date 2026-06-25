@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>General Overview | Python Unaided Coding</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── General-page-specific styles — copied verbatim from ref-general.html ── */
+.badge { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must   { background:#fef3c7; color:#92400e; }
+.badge-common { background:#dbeafe; color:#1e40af; }
+.badge-tip    { background:#f0fdf4; color:#166534; }
+
+.q-arrow { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel { padding:18px 20px 16px 52px; }
+
+.strategy-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text  { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+
+.answer-box       { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text  { font-size:13.5px; color:#14532d; line-height:1.7; }
+
+.warning-box      { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text { font-size:13px; color:var(--amber-text); line-height:1.55; }
+
+.key-points    { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point     { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+code       { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin:10px 0; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; }
+
+.ask-card    { background:var(--white); border:1px solid var(--border); border-radius:8px; padding:13px 16px; margin-bottom:8px; box-shadow:var(--shadow); display:flex; gap:10px; align-items:flex-start; }
+.ask-icon    { font-size:15px; flex-shrink:0; padding-top:1px; }
+.ask-content { flex:1; }
+.ask-q       { font-size:13.5px; font-weight:600; color:var(--navy); margin-bottom:3px; }
+.ask-why     { font-size:12.5px; color:var(--slate); line-height:1.5; }
+
+.must-block       { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item        { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet      { font-size:15px; flex-shrink:0; }
+
+/* RTL overrides */
+[dir="rtl"] .q-panel          { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point         { flex-direction:row-reverse; }
+[dir="rtl"] .must-item         { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title  { flex-direction:row-reverse; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .code-block        { direction:ltr; text-align:left; }
+
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./masterplan.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">PYTHON UNAIDED CODING &mdash; General Overview</div>
+    <h1>Python Unaided Coding</h1>
+    <p class="header-sub">What you already know, what this module adds, and the core concepts behind coding without AI assistance.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="progress-bar">
+    <span class="progress-label">Study progress</span>
+    <div class="progress-track"><div class="progress-fill" id="prog-en" style="width:0%"></div></div>
+    <span class="progress-count" id="prog-count-en">0 / 0 opened</span>
+  </div>
+
+  <!-- SECTION 1: Module structure -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📚</div>
+    <div>
+      <div class="section-title">What this module covers</div>
+      <div class="section-subtitle">Five phases — start with this overview, then the Mind Map, then the phases in order</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>From "I can generate it" to "I can write it"</h2>
+    <p>
+      You already write Python — Flask apps, the DiaTwin backend, Morafek's OOP layer.
+      What this module targets is narrower and more specific: can you produce, read, and
+      fix that same logic <strong>without AI in the loop</strong>, on a whiteboard, in a
+      live review, or at 2am when a hospital feed throws a malformed message?
+    </p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Manual function writing</strong> — small, self-contained functions typed from memory, no Copilot.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Reading code &amp; spotting bugs</strong> — tracing broken logic and stack traces back to their root cause.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Debugging</strong> — print statements and PyCharm breakpoints used systematically, not randomly.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Exception handling</strong> — catch, log, retry, and fallback patterns for code that talks to unreliable systems.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>A real refactor</strong> — porting one of your own DiaTwin/Morafek modules into clean, typed, tested Python.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>The gap this module closes</h2>
+    <p>You have the building blocks already. What's missing is automaticity and a systematic process for the moments AI isn't there to lean on:</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Typing logic from scratch, not just recognising correct code when you see it.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Reading a traceback like <code>TypeError on line 45</code> and tracing it back to the cause.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Debugging without AI — print statements, breakpoints, reading stack traces.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Knowing when a list comprehension is idiomatic and when a loop reads better.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Context managers (<code>with</code>), generators, and exception-handling patterns used deliberately, not by accident.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Writing testable functions that don't depend on shared, mutable global state.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Prerequisites -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">✅</div>
+    <div>
+      <div class="section-title">What you already bring</div>
+      <div class="section-subtitle">This module builds directly on your DiaTwin and Morafek experience</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Your existing foundation</h2>
+    <p>Nothing here starts from zero. You're reinforcing and stress-testing skills you've already used in production code:</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Python syntax basics — you've written Flask apps and the DiaTwin backend.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Functions, loops, conditionals, dictionaries, and lists.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Object-oriented basics — classes, methods, inheritance — from Morafek and DiaTwin.</div>
+      <div class="key-point"><div class="key-point-dot"></div>File I/O and JSON manipulation.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Working with libraries such as Flask, MongoDB, and Pandas.</div>
+    </div>
+  </div>
+
+  <!-- SECTION: Q&A Accordion -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Core Conceptual Questions</div>
+      <div class="section-subtitle">Click any question to expand — focus on understanding, not memorising</div>
+    </div>
+  </div>
+
+  <!-- Q01 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">If AI can already generate correct code, why does writing it unaided matter?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">AI generates code; it doesn't read a traceback at 2am, defend a design choice in a review, or write live in front of an interviewer.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Generating code and being able to produce, explain, and fix it are different skills.
+          The moments that actually test you — live coding interviews, code review questions,
+          production incidents with hospital data, debugging at odd hours — are exactly the
+          moments where AI assistance is slow, unavailable, or simply not appropriate to lean on.
+          This module builds the underlying skill that AI use was masking.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>AI-assisted output is a ceiling on what you can produce, not a floor on what you understand.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Unaided fluency is what gets evaluated in interviews and incident response.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">What's the actual difference between recognising correct code and writing it from memory?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Frequently tested</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Recognition is passive — you can tell good code from bad. Production is active — you can build it under a blank cursor.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Recognising correct code only requires pattern-matching against examples you've seen.
+          Writing it from memory requires holding the problem, the data types, the edge cases,
+          and the syntax in your head simultaneously — there's no autocomplete suggesting the
+          next line. That's why this module starts with small, boring functions: they isolate
+          production ability from recognition ability.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Small functions (3–10 lines) are deliberately chosen to make gaps obvious.</div>
+        <div class="key-point"><div class="key-point-dot"></div>If you can type <code>merge_dicts(*dicts)</code> correctly first try, that's automaticity — not luck.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Why treat "reading error messages" as a separate skill from writing code?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Writing code is forward motion. Reading an error is reverse engineering — starting from a symptom and working back to a cause.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          A traceback like <code>TypeError on line 45</code> tells you where the program gave up,
+          not necessarily where the bug was introduced. Reading code under failure means
+          tracing data backwards: what was passed in, what type was expected, where did the
+          mismatch start. That's a distinct, trainable skill from writing forward logic — and
+          it's the one AI tools are worst at replacing, because it requires holding the
+          specific failing state in your head.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Common mistake: treating the line number in the traceback as "the bug," instead of as the symptom's last known location.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>The error line is where Python noticed the problem, not always where it started.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Trace data backwards from the crash to the first place the wrong value appeared.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Why does crashing on the first error matter so much for the UKM integration work specifically?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Hospital data feeds (HL7, FHIR, PACS) fail constantly in small, expected ways — timeouts, missing fields, malformed messages.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Code that raises an unhandled exception on the first malformed message stops
+          processing everything behind it — one bad record takes down a whole batch.
+          Professional integration code expects failure as a normal event: it catches the
+          specific exception, logs enough detail to diagnose later, and falls back to a
+          sensible default or retries — without crashing the rest of the pipeline.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Failure is the default expectation when integrating external systems, not an edge case.</div>
+        <div class="key-point"><div class="key-point-dot"></div>"Fails gracefully" beats "never fails" because the second one is impossible.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">When should I reach for a list comprehension instead of a plain loop?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Good to know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">A comprehension says "build a new list by transforming/filtering an existing one." A loop says "do several different things while iterating."</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Use a comprehension when the entire body is one expression producing one new
+          collection, e.g. <code>[x.strip() for x in lines if x]</code>. Switch to a plain
+          loop the moment you need multiple statements, side effects (logging, mutating
+          something external), early termination logic, or more than one level of
+          conditional branching — readability drops fast past that point.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>One expression, one new collection → comprehension.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Side effects, multiple statements, or branching → loop.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Print statements and a debugger both find bugs — why learn both instead of picking one?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Frequently tested</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Prints answer "what happened over time, across many runs." A debugger answers "what exactly is the state right now, at this one line."</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Print statements are fast to add and good for tracing a value across loop
+          iterations or multiple function calls without stopping execution. A breakpoint is
+          better when you need to inspect many variables at once, step line-by-line through
+          unfamiliar logic, or explore the live call stack — things that would take a wall
+          of print statements to approximate. Knowing which tool fits the bug in front of you
+          is itself the skill, not a preference for one over the other.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Use prints for "trace this value across many iterations."</div>
+        <div class="key-point"><div class="key-point-dot"></div>Use a breakpoint for "inspect everything at this exact moment."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Resources -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🔗</div>
+    <div>
+      <div class="section-title">Recommended Resources</div>
+      <div class="section-subtitle">Pick one resource per topic — don't try all at once</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">🧩</div>
+    <div class="ask-content">
+      <div class="ask-q">Codewars Python (7–6 kyu) — for Manual Function Writing &amp; Reading Code</div>
+      <div class="ask-why">Interactive puzzles, 1–2 hours. Forces unaided production on small, self-contained problems — the closest thing to a live-coding rehearsal.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">📖</div>
+    <div class="ask-content">
+      <div class="ask-q">Real Python — "Python Basics" — for Manual Function Writing &amp; Reading Code</div>
+      <div class="ask-why">Written, clear, about 1 hour. Good refresher if Codewars surfaces a gap in fundamentals rather than just speed.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">🐞</div>
+    <div class="ask-content">
+      <div class="ask-q">Real Python — "Python Debugging" — for Debugging with Prints &amp; Breakpoints</div>
+      <div class="ask-why">Focused and practical, about 30 minutes. Covers the systematic mindset, not just tool buttons.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">🖥️</div>
+    <div class="ask-content">
+      <div class="ask-q">PyCharm Debugger tutorial (built into the IDE) — for Debugging with Prints &amp; Breakpoints</div>
+      <div class="ask-why">Visual, about 20 minutes. Watch it once with a real breakpoint open beside it.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">🛟</div>
+    <div class="ask-content">
+      <div class="ask-q">Real Python — "Python Exceptions" — for Exception Handling</div>
+      <div class="ask-why">Clear, example-driven, about 30 minutes. Pay attention to the difference between catching <code>Exception</code> and catching a specific exception type.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">🔁</div>
+    <div class="ask-content">
+      <div class="ask-q">Your own code — for Refactor a Real Module</div>
+      <div class="ask-why">Self-directed, 1–2 hours. The best resource for this phase is the module you already wrote for DiaTwin or Morafek.</div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done with this module when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can write a 5–10 line function from scratch without AI.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You've debugged a broken function using print statements.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You've debugged a broken function using PyCharm breakpoints.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can read a Python error message and trace it back to the source.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You've caught and handled an exception in real code.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You've refactored one of your own modules and can explain why it's better.</div>
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="progress-bar">
+    <span class="progress-label">Lernfortschritt</span>
+    <div class="progress-track"><div class="progress-fill" id="prog-de" style="width:0%"></div></div>
+    <span class="progress-count" id="prog-count-de">0 / 0 geöffnet</span>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📚</div>
+    <div>
+      <div class="section-title">Was dieses Modul abdeckt</div>
+      <div class="section-subtitle">Fünf Phasen — beginne mit diesem Überblick, dann der Mindmap, dann den Phasen in Reihenfolge</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Von „ich kann es generieren lassen" zu „ich kann es schreiben"</h2>
+    <p>
+      Du schreibst bereits Python — Flask-Apps, das DiaTwin-Backend, Morafeks OOP-Schicht.
+      Dieses Modul zielt auf etwas Engeres und Konkreteres: Kannst du dieselbe Logik
+      <strong>ohne KI im Loop</strong> produzieren, lesen und reparieren — am Whiteboard,
+      in einem Live-Review oder um 2 Uhr nachts, wenn ein Krankenhaus-Feed eine fehlerhafte
+      Nachricht wirft?
+    </p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Funktionen manuell schreiben</strong> — kleine, eigenständige Funktionen aus dem Kopf, ohne Copilot.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Code lesen &amp; Bugs finden</strong> — fehlerhafte Logik und Stacktraces zur Ursache zurückverfolgen.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Debugging</strong> — Print-Statements und PyCharm-Breakpoints systematisch statt zufällig einsetzen.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Exception Handling</strong> — Catch-, Log-, Retry- und Fallback-Muster für Code, der mit unzuverlässigen Systemen spricht.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Ein echtes Refactoring</strong> — eines deiner DiaTwin-/Morafek-Module in sauberes, typisiertes, getestetes Python übertragen.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Die Lücke, die dieses Modul schließt</h2>
+    <p>Die Bausteine hast du schon. Was fehlt, ist Automatisierung und ein systematischer Prozess für die Momente, in denen keine KI zur Verfügung steht:</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Logik von Grund auf tippen — nicht nur korrekten Code erkennen, wenn du ihn siehst.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Einen Traceback wie <code>TypeError on line 45</code> lesen und zur Ursache zurückverfolgen.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Debuggen ohne KI — Print-Statements, Breakpoints, Stacktraces lesen.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Wissen, wann eine List Comprehension idiomatisch ist und wann eine Schleife besser lesbar ist.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Context Manager (<code>with</code>), Generatoren und Exception-Handling-Muster bewusst statt zufällig einsetzen.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Testbare Funktionen schreiben, die nicht von geteiltem, veränderlichem globalem Zustand abhängen.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">✅</div>
+    <div>
+      <div class="section-title">Was du schon mitbringst</div>
+      <div class="section-subtitle">Dieses Modul baut direkt auf deiner DiaTwin- und Morafek-Erfahrung auf</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Deine bestehende Grundlage</h2>
+    <p>Hier startet nichts bei null. Du vertiefst und testest Fähigkeiten, die du bereits in produktivem Code eingesetzt hast:</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Python-Syntaxgrundlagen — du hast Flask-Apps und das DiaTwin-Backend geschrieben.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Funktionen, Schleifen, Bedingungen, Dictionaries und Listen.</div>
+      <div class="key-point"><div class="key-point-dot"></div>OOP-Grundlagen — Klassen, Methoden, Vererbung — aus Morafek und DiaTwin.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Datei-I/O und JSON-Verarbeitung.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Arbeiten mit Bibliotheken wie Flask, MongoDB und Pandas.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Kernkonzeptfragen</div>
+      <div class="section-subtitle">Klicke eine Frage an — auf Verstehen, nicht Auswendiglernen fokussieren</div>
+    </div>
+  </div>
+
+  <!-- Q01 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Wenn KI schon korrekten Code generieren kann — warum ist es wichtig, ihn ohne KI zu schreiben?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">KI generiert Code; sie liest keinen Traceback um 2 Uhr nachts, verteidigt keine Designentscheidung im Review und schreibt nicht live vor einem Interviewer.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Code zu generieren und ihn produzieren, erklären und reparieren zu können, sind
+          unterschiedliche Fähigkeiten. Die Momente, die dich wirklich testen — Live-Coding-
+          Interviews, Fragen im Code-Review, Produktionsvorfälle mit Krankenhausdaten,
+          Debugging zu ungünstigen Zeiten — sind genau die Momente, in denen KI-Unterstützung
+          langsam, nicht verfügbar oder schlicht unpassend ist. Dieses Modul baut die
+          zugrunde liegende Fähigkeit auf, die der KI-Einsatz bisher verdeckt hat.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>KI-unterstützte Ausgabe ist eine Obergrenze für das, was du produzieren kannst — keine Untergrenze für das, was du verstehst.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Eigenständige Flüssigkeit ist das, was in Interviews und bei Vorfällen bewertet wird.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Was ist der tatsächliche Unterschied zwischen korrekten Code erkennen und ihn aus dem Kopf schreiben?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Häufig geprüft</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Erkennen ist passiv — du unterscheidest guten von schlechtem Code. Produzieren ist aktiv — du baust ihn vor einem leeren Cursor.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Korrekten Code zu erkennen erfordert nur Mustervergleich mit bereits gesehenen
+          Beispielen. Ihn aus dem Kopf zu schreiben erfordert, das Problem, die Datentypen,
+          die Randfälle und die Syntax gleichzeitig im Kopf zu halten — es gibt keine
+          Autovervollständigung, die die nächste Zeile vorschlägt. Deshalb beginnt dieses
+          Modul mit kleinen, unspektakulären Funktionen: Sie machen Lücken zwischen
+          Produktions- und Erkennungsfähigkeit sichtbar.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Kleine Funktionen (3–10 Zeilen) sind bewusst gewählt, um Lücken sichtbar zu machen.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Wenn du <code>merge_dicts(*dicts)</code> im ersten Versuch korrekt tippst, ist das Automatisierung — kein Zufall.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Warum gilt „Fehlermeldungen lesen" als eigene Fähigkeit, getrennt vom Schreiben von Code?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Code schreiben ist Vorwärtsbewegung. Einen Fehler lesen ist Reverse Engineering — von einem Symptom rückwärts zur Ursache.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Ein Traceback wie <code>TypeError on line 45</code> zeigt, wo das Programm
+          aufgegeben hat — nicht unbedingt, wo der Bug entstanden ist. Code unter Fehlern zu
+          lesen bedeutet, Daten rückwärts zu verfolgen: Was wurde übergeben, welcher Typ
+          wurde erwartet, wo begann die Abweichung. Das ist eine eigenständige, trainierbare
+          Fähigkeit, getrennt vom Schreiben vorwärtsgerichteter Logik — und genau die, die KI-
+          Tools am schlechtesten ersetzen können, weil sie verlangt, den konkreten
+          fehlerhaften Zustand im Kopf zu halten.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Häufiger Fehler: die Zeilennummer im Traceback als „den Bug" zu behandeln, statt als die letzte bekannte Stelle des Symptoms.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Die Fehlerzeile ist, wo Python das Problem bemerkt hat — nicht immer, wo es begann.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Verfolge die Daten rückwärts vom Absturz zur ersten Stelle mit dem falschen Wert.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Warum ist es speziell für die UKM-Integrationsarbeit so wichtig, nicht beim ersten Fehler abzustürzen?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Krankenhaus-Datenfeeds (HL7, FHIR, PACS) scheitern ständig in kleinen, erwartbaren Weisen — Timeouts, fehlende Felder, fehlerhafte Nachrichten.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Code, der bei der ersten fehlerhaften Nachricht eine unbehandelte Exception wirft,
+          stoppt die Verarbeitung alles Nachfolgenden — ein schlechter Datensatz reißt einen
+          ganzen Batch mit sich. Professioneller Integrationscode erwartet Fehler als
+          normales Ereignis: Er fängt die konkrete Exception ab, loggt genug Details für die
+          spätere Diagnose und fällt auf einen sinnvollen Standard zurück oder wiederholt den
+          Versuch — ohne den Rest der Pipeline zu zerstören.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Fehler sind beim Anbinden externer Systeme die normale Erwartung, kein Sonderfall.</div>
+        <div class="key-point"><div class="key-point-dot"></div>„Scheitert sauber" ist besser als „scheitert nie", weil Letzteres unmöglich ist.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Wann sollte ich eine List Comprehension statt einer einfachen Schleife verwenden?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Gut zu wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Eine Comprehension sagt: „baue eine neue Liste durch Transformation/Filterung einer bestehenden". Eine Schleife sagt: „tue mehrere verschiedene Dinge während der Iteration".</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Nutze eine Comprehension, wenn der gesamte Körper ein Ausdruck ist, der eine neue
+          Sammlung erzeugt, z. B. <code>[x.strip() for x in lines if x]</code>. Wechsle zur
+          einfachen Schleife, sobald du mehrere Anweisungen, Seiteneffekte (Logging,
+          Verändern von etwas Externem), vorzeitige Abbruchlogik oder mehr als eine Ebene
+          von Bedingungen brauchst — die Lesbarkeit sinkt danach schnell.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Ein Ausdruck, eine neue Sammlung → Comprehension.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Seiteneffekte, mehrere Anweisungen oder Verzweigungen → Schleife.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Print-Statements und ein Debugger finden beide Bugs — warum beide lernen statt sich für eines zu entscheiden?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Häufig geprüft</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Prints beantworten „was über die Zeit, über viele Durchläufe hinweg passiert ist". Ein Debugger beantwortet „was genau ist der Zustand jetzt, an dieser einen Zeile".</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Print-Statements sind schnell hinzuzufügen und gut, um einen Wert über
+          Schleifendurchläufe oder mehrere Funktionsaufrufe hinweg zu verfolgen, ohne die
+          Ausführung zu stoppen. Ein Breakpoint ist besser, wenn du viele Variablen
+          gleichzeitig inspizieren, unbekannte Logik Zeile für Zeile durchgehen oder den
+          aktiven Call-Stack erkunden musst — Dinge, die mit Print-Statements nur mühsam
+          nachzubilden wären. Zu wissen, welches Werkzeug zum vorliegenden Bug passt, ist
+          selbst die Fähigkeit — nicht eine Präferenz für das eine oder andere.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Nutze Prints, um „diesen Wert über viele Durchläufe verfolgen".</div>
+        <div class="key-point"><div class="key-point-dot"></div>Nutze einen Breakpoint, um „alles in genau diesem Moment inspizieren".</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🔗</div>
+    <div>
+      <div class="section-title">Empfohlene Ressourcen</div>
+      <div class="section-subtitle">Eine Ressource pro Thema — nicht alle auf einmal</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">🧩</div>
+    <div class="ask-content">
+      <div class="ask-q">Codewars Python (7.–6. kyu) — für Funktionen manuell schreiben &amp; Code lesen</div>
+      <div class="ask-why">Interaktive Übungen, 1–2 Stunden. Erzwingt eigenständige Produktion an kleinen, abgeschlossenen Problemen — die beste Probe für Live-Coding.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">📖</div>
+    <div class="ask-content">
+      <div class="ask-q">Real Python — „Python Basics" — für Funktionen manuell schreiben &amp; Code lesen</div>
+      <div class="ask-why">Schriftlich, klar, etwa 1 Stunde. Gute Auffrischung, falls Codewars eine Lücke in den Grundlagen statt nur in der Geschwindigkeit zeigt.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">🐞</div>
+    <div class="ask-content">
+      <div class="ask-q">Real Python — „Python Debugging" — für Debugging mit Print &amp; Breakpoints</div>
+      <div class="ask-why">Fokussiert und praktisch, etwa 30 Minuten. Behandelt die systematische Denkweise, nicht nur die Knöpfe im Tool.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">🖥️</div>
+    <div class="ask-content">
+      <div class="ask-q">PyCharm-Debugger-Tutorial (in der IDE integriert) — für Debugging mit Print &amp; Breakpoints</div>
+      <div class="ask-why">Visuell, etwa 20 Minuten. Einmal ansehen, mit einem echten Breakpoint daneben offen.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">🛟</div>
+    <div class="ask-content">
+      <div class="ask-q">Real Python — „Python Exceptions" — für Exception Handling</div>
+      <div class="ask-why">Klar, mit Beispielen, etwa 30 Minuten. Achte auf den Unterschied zwischen dem Abfangen von <code>Exception</code> und einem konkreten Exception-Typ.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">🔁</div>
+    <div class="ask-content">
+      <div class="ask-q">Dein eigener Code — für Eigenes Modul refaktorieren</div>
+      <div class="ask-why">Selbstgesteuert, 1–2 Stunden. Die beste Ressource für diese Phase ist das Modul, das du bereits für DiaTwin oder Morafek geschrieben hast.</div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit diesem Modul fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eine 5–10-zeilige Funktion von Grund auf ohne KI schreiben kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eine fehlerhafte Funktion mit Print-Statements debuggt hast.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eine fehlerhafte Funktion mit PyCharm-Breakpoints debuggt hast.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eine Python-Fehlermeldung lesen und zur Quelle zurückverfolgen kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du in echtem Code eine Exception abgefangen und behandelt hast.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eines deiner eigenen Module refaktoriert hast und erklären kannst, warum es jetzt besser ist.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="progress-bar">
+    <span class="progress-label">تقدم الدراسة</span>
+    <div class="progress-track"><div class="progress-fill" id="prog-ar" style="width:0%"></div></div>
+    <span class="progress-count" id="prog-count-ar">0 / 0 مفتوح</span>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📚</div>
+    <div>
+      <div class="section-title">ما يغطيه هذا الموديول</div>
+      <div class="section-subtitle">خمس مراحل — ابدأ بهذه النظرة العامة، ثم الخريطة الذهنية، ثم المراحل بالترتيب</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>من "يمكنني توليده" إلى "يمكنني كتابته"</h2>
+    <p>
+      أنت تكتب بايثون بالفعل — تطبيقات Flask، خلفية DiaTwin، طبقة البرمجة الكائنية في
+      Morafek. ما يستهدفه هذا الموديول أضيق وأكثر تحديدًا: هل يمكنك إنتاج هذا المنطق
+      نفسه وقراءته وإصلاحه <strong>دون الاعتماد على الذكاء الاصطناعي</strong>، على
+      السبورة، في مراجعة مباشرة، أو في الساعة الثانية صباحًا حين تُرسل بيانات المستشفى
+      رسالة مشوّهة؟
+    </p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>كتابة الدوال يدويًا</strong> — دوال صغيرة ومستقلة تُكتب من الذاكرة، بدون Copilot.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>قراءة الكود وتحديد الأخطاء</strong> — تتبّع المنطق المعطّل وتتبّعات الاستدعاء إلى مصدرها.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>التصحيح</strong> — استخدام جمل الطباعة ونقاط التوقف في PyCharm بشكل منهجي لا عشوائي.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>معالجة الاستثناءات</strong> — أنماط الاعتراض والتسجيل وإعادة المحاولة والرجوع البديل لكود يتعامل مع أنظمة غير مستقرة.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>إعادة هيكلة حقيقية</strong> — نقل إحدى وحداتك في DiaTwin/Morafek إلى بايثون نظيف ومُنمَّط ومُختبَر.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>الفجوة التي يغلقها هذا الموديول</h2>
+    <p>اللبنات الأساسية موجودة لديك بالفعل. ما ينقص هو الأتمتة وعملية منهجية للحظات التي لا يتوفر فيها الذكاء الاصطناعي:</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>كتابة المنطق من الصفر، لا مجرد التعرّف على الكود الصحيح عند رؤيته.</div>
+      <div class="key-point"><div class="key-point-dot"></div>قراءة تتبّع مثل <code dir="ltr">TypeError on line 45</code> وتتبّعه إلى السبب.</div>
+      <div class="key-point"><div class="key-point-dot"></div>التصحيح دون ذكاء اصطناعي — جمل الطباعة، نقاط التوقف، قراءة تتبّعات الاستدعاء.</div>
+      <div class="key-point"><div class="key-point-dot"></div>معرفة متى تكون تعبيرات القوائم مناسبة ومتى تكون الحلقة أوضح للقراءة.</div>
+      <div class="key-point"><div class="key-point-dot"></div>استخدام مدراء السياق (<code dir="ltr">with</code>) والمولّدات وأنماط معالجة الاستثناءات بوعي لا بالصدفة.</div>
+      <div class="key-point"><div class="key-point-dot"></div>كتابة دوال قابلة للاختبار لا تعتمد على حالة عامة مشتركة وقابلة للتغيير.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">✅</div>
+    <div>
+      <div class="section-title">ما تحمله معك بالفعل</div>
+      <div class="section-subtitle">يبني هذا الموديول مباشرة على خبرتك في DiaTwin و Morafek</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>أساسك الحالي</h2>
+    <p>لا شيء هنا يبدأ من الصفر. أنت تعزّز وتختبر مهارات استخدمتها فعليًا في كود إنتاجي:</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>أساسيات صياغة بايثون — كتبت تطبيقات Flask وخلفية DiaTwin.</div>
+      <div class="key-point"><div class="key-point-dot"></div>الدوال والحلقات والشروط والقواميس والقوائم.</div>
+      <div class="key-point"><div class="key-point-dot"></div>أساسيات البرمجة الكائنية — الأصناف والدوال والوراثة — من Morafek و DiaTwin.</div>
+      <div class="key-point"><div class="key-point-dot"></div>إدخال/إخراج الملفات ومعالجة JSON.</div>
+      <div class="key-point"><div class="key-point-dot"></div>العمل مع مكتبات مثل Flask وMongoDB وPandas.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">الأسئلة المفاهيمية الأساسية</div>
+      <div class="section-subtitle">انقر أي سؤال للتوسعة — ركّز على الفهم لا الحفظ</div>
+    </div>
+  </div>
+
+  <!-- Q01 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">إذا كان الذكاء الاصطناعي قادرًا فعلاً على توليد كود صحيح، فلماذا تهم كتابته دون مساعدة؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">الذكاء الاصطناعي يولّد الكود؛ لكنه لا يقرأ تتبّع استدعاء في الساعة الثانية صباحًا، ولا يدافع عن قرار تصميمي في مراجعة، ولا يكتب مباشرة أمام محاور.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          توليد الكود والقدرة على إنتاجه وشرحه وإصلاحه مهارتان مختلفتان. اللحظات التي
+          تختبرك فعليًا — مقابلات الترميز المباشر، أسئلة مراجعة الكود، حوادث الإنتاج
+          المتعلقة ببيانات المستشفى، التصحيح في أوقات غير مناسبة — هي تحديدًا اللحظات التي
+          تكون فيها مساعدة الذكاء الاصطناعي بطيئة أو غير متاحة أو غير مناسبة للاعتماد
+          عليها. يبني هذا الموديول المهارة الأساسية التي كان استخدام الذكاء الاصطناعي يخفيها.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>المخرجات المعتمدة على الذكاء الاصطناعي سقف لما تستطيع إنتاجه، لا قاعدة لما تفهمه.</div>
+        <div class="key-point"><div class="key-point-dot"></div>الإتقان المستقل هو ما يُقيَّم في المقابلات والاستجابة للحوادث.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">ما الفرق الحقيقي بين التعرّف على الكود الصحيح وكتابته من الذاكرة؟</span>
+      <span class="q-badges"><span class="badge badge-common">★ يُختبر كثيرًا</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">التعرّف سلبي — يمكنك تمييز الكود الجيد من السيء. الإنتاج فعّال — تبنيه أمام مؤشر فارغ.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          التعرّف على الكود الصحيح يتطلب فقط مطابقة أنماط رأيتها سابقًا. كتابته من الذاكرة
+          تتطلب الاحتفاظ بالمشكلة والأنواع والحالات الحدّية والصياغة في ذهنك في نفس الوقت
+          — دون إكمال تلقائي يقترح السطر التالي. لهذا يبدأ هذا الموديول بدوال صغيرة وغير
+          مثيرة: فهي تعزل القدرة على الإنتاج عن القدرة على التعرّف.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>الدوال الصغيرة (3–10 أسطر) مختارة عمدًا لإظهار الفجوات بوضوح.</div>
+        <div class="key-point"><div class="key-point-dot"></div>إذا كتبت <code dir="ltr">merge_dicts(*dicts)</code> بشكل صحيح من المحاولة الأولى، فهذه أتمتة لا حظ.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">لماذا تُعامَل "قراءة رسائل الخطأ" كمهارة مستقلة عن كتابة الكود؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">كتابة الكود حركة إلى الأمام. قراءة الخطأ هندسة عكسية — تبدأ من عرض وتعمل بالعكس للوصول إلى السبب.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          تتبّع مثل <code dir="ltr">TypeError on line 45</code> يخبرك أين توقف البرنامج،
+          وليس بالضرورة أين نشأ الخطأ. قراءة الكود تحت الفشل تعني تتبّع البيانات بالعكس:
+          ما الذي تم تمريره، وأي نوع كان متوقعًا، وأين بدأ التعارض. هذه مهارة مستقلة
+          وقابلة للتدريب، مختلفة عن كتابة منطق إلى الأمام — وهي الأضعف بالنسبة لأدوات
+          الذكاء الاصطناعي لأنها تتطلب الاحتفاظ بالحالة الفاشلة المحددة في ذهنك.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ خطأ شائع: التعامل مع رقم السطر في التتبّع كـ "الخطأ" نفسه، بدلًا من آخر موضع معروف للعرض.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>سطر الخطأ هو حيث لاحظ بايثون المشكلة، ليس دائمًا حيث بدأت.</div>
+        <div class="key-point"><div class="key-point-dot"></div>تتبّع البيانات بالعكس من الانهيار إلى أول موضع ظهرت فيه القيمة الخاطئة.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">لماذا الانهيار عند أول خطأ مهم بشكل خاص لعمل تكامل UKM؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">تغذيات بيانات المستشفى (HL7، FHIR، PACS) تفشل باستمرار بطرق صغيرة ومتوقعة — انتهاء المهلة، حقول مفقودة، رسائل مشوّهة.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          الكود الذي يرفع استثناءً غير معالج عند أول رسالة مشوّهة يوقف معالجة كل ما بعدها
+          — سجل واحد سيء يُسقط دفعة كاملة. كود التكامل المحترف يتوقع الفشل كحدث طبيعي: يعترض
+          الاستثناء المحدد، ويسجّل تفاصيل كافية للتشخيص لاحقًا، ويرجع إلى قيمة افتراضية
+          منطقية أو يعيد المحاولة — دون إيقاف بقية خط المعالجة.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>الفشل هو التوقّع الافتراضي عند ربط أنظمة خارجية، لا حالة استثنائية.</div>
+        <div class="key-point"><div class="key-point-dot"></div>"يفشل بسلاسة" أفضل من "لا يفشل أبدًا" لأن الثاني مستحيل.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">متى يجب أن أستخدم تعبير قائمة (list comprehension) بدلًا من حلقة عادية؟</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 جيد أن تعرفه</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">تعبير القائمة يقول "أنشئ قائمة جديدة بتحويل/تصفية قائمة موجودة". الحلقة تقول "نفّذ عدة أشياء مختلفة خلال التكرار".</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          استخدم تعبير القائمة عندما يكون كل المحتوى تعبيرًا واحدًا ينتج مجموعة جديدة واحدة،
+          مثل <code dir="ltr">[x.strip() for x in lines if x]</code>. انتقل إلى حلقة عادية
+          بمجرد احتياجك لعدة جمل، أو آثار جانبية (تسجيل، تعديل شيء خارجي)، أو منطق إنهاء
+          مبكر، أو أكثر من مستوى واحد من الشروط — تنخفض القابلية للقراءة بسرعة بعد ذلك.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>تعبير واحد، مجموعة جديدة واحدة ← تعبير قائمة.</div>
+        <div class="key-point"><div class="key-point-dot"></div>آثار جانبية، جمل متعددة، أو تفرّع ← حلقة.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">جمل الطباعة والمصحّح كلاهما يجدان الأخطاء — فلماذا تتعلم كليهما بدل اختيار واحد؟</span>
+      <span class="q-badges"><span class="badge badge-common">★ يُختبر كثيرًا</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">الطباعة تجيب "ماذا حدث عبر الزمن، خلال تشغيلات عديدة". المصحّح يجيب "ما هي الحالة بالضبط الآن، عند هذا السطر".</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          جمل الطباعة سريعة الإضافة وجيدة لتتبّع قيمة عبر تكرارات حلقة أو استدعاءات دوال
+          متعددة دون إيقاف التنفيذ. نقطة التوقف أفضل عندما تحتاج لفحص متغيرات عديدة دفعة
+          واحدة، أو المرور سطرًا بسطر خلال منطق غير مألوف، أو استكشاف مكدّس الاستدعاءات
+          الحي — أشياء يصعب تقريبها بجدار من جمل الطباعة. معرفة الأداة المناسبة للخطأ
+          الذي أمامك هي نفسها المهارة، لا تفضيل أحدهما على الآخر.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>استخدم الطباعة لتتبّع قيمة عبر تكرارات عديدة.</div>
+        <div class="key-point"><div class="key-point-dot"></div>استخدم نقطة توقف لفحص كل شيء في هذه اللحظة بالضبط.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🔗</div>
+    <div>
+      <div class="section-title">المصادر الموصى بها</div>
+      <div class="section-subtitle">اختر مصدراً واحداً لكل موضوع — لا تحاول الجميع دفعة واحدة</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">🧩</div>
+    <div class="ask-content">
+      <div class="ask-q">Codewars Python (7–6 kyu) — لكتابة الدوال يدويًا وقراءة الكود</div>
+      <div class="ask-why">تمارين تفاعلية، 1–2 ساعة. تفرض إنتاجًا مستقلًا على مشكلات صغيرة ومستقلة — أقرب شيء لمحاكاة الترميز المباشر.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">📖</div>
+    <div class="ask-content">
+      <div class="ask-q">Real Python — "Python Basics" — لكتابة الدوال يدويًا وقراءة الكود</div>
+      <div class="ask-why">مكتوب وواضح، حوالي ساعة. مراجعة جيدة إذا أظهرت Codewars فجوة في الأساسيات لا في السرعة فقط.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">🐞</div>
+    <div class="ask-content">
+      <div class="ask-q">Real Python — "Python Debugging" — للتصحيح بالطباعة ونقاط التوقف</div>
+      <div class="ask-why">مركّز وعملي، حوالي 30 دقيقة. يغطي العقلية المنهجية لا فقط أزرار الأداة.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">🖥️</div>
+    <div class="ask-content">
+      <div class="ask-q">شرح مصحّح PyCharm (مدمج في البيئة) — للتصحيح بالطباعة ونقاط التوقف</div>
+      <div class="ask-why">مرئي، حوالي 20 دقيقة. شاهده مرة واحدة مع نقطة توقف فعلية مفتوحة بجانبه.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">🛟</div>
+    <div class="ask-content">
+      <div class="ask-q">Real Python — "Python Exceptions" — لمعالجة الاستثناءات</div>
+      <div class="ask-why">واضح ومليء بالأمثلة، حوالي 30 دقيقة. انتبه للفرق بين اعتراض <code dir="ltr">Exception</code> واعتراض نوع استثناء محدد.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">🔁</div>
+    <div class="ask-content">
+      <div class="ask-q">كودك الخاص — لإعادة هيكلة وحدة حقيقية</div>
+      <div class="ask-why">موجَّه ذاتيًا، 1–2 ساعة. أفضل مصدر لهذه المرحلة هو الوحدة التي كتبتها بالفعل لـ DiaTwin أو Morafek.</div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> انتهيت من هذا الموديول عندما...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع كتابة دالة من 5 إلى 10 أسطر من الصفر دون ذكاء اصطناعي.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>صحّحت دالة معطّلة باستخدام جمل الطباعة.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>صحّحت دالة معطّلة باستخدام نقاط توقف PyCharm.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع قراءة رسالة خطأ بايثون وتتبّعها إلى مصدرها.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>اعترضت استثناءً وعالجته في كود حقيقي.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>أعدت هيكلة إحدى وحداتك الخاصة وتستطيع شرح سبب كونها أفضل الآن.</div>
+  </div>
+
+</div><!-- end tab-ar -->
+
+</div><!-- end body -->
+</main>
+
+<script src="../shared/lesson-ui.js"></script>
+<script>
+updateProgress();
+guardLanguageTab('ar');
+guardLanguageTab('de');
+</script>
+</body>
+</html>

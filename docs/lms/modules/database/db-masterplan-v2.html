@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DB·MASTERY — Course Index</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── DB Masterplan page-specific styles ── */
+
+.intro-text {
+  color: var(--slate);
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 700px;
+  margin-bottom: 26px;
+}
+
+/* Course grid — same pattern as lesson_index.html */
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 14px;
+}
+
+.course-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 18px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: inherit;
+  width: 100%;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.course-card:hover { border-color: var(--blue); transform: translateY(-2px); }
+.course-card:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.course-card-top { display: flex; align-items: center; gap: 10px; }
+.course-num {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: var(--blue-bg); color: var(--blue);
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.course-title  { font-size: 14px; font-weight: 700; color: var(--navy); }
+.course-subtitle { font-size: 12.5px; color: var(--slate); line-height: 1.55; }
+.course-open {
+  margin-top: auto;
+  font-size: 11.5px; font-weight: 600; color: var(--blue);
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* Featured cards (CRITICAL / orientation) */
+.course-card.featured { border-color: var(--blue-border); background: var(--blue-bg); }
+.course-card.featured .course-num { background: var(--blue); color: #fff; }
+
+/* Weight badges on phase cards */
+.weight-badge {
+  font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px;
+  white-space: nowrap; display: inline-block; margin-top: 4px; align-self: flex-start;
+}
+.w-critical { background: #fee2e2; color: #b91c1c; }
+.w-high     { background: #ffedd5; color: #c2410c; }
+.w-medium   { background: #dbeafe; color: #1d4ed8; }
+.w-low      { background: #dcfce7; color: #15803d; }
+
+/* Section label above grid groups */
+.grid-group-label {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted); margin: 24px 0 10px;
+  display: flex; align-items: center; gap: 10px;
+}
+.grid-group-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* Interview decoder — collapsible must-know block */
+.decoder-block {
+  background: var(--amber-bg); border: 1.5px solid var(--amber-border);
+  border-radius: var(--radius); margin-bottom: 28px; overflow: hidden;
+}
+.decoder-trigger {
+  width: 100%; background: none; border: none; text-align: left;
+  padding: 16px 20px; cursor: pointer; display: flex; align-items: center;
+  justify-content: space-between; font-family: inherit;
+}
+.decoder-trigger-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--amber-text);
+  display: flex; align-items: center; gap: 8px;
+}
+.decoder-chevron {
+  font-size: 12px; color: var(--amber-text); transition: transform .2s;
+}
+.decoder-trigger.open .decoder-chevron { transform: rotate(180deg); }
+.decoder-body { display: none; padding: 0 20px 20px; }
+.decoder-body.open { display: block; }
+
+.decoder-section { margin-bottom: 18px; }
+.decoder-section h3 {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--amber-text); margin-bottom: 10px;
+}
+
+.must-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.must-pill  { font-size: 11px; padding: 3px 10px; border-radius: 99px; font-weight: 700; background: #fca5a5; color: #7f1d1d; }
+.nice-pill  { font-size: 11px; padding: 3px 10px; border-radius: 99px; font-weight: 600; background: var(--blue-bg); color: var(--blue); }
+
+.rank-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; }
+.rank-label { font-size: 12px; font-weight: 600; color: var(--navy); min-width: 240px; }
+.rank-bar-wrap { flex: 1; background: #fde68a; border-radius: 99px; height: 7px; overflow: hidden; }
+.rank-bar-fill { height: 7px; border-radius: 99px; }
+.rank-bar-critical { background: #dc2626; }
+.rank-bar-high     { background: #ea580c; }
+.rank-bar-medium   { background: #d97706; }
+.rank-lbl { font-size: 11px; font-weight: 700; min-width: 90px; color: var(--amber-text); }
+
+.client-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.client-tag {
+  font-size: 11px; padding: 3px 10px; border-radius: 8px;
+  background: var(--white); border: 1px solid var(--amber-border);
+  color: var(--amber-text); font-weight: 600;
+}
+
+.decoder-note {
+  font-size: 12.5px; color: var(--amber-text); line-height: 1.65; margin-bottom: 6px;
+}
+
+[dir="rtl"] .course-card { text-align: right; }
+[dir="rtl"] .grid-group-label::after { display: none; }
+[dir="rtl"] .grid-group-label::before { content: ''; flex: 1; height: 1px; background: var(--border); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Database Mastery — Course Index</div>
+    <h1>DB·MASTERY</h1>
+    <p class="header-sub">Nine phases from <code>SELECT</code> to Galera split-brain recovery. A complete path through SQL, database internals, MariaDB administration, and high-availability clustering.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de', this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar', this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══════════════════════════════════════════════════
+     ENGLISH TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-en" class="tab-content active">
+
+  <!-- Topic Priority Guide -->
+  <div class="decoder-block">
+    <button class="decoder-trigger" onclick="toggleDecoder(this)">
+      <span class="decoder-trigger-label">⚑ Topic Priority Guide</span>
+      <span class="decoder-chevron">▾</span>
+    </button>
+    <div class="decoder-body">
+      <div class="decoder-section">
+        <h3>Must-know Skills</h3>
+        <div class="must-pills">
+          <span class="must-pill">MariaDB</span><span class="must-pill">MySQL</span>
+          <span class="must-pill">MaxScale</span><span class="must-pill">Galera Cluster</span>
+          <span class="must-pill">Linux / Red Hat</span><span class="must-pill">Bash scripting</span>
+        </div>
+        <h3 style="margin-top:10px">Nice-to-have</h3>
+        <div class="must-pills">
+          <span class="nice-pill">PostgreSQL</span><span class="nice-pill">MSSQL</span><span class="nice-pill">Oracle</span>
+        </div>
+      </div>
+      <div class="decoder-section">
+        <h3>Topic Priority Ranking</h3>
+        <div class="rank-row">
+          <span class="rank-label">Galera Cluster internals</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
+          <span class="rank-lbl">🔴 Critical</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">MaxScale config &amp; failover</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
+          <span class="rank-lbl">🔴 Critical</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">MariaDB Admin (backup / repl / users)</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 High</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">On-call incident scenarios</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 High</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Linux / RHEL / bash scripting</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 High</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">PostgreSQL basics</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-medium" style="width:50%"></div></div>
+          <span class="rank-lbl">🟡 Medium</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="intro-text">
+    New here? Start with <strong>Databases — The Big Picture</strong> for the landscape overview, then <strong>Linux &amp; Red Hat</strong> to build your OS foundation. The nine numbered phases are self-contained deep dives — work through them in order, but prioritise <strong>Phase 06 (Galera)</strong> and <strong>Phase 07 (MaxScale)</strong> first if you want to focus on the highest-impact, hardest topics.
+  </p>
+
+  <!-- Orientation -->
+  <div class="grid-group-label">Orientation — start here</div>
+  <div class="course-grid">
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/database/phase-00-db-overview.html')">
+      <div class="course-card-top">
+        <span class="course-num">00A</span>
+        <span class="course-title">Databases — The Big Picture</span>
+      </div>
+      <span class="course-subtitle">Can you explain what a database is, when to use SQL vs NoSQL, and how to choose the right engine for a given workload?</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/database/phase-00-linux-redhat.html')">
+      <div class="course-card-top">
+        <span class="course-num">00L</span>
+        <span class="course-title">Linux &amp; Red Hat — DBA Foundation</span>
+      </div>
+      <span class="course-subtitle">Can you navigate the filesystem, manage services with systemd, install packages with dnf/rpm, and write a basic bash script — comfortably, on RHEL 8/9?</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+  </div>
+
+  <!-- Phases -->
+  <div class="grid-group-label">Study Phases — 9 deep dives</div>
+  <div class="course-grid">
+
+    <button class="course-card" onclick="openLesson('lms/modules/database/phase-01-sql-mysql.html')">
+      <div class="course-card-top">
+        <span class="course-num">01</span>
+        <span class="course-title">SQL Foundations</span>
+      </div>
+      <span class="course-subtitle">Can you write a SELECT with JOINs and aggregations from scratch, and explain the difference between DML, DDL, and a transaction?</span>
+      <span class="weight-badge w-low">📗 LOW · ~20h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/database/db-deep-p02-design.html')">
+      <div class="course-card-top">
+        <span class="course-num">02</span>
+        <span class="course-title">Database Design</span>
+      </div>
+      <span class="course-subtitle">Can you normalise a messy table to 3NF, justify a primary/foreign key choice, and explain why an index speeds up one query but slows down another?</span>
+      <span class="weight-badge w-medium">📘 MEDIUM · ~12h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/database/db-deep-p03-advanced.html')">
+      <div class="course-card-top">
+        <span class="course-num">03</span>
+        <span class="course-title">Advanced SQL</span>
+      </div>
+      <span class="course-subtitle">Can you use a window function or CTE to solve a ranking problem, read an EXPLAIN plan, and say what a stored procedure buys you over plain SQL?</span>
+      <span class="weight-badge w-medium">📘 MEDIUM · ~16h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/database/db-deep-p04-internals.html')">
+      <div class="course-card-top">
+        <span class="course-num">04</span>
+        <span class="course-title">Database Internals</span>
+      </div>
+      <span class="course-subtitle">Can you explain how InnoDB pages and the buffer pool work, what MVCC solves, why WAL matters for crash recovery, and how a deadlock forms?</span>
+      <span class="weight-badge w-medium">📘 MEDIUM · ~12h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/database/db-deep-p05-mariadb.html')">
+      <div class="course-card-top">
+        <span class="course-num">05</span>
+        <span class="course-title">MariaDB Administration</span>
+      </div>
+      <span class="course-subtitle">Could you install and tune MariaDB, manage users, take a full and incremental backup with mariabackup, and restore to a specific point in time?</span>
+      <span class="weight-badge w-high">🔥 HIGH · ~20h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/database/db-deep-p06-galera.html')">
+      <div class="course-card-top">
+        <span class="course-num">06</span>
+        <span class="course-title">Galera Cluster</span>
+      </div>
+      <span class="course-subtitle">Can you explain synchronous multi-master replication, the difference between SST and IST, how to size gcache, and how to recover a cluster from a split-brain using grastate.dat?</span>
+      <span class="weight-badge w-critical">⚡ CRITICAL · ~18h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/database/db-deep-p07-maxscale.html')">
+      <div class="course-card-top">
+        <span class="course-num">07</span>
+        <span class="course-title">MaxScale &amp; Proxies</span>
+      </div>
+      <span class="course-subtitle">Can you describe MaxScale's architecture, configure read/write splitting with galeramon, set up automatic failover, and use maxctrl to inspect cluster state?</span>
+      <span class="weight-badge w-critical">⚡ CRITICAL · ~14h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/database/db-deep-p08-postgres.html')">
+      <div class="course-card-top">
+        <span class="course-num">08</span>
+        <span class="course-title">PostgreSQL Administration</span>
+      </div>
+      <span class="course-subtitle">Can you explain PostgreSQL's cluster architecture, configure postgresql.conf and pg_hba.conf, set up logical replication, and name the key differences from MariaDB?</span>
+      <span class="weight-badge w-medium">📘 MEDIUM · ~16h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/database/db-deep-p09-ops.html')">
+      <div class="course-card-top">
+        <span class="course-num">09</span>
+        <span class="course-title">Monitoring &amp; On-call Ops</span>
+      </div>
+      <span class="course-subtitle">Could you set up Prometheus/mysqld_exporter, diagnose a slow query, handle a disk-full alert at 3am, and follow a sane escalation path?</span>
+      <span class="weight-badge w-high">🔥 HIGH · ~10h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+  </div>
+
+</div><!-- /tab-en -->
+
+<!-- ═══════════════════════════════════════════════════
+     GERMAN TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="decoder-block">
+    <button class="decoder-trigger" onclick="toggleDecoder(this)">
+      <span class="decoder-trigger-label">⚑ Themen-Prioritätsleitfaden</span>
+      <span class="decoder-chevron">▾</span>
+    </button>
+    <div class="decoder-body">
+      <div class="decoder-section">
+        <h3>Muss-Kenntnisse</h3>
+        <div class="must-pills">
+          <span class="must-pill">MariaDB</span><span class="must-pill">MySQL</span>
+          <span class="must-pill">MaxScale</span><span class="must-pill">Galera Cluster</span>
+          <span class="must-pill">Linux / Red Hat</span><span class="must-pill">Bash-Scripting</span>
+        </div>
+        <h3 style="margin-top:10px">Wäre ein Plus</h3>
+        <div class="must-pills">
+          <span class="nice-pill">PostgreSQL</span><span class="nice-pill">MSSQL</span><span class="nice-pill">Oracle</span>
+        </div>
+      </div>
+      <div class="decoder-section">
+        <h3>Themen-Prioritätsranking</h3>
+        <div class="rank-row">
+          <span class="rank-label">Galera-Cluster-Interna</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
+          <span class="rank-lbl">🔴 Kritisch</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">MaxScale-Konfiguration &amp; Failover</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
+          <span class="rank-lbl">🔴 Kritisch</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">MariaDB-Administration (Backup/Replikation)</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 Hoch</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Rufbereitschafts-Szenarien</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 Hoch</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Linux / RHEL / Bash-Scripting</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 Hoch</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">PostgreSQL-Grundlagen</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-medium" style="width:50%"></div></div>
+          <span class="rank-lbl">🟡 Mittel</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="intro-text">
+    Neu hier? Beginnen Sie mit <strong>Datenbanken — Das große Ganze</strong> für den Überblick über die Landschaft, dann mit <strong>Linux &amp; Red Hat</strong> als OS-Grundlage. Die neun nummerierten Phasen sind selbstständige Vertiefungen — arbeiten Sie sie der Reihe nach durch, priorisieren Sie aber <strong>Phase 06 (Galera)</strong> und <strong>Phase 07 (MaxScale)</strong>, wenn Sie sich auf die anspruchsvollsten Themen mit dem größten Lerneffekt konzentrieren möchten.
+  </p>
+
+  <div class="grid-group-label">Orientierung — hier beginnen</div>
+  <div class="course-grid">
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/database/phase-00-db-overview.html')">
+      <div class="course-card-top">
+        <span class="course-num">00A</span>
+        <span class="course-title">Datenbanken — Das große Ganze</span>
+      </div>
+      <span class="course-subtitle">Können Sie erklären, was eine Datenbank ist, wann SQL vs. NoSQL sinnvoll ist und wie man die richtige Engine für eine Anwendung auswählt?</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/database/phase-00-linux-redhat.html')">
+      <div class="course-card-top">
+        <span class="course-num">00L</span>
+        <span class="course-title">Linux &amp; Red Hat — DBA-Grundlagen</span>
+      </div>
+      <span class="course-subtitle">Können Sie sicher im Dateisystem navigieren, Dienste mit systemd verwalten, Pakete mit dnf/rpm installieren und ein einfaches Bash-Skript schreiben — auf RHEL 8/9?</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+  </div>
+
+  <div class="grid-group-label">Studienphasen — 9 Vertiefungen</div>
+  <div class="course-grid">
+
+    <button class="course-card" onclick="openLesson('lms/modules/database/phase-01-sql-mysql.html')">
+      <div class="course-card-top">
+        <span class="course-num">01</span>
+        <span class="course-title">SQL-Grundlagen</span>
+      </div>
+      <span class="course-subtitle">Können Sie aus dem Stand ein SELECT mit JOINs und Aggregationen schreiben und den Unterschied zwischen DML, DDL und einer Transaktion erklären?</span>
+      <span class="weight-badge w-low">📗 NIEDRIG · ~20h</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/database/db-deep-p02-design.html')">
+      <div class="course-card-top">
+        <span class="course-num">02</span>
+        <span class="course-title">Datenbankdesign</span>
+      </div>
+      <span class="course-subtitle">Können Sie eine unsaubere Tabelle bis zur 3NF normalisieren, eine Primär-/Fremdschlüsselwahl begründen und erklären, warum ein Index die eine Abfrage beschleunigt, eine andere aber verlangsamt?</span>
+      <span class="weight-badge w-medium">📘 MITTEL · ~12h</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/database/db-deep-p03-advanced.html')">
+      <div class="course-card-top">
+        <span class="course-num">03</span>
+        <span class="course-title">Erweitertes SQL</span>
+      </div>
+      <span class="course-subtitle">Können Sie mit einer Fensterfunktion oder CTE ein Ranking-Problem lösen, einen EXPLAIN-Plan lesen und sagen, was eine gespeicherte Prozedur gegenüber reinem SQL bringt?</span>
+      <span class="weight-badge w-medium">📘 MITTEL · ~16h</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/database/db-deep-p04-internals.html')">
+      <div class="course-card-top">
+        <span class="course-num">04</span>
+        <span class="course-title">Datenbank-Interna</span>
+      </div>
+      <span class="course-subtitle">Können Sie erklären, wie InnoDB-Seiten und der Buffer Pool funktionieren, was MVCC löst, warum WAL für Crash-Recovery wichtig ist und wie ein Deadlock entsteht?</span>
+      <span class="weight-badge w-medium">📘 MITTEL · ~12h</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/database/db-deep-p05-mariadb.html')">
+      <div class="course-card-top">
+        <span class="course-num">05</span>
+        <span class="course-title">MariaDB-Administration</span>
+      </div>
+      <span class="course-subtitle">Könnten Sie MariaDB installieren und tunen, Benutzer verwalten, ein volles und inkrementelles Backup mit mariabackup erstellen und auf einen bestimmten Zeitpunkt wiederherstellen?</span>
+      <span class="weight-badge w-high">🔥 HOCH · ~20h</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/database/db-deep-p06-galera.html')">
+      <div class="course-card-top">
+        <span class="course-num">06</span>
+        <span class="course-title">Galera Cluster</span>
+      </div>
+      <span class="course-subtitle">Können Sie synchrone Multi-Master-Replikation erklären, den Unterschied zwischen SST und IST, wie man gcache dimensioniert und wie man einen Cluster nach einem Split-Brain mithilfe von grastate.dat wiederherstellt?</span>
+      <span class="weight-badge w-critical">⚡ KRITISCH · ~18h</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/database/db-deep-p07-maxscale.html')">
+      <div class="course-card-top">
+        <span class="course-num">07</span>
+        <span class="course-title">MaxScale &amp; Proxies</span>
+      </div>
+      <span class="course-subtitle">Können Sie die Architektur von MaxScale beschreiben, Read/Write-Splitting mit galeramon konfigurieren, automatisches Failover einrichten und mit maxctrl den Cluster-Status prüfen?</span>
+      <span class="weight-badge w-critical">⚡ KRITISCH · ~14h</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/database/db-deep-p08-postgres.html')">
+      <div class="course-card-top">
+        <span class="course-num">08</span>
+        <span class="course-title">PostgreSQL-Administration</span>
+      </div>
+      <span class="course-subtitle">Können Sie die Cluster-Architektur von PostgreSQL erklären, postgresql.conf und pg_hba.conf konfigurieren, logische Replikation einrichten und die wichtigsten Unterschiede zu MariaDB benennen?</span>
+      <span class="weight-badge w-medium">📘 MITTEL · ~16h</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/database/db-deep-p09-ops.html')">
+      <div class="course-card-top">
+        <span class="course-num">09</span>
+        <span class="course-title">Monitoring &amp; On-call-Betrieb</span>
+      </div>
+      <span class="course-subtitle">Könnten Sie Prometheus/mysqld_exporter einrichten, eine langsame Abfrage diagnostizieren, einen Disk-voll-Alarm um 3 Uhr nachts bewältigen und einem sinnvollen Eskalationspfad folgen?</span>
+      <span class="weight-badge w-high">🔥 HOCH · ~10h</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+  </div>
+
+</div><!-- /tab-de -->
+
+</div><!-- /body -->
+</main>
+
+<script src="../shared/lesson-ui.js"></script>
+<script>
+function openLesson(route) {
+  if (window.parent !== window) {
+    try {
+      window.parent.postMessage({ type: 'lms:openLesson', route: route }, '*');
+      return;
+    } catch (_) { /* fall through */ }
+  }
+  location.href = route.replace('lms/modules/database/', './');
+}
+
+function toggleDecoder(btn) {
+  btn.classList.toggle('open');
+  const body = btn.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// Guard missing Arabic tab
+guardLanguageTab('ar');
+</script>
+</body>
+</html>

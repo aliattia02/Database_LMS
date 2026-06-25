@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mind Map | Python Unaided Coding</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── Mind-map page-specific styles ──
+   initMindmapAdvanced() renders into the per-language mount points below;
+   this block only sets up the mount containers themselves. */
+.mindmap-container { min-height: 480px; }
+[dir="rtl"] .mindmap-container { direction: rtl; }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./masterplan.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">PYTHON UNAIDED CODING &mdash; Mind Map</div>
+    <h1>Mind Map</h1>
+    <p class="header-sub">How writing, reading, debugging, exception handling, and refactoring reinforce each other. Tap any concept to see why it matters.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<div id="tab-en" class="tab-content active">
+  <div id="agrid-en" class="amap-grid"></div>
+  <div id="alegend-en" class="amap-legend"></div>
+</div>
+
+<div id="tab-de" class="tab-content">
+  <div id="agrid-de" class="amap-grid"></div>
+  <div id="alegend-de" class="amap-legend"></div>
+</div>
+
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+  <div id="agrid-ar" class="amap-grid"></div>
+  <div id="alegend-ar" class="amap-legend"></div>
+</div>
+
+</div><!-- end body -->
+</main>
+
+<script src="../shared/lesson-ui.js"></script>
+<script>
+var DATA = {
+  en: {
+    legendTitle: "Legend",
+    legendMust: "Must-know concept",
+    whyLabel: "Why it matters",
+    studyLabel: "Study this in",
+    mustLabel: "Must Know",
+    branches: [
+      {
+        color: "#2563eb", bg: "#eff6ff", border: "#bfdbfe",
+        title: "Manual Function Writing",
+        children: [
+          { label: "validate_email(email) -> bool", mk: true,
+            info: "Checks whether a string looks like a valid email.",
+            why: "Tests string parsing and boolean return logic without any library help.",
+            topic: "Manual Function Writing" },
+          { label: "parse_icd10_code(code) -> dict", mk: true,
+            info: "Splits a code like 'I10' into {chapter, block}.",
+            why: "Mirrors real medical-data parsing you'll do at UKM.",
+            topic: "Manual Function Writing" },
+          { label: "merge_dicts(*dicts) -> dict", mk: false,
+            info: "Combines multiple dicts, later ones overriding earlier ones.",
+            why: "Tests *args handling and dict precedence rules.",
+            topic: "Manual Function Writing" },
+          { label: "find_first_duplicate(items) -> any", mk: false,
+            info: "Returns the first item that appears twice in a list.",
+            why: "Classic interview pattern — tests iteration and tracking with a set.",
+            topic: "Manual Function Writing" },
+          { label: "No Copilot, no autocomplete", mk: true,
+            info: "Write each function in a fresh file with AI suggestions switched off.",
+            why: "Isolates production ability from recognition ability.",
+            topic: "Manual Function Writing" }
+        ]
+      },
+      {
+        color: "#dc2626", bg: "#fef2f2", border: "#fecaca",
+        title: "Reading Code & Spotting Bugs",
+        children: [
+          { label: "Off-by-one & loop bugs", mk: true,
+            info: "Tracing index math in functions like calculate_iob().",
+            why: "Off-by-one errors are the most common silent bug in numeric loops.",
+            topic: "Reading Code & Spotting Bugs — Critical Topic" },
+          { label: "Type mismatch at serialization", mk: true,
+            info: "A datetime object inside a dict that later hits json.dumps().",
+            why: "Hospital APIs serialize everything to JSON — this crashes in production, not in dev.",
+            topic: "Reading Code & Spotting Bugs — Critical Topic" },
+          { label: "Shared mutable default state", mk: true,
+            info: "Two dict entries in a list ending up pointing at the same object.",
+            why: "This exact bug silently corrupts patient records if you're not careful with references.",
+            topic: "Reading Code & Spotting Bugs — Critical Topic" },
+          { label: "Reading a traceback backwards", mk: false,
+            info: "Starting at the crash line and tracing the value back to its origin.",
+            why: "The line in the traceback is the symptom, not always the cause.",
+            topic: "Reading Code & Spotting Bugs — Critical Topic" },
+          { label: "Explaining the bug, not just fixing it", mk: false,
+            info: "Writing down why the code broke, not only the patch.",
+            why: "Forces you to understand the root cause instead of pattern-matching a fix.",
+            topic: "Reading Code & Spotting Bugs — Critical Topic" }
+        ]
+      },
+      {
+        color: "#d97706", bg: "#fffbeb", border: "#fde68a",
+        title: "Debugging: Prints & Breakpoints",
+        children: [
+          { label: "Strategic print placement", mk: true,
+            info: "Prints at function entry/exit and decision points — not everywhere.",
+            why: "Random prints create noise; strategic ones isolate the failure quickly.",
+            topic: "Debugging: Prints & Breakpoints" },
+          { label: "PyCharm breakpoints", mk: true,
+            info: "Set a breakpoint, step line-by-line, inspect variables live.",
+            why: "Lets you see the exact state instead of guessing from printed output.",
+            topic: "Debugging: Prints & Breakpoints" },
+          { label: "Choosing the right tool", mk: false,
+            info: "Prints for tracing values across iterations; breakpoints for inspecting state at one moment.",
+            why: "Matching the tool to the bug saves time.",
+            topic: "Debugging: Prints & Breakpoints" },
+          { label: "Avoiding the print-everywhere anti-pattern", mk: false,
+            info: "Don't carpet-bomb the file with prints.",
+            why: "Too many prints hide the signal you're looking for.",
+            topic: "Debugging: Prints & Breakpoints" }
+        ]
+      },
+      {
+        color: "#7c3aed", bg: "#f5f3ff", border: "#ddd6fe",
+        title: "Exception Handling",
+        children: [
+          { label: "Catch and log", mk: true,
+            info: "try/except around a risky conversion, log the bad value, continue.",
+            why: "Keeps one bad reading from stopping the whole pipeline.",
+            topic: "Exception Handling — Critical Topic" },
+          { label: "Catch and retry", mk: true,
+            info: "Retry a flaky network call a few times before giving up.",
+            why: "FHIR/HL7 calls to hospital systems time out — retries absorb that.",
+            topic: "Exception Handling — Critical Topic" },
+          { label: "Catch and fallback", mk: true,
+            info: "Fall back to a preset baseline when dynamic data isn't available yet.",
+            why: "Graceful degradation beats a hard crash.",
+            topic: "Exception Handling — Critical Topic" },
+          { label: "Exception vs. specific exception", mk: false,
+            info: "Catching bare Exception hides real bugs; catching ValueError/ConnectionError doesn't.",
+            why: "Specific catches let real bugs surface while expected failures are handled.",
+            topic: "Exception Handling — Critical Topic" }
+        ]
+      },
+      {
+        color: "#059669", bg: "#f0fdf4", border: "#a7f3d0",
+        title: "Refactor a Real Module",
+        children: [
+          { label: "Port to plain Python", mk: true,
+            info: "Rewrite your insulinCalculationService.ts logic with no frameworks.",
+            why: "Strips away TypeScript/Flask scaffolding so the core logic stands alone.",
+            topic: "Refactor a Real Module" },
+          { label: "Add type hints & docstrings", mk: true,
+            info: "Every function gets a signature and a one-line explanation.",
+            why: "Makes intent explicit — useful in review and for future-you.",
+            topic: "Refactor a Real Module" },
+          { label: "Break into smaller functions", mk: false,
+            info: "One function, one concept.",
+            why: "Smaller functions are easier to test and to debug under pressure.",
+            topic: "Refactor a Real Module" },
+          { label: "Add error handling", mk: false,
+            info: "What if carbs are negative? What if ICR is 0?",
+            why: "Real inputs are messier than the happy path you designed for.",
+            topic: "Refactor a Real Module" },
+          { label: "Write assert-based test cases", mk: false,
+            info: "A few assert statements, no pytest yet.",
+            why: "Proves the refactor didn't change behavior — a habit that scales to real test suites later.",
+            topic: "Refactor a Real Module" }
+        ]
+      }
+    ]
+  },
+
+  de: {
+    legendTitle: "Legende",
+    legendMust: "Muss-Konzept",
+    whyLabel: "Warum es wichtig ist",
+    studyLabel: "Vertiefen in",
+    mustLabel: "Muss wissen",
+    branches: [
+      {
+        color: "#2563eb", bg: "#eff6ff", border: "#bfdbfe",
+        title: "Funktionen manuell schreiben",
+        children: [
+          { label: "validate_email(email) -> bool", mk: true,
+            info: "Prüft, ob ein String wie eine gültige E-Mail-Adresse aussieht.",
+            why: "Testet String-Parsing und Boolean-Rückgabelogik ganz ohne Bibliothekshilfe.",
+            topic: "Funktionen manuell schreiben" },
+          { label: "parse_icd10_code(code) -> dict", mk: true,
+            info: "Zerlegt einen Code wie 'I10' in {chapter, block}.",
+            why: "Spiegelt echtes medizinisches Daten-Parsing, das du bei der UKM machen wirst.",
+            topic: "Funktionen manuell schreiben" },
+          { label: "merge_dicts(*dicts) -> dict", mk: false,
+            info: "Kombiniert mehrere Dicts, spätere überschreiben frühere.",
+            why: "Testet den Umgang mit *args und Dict-Vorrangregeln.",
+            topic: "Funktionen manuell schreiben" },
+          { label: "find_first_duplicate(items) -> any", mk: false,
+            info: "Gibt das erste Element zurück, das doppelt vorkommt.",
+            why: "Klassisches Interview-Muster — testet Iteration und Tracking mit einem Set.",
+            topic: "Funktionen manuell schreiben" },
+          { label: "Kein Copilot, keine Autovervollständigung", mk: true,
+            info: "Schreibe jede Funktion in einer neuen Datei mit ausgeschalteten KI-Vorschlägen.",
+            why: "Isoliert die Produktionsfähigkeit von der Erkennungsfähigkeit.",
+            topic: "Funktionen manuell schreiben" }
+        ]
+      },
+      {
+        color: "#dc2626", bg: "#fef2f2", border: "#fecaca",
+        title: "Code lesen & Bugs finden",
+        children: [
+          { label: "Off-by-one- & Schleifenfehler", mk: true,
+            info: "Index-Berechnung in Funktionen wie calculate_iob() nachvollziehen.",
+            why: "Off-by-one-Fehler sind der häufigste stille Bug in numerischen Schleifen.",
+            topic: "Code lesen & Bugs finden — kritisches Thema" },
+          { label: "Typkonflikt bei der Serialisierung", mk: true,
+            info: "Ein datetime-Objekt in einem Dict, das später auf json.dumps() trifft.",
+            why: "Krankenhaus-APIs serialisieren alles zu JSON — das stürzt in Produktion ab, nicht in der Entwicklung.",
+            topic: "Code lesen & Bugs finden — kritisches Thema" },
+          { label: "Geteilter, veränderlicher Default-Zustand", mk: true,
+            info: "Zwei Dict-Einträge in einer Liste, die am Ende auf dasselbe Objekt zeigen.",
+            why: "Genau dieser Bug beschädigt stillschweigend Patientendaten, wenn du nicht auf Referenzen achtest.",
+            topic: "Code lesen & Bugs finden — kritisches Thema" },
+          { label: "Einen Traceback rückwärts lesen", mk: false,
+            info: "Bei der Absturzzeile beginnen und den Wert zur Ursache zurückverfolgen.",
+            why: "Die Zeile im Traceback ist das Symptom, nicht immer die Ursache.",
+            topic: "Code lesen & Bugs finden — kritisches Thema" },
+          { label: "Den Bug erklären, nicht nur reparieren", mk: false,
+            info: "Aufschreiben, warum der Code kaputt ging, nicht nur den Fix.",
+            why: "Zwingt dich, die Ursache wirklich zu verstehen, statt nur einen Fix zu mustern.",
+            topic: "Code lesen & Bugs finden — kritisches Thema" }
+        ]
+      },
+      {
+        color: "#d97706", bg: "#fffbeb", border: "#fde68a",
+        title: "Debugging: Print & Breakpoints",
+        children: [
+          { label: "Gezielte Print-Platzierung", mk: true,
+            info: "Prints am Ein-/Ausgang von Funktionen und an Entscheidungspunkten — nicht überall.",
+            why: "Zufällige Prints erzeugen Rauschen; gezielte isolieren den Fehler schnell.",
+            topic: "Debugging: Print & Breakpoints" },
+          { label: "PyCharm-Breakpoints", mk: true,
+            info: "Einen Breakpoint setzen, Zeile für Zeile durchgehen, Variablen live inspizieren.",
+            why: "Zeigt dir den exakten Zustand, statt aus gedruckter Ausgabe zu raten.",
+            topic: "Debugging: Print & Breakpoints" },
+          { label: "Das richtige Werkzeug wählen", mk: false,
+            info: "Prints zum Verfolgen von Werten über Durchläufe; Breakpoints zum Inspizieren des Zustands in einem Moment.",
+            why: "Das passende Werkzeug zum Bug spart Zeit.",
+            topic: "Debugging: Print & Breakpoints" },
+          { label: "Das Print-überall-Antimuster vermeiden", mk: false,
+            info: "Die Datei nicht mit Prints zuschütten.",
+            why: "Zu viele Prints verdecken das Signal, nach dem du suchst.",
+            topic: "Debugging: Print & Breakpoints" }
+        ]
+      },
+      {
+        color: "#7c3aed", bg: "#f5f3ff", border: "#ddd6fe",
+        title: "Exception Handling",
+        children: [
+          { label: "Abfangen und loggen", mk: true,
+            info: "try/except um eine riskante Konvertierung, den fehlerhaften Wert loggen, weitermachen.",
+            why: "Verhindert, dass ein schlechter Messwert die gesamte Pipeline stoppt.",
+            topic: "Exception Handling — kritisches Thema" },
+          { label: "Abfangen und erneut versuchen", mk: true,
+            info: "Einen instabilen Netzwerkaufruf einige Male wiederholen, bevor aufgegeben wird.",
+            why: "FHIR-/HL7-Aufrufe an Krankenhaussysteme laufen in Timeouts — Retries fangen das ab.",
+            topic: "Exception Handling — kritisches Thema" },
+          { label: "Abfangen und zurückfallen", mk: true,
+            info: "Auf eine voreingestellte Baseline zurückfallen, wenn dynamische Daten noch nicht verfügbar sind.",
+            why: "Sauberes Zurückfallen ist besser als ein harter Absturz.",
+            topic: "Exception Handling — kritisches Thema" },
+          { label: "Exception vs. konkrete Exception", mk: false,
+            info: "Das Abfangen von bloßem Exception verdeckt echte Bugs; ValueError/ConnectionError abzufangen tut das nicht.",
+            why: "Konkrete Catches lassen echte Bugs sichtbar werden, während erwartete Fehler behandelt werden.",
+            topic: "Exception Handling — kritisches Thema" }
+        ]
+      },
+      {
+        color: "#059669", bg: "#f0fdf4", border: "#a7f3d0",
+        title: "Eigenes Modul refaktorieren",
+        children: [
+          { label: "In reines Python übertragen", mk: true,
+            info: "Schreibe die Logik aus insulinCalculationService.ts ohne Frameworks neu.",
+            why: "Entfernt das TypeScript-/Flask-Gerüst, sodass die Kernlogik für sich steht.",
+            topic: "Eigenes Modul refaktorieren" },
+          { label: "Type Hints & Docstrings hinzufügen", mk: true,
+            info: "Jede Funktion bekommt eine Signatur und eine einzeilige Erklärung.",
+            why: "Macht die Absicht explizit — nützlich im Review und für dein zukünftiges Ich.",
+            topic: "Eigenes Modul refaktorieren" },
+          { label: "In kleinere Funktionen aufteilen", mk: false,
+            info: "Eine Funktion, ein Konzept.",
+            why: "Kleinere Funktionen sind leichter zu testen und unter Druck zu debuggen.",
+            topic: "Eigenes Modul refaktorieren" },
+          { label: "Fehlerbehandlung hinzufügen", mk: false,
+            info: "Was, wenn die Kohlenhydrate negativ sind? Was, wenn ICR 0 ist?",
+            why: "Echte Eingaben sind unordentlicher als der Happy Path, für den du entworfen hast.",
+            topic: "Eigenes Modul refaktorieren" },
+          { label: "Assert-basierte Testfälle schreiben", mk: false,
+            info: "Ein paar assert-Anweisungen, noch ohne pytest.",
+            why: "Beweist, dass das Refactoring das Verhalten nicht verändert hat — eine Gewohnheit, die später zu echten Testsuiten skaliert.",
+            topic: "Eigenes Modul refaktorieren" }
+        ]
+      }
+    ]
+  },
+
+  ar: {
+    legendTitle: "المفتاح",
+    legendMust: "مفهوم أساسي",
+    whyLabel: "لماذا يهم",
+    studyLabel: "تعمّق في",
+    mustLabel: "ضروري",
+    branches: [
+      {
+        color: "#2563eb", bg: "#eff6ff", border: "#bfdbfe",
+        title: "كتابة الدوال يدويًا",
+        children: [
+          { label: "validate_email(email) -> bool", mk: true,
+            info: "يتحقق مما إذا كان النص يبدو كبريد إلكتروني صالح.",
+            why: "يختبر تحليل النصوص ومنطق القيمة المنطقية المُرجعة دون أي مساعدة من مكتبات.",
+            topic: "كتابة الدوال يدويًا" },
+          { label: "parse_icd10_code(code) -> dict", mk: true,
+            info: "يقسّم رمزًا مثل 'I10' إلى {chapter, block}.",
+            why: "يعكس تحليل بيانات طبية حقيقية ستقوم به في UKM.",
+            topic: "كتابة الدوال يدويًا" },
+          { label: "merge_dicts(*dicts) -> dict", mk: false,
+            info: "يدمج عدة قواميس، مع تجاوز اللاحقة للسابقة.",
+            why: "يختبر التعامل مع *args وقواعد أسبقية القواميس.",
+            topic: "كتابة الدوال يدويًا" },
+          { label: "find_first_duplicate(items) -> any", mk: false,
+            info: "يُعيد أول عنصر يتكرر في القائمة.",
+            why: "نمط كلاسيكي في المقابلات — يختبر التكرار والتتبّع بمجموعة (set).",
+            topic: "كتابة الدوال يدويًا" },
+          { label: "بدون Copilot ولا إكمال تلقائي", mk: true,
+            info: "اكتب كل دالة في ملف جديد مع تعطيل اقتراحات الذكاء الاصطناعي.",
+            why: "يعزل القدرة على الإنتاج عن القدرة على التعرّف.",
+            topic: "كتابة الدوال يدويًا" }
+        ]
+      },
+      {
+        color: "#dc2626", bg: "#fef2f2", border: "#fecaca",
+        title: "قراءة الكود وتحديد الأخطاء",
+        children: [
+          { label: "أخطاء off-by-one وأخطاء الحلقات", mk: true,
+            info: "تتبّع حسابات الفهرس في دوال مثل calculate_iob().",
+            why: "أخطاء off-by-one هي أكثر الأخطاء الصامتة شيوعًا في الحلقات العددية.",
+            topic: "قراءة الكود وتحديد الأخطاء — موضوع حرج" },
+          { label: "تعارض الأنواع عند التسلسل", mk: true,
+            info: "كائن datetime داخل قاموس يصطدم لاحقًا بـ json.dumps().",
+            why: "واجهات المستشفى تسلسل كل شيء إلى JSON — هذا ينهار في الإنتاج، لا في التطوير.",
+            topic: "قراءة الكود وتحديد الأخطاء — موضوع حرج" },
+          { label: "حالة افتراضية مشتركة قابلة للتغيير", mk: true,
+            info: "إدخالان في قائمة قواميس ينتهي بهما الأمر للإشارة لنفس الكائن.",
+            why: "هذا الخطأ بالتحديد يفسد سجلات المرضى بصمت إن لم تنتبه للمراجع.",
+            topic: "قراءة الكود وتحديد الأخطاء — موضوع حرج" },
+          { label: "قراءة تتبّع الاستدعاء بالعكس", mk: false,
+            info: "البدء من سطر الانهيار وتتبّع القيمة إلى أصلها.",
+            why: "السطر في التتبّع هو العرض، وليس دائمًا السبب.",
+            topic: "قراءة الكود وتحديد الأخطاء — موضوع حرج" },
+          { label: "شرح الخطأ، لا إصلاحه فقط", mk: false,
+            info: "كتابة سبب تعطّل الكود، لا الحل فقط.",
+            why: "يفرض عليك فهم السبب الجذري بدلاً من مطابقة نمط للحل.",
+            topic: "قراءة الكود وتحديد الأخطاء — موضوع حرج" }
+        ]
+      },
+      {
+        color: "#d97706", bg: "#fffbeb", border: "#fde68a",
+        title: "التصحيح: الطباعة ونقاط التوقف",
+        children: [
+          { label: "وضع الطباعة الاستراتيجي", mk: true,
+            info: "طباعة عند دخول/خروج الدالة ونقاط القرار — لا في كل مكان.",
+            why: "الطباعة العشوائية تخلق ضجيجًا؛ الطباعة الاستراتيجية تعزل الخطأ بسرعة.",
+            topic: "التصحيح: الطباعة ونقاط التوقف" },
+          { label: "نقاط توقف PyCharm", mk: true,
+            info: "ضع نقطة توقف، تابع سطرًا بسطر، وافحص المتغيرات مباشرة.",
+            why: "تتيح لك رؤية الحالة الدقيقة بدلًا من التخمين من المخرجات المطبوعة.",
+            topic: "التصحيح: الطباعة ونقاط التوقف" },
+          { label: "اختيار الأداة المناسبة", mk: false,
+            info: "الطباعة لتتبّع القيم عبر التكرارات؛ نقاط التوقف لفحص الحالة في لحظة واحدة.",
+            why: "مطابقة الأداة للخطأ توفّر الوقت.",
+            topic: "التصحيح: الطباعة ونقاط التوقف" },
+          { label: "تجنّب نمط الطباعة في كل مكان", mk: false,
+            info: "لا تُغرق الملف بجمل الطباعة.",
+            why: "الكثير من جمل الطباعة يُخفي الإشارة التي تبحث عنها.",
+            topic: "التصحيح: الطباعة ونقاط التوقف" }
+        ]
+      },
+      {
+        color: "#7c3aed", bg: "#f5f3ff", border: "#ddd6fe",
+        title: "معالجة الاستثناءات",
+        children: [
+          { label: "اعتراض وتسجيل", mk: true,
+            info: "try/except حول تحويل خطر، تسجيل القيمة الخاطئة، والاستمرار.",
+            why: "يمنع قراءة سيئة واحدة من إيقاف خط المعالجة بالكامل.",
+            topic: "معالجة الاستثناءات — موضوع حرج" },
+          { label: "اعتراض وإعادة المحاولة", mk: true,
+            info: "إعادة محاولة استدعاء شبكة غير مستقر عدة مرات قبل التوقف.",
+            why: "استدعاءات FHIR/HL7 لأنظمة المستشفى تنتهي مهلتها — إعادة المحاولة تستوعب ذلك.",
+            topic: "معالجة الاستثناءات — موضوع حرج" },
+          { label: "اعتراض ورجوع بديل", mk: true,
+            info: "الرجوع إلى قيمة أساس مُعدّة مسبقًا عندما لا تتوفر بيانات ديناميكية بعد.",
+            why: "التراجع السلس أفضل من الانهيار الصريح.",
+            topic: "معالجة الاستثناءات — موضوع حرج" },
+          { label: "Exception مقابل استثناء محدد", mk: false,
+            info: "اعتراض Exception العام يُخفي أخطاءً حقيقية؛ اعتراض ValueError/ConnectionError لا يفعل ذلك.",
+            why: "الاعتراض المحدد يسمح للأخطاء الحقيقية بالظهور مع معالجة الفشل المتوقع.",
+            topic: "معالجة الاستثناءات — موضوع حرج" }
+        ]
+      },
+      {
+        color: "#059669", bg: "#f0fdf4", border: "#a7f3d0",
+        title: "إعادة هيكلة وحدة حقيقية",
+        children: [
+          { label: "النقل إلى بايثون نقي", mk: true,
+            info: "أعد كتابة منطق insulinCalculationService.ts بدون أي أطر عمل.",
+            why: "يزيل هيكل TypeScript/Flask فيبقى المنطق الأساسي وحده.",
+            topic: "إعادة هيكلة وحدة حقيقية" },
+          { label: "إضافة تلميحات الأنواع والتوثيق", mk: true,
+            info: "تحصل كل دالة على توقيع وشرح من سطر واحد.",
+            why: "يجعل القصد واضحًا — مفيد في المراجعة ولنفسك في المستقبل.",
+            topic: "إعادة هيكلة وحدة حقيقية" },
+          { label: "التقسيم إلى دوال أصغر", mk: false,
+            info: "دالة واحدة، مفهوم واحد.",
+            why: "الدوال الأصغر أسهل في الاختبار والتصحيح تحت الضغط.",
+            topic: "إعادة هيكلة وحدة حقيقية" },
+          { label: "إضافة معالجة الأخطاء", mk: false,
+            info: "ماذا لو كانت الكربوهيدرات سالبة؟ ماذا لو كان ICR صفرًا؟",
+            why: "المدخلات الحقيقية أكثر تشوشًا من المسار المثالي الذي صممت له.",
+            topic: "إعادة هيكلة وحدة حقيقية" },
+          { label: "كتابة حالات اختبار بـ assert", mk: false,
+            info: "بضع جمل assert، بدون pytest حتى الآن.",
+            why: "يثبت أن إعادة الهيكلة لم تغيّر السلوك — عادة تتوسع لاحقًا إلى مجموعات اختبار حقيقية.",
+            topic: "إعادة هيكلة وحدة حقيقية" }
+        ]
+      }
+    ]
+  }
+};
+
+initMindmapAdvanced(DATA);
+</script>
+</body>
+</html>

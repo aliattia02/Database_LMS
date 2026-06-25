@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 2 — Reading Code &amp; Spotting Bugs | Python Unaided Coding</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── Topic page-specific styles ── */
+.badge { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must   { background:#fef3c7; color:#92400e; }
+.badge-common { background:#dbeafe; color:#1e40af; }
+.badge-tip    { background:#f0fdf4; color:#166534; }
+
+.q-arrow { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel { padding:18px 20px 16px 52px; }
+
+.strategy-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text  { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+
+.answer-box       { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text  { font-size:13.5px; color:#14532d; line-height:1.7; }
+
+.warning-box      { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text { font-size:13px; color:var(--amber-text); line-height:1.55; }
+
+.key-points    { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point     { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin:10px 0; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; }
+
+.section    { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2 { font-size:18px; font-weight:700; margin-bottom:14px; }
+.section p  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+.must-block       { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item        { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet      { font-size:15px; flex-shrink:0; }
+
+/* Bug scenario card */
+.bug-card {
+  background:#f8fafc; border:1px solid var(--border); border-radius:8px;
+  padding:16px 18px; margin-bottom:14px;
+}
+.bug-card-header {
+  display:flex; align-items:center; gap:10px; margin-bottom:10px;
+}
+.bug-num {
+  width:26px; height:26px; border-radius:6px;
+  background:#fff1f2; color:#dc2626;
+  font-size:11px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.bug-title  { font-size:14px; font-weight:700; color:var(--navy); }
+.bug-why    { font-size:12.5px; color:var(--slate); line-height:1.5; margin-bottom:10px; }
+.bug-fix-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#059669; margin-top:12px; margin-bottom:6px; }
+
+/* RTL overrides */
+[dir="rtl"] .q-panel         { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point        { flex-direction:row-reverse; }
+[dir="rtl"] .must-item        { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title { flex-direction:row-reverse; }
+[dir="rtl"] .bug-card-header  { flex-direction:row-reverse; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .section .code-block,
+[dir="rtl"] .bug-card .code-block { direction:ltr; text-align:left; }
+
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">PYTHON UNAIDED CODING &mdash; Topic 2 of 5</div>
+    <h1><span>Reading Code</span> &amp; Spotting Bugs</h1>
+    <p class="header-sub">Three broken scenarios, three root causes. The goal is not just to find the fix — it is to trace the error back to where it was born and explain why it happened.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff1f2;">🔍</div>
+    <div>
+      <div class="section-title">Reading is a Separate Skill</div>
+      <div class="section-subtitle">Writing and reading code are not the same cognitive act — this topic trains the second one</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Why reading broken code is harder than it looks</h2>
+    <p>
+      When you write code, you know your intent. When you read someone else's broken code —
+      or your own from three weeks ago — you have only the text and the error message.
+      The gap between what the code says and what it was meant to do is where bugs live.
+    </p>
+    <p>
+      The three scenarios below cover the most common categories of Python bugs you will
+      encounter in real projects: a <strong>type mismatch</strong> that crashes at serialisation,
+      a <strong>mutation side-effect</strong> that corrupts shared state, and a
+      <strong>logic error</strong> where the code runs cleanly but the output is wrong.
+      Each one has been taken from patterns in DiaTwin / Morafek code.
+    </p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Do not just read the fix.</strong> Copy each broken snippet into a file, run it, and read the error message or wrong output before looking at the explanation.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Write the explanation, not just the fix.</strong> "It crashed because X, which happened because Y" is more valuable than a one-line patch.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Trace to the source.</strong> The line that crashes is rarely the line where the mistake was made.</div>
+    </div>
+  </div>
+
+  <!-- The 3 scenarios -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🐛</div>
+    <div>
+      <div class="section-title">Three Scenarios</div>
+      <div class="section-subtitle">Find the root cause, not just the symptom</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Work through them in order</h2>
+    <p>Each scenario shows broken code and the error or wrong output it produces. Read the code, form a hypothesis, then expand the explanation.</p>
+
+    <!-- Scenario 1 -->
+    <div class="bug-card">
+      <div class="bug-card-header">
+        <div class="bug-num">01</div>
+        <div class="bug-title">Type Mismatch — datetime not JSON-serialisable</div>
+      </div>
+      <div class="bug-why">The function runs cleanly and returns a dict. The crash only appears later, when the caller tries to serialise it. This is a classic deferred type error.</div>
+      <div class="code-block">from datetime import datetime
+
+def add_patient(db, patient_name: str, age: int) -> dict:
+    return {
+        "name": patient_name,
+        "age": age,
+        "created": datetime.now()   # ← problem
+    }
+
+# Caller — crashes here, not in add_patient():
+import json
+record = add_patient(None, "Omar", 34)
+json.dumps(record)
+# TypeError: Object of type datetime is not JSON serializable</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><strong>Root cause:</strong> <code>datetime.now()</code> returns a <code>datetime</code> object. <code>json.dumps()</code> does not know how to convert it.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>The mistake is in <code>add_patient()</code>, not in the caller.</strong> The function returns a dict it knows will be serialised — it is its responsibility to return serialisable values.</div>
+      </div>
+      <div class="bug-fix-label">Fix</div>
+      <div class="code-block">"created": datetime.now().isoformat()   # str, always JSON-safe</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Alternative: pass a <code>default=str</code> argument to <code>json.dumps()</code> — but this silently stringifies everything, which can hide other type errors.</div>
+        <div class="key-point"><div class="key-point-dot"></div>In a FHIR pipeline, this exact pattern breaks when you store a <code>datetime</code> in a patient resource dict and then POST it as JSON. Fix it at the source.</div>
+      </div>
+    </div>
+
+    <!-- Scenario 2 -->
+    <div class="bug-card">
+      <div class="bug-card-header">
+        <div class="bug-num">02</div>
+        <div class="bug-title">Mutation Side-Effect — shared mutable default</div>
+      </div>
+      <div class="bug-why">Both patients end up with the same readings list. This is one of the most surprising bugs in Python and it comes from how default mutable arguments work.</div>
+      <div class="code-block">def make_patient(name: str, readings: list = []) -> dict:
+    return {"name": name, "readings": readings}
+
+patient_a = make_patient("Amira")
+patient_b = make_patient("Bashir")
+
+patient_a["readings"].append(120)
+patient_b["readings"].append(105)
+
+print(patient_a["readings"])  # Expected: [120]
+print(patient_b["readings"])  # Expected: [105]
+# Actual: both print [120, 105] !</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><strong>Root cause:</strong> Default argument values are evaluated <em>once</em> at function definition time. The same list object is reused on every call where <code>readings</code> is not passed.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>Both patients share the same list object</strong> — appending to one appends to both.</div>
+      </div>
+      <div class="bug-fix-label">Fix</div>
+      <div class="code-block">def make_patient(name: str, readings: list = None) -> dict:
+    if readings is None:
+        readings = []           # new list created on each call
+    return {"name": name, "readings": readings}</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>The rule: <strong>never use a mutable value (list, dict, set) as a default argument.</strong> Use <code>None</code> and create the object inside the function body.</div>
+        <div class="key-point"><div class="key-point-dot"></div>This exact pattern appeared in the original Morafek session initialiser — session state was being shared across different users' requests.</div>
+      </div>
+    </div>
+
+    <!-- Scenario 3 -->
+    <div class="bug-card">
+      <div class="bug-card-header">
+        <div class="bug-num">03</div>
+        <div class="bug-title">Logic Error — off-by-one in range(), silent wrong answer</div>
+      </div>
+      <div class="bug-why">No exception is raised. The function returns a number. But the number is wrong. This is the hardest category to catch: silent wrong output.</div>
+      <div class="code-block">def calculate_iob(doses: list, minutes_ago: list) -> float:
+    """Insulin on board: sum of each dose decayed over time (120 min half-life)."""
+    total = 0.0
+    for i in range(len(doses) - 1):   # ← off-by-one
+        remaining = doses[i] * (1 - minutes_ago[i] / 120)
+        total += remaining
+    return total
+
+# Call:
+result = calculate_iob([5.0, 3.0], [30, 90])
+# Expected: 5*(1-30/120) + 3*(1-90/120) = 3.75 + 0.75 = 4.5
+# Actual:   3.75  (last dose silently skipped)</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><strong>Root cause:</strong> <code>range(len(doses) - 1)</code> stops one index early. With 2 doses, it only processes index 0.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>Why it is dangerous:</strong> the return value looks plausible. In a real insulin dosing system, underestimating IOB leads to a double-dose recommendation.</div>
+      </div>
+      <div class="bug-fix-label">Fix</div>
+      <div class="code-block">for i in range(len(doses)):           # correct: process every index
+
+# Or more Pythonically:
+for dose, t in zip(doses, minutes_ago):
+    total += dose * (1 - t / 120)</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Prefer <code>zip()</code> over index-based iteration when you need parallel lists — it eliminates off-by-one errors entirely.</div>
+        <div class="key-point"><div class="key-point-dot"></div>When a function returns a numeric result, always test it manually with known inputs before trusting it in a pipeline.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q&A Accordion -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">Answer these before looking — the explanation is the skill, not the answer</div>
+    </div>
+  </div>
+
+  <!-- Q01 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">In Scenario 1, the crash happens in the caller, not inside add_patient(). Why is the bug still in add_patient()?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Functions have a contract: their return value should be usable in the context the caller expects. If add_patient() is documented to return a serialisable record, then returning a datetime object is a violation of that contract — even if the function itself doesn't crash.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          The function's entire purpose is to produce a patient record. The caller uses it with
+          <code>json.dumps()</code> — a completely reasonable thing to do with a data record.
+          The function knows it is returning a dict; it knows <code>datetime.now()</code> is not
+          JSON-serialisable. The responsibility to return a serialisable value sits with the
+          function, not with every caller that uses it. Blaming the caller would mean every caller
+          has to remember to convert <code>datetime</code> objects — that is fragile and duplicated.
+          Fix it once, in the function, with <code>.isoformat()</code>.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>"Where it crashed" and "where the mistake was made" are often different lines. Always trace upstream.</div>
+        <div class="key-point"><div class="key-point-dot"></div>This is why code review asks "what assumptions does this function make about its callers?" — those assumptions are hidden contracts.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Why does Python reuse the same list object across calls in Scenario 2? Is this a bug in Python?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Python evaluates default argument values once, when the def statement is executed. It is a deliberate design choice — the list lives in the function object itself. It only surprises people who expect "default" to mean "create fresh on each call."</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          It is not a bug — it is specified behaviour. When Python sees
+          <code>def f(x=[]):</code>, it creates one list object and stores it as part of the
+          function definition. Every call that does not pass a value for <code>x</code> receives
+          a reference to that same object. If you mutate it (e.g. <code>.append()</code>),
+          the mutation persists into the next call. The fix — <code>None</code> sentinel +
+          <code>if x is None: x = []</code> — creates a new list on each call because <code>[]</code>
+          is now evaluated inside the function body, not in the <code>def</code> line.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Immutable defaults (int, str, tuple) are safe because you cannot mutate them in place. Only mutable defaults (list, dict, set) cause this problem.</div>
+        <div class="key-point"><div class="key-point-dot"></div>You can inspect the current value of a default with <code>f.__defaults__</code> — try it to see the list growing.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Scenario 3 returns a wrong number with no exception. How do you catch this class of bug systematically?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Exceptions tell you something crashed. They do not tell you the result is wrong. For logic errors, the only reliable tool is a known-answer test — you must have at least one input where you can compute the expected output by hand and compare.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Three systematic defences: (1) <strong>manual spot-check</strong> — pick one input, calculate
+          the expected output by hand, and <code>assert result == expected</code>. For IOB:
+          <code>calculate_iob([4.0], [60]) == 4.0 * (1 - 60/120) == 2.0</code> — a single-element
+          test immediately catches the off-by-one. (2) <strong>boundary tests</strong> — test with
+          one dose, zero doses, and many doses. Off-by-one bugs always show up at the boundaries.
+          (3) <strong>read the loop</strong> — <code>range(len(x) - 1)</code> should always raise
+          a flag: why is it minus one?
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>If a function computes a medical value (insulin, glucose, dosage), always test it with at least one calculation you have done by hand.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>range(len(x) - 1)</code> is almost always a bug unless you are explicitly comparing adjacent pairs, where you would use <code>range(len(x) - 1)</code> intentionally.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">You see TypeError: 'NoneType' object is not subscriptable on line 45. Where do you look first?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Commonly tested</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">NoneType errors mean something returned None when you expected a dict or list. Line 45 is subscripting it — so the source is the function that returned None, not line 45.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Do not look at line 45 first. Line 45 is a victim — it subscripted
+          <code>result["key"]</code> and <code>result</code> was <code>None</code>. Walk
+          upward in the stack trace: what function produced <code>result</code>? Did it hit an
+          exception path that silently returns <code>None</code>? Did it hit a conditional that
+          falls off the end without a <code>return</code>? The most common causes: a function
+          returns <code>None</code> on a failed branch instead of raising an exception; or a
+          database query returned no result and the code didn't check before using it.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Read the full stack trace from the bottom up: the bottom is where it crashed, the top is where it started. The root cause is usually closer to the top.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Search your codebase for <code>return None</code> in the function that produced the value — that is where to add a guard or a raise.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">What is the difference between a bug that raises an exception and one that produces a wrong answer silently?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Good to know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Exceptions are loud failures — they tell you where and what. Silent wrong answers are quiet failures — they tell you nothing. In medical software, quiet failures are more dangerous.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          An exception crashes the program and gives you a stack trace pointing roughly at the
+          problem. A silent wrong answer lets the program continue — potentially for hours —
+          while every downstream calculation uses the corrupted value. In a CGM alert pipeline,
+          an exception means alerts stop; a silent wrong answer means alerts fire at the wrong
+          threshold, which is worse. This is why <strong>explicit assertions and test cases</strong>
+          are not optional for medical code. The function must be verified against known-good output
+          before it runs on real data.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>"Fail fast and loud" is a principle: raise an exception on bad input so the error is caught early rather than silently corrupting downstream results.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Silent wrong answers in Scenario 3 are caught only by tests or manual calculation — not by running the code.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Why is zip(doses, minutes_ago) better than range(len(doses)) for this kind of iteration?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Good to know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Using an index variable to walk two lists in parallel is an anti-pattern in Python. You introduce an index that doesn't need to exist, and every off-by-one, off-by-two, or wrong-length error happens at the index level — not at the logic level.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <code>zip(a, b)</code> pairs elements from both lists simultaneously and stops at the
+          shorter one — you cannot accidentally use the wrong index, you cannot go out of bounds,
+          and there is no <code>- 1</code> to mistype. The iteration variable names (
+          <code>dose, t</code>) are also more expressive than <code>i</code>. The body
+          <code>dose * (1 - t / 120)</code> reads like the formula in the medical spec.
+          Index-based code reads like an implementation detail.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>zip()</code> is lazy (returns an iterator) — safe for large datasets like week-long CGM readings without loading everything into memory.</div>
+        <div class="key-point"><div class="key-point-dot"></div>If you need the index too, use <code>enumerate(zip(a, b))</code> — never rebuild it with <code>range(len(...))</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done with this topic when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You copied all three scenarios into a file, ran them, and read the actual error or wrong output before looking at the explanation.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain why the bug in Scenario 1 belongs in <code>add_patient()</code>, not in the caller — and what "fixing it at the source" means.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain the mutable default argument rule and why <code>None</code> is the correct sentinel.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You spotted the off-by-one in Scenario 3 and rewrote the loop using <code>zip()</code>.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>For each bug, you wrote one sentence explaining the root cause — not just the fix.</div>
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff1f2;">🔍</div>
+    <div>
+      <div class="section-title">Lesen ist eine eigenständige Fähigkeit</div>
+      <div class="section-subtitle">Code schreiben und Code lesen sind nicht dasselbe — dieses Thema trainiert die zweite Fähigkeit</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Warum das Lesen von fehlerhaftem Code schwieriger ist, als es aussieht</h2>
+    <p>
+      Wenn du Code schreibst, kennst du deine Absicht. Wenn du den Code von jemand anderem liest —
+      oder deinen eigenen von vor drei Wochen — hast du nur den Text und die Fehlermeldung.
+      Die Lücke zwischen dem, was der Code sagt, und dem, was er tun sollte, ist der Ort, wo Bugs leben.
+    </p>
+    <p>
+      Die drei Szenarien unten decken die häufigsten Kategorien von Python-Bugs ab, die du in
+      echten Projekten antreffen wirst: ein <strong>Typfehler</strong>, der bei der Serialisierung
+      abstürzt, ein <strong>Mutations-Nebeneffekt</strong>, der gemeinsamen Zustand korrumpiert,
+      und ein <strong>Logikfehler</strong>, bei dem der Code sauber läuft, die Ausgabe aber falsch ist.
+    </p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Lies nicht einfach die Lösung.</strong> Kopiere jeden kaputten Ausschnitt in eine Datei, führe ihn aus und lies die Fehlermeldung oder falsche Ausgabe, bevor du dir die Erklärung anschaust.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Schreibe die Erklärung, nicht nur die Lösung.</strong> „Es ist abgestürzt, weil X, was wegen Y passiert ist" ist wertvoller als ein einzeiliger Patch.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Verfolge den Fehler zur Quelle.</strong> Die Zeile, die abstürzt, ist selten die Zeile, wo der Fehler gemacht wurde.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🐛</div>
+    <div>
+      <div class="section-title">Drei Szenarien</div>
+      <div class="section-subtitle">Finde die Grundursache, nicht nur das Symptom</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Arbeite sie der Reihe nach durch</h2>
+    <p>Jedes Szenario zeigt fehlerhaften Code und den Fehler oder die falsche Ausgabe, die er erzeugt. Lies den Code, bilde eine Hypothese, dann lies die Erklärung.</p>
+
+    <div class="bug-card">
+      <div class="bug-card-header">
+        <div class="bug-num">01</div>
+        <div class="bug-title">Typfehler — datetime nicht JSON-serialisierbar</div>
+      </div>
+      <div class="bug-why">Die Funktion läuft sauber und gibt ein Dict zurück. Der Absturz tritt erst auf, wenn der Aufrufer versucht, es zu serialisieren. Dies ist ein klassischer verzögerter Typfehler.</div>
+      <div class="code-block">from datetime import datetime
+
+def add_patient(db, patient_name: str, age: int) -> dict:
+    return {
+        "name": patient_name,
+        "age": age,
+        "created": datetime.now()   # ← Problem
+    }
+
+# Aufrufer — stürzt hier ab, nicht in add_patient():
+import json
+record = add_patient(None, "Omar", 34)
+json.dumps(record)
+# TypeError: Object of type datetime is not JSON serializable</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><strong>Grundursache:</strong> <code>datetime.now()</code> gibt ein <code>datetime</code>-Objekt zurück. <code>json.dumps()</code> weiß nicht, wie es konvertiert werden soll.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>Der Fehler liegt in <code>add_patient()</code>, nicht beim Aufrufer.</strong></div>
+      </div>
+      <div class="bug-fix-label">Lösung</div>
+      <div class="code-block">"created": datetime.now().isoformat()   # str, immer JSON-sicher</div>
+    </div>
+
+    <div class="bug-card">
+      <div class="bug-card-header">
+        <div class="bug-num">02</div>
+        <div class="bug-title">Mutations-Nebeneffekt — gemeinsames veränderbares Standardargument</div>
+      </div>
+      <div class="bug-why">Beide Patienten enden mit derselben Readings-Liste. Dies ist einer der überraschendsten Bugs in Python.</div>
+      <div class="code-block">def make_patient(name: str, readings: list = []) -> dict:
+    return {"name": name, "readings": readings}
+
+patient_a = make_patient("Amira")
+patient_b = make_patient("Bashir")
+
+patient_a["readings"].append(120)
+patient_b["readings"].append(105)
+
+print(patient_a["readings"])  # Erwartet: [120]
+print(patient_b["readings"])  # Erwartet: [105]
+# Tatsächlich: beide geben [120, 105] aus!</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><strong>Grundursache:</strong> Standardargumentwerte werden <em>einmal</em> beim Definieren der Funktion ausgewertet. Dasselbe Listenobjekt wird bei jedem Aufruf wiederverwendet.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>Beide Patienten teilen dasselbe Listenobjekt.</strong></div>
+      </div>
+      <div class="bug-fix-label">Lösung</div>
+      <div class="code-block">def make_patient(name: str, readings: list = None) -> dict:
+    if readings is None:
+        readings = []           # neue Liste bei jedem Aufruf
+    return {"name": name, "readings": readings}</div>
+    </div>
+
+    <div class="bug-card">
+      <div class="bug-card-header">
+        <div class="bug-num">03</div>
+        <div class="bug-title">Logikfehler — Off-by-One in range(), stille falsche Ausgabe</div>
+      </div>
+      <div class="bug-why">Kein Exception wird geworfen. Die Funktion gibt eine Zahl zurück. Aber die Zahl ist falsch. Dies ist die schwierigste Kategorie.</div>
+      <div class="code-block">def calculate_iob(doses: list, minutes_ago: list) -> float:
+    total = 0.0
+    for i in range(len(doses) - 1):   # ← Off-by-One
+        remaining = doses[i] * (1 - minutes_ago[i] / 120)
+        total += remaining
+    return total
+
+result = calculate_iob([5.0, 3.0], [30, 90])
+# Erwartet: 3.75 + 0.75 = 4.5
+# Tatsächlich: 3.75 (letzte Dosis stillschweigend übersprungen)</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><strong>Grundursache:</strong> <code>range(len(doses) - 1)</code> endet einen Index zu früh.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>Gefährlich:</strong> Der Rückgabewert sieht plausibel aus.</div>
+      </div>
+      <div class="bug-fix-label">Lösung</div>
+      <div class="code-block">for dose, t in zip(doses, minutes_ago):
+    total += dose * (1 - t / 120)</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Beantworte diese, bevor du nachschaust — die Erklärung ist die Fähigkeit, nicht die Antwort</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">In Szenario 1 tritt der Absturz beim Aufrufer auf, nicht in add_patient(). Warum liegt der Fehler trotzdem in add_patient()?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss ich kennen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Funktionen haben einen Vertrag: ihr Rückgabewert muss im erwarteten Kontext des Aufrufers verwendbar sein. Wenn add_patient() dokumentiert ist, einen serialisierbaren Datensatz zurückzugeben, ist das Zurückgeben eines datetime-Objekts ein Vertragsbruch.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Der gesamte Zweck der Funktion ist es, einen Patientendatensatz zu erzeugen.
+          Der Aufrufer verwendet ihn mit <code>json.dumps()</code> — eine völlig vernünftige Sache
+          mit einem Datensatz zu tun. Die Funktion weiß, dass sie ein Dict zurückgibt; sie weiß,
+          dass <code>datetime.now()</code> nicht JSON-serialisierbar ist. Die Verantwortung liegt
+          bei der Funktion, nicht bei jedem Aufrufer. Behebe es einmal mit <code>.isoformat()</code>.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>„Wo es abgestürzt ist" und „wo der Fehler gemacht wurde" sind oft verschiedene Zeilen. Immer rückwärts verfolgen.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Warum verwendet Python dasselbe Listenobjekt für alle Aufrufe in Szenario 2? Ist das ein Bug in Python?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss ich kennen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Python wertet Standardargumentwerte einmal aus, wenn die def-Anweisung ausgeführt wird. Dies ist ein bewusstes Design — die Liste lebt im Funktionsobjekt selbst.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Es ist kein Bug — es ist spezifiziertes Verhalten. Python erstellt ein Listenobjekt und
+          speichert es als Teil der Funktionsdefinition. Jeder Aufruf, der keinen Wert für
+          <code>readings</code> übergibt, erhält eine Referenz auf dasselbe Objekt. Die Lösung
+          mit <code>None</code> als Sentinel erstellt bei jedem Aufruf eine neue Liste, da
+          <code>[]</code> jetzt im Funktionskörper ausgewertet wird.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Unveränderliche Standardwerte (int, str, tuple) sind sicher. Nur veränderliche Standardwerte (list, dict, set) verursachen dieses Problem.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Szenario 3 gibt eine falsche Zahl ohne Exception zurück. Wie erkennst du diese Fehlerklasse systematisch?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss ich kennen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Exceptions sagen dir, dass etwas abgestürzt ist. Sie sagen dir nicht, dass das Ergebnis falsch ist. Für Logikfehler ist das einzige zuverlässige Werkzeug ein Test mit bekannter Antwort.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Drei systematische Abwehrmechanismen: (1) <strong>Manuelle Überprüfung</strong> — wähle
+          einen Input, berechne das erwartete Ergebnis von Hand und vergleiche mit
+          <code>assert</code>. (2) <strong>Grenzfalltests</strong> — teste mit einer Dosis, null
+          Dosen und vielen Dosen. Off-by-One-Fehler tauchen immer an den Grenzen auf.
+          (3) <strong>Lies die Schleife</strong> — <code>range(len(x) - 1)</code> sollte immer
+          ein Warnsignal sein: warum minus eins?
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>zip()</code> statt Index-basierter Iteration eliminiert Off-by-One-Fehler vollständig.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Du siehst TypeError: 'NoneType' object is not subscriptable in Zeile 45. Wo schaust du zuerst?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Häufig gefragt</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">NoneType-Fehler bedeuten, dass etwas None zurückgegeben hat, wo du ein Dict oder eine Liste erwartet hast. Zeile 45 ist das Opfer — suche die Ursache in der Funktion, die None zurückgegeben hat.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Schau nicht zuerst auf Zeile 45. Zeile 45 ist ein Opfer — es hat <code>result["key"]</code>
+          subscriptiert und <code>result</code> war <code>None</code>. Gehe im Stack-Trace aufwärts:
+          Welche Funktion hat <code>result</code> erzeugt? Hat sie einen Fehlerpfad getroffen, der
+          stillschweigend <code>None</code> zurückgibt? Lese den gesamten Stack-Trace von unten nach
+          oben: unten ist, wo es abgestürzt ist; oben ist, wo es begann.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Suche in deiner Codebase nach <code>return None</code> in der Funktion, die den Wert produziert hat — dort füge einen Guard oder ein Raise hinzu.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Was ist der Unterschied zwischen einem Bug, der eine Exception wirft, und einem, der eine falsche Antwort produziert?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Gut zu wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Exceptions sind laute Fehler. Stille falsche Antworten sind gefährlichere leise Fehler — in medizinischer Software besonders kritisch.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Eine Exception stoppt das Programm und gibt dir einen Stack-Trace. Eine stille falsche
+          Antwort lässt das Programm weiterlaufen — möglicherweise stundenlang — während jede
+          nachgelagerte Berechnung den korrumpierten Wert verwendet. In einer CGM-Alarm-Pipeline
+          bedeutet eine Exception, dass Alarme stoppen; eine stille falsche Antwort bedeutet,
+          dass Alarme beim falschen Schwellenwert auslösen — was schlimmer ist.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>„Fail fast and loud" ist ein Prinzip: Wirf bei schlechten Eingaben eine Exception, damit der Fehler früh erkannt wird.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Warum ist zip(doses, minutes_ago) besser als range(len(doses)) für diese Art von Iteration?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Gut zu wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Eine Indexvariable zum Durchlaufen zweier Listen zu verwenden ist ein Anti-Pattern in Python. Alle Off-by-One-Fehler passieren auf der Indexebene, nicht auf der Logikebene.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <code>zip(a, b)</code> paart Elemente aus beiden Listen gleichzeitig — du kannst nicht
+          versehentlich den falschen Index verwenden, nicht außerhalb der Grenzen gehen, und es
+          gibt kein <code>- 1</code>, das du falsch tippen könntest. Die Iterationsvariablen
+          (<code>dose, t</code>) sind auch aussagekräftiger als <code>i</code>.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>zip()</code> ist lazy (gibt einen Iterator zurück) — sicher für große Datensätze wie wochenlange CGM-Readings.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit diesem Thema fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du alle drei Szenarien in eine Datei kopiert, ausgeführt und den tatsächlichen Fehler oder die falsche Ausgabe gelesen hast — bevor du die Erklärung angeschaut hast.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du erklären kannst, warum der Bug in Szenario 1 in <code>add_patient()</code> liegt und nicht beim Aufrufer.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du die Regel für veränderliche Standardargumente erklären kannst und warum <code>None</code> der richtige Sentinel ist.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du den Off-by-One-Fehler in Szenario 3 erkannt und die Schleife mit <code>zip()</code> umgeschrieben hast.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du für jeden Bug einen Satz zur Grundursache geschrieben hast — nicht nur die Lösung.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff1f2;">🔍</div>
+    <div>
+      <div class="section-title">القراءة مهارة منفصلة</div>
+      <div class="section-subtitle">كتابة الكود وقراءته ليسا نفس الفعل المعرفي — هذا الموضوع يدرّب المهارة الثانية</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>لماذا قراءة الكود المعطوب أصعب مما تبدو عليه</h2>
+    <p>
+      حين تكتب الكود تعرف قصدك. حين تقرأ كود شخص آخر — أو كودك من ثلاثة أسابيع مضت —
+      لديك فقط النص ورسالة الخطأ. الفجوة بين ما يقوله الكود وما كان يُفترض أن يفعله
+      هي حيث تعيش الأخطاء.
+    </p>
+    <p>
+      السيناريوهات الثلاثة أدناه تغطي أكثر فئات الأخطاء شيوعاً في Python: <strong>عدم تطابق الأنواع</strong>
+      الذي يتعطل عند التسلسل، و<strong>الأثر الجانبي للتعديل</strong> الذي يفسد الحالة المشتركة،
+      و<strong>خطأ منطقي</strong> حيث يعمل الكود بنظافة لكن المخرج خاطئ.
+    </p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>لا تقرأ الحل فقط.</strong> انسخ كل مقتطف معطوب في ملف، شغّله، واقرأ رسالة الخطأ أو المخرج الخاطئ قبل الاطلاع على الشرح.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>اكتب الشرح، ليس فقط الحل.</strong> "تعطّل لأن X، الذي حدث بسبب Y" أكثر قيمة من تصحيح في سطر واحد.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>تتبع إلى المصدر.</strong> السطر الذي يتعطل نادراً ما يكون السطر الذي ارتُكب فيه الخطأ.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🐛</div>
+    <div>
+      <div class="section-title">ثلاثة سيناريوهات</div>
+      <div class="section-subtitle">ابحث عن السبب الجذري، ليس مجرد العَرَض</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>اعمل عليها بالترتيب</h2>
+    <p>كل سيناريو يُظهر كوداً معطوباً والخطأ أو المخرج الخاطئ الذي ينتجه. اقرأ الكود، كوّن فرضية، ثم افتح الشرح.</p>
+
+    <div class="bug-card">
+      <div class="bug-card-header">
+        <div class="bug-num">01</div>
+        <div class="bug-title">عدم تطابق الأنواع — datetime غير قابل للتسلسل إلى JSON</div>
+      </div>
+      <div class="bug-why">الدالة تعمل بنظافة وتعيد dict. يحدث التعطل لاحقاً حين يحاول المُستدعي تسلسله. هذا خطأ نوع مؤجل كلاسيكي.</div>
+      <div class="code-block" dir="ltr">from datetime import datetime
+
+def add_patient(db, patient_name: str, age: int) -> dict:
+    return {
+        "name": patient_name,
+        "age": age,
+        "created": datetime.now()   # ← المشكلة
+    }
+
+import json
+record = add_patient(None, "Omar", 34)
+json.dumps(record)
+# TypeError: Object of type datetime is not JSON serializable</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><strong>السبب الجذري:</strong> <code dir="ltr">datetime.now()</code> يعيد كائن <code dir="ltr">datetime</code>. <code dir="ltr">json.dumps()</code> لا يعرف كيف يحوّله.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>الخطأ في <code dir="ltr">add_patient()</code>، ليس في المُستدعي.</strong></div>
+      </div>
+      <div class="bug-fix-label">الحل</div>
+      <div class="code-block" dir="ltr">"created": datetime.now().isoformat()   # str، آمن دائماً مع JSON</div>
+    </div>
+
+    <div class="bug-card">
+      <div class="bug-card-header">
+        <div class="bug-num">02</div>
+        <div class="bug-title">أثر جانبي للتعديل — وسيطة افتراضية قابلة للتغيير مشتركة</div>
+      </div>
+      <div class="bug-why">ينتهي الأمر بكلا المريضين بنفس قائمة القراءات. هذا أحد أكثر الأخطاء مفاجأةً في Python.</div>
+      <div class="code-block" dir="ltr">def make_patient(name: str, readings: list = []) -> dict:
+    return {"name": name, "readings": readings}
+
+patient_a = make_patient("Amira")
+patient_b = make_patient("Bashir")
+
+patient_a["readings"].append(120)
+patient_b["readings"].append(105)
+
+print(patient_a["readings"])  # متوقع: [120]
+print(patient_b["readings"])  # متوقع: [105]
+# الفعلي: كلاهما يطبع [120, 105]!</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><strong>السبب الجذري:</strong> قيم الوسيطات الافتراضية تُقيَّم <em>مرة واحدة</em> عند تعريف الدالة. نفس كائن القائمة يُعاد استخدامه في كل استدعاء.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>كلا المريضين يشتركان في نفس كائن القائمة.</strong></div>
+      </div>
+      <div class="bug-fix-label">الحل</div>
+      <div class="code-block" dir="ltr">def make_patient(name: str, readings: list = None) -> dict:
+    if readings is None:
+        readings = []           # قائمة جديدة في كل استدعاء
+    return {"name": name, "readings": readings}</div>
+    </div>
+
+    <div class="bug-card">
+      <div class="bug-card-header">
+        <div class="bug-num">03</div>
+        <div class="bug-title">خطأ منطقي — خطأ بمقدار واحد في range()، مخرج خاطئ صامت</div>
+      </div>
+      <div class="bug-why">لا استثناء يُرفع. الدالة تعيد رقماً. لكن الرقم خاطئ. هذه أصعب فئة يُكتشف فيها الخطأ.</div>
+      <div class="code-block" dir="ltr">def calculate_iob(doses: list, minutes_ago: list) -> float:
+    total = 0.0
+    for i in range(len(doses) - 1):   # ← خطأ بمقدار واحد
+        remaining = doses[i] * (1 - minutes_ago[i] / 120)
+        total += remaining
+    return total
+
+result = calculate_iob([5.0, 3.0], [30, 90])
+# متوقع: 3.75 + 0.75 = 4.5
+# الفعلي: 3.75 (الجرعة الأخيرة تجاهلت صامتة)</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><strong>السبب الجذري:</strong> <code dir="ltr">range(len(doses) - 1)</code> يتوقف فهرساً واحداً مبكراً.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>خطير:</strong> قيمة الإرجاع تبدو معقولة.</div>
+      </div>
+      <div class="bug-fix-label">الحل</div>
+      <div class="code-block" dir="ltr">for dose, t in zip(doses, minutes_ago):
+    total += dose * (1 - t / 120)</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">أسئلة للتدريب</div>
+      <div class="section-subtitle">أجب عليها قبل الاطلاع — الشرح هو المهارة، ليس الإجابة</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">في السيناريو 1، يقع التعطل عند المُستدعي وليس داخل add_patient(). لماذا يظل الخطأ في add_patient()؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">الدوال لها عقد: قيمة الإرجاع يجب أن تكون قابلة للاستخدام في السياق الذي يتوقعه المُستدعي. إذا كانت add_patient() موثقة لإرجاع سجل قابل للتسلسل، فإرجاع كائن datetime هو انتهاك لهذا العقد.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          الغرض الكامل من الدالة هو إنتاج سجل مريض. المُستدعي يستخدمه مع
+          <code dir="ltr">json.dumps()</code> — شيء معقول تماماً للقيام به مع سجل بيانات.
+          الدالة تعرف أنها تعيد dict؛ تعرف أن <code dir="ltr">datetime.now()</code> غير قابل
+          للتسلسل إلى JSON. المسؤولية تقع على الدالة لإرجاع قيم قابلة للتسلسل، وليس على كل
+          مُستدعٍ. أصلحها مرة واحدة في الدالة بـ <code dir="ltr">.isoformat()</code>.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>"أين تعطّل" و"أين ارتُكب الخطأ" غالباً ما يكونان سطرين مختلفين. دائماً تتبع للخلف.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">لماذا تعيد Python استخدام نفس كائن القائمة في جميع الاستدعاءات في السيناريو 2؟ هل هذا خطأ في Python؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">Python تقيّم قيم الوسيطات الافتراضية مرة واحدة عند تنفيذ جملة def. هذا اختيار تصميمي متعمد — القائمة تعيش في كائن الدالة نفسه.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          ليس خطأً — إنه سلوك محدد. Python تنشئ كائن قائمة وتخزنه كجزء من تعريف الدالة.
+          كل استدعاء لا يمرر قيمة لـ <code dir="ltr">readings</code> يحصل على مرجع لنفس الكائن.
+          الحل بـ <code dir="ltr">None</code> كحارس ينشئ قائمة جديدة في كل استدعاء لأن
+          <code dir="ltr">[]</code> الآن تُقيَّم داخل جسم الدالة.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>القيم الافتراضية غير القابلة للتغيير (int، str، tuple) آمنة. فقط القيم الافتراضية القابلة للتغيير (list، dict، set) تسبب هذه المشكلة.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">السيناريو 3 يعيد رقماً خاطئاً بدون استثناء. كيف تكتشف هذه الفئة من الأخطاء بشكل منهجي؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">الاستثناءات تخبرك أن شيئاً تعطّل. لا تخبرك أن النتيجة خاطئة. للأخطاء المنطقية، الأداة الوحيدة الموثوقة هي اختبار بإجابة معروفة.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          ثلاثة دفاعات منهجية: (1) <strong>فحص يدوي</strong> — اختر مدخلاً، احسب المخرج المتوقع
+          يدوياً وقارنه بـ <code dir="ltr">assert</code>. (2) <strong>اختبارات الحدود</strong>
+          — اختبر بجرعة واحدة، صفر جرعات، وجرعات كثيرة. أخطاء off-by-one تظهر دائماً عند الحدود.
+          (3) <strong>اقرأ الحلقة</strong> — <code dir="ltr">range(len(x) - 1)</code> يجب أن
+          يثير تساؤلاً دائماً: لماذا ناقص واحد؟
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>استخدام <code dir="ltr">zip()</code> بدلاً من التكرار المستند إلى الفهرس يقضي على أخطاء off-by-one تماماً.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">ترى TypeError: 'NoneType' object is not subscriptable في السطر 45. أين تنظر أولاً؟</span>
+      <span class="q-badges"><span class="badge badge-common">★ يُختبر كثيراً</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">أخطاء NoneType تعني أن شيئاً أعاد None حيث توقعت dict أو list. السطر 45 ضحية — ابحث عن السبب في الدالة التي أعادت None.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          لا تنظر إلى السطر 45 أولاً. اصعد في stack trace: أي دالة أنتجت <code dir="ltr">result</code>؟
+          هل ضربت مساراً لاستثناء يعيد <code dir="ltr">None</code> صامتاً؟ هل ضربت شرطاً
+          ينتهي بدون <code dir="ltr">return</code>؟ اقرأ stack trace الكامل من الأسفل للأعلى:
+          الأسفل هو أين تعطّل، الأعلى هو أين بدأ.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>ابحث في الكود عن <code dir="ltr">return None</code> في الدالة التي أنتجت القيمة — هناك أضف حارساً أو raise.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">ما الفرق بين خطأ يرفع استثناء وآخر ينتج إجابة خاطئة صامتة؟</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 جيد أن تعرفه</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">الاستثناءات أخطاء صاخبة — تخبرك بأين وماذا. الإجابات الخاطئة الصامتة أخطاء هادئة — لا تخبرك بشيء. في البرمجيات الطبية، الأخطاء الهادئة أشد خطورة.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          الاستثناء يوقف البرنامج ويعطيك stack trace. الإجابة الخاطئة الصامتة تدع البرنامج
+          يستمر — ربما لساعات — بينما كل حساب لاحق يستخدم القيمة الفاسدة. في خط معالجة
+          تنبيهات CGM، الاستثناء يعني توقف التنبيهات؛ الإجابة الخاطئة الصامتة تعني تشغيل
+          التنبيهات عند حد خاطئ — وهذا أسوأ.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>"افشل بسرعة وبصوت عالٍ" مبدأ: ارفع استثناء عند المدخلات السيئة لاكتشاف الخطأ مبكراً.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">لماذا zip(doses, minutes_ago) أفضل من range(len(doses)) لهذا النوع من التكرار؟</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 جيد أن تعرفه</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">استخدام متغير فهرس لاجتياز قائمتين بالتوازي نمط مضاد في Python. كل أخطاء off-by-one تحدث على مستوى الفهرس، لا مستوى المنطق.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          <code dir="ltr">zip(a, b)</code> يقرن العناصر من كلا القائمتين في آن واحد — لا يمكنك
+          استخدام فهرس خاطئ عن طريق الخطأ، لا يمكنك الخروج عن الحدود، ولا يوجد <code dir="ltr">- 1</code>
+          يمكن خطأ كتابته. أسماء متغيرات التكرار (<code dir="ltr">dose, t</code>) أكثر تعبيراً
+          من <code dir="ltr">i</code>. والجسم <code dir="ltr">dose * (1 - t / 120)</code>
+          يقرأ كالصيغة في المواصفات الطبية.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">zip()</code> كسول (يعيد مكرراً) — آمن لمجموعات البيانات الكبيرة مثل قراءات CGM لأسبوع.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> انتهيت من هذا الموضوع عندما...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>نسخت السيناريوهات الثلاثة في ملف، شغّلتها، وقرأت الخطأ الفعلي أو المخرج الخاطئ قبل الاطلاع على الشرح.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع شرح لماذا الخطأ في السيناريو 1 يقع في <code dir="ltr">add_patient()</code> وليس في المُستدعي.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع شرح قاعدة الوسيطات الافتراضية القابلة للتغيير ولماذا <code dir="ltr">None</code> هو الحارس الصحيح.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>اكتشفت خطأ off-by-one في السيناريو 3 وأعدت كتابة الحلقة باستخدام <code dir="ltr">zip()</code>.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>كتبت جملة واحدة تشرح السبب الجذري لكل خطأ — ليس فقط الحل.</div>
+  </div>
+
+</div><!-- end tab-ar -->
+
+</div><!-- end body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'lms_python_unaided_02_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+</body>
+</html>

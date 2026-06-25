@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Topic 2 — MII, MIRACUM & NUM | Treuhandstelle Interview Prep</title>
-<link rel="stylesheet" href="./theme.css"/>
+<link rel="stylesheet" href="../shared/theme.css"/>
 <style>
   /* ── Topic-2-page-specific styles only — see theme.css for everything else ── */
 
@@ -116,7 +116,7 @@
 <body>
 
 <div class="home-nav">
-  <a class="home-link" href="./index.html">← Back to main page</a>
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
 </div>
 
 <!-- ─── HEADER (not sticky) ─── -->
@@ -133,6 +133,7 @@
   <div class="tabs-inner">
     <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
     <button class="tab-btn" onclick="switchTab('de', this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
   </div>
 </div>
 
@@ -143,7 +144,14 @@
 <div id="tab-en" class="tab-content active">
 
   <!-- 1. What is it -->
-  <div class="section">
+  <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">01</span>
+    <span class="q-text">What is it</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
     <button class="section-toggle open" onclick="toggleSection(this)">
       <div class="toggle-left">
         <span class="section-label">Section 1</span>
@@ -156,9 +164,18 @@
       <p>To achieve that, the MII organised Germany's 36 university hospitals into four regional consortia. Frankfurt's Universitätsmedizin belongs to <strong>MIRACUM</strong> (Medical Informatics in Research and Care in University Medicine), a consortium of 11 partner sites. At the national level, the <strong>Netzwerk Universitätsmedizin (NUM)</strong> — launched in 2020 initially to coordinate COVID-19 research — has become the permanent infrastructure layer for cross-site clinical research networks. All three share the same philosophy: standardise data (using HL7 FHIR and MII Core Data Set profiles), build shared Datenintegrationszentren (DIZ), and make that data available for approved research through trusted, governed access — which is precisely where the Treuhandstelle comes in.</p>
     </div>
   </div>
+  </div>
+</div>
 
   <!-- 2. Why it matters -->
-  <div class="section">
+  <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">02</span>
+    <span class="q-text">Why it matters for this role</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
     <button class="section-toggle open" onclick="toggleSection(this)">
       <div class="toggle-left">
         <span class="section-label">Section 2</span>
@@ -177,9 +194,18 @@
       <p style="margin-top:12px;">The interviewer will bring this up because it reveals whether you understand the structural context of the job, not just the technical tools.</p>
     </div>
   </div>
+  </div>
+</div>
 
   <!-- 3. Learning ladder -->
-  <div class="section">
+  <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">03</span>
+    <span class="q-text">Zero to hero — learning ladder</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
     <button class="section-toggle open" onclick="toggleSection(this)">
       <div class="toggle-left">
         <span class="section-label">Section 3</span>
@@ -250,9 +276,18 @@
       </div>
     </div>
   </div>
+  </div>
+</div>
 
   <!-- 4. Must-know -->
-  <div class="must-know">
+  <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">04</span>
+    <span class="q-text">Must-know facts</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="must-know">
     <button class="section-toggle open" onclick="toggleSection(this)">
       <div class="toggle-left">
         <span class="section-label">Section 4</span>
@@ -272,9 +307,18 @@
       </div>
     </div>
   </div>
+  </div>
+</div>
 
   <!-- 5. Glossary -->
-  <div class="section">
+  <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">05</span>
+    <span class="q-text">Key terms glossary</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
     <button class="section-toggle open" onclick="toggleSection(this)">
       <div class="toggle-left">
         <span class="section-label">Section 5</span>
@@ -302,9 +346,18 @@
       </table>
     </div>
   </div>
+  </div>
+</div>
 
   <!-- 6. Interview questions -->
-  <div class="section">
+  <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">06</span>
+    <span class="q-text">Likely interview questions</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
     <button class="section-toggle open" onclick="toggleSection(this)">
       <div class="toggle-left">
         <span class="section-label">Section 6</span>
@@ -384,9 +437,18 @@
       </div>
     </div>
   </div>
+  </div>
+</div>
 
   <!-- 7. Connections -->
-  <div class="section">
+  <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">07</span>
+    <span class="q-text">Connections to your existing experience</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
     <button class="section-toggle open" onclick="toggleSection(this)">
       <div class="toggle-left">
         <span class="section-label">Section 7</span>
@@ -419,9 +481,18 @@
       </div>
     </div>
   </div>
+  </div>
+</div>
 
   <!-- 8. Study plan -->
-  <div class="section">
+  <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">08</span>
+    <span class="q-text">3-day study plan</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
     <button class="section-toggle open" onclick="toggleSection(this)">
       <div class="toggle-left">
         <span class="section-label">Section 8</span>
@@ -515,6 +586,8 @@
       </div>
     </div>
   </div>
+  </div>
+</div>
 
 </div><!-- /tab-en -->
 
@@ -900,6 +973,7 @@
 
 </div><!-- /body -->
 
-<script src="./lesson-ui.js"></script>
+<script>window.LMS_STORAGE_KEY = 'lms_local_il_mii_done';</script>
+<script src="../shared/lesson-ui.js"></script>
 </body>
 </html>

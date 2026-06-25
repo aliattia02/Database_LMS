@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Topic 6: German at leadership level — technical vocabulary and register | Treuhandstelle Interview Prep</title>
-<link rel="stylesheet" href="./theme.css"/>
+<link rel="stylesheet" href="../shared/theme.css"/>
 <style>
   /* ── Topic-6-page-specific styles only — see theme.css for everything else ── */
 
@@ -48,7 +48,7 @@
 <body>
 
 <div class="home-nav">
-  <a class="home-link" href="./index.html">← Back to main page</a>
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
 </div>
 
 <header class="header">
@@ -63,6 +63,7 @@
   <div class="tabs-inner">
     <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
     <button class="tab-btn" onclick="switchTab('de', this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
   </div>
 </div>
 
@@ -73,7 +74,14 @@
     <div class="tab-content active" id="tab-en">
 
       <!-- Section 1: What is it -->
-      <div class="section">
+      <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">01</span>
+    <span class="q-text">What is it</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
         <button class="section-toggle open" onclick="toggleSection(this)">
           <div class="toggle-left">
             <span class="section-label">Section 1</span>
@@ -90,9 +98,18 @@
           </div>
         </div>
       </div>
+  </div>
+</div>
 
       <!-- Section 2: Why it matters -->
-      <div class="section">
+      <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">02</span>
+    <span class="q-text">Why it matters for this role</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
         <button class="section-toggle open" onclick="toggleSection(this)">
           <div class="toggle-left">
             <span class="section-label">Section 2</span>
@@ -114,9 +131,18 @@
           <p class="closing-sentence">The interviewer will listen not just for what Ali says but for whether the vocabulary, sentence structure, and formality level are consistent with someone who can lead and represent a unit in a German university hospital without language-related friction.</p>
         </div>
       </div>
+  </div>
+</div>
 
       <!-- Section 3: Learning ladder -->
-      <div class="section">
+      <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">03</span>
+    <span class="q-text">Zero to hero: learning ladder</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
         <button class="section-toggle open" onclick="toggleSection(this)">
           <div class="toggle-left">
             <span class="section-label">Section 3</span>
@@ -179,9 +205,18 @@
           </div>
         </div>
       </div>
+  </div>
+</div>
 
       <!-- Section 4: Must-know facts (amber) -->
-      <div class="must-know section">
+      <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">04</span>
+    <span class="q-text">Must-know facts</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="must-know section">
         <button class="section-toggle open" onclick="toggleSection(this)">
           <div class="toggle-left">
             <span class="section-label">Section 4</span>
@@ -202,9 +237,18 @@
           </div>
         </div>
       </div>
+  </div>
+</div>
 
       <!-- Section 5: Glossary -->
-      <div class="section">
+      <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">05</span>
+    <span class="q-text">Key terms glossary</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
         <button class="section-toggle open" onclick="toggleSection(this)">
           <div class="toggle-left">
             <span class="section-label">Section 5</span>
@@ -273,9 +317,18 @@
           </table>
         </div>
       </div>
+  </div>
+</div>
 
       <!-- Section 6: Interview questions -->
-      <div class="section">
+      <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">06</span>
+    <span class="q-text">Likely interview questions</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
         <button class="section-toggle open" onclick="toggleSection(this)">
           <div class="toggle-left">
             <span class="section-label">Section 6</span>
@@ -355,9 +408,18 @@
           </div>
         </div>
       </div>
+  </div>
+</div>
 
       <!-- Section 7: Connections -->
-      <div class="section">
+      <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">07</span>
+    <span class="q-text">Connections to Ali's existing experience</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
         <button class="section-toggle open" onclick="toggleSection(this)">
           <div class="toggle-left">
             <span class="section-label">Section 7</span>
@@ -390,9 +452,18 @@
           </div>
         </div>
       </div>
+  </div>
+</div>
 
       <!-- Section 8: Study plan -->
-      <div class="section">
+      <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">08</span>
+    <span class="q-text">3-day study plan</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
         <button class="section-toggle open" onclick="toggleSection(this)">
           <div class="toggle-left">
             <span class="section-label">Section 8</span>
@@ -479,6 +550,8 @@
           </div>
         </div>
       </div>
+  </div>
+</div>
 
     </div><!-- /tab-en -->
 
@@ -898,7 +971,8 @@
   </div><!-- /.body -->
 </main>
 
-<script src="./lesson-ui.js"></script>
+<script>window.LMS_STORAGE_KEY = 'lms_local_il_register_done';</script>
+<script src="../shared/lesson-ui.js"></script>
 
 </body>
 </html>

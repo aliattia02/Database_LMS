@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Topic 5 — Practical Team Workflow | Git &amp; GitHub Team Workflows</title>
+  <link rel="stylesheet" href="../shared/theme.css"/>
+  <style>
+    /* ── Topic 5 page-specific styles ── */
+
+    .badge {
+      font-size: 10.5px; font-weight: 700;
+      padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+    }
+    .badge-must   { background: #fef3c7; color: #92400e; }
+    .badge-common { background: #dbeafe; color: #1e40af; }
+    .badge-tip    { background: #f0fdf4; color: #166534; }
+
+    .q-arrow {
+      font-size: 12px; color: var(--muted);
+      padding-top: 3px; flex-shrink: 0; transition: transform .2s;
+    }
+    .q-trigger.open .q-arrow { transform: rotate(180deg); }
+    .q-panel { padding: 18px 20px 16px 52px; }
+
+    .strategy-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    }
+    .strategy-text {
+      font-size: 13.5px; color: var(--navy2); line-height: 1.65; margin-bottom: 14px;
+    }
+
+    .answer-box {
+      background: var(--green-bg); border: 1px solid var(--green-border);
+      border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;
+    }
+    .answer-box-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--green-text); margin-bottom: 8px;
+    }
+    .answer-box-text { font-size: 13.5px; color: #14532d; line-height: 1.7; }
+
+    .warning-box {
+      background: var(--amber-bg); border: 1px solid #fde68a;
+      border-radius: 8px; padding: 12px 14px; margin-bottom: 12px;
+    }
+    .warning-box-text { font-size: 13px; color: var(--amber-text); line-height: 1.55; }
+
+    .key-points { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+    .key-point {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 13.5px; color: var(--navy2); line-height: 1.55;
+    }
+    .key-point-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #2563eb;
+      flex-shrink: 0; margin-top: 7px;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+      font-size: 12.5px; background: #f1f5f9;
+      padding: 1px 5px; border-radius: 3px; color: var(--navy);
+    }
+    .code-block {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+      font-size: 12px; background: #f8fafc;
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 10px 14px; margin: 10px 0;
+      color: var(--navy); line-height: 1.65;
+      white-space: pre; overflow-x: auto;
+    }
+
+    .section {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px 28px;
+      margin-bottom: 20px; box-shadow: var(--shadow);
+    }
+    .section h2 { font-size: 18px; font-weight: 700; margin-bottom: 14px; }
+    .section p  { font-size: 14px; color: #334155; line-height: 1.65; margin-bottom: 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .must-block {
+      background: var(--amber-bg); border: 1.5px solid var(--amber-border);
+      border-radius: var(--radius); padding: 18px 20px; margin: 28px 0 0;
+    }
+    .must-block-title {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--amber-text); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .must-block .must-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      font-size: 13.5px; color: #78350f; line-height: 1.6;
+      padding: 9px 0; border-bottom: 1px solid #fde68a;
+    }
+    .must-block .must-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .must-block .must-bullet { font-size: 15px; flex-shrink: 0; }
+
+    /* RTL overrides */
+    [dir="rtl"] .q-panel      { padding: 18px 52px 16px 20px; }
+    [dir="rtl"] .key-point    { flex-direction: row-reverse; }
+    [dir="rtl"] .must-item    { flex-direction: row-reverse; }
+    [dir="rtl"] .must-block-title { flex-direction: row-reverse; }
+    [dir="rtl"] .answer-box-text .code-block,
+    [dir="rtl"] .section .code-block { direction: ltr; text-align: left; }
+
+    @media (max-width: 600px) {
+      .q-panel { padding-left: 20px; }
+      .q-badges { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Git &amp; GitHub &mdash; Topic 5 of 5</div>
+    <h1><span>Practical</span> Team Workflow</h1>
+    <p class="header-sub">How a real research team uses Git — protected branches, the PR lifecycle, review culture, and the rules most new developers break on day one.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de', this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar', this)">العربية</button>
+  </div>
+</div>
+
+<main>
+  <div class="body">
+
+<!-- ═══════════════════════════════════════════════════
+     ENGLISH TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🔒</div>
+    <div>
+      <div class="section-title">Protected Branches — The Team's Safety Net</div>
+      <div class="section-subtitle">Why <code>main</code> is locked and why that makes everyone's life easier</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>The first rule of team Git: no one pushes directly to <code>main</code></h2>
+    <p>On a solo project you push to <code>main</code> freely. On a shared codebase, <code>main</code> (and often <code>develop</code>) is <strong>branch-protected</strong> on GitHub. Protection means: no direct pushes, no force-pushes, and every change must arrive through a reviewed, approved pull request. Some teams also require the branch to be up to date with <code>main</code> before merging, and a passing CI run before anyone can click the merge button.</p>
+    <p>This isn't bureaucracy — it's the mechanism that keeps the shared history clean and ensures no single person can accidentally (or intentionally) break the code everyone else depends on.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Branch protection rules (GitHub):</strong> set in the repository Settings → Branches. Common rules: require PR before merging, require at least one approval, require status checks to pass, disallow force-push.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>What happens if you try to push directly:</strong> GitHub rejects the push with <code>remote: error: GH006: Protected branch update failed</code>. The fix is always "open a PR instead."</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Who can bypass:</strong> repository admins can be granted bypass rights, but on most research teams even admins go through PRs — it keeps the audit trail complete.</div>
+    </div>
+    <div class="warning-box">
+      <div class="warning-box-text">⚠️ <strong>Never ask for (or use) force-push rights on a shared branch.</strong> Even when it feels like the fastest fix, it rewrites history out from under every teammate who has already pulled those commits — causing painful, confusing divergences that are hard to untangle.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🔄</div>
+    <div>
+      <div class="section-title">The Team Git Loop</div>
+      <div class="section-subtitle">The repeating daily cycle every contributor follows — six steps, no variations</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Every feature, fix, or experiment follows the same loop</h2>
+    <p>Whether a change takes ten minutes or ten days, it follows the same path. Understanding this loop as a fixed sequence — not as a collection of arbitrary commands — is what separates developers who feel in control of Git from those who feel like they're guessing.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>1. Pull the latest <code>main</code></strong> — always start fresh: <code>git switch main &amp;&amp; git pull</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>2. Create a named feature branch</strong> — branch off the freshly updated <code>main</code>: <code>git switch -c feature/my-thing</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>3. Make commits on your branch</strong> — small, focused commits with clear messages. Push regularly so your work is backed up: <code>git push -u origin feature/my-thing</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>4. Keep your branch up to date</strong> — if <code>main</code> has moved, merge or rebase it in before opening the PR (covered in Q&amp;A below).</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>5. Open a PR on GitHub</strong> — write a clear description, assign reviewers, link any related issues.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>6. Respond to review, get approval, merge, delete the branch</strong> — the branch's job is done the moment it's merged; keep the repo tidy.</div>
+    </div>
+    <div class="code-block"># The full loop, as typed
+git switch main
+git pull
+
+git switch -c feature/add-export-button
+
+# ...work, work, work...
+git add src/components/ExportButton.tsx
+git commit -m "feat: add CSV export button to results panel"
+git push -u origin feature/add-export-button
+
+# Open the PR on GitHub, get review, get approval
+
+# After merge on GitHub — clean up locally
+git switch main
+git pull
+git branch -d feature/add-export-button</div>
+    <p>That last step — deleting the local branch after merge — is the one most developers skip early on. After a few months you end up with dozens of stale local branches that all look like they might still be active. Delete them as you go.</p>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#faf5ff;">💬</div>
+    <div>
+      <div class="section-title">Key Concepts — Open Every Card</div>
+      <div class="section-subtitle">The team-workflow questions that trip up every developer in their first weeks on a shared codebase</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">What are protected branches and what rules does a typical team set?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">The guard rails that keep shared history clean</div>
+      <div class="strategy-text">Branch protection is a GitHub repository setting that prevents anyone from pushing directly to a branch — they must go through a PR instead. It's the most important organizational tool in team Git, and virtually every professional team uses it on <code>main</code>.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Typical protection ruleset</div>
+        <div class="answer-box-text">
+          <strong>Require a pull request before merging</strong> — no direct pushes, ever.<br><br>
+          <strong>Require at least N approvals</strong> — most teams require 1; some require 2 for production branches.<br><br>
+          <strong>Require status checks to pass</strong> — CI (tests, linting) must be green before the merge button is clickable.<br><br>
+          <strong>Require branch to be up to date</strong> — your branch must include the latest <code>main</code> before you can merge.<br><br>
+          <strong>Disallow force pushes</strong> — no rewriting of shared history, ever.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>These rules are set per branch, not per user. Even repo admins are subject to them (unless explicitly given bypass rights — which most teams don't grant).</div>
+        <div class="key-point"><div class="key-point-dot"></div>If your push is rejected with <code>GH006: Protected branch update failed</code>, don't look for a workaround — open a PR. That's the intended path.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">How do you write a PR description that actually gets reviewed?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Reviewers have limited time — make their job frictionless</div>
+      <div class="strategy-text">A PR with no description gets reviewed slowly, superficially, or not at all — reviewers don't know where to focus. A PR with a clear description of <em>what</em> changed, <em>why</em> it changed, and <em>how to test it</em> gets a thoughtful review in a fraction of the time.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">What every PR description needs</div>
+        <div class="answer-box-text">
+          <strong>What:</strong> one sentence summarising the change. ("Adds a CSV export button to the results panel.")<br><br>
+          <strong>Why:</strong> link the issue/ticket this resolves, or explain the motivation. ("Closes #42 — users reported needing to export results for their own analysis.")<br><br>
+          <strong>How to test it:</strong> concrete steps a reviewer can follow. ("1. Run the app. 2. Navigate to Results. 3. Click Export — a file named <code>results.csv</code> should download.")<br><br>
+          <strong>Screenshots / before-after</strong> (for UI changes) — a picture saves five minutes of reviewer effort.<br><br>
+          <strong>What NOT to include:</strong> don't explain line-by-line what the code does — reviewers read code; they can't always read your intent. Focus on intent, not implementation.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Many teams use a PR template (a <code>.github/pull_request_template.md</code> file) that pre-fills the description with the required sections. If your repo has one, always fill in every section.</div>
+        <div class="key-point"><div class="key-point-dot"></div>The title follows the same convention as commit messages: imperative mood, under 72 characters. "Add CSV export to results panel" — not "Added export" or "Export stuff".</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">What do you do when <code>main</code> has moved ahead of your feature branch?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Your branch has diverged — bring <code>main</code> in before merging</div>
+      <div class="strategy-text">You've been working on a branch for two days. In that time, three teammates merged their PRs into <code>main</code>. Now your branch is behind — the PR can't merge cleanly, and if your team requires an up-to-date branch, GitHub's merge button is greyed out. You need to pull <code>main</code> into your branch.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The standard fix — merge <code>main</code> into your branch</div>
+        <div class="answer-box-text">
+<div class="code-block"># Make sure your local main is up to date
+git switch main
+git pull
+
+# Switch back to your feature branch
+git switch feature/add-export-button
+
+# Bring main's changes in
+git merge main
+
+# If there are conflicts, resolve them (see Topic 3), then:
+git add .
+git commit   # Git pre-fills the merge commit message
+
+# Push the updated branch
+git push</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Some teams prefer <code>git rebase main</code> instead of <code>git merge main</code> — rebase rewrites your commits on top of the latest <code>main</code>, producing a linear history. Both approaches are valid; follow your team's convention.</div>
+        <div class="key-point"><div class="key-point-dot"></div>If you rebase and the branch is already on GitHub, you'll need <code>git push --force-with-lease</code> (not <code>--force</code>) — this is the only legitimate use of force-push, and only on your own feature branch, never on a shared branch.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Do this regularly on long-running branches — once a day is not excessive. Small, frequent merges are much easier to resolve than one large one at the end.</div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Never use <code>git rebase</code> on a branch that other people are also working on — it rewrites commit hashes, breaking their local copy of the branch.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">How do you respond to a review comment — especially one you disagree with?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Code review is a dialogue, not a judgment</div>
+      <div class="strategy-text">Getting your first critical review comment feels personal. It isn't — reviewers are commenting on the code, not on you. How you respond to review shapes your reputation on the team more than the code itself does. Developers who engage thoughtfully are trusted with more responsibility, faster.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The right response pattern</div>
+        <div class="answer-box-text">
+          <strong>When you agree:</strong> make the change, push the commit, and reply on the comment with something short — "Done" or "Fixed in the latest push" — so the reviewer knows to re-check. Don't just silently push.<br><br>
+          <strong>When you disagree or need clarification:</strong> ask — don't just ignore the comment or make a passive-aggressive change. "I went with X because Y — does that address your concern?" is a perfectly professional reply. Reviewers don't have full context; you do.<br><br>
+          <strong>When the comment is out of scope:</strong> acknowledge it and open a separate issue. "Good point — I've opened #47 to track this separately so it doesn't block this PR." Never argue that a valid concern doesn't matter.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Always resolve a comment — either by making the change or by explaining why you didn't. Leaving comments unresolved is the most common reason PRs stall.</div>
+        <div class="key-point"><div class="key-point-dot"></div>On GitHub, the reviewer (not the author) is the one who clicks "Resolve conversation" once they're satisfied. Don't resolve your own comments — let the reviewer close them.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">What are the rules most new developers break on day one?</span>
+      <span class="q-badges"><span class="badge badge-common">Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Four habits that mark an experienced team player from a newcomer</div>
+      <div class="strategy-text">These aren't advanced Git topics — they're workflow habits that experienced developers follow automatically. Violating them doesn't break Git, but it creates friction for everyone on the team and signals to senior developers that the person hasn't worked on a shared codebase before.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The four rules</div>
+        <div class="answer-box-text">
+          <strong>1. Commit to a branch, never directly to <code>main</code>.</strong> Even for a one-line fix. Branches are free — there's no reason to skip this step.<br><br>
+          <strong>2. Pull before you push.</strong> <code>git pull</code> before starting work and before opening a PR. If you skip this, your push may be rejected, or your PR will have needless conflicts.<br><br>
+          <strong>3. Keep commits focused and messages meaningful.</strong> "fixes" or "wip" commit messages make <code>git log</code> useless for everyone. The convention: imperative mood, present tense, under 72 characters. "Add timeout handling to API calls", not "added some stuff".<br><br>
+          <strong>4. Never push secrets to any branch.</strong> API keys, passwords, tokens, and <code>.env</code> files don't belong in Git — not even in a "private" branch that you plan to clean up later. Once a secret is in history it should be considered compromised and rotated.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <strong>Pushed secrets cannot be "deleted" with a normal commit.</strong> They remain in the repository's full history, visible to anyone with read access. If you accidentally push a secret, rotate it immediately and contact your team lead — do not wait.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">How does the PR merge strategy affect team history — squash vs merge vs rebase?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Tip</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Three merge buttons, three very different outcomes in <code>git log</code></div>
+      <div class="strategy-text">GitHub offers three merge strategies when closing a PR. Most teams pick one and enforce it consistently. Knowing what each one produces in the history helps you understand why your team made its choice — and prevents surprises when you look at <code>git log</code> after a merge.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The three strategies</div>
+        <div class="answer-box-text">
+          <strong>Merge commit (default)</strong> — all branch commits are preserved as-is, plus a merge commit is added. History shows exactly what happened and when. Branch topology is visible in <code>git log --graph</code>. Preferred when the individual commit history of a feature is meaningful.<br><br>
+          <strong>Squash and merge</strong> — all branch commits are squashed into one commit on <code>main</code>. The PR's entire work becomes a single, clean commit. Branch commits disappear from <code>main</code>'s history. Preferred when branch commits are messy "wip" checkpoints and only the final result matters.<br><br>
+          <strong>Rebase and merge</strong> — branch commits are replayed one by one on top of <code>main</code>, with no merge commit. History is perfectly linear. Preferred on teams that value a clean, readable <code>git log</code> above all else.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Check which strategy your team uses before you open your first PR — it affects how you should write your commits and whether your individual commit messages will appear in <code>main</code>'s log.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Squash is the most forgiving for newcomers — messy branch commits are collapsed into one clean entry. Many research teams use squash by default for exactly this reason.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🛠️</div>
+    <div>
+      <div class="section-title">Hands-On Practice</div>
+      <div class="section-subtitle">Simulate a complete team PR cycle from scratch — two branches, one "teammate," one merge</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Run the full team loop in a local practice repo</h2>
+    <p>The script below simulates you <em>and</em> a teammate both working on the same repo — your teammate merges to <code>main</code> while you're mid-feature, exactly the situation that catches new developers off guard. Work through it once and the loop will feel mechanical (in a good way) from that point forward.</p>
+    <div class="code-block"># ─── Setup: create a shared practice repo ───────────────────────────────────
+git init team-workflow-practice && cd team-workflow-practice
+echo "# Team App" > README.md
+git add . && git commit -m "chore: initial commit"
+
+# ─── You: start a feature branch ────────────────────────────────────────────
+git switch -c feature/add-dashboard
+echo "dashboard placeholder" > dashboard.txt
+git add . && git commit -m "feat: scaffold dashboard page"
+
+# ─── Simulate a teammate merging to main while you work ─────────────────────
+# (In real life this happens on the remote; we fake it locally)
+git switch main
+echo "utility function" > utils.txt
+git add . && git commit -m "feat: add shared utility (teammate's work)"
+
+# ─── You: come back to your branch and update it ────────────────────────────
+git switch feature/add-dashboard
+git merge main
+# → No conflict here — different files. A merge commit is created.
+git log --oneline --graph
+# → You can see your branch history and the merge from main
+
+# ─── You: finish the feature ────────────────────────────────────────────────
+echo "dashboard complete" >> dashboard.txt
+git add . && git commit -m "feat: complete dashboard implementation"
+
+# ─── Simulate opening a PR: merge your branch into main ─────────────────────
+git switch main
+git merge feature/add-dashboard --no-ff -m "Merge pull request: Add dashboard page"
+
+# ─── Clean up: delete the feature branch ────────────────────────────────────
+git branch -d feature/add-dashboard
+git log --oneline --graph
+# → main now contains the teammate's work AND your dashboard, cleanly merged</div>
+    <p>Repeat this with a <em>conflicting</em> change — have both you and your "teammate" edit the same file — and resolve the conflict using the steps from Topic 3. That's the full loop with every real-world complication included.</p>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You're done with this topic when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can describe the complete PR lifecycle from start to finish: pull <code>main</code> → branch → commit → push → open PR → review cycle → merge → delete branch.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You know how to bring a stale feature branch up to date with <code>main</code> using <code>git merge main</code>, and you can explain when (and why) a team might choose <code>git rebase main</code> instead.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can write a PR description with a clear What / Why / How-to-test structure, and you know how to respond to a review comment — including one you disagree with — professionally.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can name the four rules most new developers break on day one and explain the consequence of breaking each one for the rest of the team.</div>
+  </div>
+
+</div><!-- /tab-en -->
+
+<!-- ═══════════════════════════════════════════════════
+     DEUTSCH TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🔒</div>
+    <div>
+      <div class="section-title">Geschützte Branches — Das Sicherheitsnetz des Teams</div>
+      <div class="section-subtitle">Warum <code>main</code> gesperrt ist — und warum das das Leben aller leichter macht</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Die erste Regel im Team-Git: Niemand pusht direkt auf <code>main</code></h2>
+    <p>Auf einem Solo-Projekt pushst du frei auf <code>main</code>. Auf einem gemeinsam genutzten Codebase ist <code>main</code> (und oft auch <code>develop</code>) auf GitHub <strong>branch-geschützt</strong>. Schutz bedeutet: kein direktes Pushen, kein Force-Push, und jede Änderung muss über einen geprüften, genehmigten Pull Request ankommen. Manche Teams verlangen außerdem, dass der Branch vor dem Mergen auf dem Stand von <code>main</code> ist, und einen bestandenen CI-Lauf, bevor jemand auf den Merge-Button klicken darf.</p>
+    <p>Das ist keine Bürokratie — es ist der Mechanismus, der die gemeinsame History sauber hält und sicherstellt, dass keine Einzelperson versehentlich (oder absichtlich) den Code kaputt machen kann, von dem alle anderen abhängen.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Branch-Protection-Regeln (GitHub):</strong> werden in den Repository-Einstellungen → Branches festgelegt. Typische Regeln: PR vor dem Mergen erforderlich, mindestens eine Genehmigung, Statusprüfungen müssen bestehen, Force-Push verboten.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Was passiert beim direkten Push:</strong> GitHub lehnt den Push mit <code>remote: error: GH006: Protected branch update failed</code> ab. Die Lösung ist immer: "Stattdessen einen PR öffnen."</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Wer bypassen darf:</strong> Repository-Admins können Bypass-Rechte erhalten, aber auf den meisten Forschungsteams gehen selbst Admins über PRs — das hält den Audit-Trail vollständig.</div>
+    </div>
+    <div class="warning-box">
+      <div class="warning-box-text">⚠️ <strong>Frag niemals nach Force-Push-Rechten auf einem gemeinsamen Branch (und nutze sie nicht).</strong> Auch wenn es sich nach der schnellsten Lösung anfühlt, überschreibt es die History unter jedem Teammitglied, das diese Commits schon gepullt hat — was schmerzhafte, schwer zu entwirrende Divergenzen verursacht.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🔄</div>
+    <div>
+      <div class="section-title">Die Team-Git-Schleife</div>
+      <div class="section-subtitle">Der täglich wiederholte Zyklus, dem jeder Contributor folgt — sechs Schritte, keine Abweichungen</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Jedes Feature, jede Korrektur, jedes Experiment folgt derselben Schleife</h2>
+    <p>Egal ob eine Änderung zehn Minuten oder zehn Tage dauert — sie folgt demselben Pfad. Diesen Loop als feste Abfolge zu verstehen — nicht als eine Sammlung willkürlicher Befehle — ist das, was Entwickler, die Git im Griff haben, von denen unterscheidet, die das Gefühl haben, zu raten.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>1. Das aktuelle <code>main</code> pullen</strong> — immer frisch starten: <code>git switch main &amp;&amp; git pull</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>2. Einen benannten Feature-Branch erstellen</strong> — vom frisch aktualisierten <code>main</code> abzweigen: <code>git switch -c feature/mein-ding</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>3. Commits auf deinem Branch machen</strong> — kleine, fokussierte Commits mit aussagekräftigen Nachrichten. Regelmäßig pushen, damit deine Arbeit gesichert ist: <code>git push -u origin feature/mein-ding</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>4. Den Branch aktuell halten</strong> — wenn <code>main</code> sich weiterentwickelt hat, vor dem Öffnen des PR einmergen oder rebasen (im Q&amp;A unten erklärt).</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>5. Einen PR auf GitHub öffnen</strong> — eine klare Beschreibung schreiben, Reviewer zuweisen, verwandte Issues verlinken.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>6. Review beantworten, Genehmigung einholen, mergen, Branch löschen</strong> — der Branch hat seinen Job erledigt, sobald er gemergt ist; das Repo sauber halten.</div>
+    </div>
+    <div class="code-block"># Die vollständige Schleife, wie sie getippt wird
+git switch main
+git pull
+
+git switch -c feature/export-button-hinzufuegen
+
+# ...arbeiten, arbeiten, arbeiten...
+git add src/components/ExportButton.tsx
+git commit -m "feat: CSV-Export-Button zum Ergebnispanel hinzufügen"
+git push -u origin feature/export-button-hinzufuegen
+
+# PR auf GitHub öffnen, Review bekommen, Genehmigung bekommen
+
+# Nach dem Merge auf GitHub — lokal aufräumen
+git switch main
+git pull
+git branch -d feature/export-button-hinzufuegen</div>
+    <p>Der letzte Schritt — den lokalen Branch nach dem Merge zu löschen — ist derjenige, den die meisten Entwickler anfangs überspringen. Nach ein paar Monaten hat man Dutzende veralteter lokaler Branches, die alle so aussehen, als könnten sie noch aktiv sein. Lösche sie direkt beim Aufräumen.</p>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#faf5ff;">💬</div>
+    <div>
+      <div class="section-title">Schlüsselkonzepte — Öffne jede Karte</div>
+      <div class="section-subtitle">Die Team-Workflow-Fragen, über die jeder Entwickler in den ersten Wochen auf einem gemeinsamen Codebase stolpert</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Was sind geschützte Branches und welche Regeln setzt ein typisches Team?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Pflicht</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Die Leitplanken, die die gemeinsame History sauber halten</div>
+      <div class="strategy-text">Branch-Protection ist eine GitHub-Repository-Einstellung, die verhindert, dass jemand direkt auf einen Branch pusht — er muss stattdessen über einen PR gehen. Es ist das wichtigste Organisationswerkzeug im Team-Git, und praktisch jedes professionelle Team nutzt es auf <code>main</code>.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Typisches Regelwerk</div>
+        <div class="answer-box-text">
+          <strong>Pull Request vor dem Mergen erforderlich</strong> — kein direktes Pushen, jemals.<br><br>
+          <strong>Mindestens N Genehmigungen erforderlich</strong> — die meisten Teams verlangen 1; manche 2 für Produktionsbranches.<br><br>
+          <strong>Statusprüfungen müssen bestehen</strong> — CI (Tests, Linting) muss grün sein, bevor der Merge-Button klickbar ist.<br><br>
+          <strong>Branch muss aktuell sein</strong> — dein Branch muss das aktuelle <code>main</code> enthalten, bevor du mergen kannst.<br><br>
+          <strong>Force-Pushes verboten</strong> — keine Umschreibung der gemeinsamen History, niemals.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Diese Regeln gelten pro Branch, nicht pro User. Selbst Repository-Admins unterliegen ihnen (außer ihnen wurden explizit Bypass-Rechte gewährt — was die meisten Teams nicht tun).</div>
+        <div class="key-point"><div class="key-point-dot"></div>Wenn dein Push mit <code>GH006: Protected branch update failed</code> abgelehnt wird, suche nicht nach einem Workaround — öffne einen PR. Das ist der vorgesehene Weg.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Wie schreibst du eine PR-Beschreibung, die tatsächlich reviewed wird?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Pflicht</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Reviewer haben begrenzte Zeit — mach ihren Job reibungslos</div>
+      <div class="strategy-text">Ein PR ohne Beschreibung wird langsam, oberflächlich oder gar nicht reviewed — Reviewer wissen nicht, worauf sie sich konzentrieren sollen. Ein PR mit einer klaren Beschreibung von <em>Was</em> sich geändert hat, <em>Warum</em> es sich geändert hat und <em>Wie man es testet</em> bekommt in einem Bruchteil der Zeit ein durchdachtes Review.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Was jede PR-Beschreibung braucht</div>
+        <div class="answer-box-text">
+          <strong>Was:</strong> ein Satz, der die Änderung zusammenfasst. ("Fügt einen CSV-Export-Button zum Ergebnispanel hinzu.")<br><br>
+          <strong>Warum:</strong> das Issue/Ticket verlinken oder die Motivation erklären. ("Schließt #42 — Nutzer berichteten, dass sie Ergebnisse für eigene Analysen exportieren müssen.")<br><br>
+          <strong>Wie zu testen:</strong> konkrete Schritte, denen ein Reviewer folgen kann. ("1. App starten. 2. Zu Ergebnisse navigieren. 3. Auf Export klicken — eine Datei namens <code>results.csv</code> sollte heruntergeladen werden.")<br><br>
+          <strong>Screenshots / Vorher-Nachher</strong> (für UI-Änderungen) — ein Bild spart fünf Minuten Reviewer-Aufwand.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Viele Teams verwenden ein PR-Template (eine <code>.github/pull_request_template.md</code>-Datei), das die Beschreibung mit den erforderlichen Abschnitten vorausfüllt. Wenn dein Repo eines hat, fülle immer jeden Abschnitt aus.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Der Titel folgt denselben Konventionen wie Commit-Messages: Imperativ, unter 72 Zeichen. "CSV-Export zum Ergebnispanel hinzufügen" — nicht "Export hinzugefügt" oder "Exportkram".</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Was tust du, wenn <code>main</code> deinem Feature-Branch voraus ist?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Pflicht</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Dein Branch hat sich verzweigt — hole <code>main</code> vor dem Mergen herein</div>
+      <div class="strategy-text">Du arbeitest seit zwei Tagen an einem Branch. In dieser Zeit haben drei Teammitglieder ihre PRs in <code>main</code> gemergt. Jetzt ist dein Branch hintendran — der PR kann nicht sauber gemergt werden, und wenn dein Team einen aktuellen Branch verlangt, ist Githubs Merge-Button ausgegraut. Du musst <code>main</code> in deinen Branch holen.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Standardlösung — <code>main</code> in deinen Branch mergen</div>
+        <div class="answer-box-text">
+<div class="code-block"># Sicherstellen, dass dein lokales main aktuell ist
+git switch main
+git pull
+
+# Zurück zu deinem Feature-Branch wechseln
+git switch feature/export-button-hinzufuegen
+
+# Die Änderungen von main hereinbringen
+git merge main
+
+# Bei Konflikten: auflösen (siehe Thema 3), dann:
+git add .
+git commit   # Git füllt die Merge-Commit-Nachricht vor
+
+# Den aktualisierten Branch pushen
+git push</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Manche Teams bevorzugen <code>git rebase main</code> statt <code>git merge main</code> — Rebase schreibt deine Commits auf das neueste <code>main</code> um und erzeugt eine lineare History. Beide Ansätze sind gültig; folge der Konvention deines Teams.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Wenn du rebased und der Branch schon auf GitHub ist, brauchst du <code>git push --force-with-lease</code> (nicht <code>--force</code>) — das ist die einzige legitime Verwendung von Force-Push, und nur auf deinem eigenen Feature-Branch.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Tu das regelmäßig bei langläufigen Branches — einmal täglich ist nicht übertrieben. Kleine, häufige Merges sind viel leichter aufzulösen als ein großer am Ende.</div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Verwende <code>git rebase</code> niemals auf einem Branch, an dem auch andere Leute arbeiten — es überschreibt Commit-Hashes und bricht ihre lokale Kopie des Branches.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Wie antwortest du auf einen Review-Kommentar — besonders einen, mit dem du nicht einverstanden bist?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Pflicht</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Code-Review ist ein Dialog, kein Urteil</div>
+      <div class="strategy-text">Den ersten kritischen Review-Kommentar zu erhalten fühlt sich persönlich an. Das ist es nicht — Reviewer kommentieren den Code, nicht dich. Wie du auf Reviews reagierst, prägt deinen Ruf im Team stärker als der Code selbst. Entwickler, die durchdacht reagieren, werden schneller mit mehr Verantwortung betraut.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Das richtige Reaktionsmuster</div>
+        <div class="answer-box-text">
+          <strong>Wenn du zustimmst:</strong> mache die Änderung, pushe den Commit und antworte kurz auf den Kommentar — "Erledigt" oder "In letztem Push behoben" — damit der Reviewer weiß, dass er nachsehen soll. Nicht einfach still pushen.<br><br>
+          <strong>Wenn du nicht einverstanden bist oder Klärung brauchst:</strong> frag nach — ignoriere den Kommentar nicht einfach. "Ich habe X gewählt, weil Y — behebt das dein Anliegen?" ist eine völlig professionelle Antwort. Reviewer haben nicht deinen vollen Kontext; du schon.<br><br>
+          <strong>Wenn der Kommentar außerhalb des Umfangs liegt:</strong> erkenne ihn an und öffne ein separates Issue. "Guter Punkt — ich habe #47 eröffnet, um das separat zu verfolgen, damit es diesen PR nicht blockiert."
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Löse immer einen Kommentar auf — entweder durch die Änderung oder durch die Erklärung, warum du sie nicht gemacht hast. Ungelöste Kommentare sind der häufigste Grund, warum PRs ins Stocken geraten.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Auf GitHub ist es der Reviewer (nicht der Autor), der auf "Resolve conversation" klickt, sobald er zufrieden ist. Löse deine eigenen Kommentare nicht auf — lass den Reviewer sie schließen.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Welche Regeln brechen die meisten neuen Entwickler am ersten Tag?</span>
+      <span class="q-badges"><span class="badge badge-common">Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Vier Gewohnheiten, die einen erfahrenen Team-Player von einem Newcomer unterscheiden</div>
+      <div class="strategy-text">Das sind keine fortgeschrittenen Git-Themen — es sind Workflow-Gewohnheiten, die erfahrene Entwickler automatisch befolgen. Ihre Verletzung bricht Git nicht, erzeugt aber Reibung für alle im Team und signalisiert erfahrenen Entwicklern, dass die Person noch nicht auf einem gemeinsamen Codebase gearbeitet hat.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die vier Regeln</div>
+        <div class="answer-box-text">
+          <strong>1. Commit auf einen Branch, niemals direkt auf <code>main</code>.</strong> Auch für eine einzeilige Korrektur. Branches sind kostenlos — es gibt keinen Grund, diesen Schritt zu überspringen.<br><br>
+          <strong>2. Pull vor dem Push.</strong> <code>git pull</code> vor dem Arbeitsbeginn und vor dem Öffnen eines PR. Wenn du das überspringst, wird dein Push vielleicht abgelehnt oder dein PR hat unnötige Konflikte.<br><br>
+          <strong>3. Commits fokussiert und Nachrichten aussagekräftig halten.</strong> "fixes" oder "wip"-Commit-Nachrichten machen <code>git log</code> für alle nutzlos. Die Konvention: Imperativ, Präsens, unter 72 Zeichen. "API-Aufrufen Timeout-Behandlung hinzufügen", nicht "irgendwas hinzugefügt".<br><br>
+          <strong>4. Niemals Secrets auf einen Branch pushen.</strong> API-Schlüssel, Passwörter, Tokens und <code>.env</code>-Dateien gehören nicht in Git — nicht einmal auf einem "privaten" Branch, den du später bereinigen willst.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <strong>Gepushte Secrets können nicht mit einem normalen Commit "gelöscht" werden.</strong> Sie verbleiben in der vollständigen Repository-History, sichtbar für jeden mit Lesezugriff. Falls du versehentlich ein Secret pushst, rotiere es sofort und kontaktiere deinen Teamlead — warte nicht.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Wie beeinflusst die Merge-Strategie die Team-History — Squash vs. Merge vs. Rebase?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Tipp</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Drei Merge-Buttons, drei sehr unterschiedliche Ergebnisse in <code>git log</code></div>
+      <div class="strategy-text">GitHub bietet beim Schließen eines PR drei Merge-Strategien an. Die meisten Teams wählen eine und setzen sie konsequent durch. Zu wissen, was jede in der History erzeugt, hilft dir zu verstehen, warum dein Team die Wahl getroffen hat — und verhindert Überraschungen beim Blick in <code>git log</code> nach einem Merge.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die drei Strategien</div>
+        <div class="answer-box-text">
+          <strong>Merge Commit (Standard)</strong> — alle Branch-Commits bleiben erhalten, plus ein Merge-Commit wird hinzugefügt. Die History zeigt genau, was wann passiert ist. Die Branch-Topologie ist in <code>git log --graph</code> sichtbar.<br><br>
+          <strong>Squash and Merge</strong> — alle Branch-Commits werden zu einem einzigen Commit auf <code>main</code> zusammengefasst. Die gesamte Arbeit des PR wird zu einem sauberen Commit. Bevorzugt, wenn Branch-Commits unordentliche "wip"-Checkpoints sind.<br><br>
+          <strong>Rebase and Merge</strong> — Branch-Commits werden einzeln auf das neueste <code>main</code> replayed, ohne Merge-Commit. Die History ist vollständig linear. Bevorzugt auf Teams, die ein sauberes, lesbares <code>git log</code> über alles stellen.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Prüfe vor deinem ersten PR, welche Strategie dein Team verwendet — das beeinflusst, wie du deine Commits schreiben solltest und ob deine Commit-Nachrichten in <code>main</code>'s Log erscheinen.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Squash ist für Newcomer am vergebendsten — unordentliche Branch-Commits werden zu einem sauberen Eintrag zusammengefaltet. Viele Forschungsteams verwenden Squash aus genau diesem Grund als Standard.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🛠️</div>
+    <div>
+      <div class="section-title">Praxisübung</div>
+      <div class="section-subtitle">Simuliere einen kompletten Team-PR-Zyklus von Grund auf — zwei Branches, ein "Teammitglied", ein Merge</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Den vollständigen Team-Loop in einem lokalen Übungsrepo durchführen</h2>
+    <p>Das folgende Skript simuliert dich <em>und</em> ein Teammitglied, die beide am selben Repo arbeiten — dein Teammitglied mergt in <code>main</code>, während du mitten in einem Feature bist, genau die Situation, die neue Entwickler überrascht. Geh es einmal durch, und die Schleife wird sich von da an mechanisch (im guten Sinne) anfühlen.</p>
+    <div class="code-block"># ─── Setup: Übungsrepo erstellen ─────────────────────────────────────────────
+git init team-workflow-uebung && cd team-workflow-uebung
+echo "# Team App" > README.md
+git add . && git commit -m "chore: initialer Commit"
+
+# ─── Du: Feature-Branch starten ──────────────────────────────────────────────
+git switch -c feature/dashboard-hinzufuegen
+echo "Dashboard Platzhalter" > dashboard.txt
+git add . && git commit -m "feat: Dashboard-Seite gerüsten"
+
+# ─── Teammitglied simulieren, das in main merged ──────────────────────────────
+git switch main
+echo "Hilfsfunktion" > utils.txt
+git add . && git commit -m "feat: gemeinsame Hilfsfunktion hinzufügen (Arbeit des Teammitglieds)"
+
+# ─── Du: zurück zum Branch und aktualisieren ──────────────────────────────────
+git switch feature/dashboard-hinzufuegen
+git merge main
+# → Kein Konflikt hier — verschiedene Dateien. Ein Merge-Commit wird erstellt.
+git log --oneline --graph
+# → Branch-History und Merge von main sind sichtbar
+
+# ─── Du: Feature fertigstellen ────────────────────────────────────────────────
+echo "Dashboard komplett" >> dashboard.txt
+git add . && git commit -m "feat: Dashboard-Implementierung abschließen"
+
+# ─── PR simulieren: Branch in main mergen ─────────────────────────────────────
+git switch main
+git merge feature/dashboard-hinzufuegen --no-ff -m "Pull Request mergen: Dashboard-Seite hinzufügen"
+
+# ─── Aufräumen: Feature-Branch löschen ────────────────────────────────────────
+git branch -d feature/dashboard-hinzufuegen
+git log --oneline --graph
+# → main enthält jetzt die Arbeit des Teammitglieds UND dein Dashboard, sauber gemergt</div>
+    <p>Wiederhole das mit einer <em>konfliktierenden</em> Änderung — lass sowohl dich als auch dein "Teammitglied" dieselbe Datei bearbeiten — und löse den Konflikt mit den Schritten aus Thema 3. Das ist die vollständige Schleife mit allen realen Komplikationen.</p>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du hast dieses Thema abgeschlossen, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du den vollständigen PR-Lifecycle von Anfang bis Ende beschreiben kannst: <code>main</code> pullen → Branch → committen → pushen → PR öffnen → Review-Zyklus → mergen → Branch löschen.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du weißt, wie du einen veralteten Feature-Branch mit <code>git merge main</code> aktualisierst, und kannst erklären, wann (und warum) ein Team stattdessen <code>git rebase main</code> wählen könnte.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du kannst eine PR-Beschreibung mit einer klaren Was/Warum/Wie-zu-testen-Struktur schreiben und weißt, wie du auf einen Review-Kommentar — einschließlich eines, mit dem du nicht einverstanden bist — professionell antwortest.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du kannst die vier Regeln nennen, die die meisten neuen Entwickler am ersten Tag brechen, und die Konsequenz des Brechens jeder einzelnen für das restliche Team erklären.</div>
+  </div>
+
+</div><!-- /tab-de -->
+
+<!-- ═══════════════════════════════════════════════════
+     ARABIC TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🔒</div>
+    <div>
+      <div class="section-title">الفروع المحمية — شبكة أمان الفريق</div>
+      <div class="section-subtitle">لماذا يكون <code dir="ltr">main</code> مقفلاً — ولماذا يجعل ذلك حياة الجميع أسهل</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>القاعدة الأولى في Git الجماعي: لا أحد يدفع مباشرةً إلى <code dir="ltr">main</code></h2>
+    <p>في مشروع فردي تدفع إلى <code dir="ltr">main</code> بحرية. على قاعدة كود مشتركة، يكون <code dir="ltr">main</code> (وغالباً <code dir="ltr">develop</code> أيضاً) <strong>فرعاً محمياً</strong> على GitHub. الحماية تعني: لا دفع مباشر، لا force-push، وكل تغيير يجب أن يصل عبر طلب دمج (PR) تمت مراجعته والموافقة عليه. بعض الفرق تشترط أيضاً أن يكون الفرع محدَّثاً بـ <code dir="ltr">main</code> قبل الدمج، وأن تجتاز اختبارات الـ CI قبل أن يتمكن أي شخص من النقر على زر الدمج.</p>
+    <p>هذا ليس بيروقراطية — إنه الآلية التي تحافظ على نظافة التاريخ المشترك وتضمن أنه لا يمكن لشخص واحد أن يعطّل الكود الذي يعتمد عليه الجميع.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>قواعد حماية الفروع (GitHub):</strong> تُضبط في إعدادات المستودع ← Branches. قواعد شائعة: اشتراط PR قبل الدمج، اشتراط موافقة واحدة على الأقل، اشتراط اجتياز فحوصات الحالة، منع force-push.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>ما يحدث عند محاولة الدفع المباشر:</strong> يرفض GitHub الدفع مع خطأ <code dir="ltr">GH006: Protected branch update failed</code>. الحل دائماً: "افتح PR بدلاً من ذلك."</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>من يمكنه تجاوز القواعد:</strong> يمكن منح مديري المستودعات حقوق التجاوز، لكن في معظم فرق البحث حتى المديرون يمرون عبر PRs — للحفاظ على سجل التدقيق كاملاً.</div>
+    </div>
+    <div class="warning-box">
+      <div class="warning-box-text">⚠️ <strong>لا تطلب أبداً حقوق force-push على فرع مشترك (ولا تستخدمها).</strong> حتى حين يبدو الأمر كأسرع حل، فإنه يعيد كتابة التاريخ من تحت كل زميل سحب تلك الـ commits بالفعل — مما يتسبب في تباينات مؤلمة يصعب فكّها.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🔄</div>
+    <div>
+      <div class="section-title">حلقة Git الجماعية</div>
+      <div class="section-subtitle">الدورة اليومية المتكررة التي يتبعها كل مساهم — ست خطوات، بلا استثناءات</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>كل ميزة، كل إصلاح، كل تجربة تتبع نفس الحلقة</h2>
+    <p>سواء استغرق التغيير عشر دقائق أو عشرة أيام، فإنه يسلك نفس المسار. فهم هذه الحلقة كتسلسل ثابت — لا كمجموعة أوامر اعتباطية — هو ما يميّز المطورين الذين يشعرون بالسيطرة على Git عن أولئك الذين يشعرون بأنهم يخمّنون.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>1. اسحب أحدث <code dir="ltr">main</code></strong> — ابدأ دائماً من جديد: <code dir="ltr">git switch main &amp;&amp; git pull</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>2. أنشئ فرع ميزة مسمّى</strong> — تفرّع من <code dir="ltr">main</code> المحدَّث حديثاً: <code dir="ltr">git switch -c feature/شيئي</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>3. أنشئ commits على فرعك</strong> — commits صغيرة ومركّزة برسائل واضحة. ادفع بانتظام لحفظ عملك: <code dir="ltr">git push -u origin feature/شيئي</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>4. حافظ على تحديث فرعك</strong> — إن تقدّم <code dir="ltr">main</code>، ادمجه أو أعد ترتيب commits قبل فتح الـ PR (مشروح في الأسئلة والأجوبة أدناه).</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>5. افتح PR على GitHub</strong> — اكتب وصفاً واضحاً، عيّن مراجعين، اربط الـ issues ذات الصلة.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>6. استجب للمراجعة، احصل على الموافقة، ادمج، احذف الفرع</strong> — مهمة الفرع تنتهي لحظة دمجه؛ حافظ على نظافة المستودع.</div>
+    </div>
+    <div class="code-block" dir="ltr"># الحلقة الكاملة كما تُكتب
+git switch main
+git pull
+
+git switch -c feature/add-export-button
+
+# ...عمل، عمل، عمل...
+git add src/components/ExportButton.tsx
+git commit -m "feat: add CSV export button to results panel"
+git push -u origin feature/add-export-button
+
+# افتح PR على GitHub، احصل على المراجعة والموافقة
+
+# بعد الدمج على GitHub — نظّف محلياً
+git switch main
+git pull
+git branch -d feature/add-export-button</div>
+    <p>الخطوة الأخيرة — حذف الفرع المحلي بعد الدمج — هي التي يتخطاها معظم المطورين في البداية. بعد بضعة أشهر تجد نفسك مع عشرات الفروع المحلية القديمة التي تبدو جميعها وكأنها لا تزال نشطة. احذفها فور انتهاء عملها.</p>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#faf5ff;">💬</div>
+    <div>
+      <div class="section-title">المفاهيم الأساسية — افتح كل بطاقة</div>
+      <div class="section-subtitle">أسئلة سير العمل الجماعي التي تعثّر كل مطور في أسابيعه الأولى على قاعدة كود مشتركة</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">ما هي الفروع المحمية وما القواعد التي يضعها الفريق النموذجي؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ أساسي</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">الحواجز التي تحافظ على نظافة التاريخ المشترك</div>
+      <div class="strategy-text">حماية الفروع إعداد في مستودع GitHub يمنع أي شخص من الدفع مباشرةً إلى فرع — يجب عليه المرور عبر PR بدلاً من ذلك. إنها أهم أداة تنظيمية في Git الجماعي، وتقريباً كل فريق محترف يستخدمها على <code dir="ltr">main</code>.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">مجموعة القواعد النموذجية</div>
+        <div class="answer-box-text">
+          <strong>اشتراط pull request قبل الدمج</strong> — لا دفع مباشر أبداً.<br><br>
+          <strong>اشتراط N موافقة على الأقل</strong> — معظم الفرق تشترط 1؛ بعضها يشترط 2 لفروع الإنتاج.<br><br>
+          <strong>اشتراط اجتياز فحوصات الحالة</strong> — يجب أن تكون الـ CI (الاختبارات، فحص الكود) خضراء قبل أن يصبح زر الدمج قابلاً للنقر.<br><br>
+          <strong>اشتراط تحديث الفرع</strong> — يجب أن يتضمن فرعك أحدث <code dir="ltr">main</code> قبل أن تتمكن من الدمج.<br><br>
+          <strong>منع force push</strong> — لا إعادة كتابة للتاريخ المشترك أبداً.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>هذه القواعد تُطبَّق على الفرع، لا على المستخدم. حتى مديرو المستودعات خاضعون لها (إلا إذا مُنحوا صراحةً حقوق التجاوز — وهو ما لا تمنحه معظم الفرق).</div>
+        <div class="key-point"><div class="key-point-dot"></div>إذا رُفض دفعك بخطأ <code dir="ltr">GH006: Protected branch update failed</code>، لا تبحث عن حل بديل — افتح PR. هذا هو المسار المقصود.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">كيف تكتب وصف PR يُراجَع فعلاً؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ أساسي</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">وقت المراجعين محدود — اجعل عملهم خالياً من الاحتكاك</div>
+      <div class="strategy-text">PR بلا وصف يُراجَع ببطء، أو بشكل سطحي، أو لا يُراجَع أصلاً — لا يعرف المراجعون أين يركّزون. PR بوصف واضح لـ <em>ما</em> تغيّر و<em>لماذا</em> تغيّر و<em>كيف يُختبر</em> يحصل على مراجعة متأنية في جزء من الوقت.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">ما يحتاجه كل وصف PR</div>
+        <div class="answer-box-text">
+          <strong>ماذا:</strong> جملة واحدة تلخّص التغيير. ("يضيف زر تصدير CSV إلى لوحة النتائج.")<br><br>
+          <strong>لماذا:</strong> اربط الـ issue/ticket الذي يحله، أو اشرح الدافع. ("يغلق #42 — أفاد المستخدمون بحاجتهم لتصدير النتائج لتحليلهم الخاص.")<br><br>
+          <strong>كيف تختبره:</strong> خطوات ملموسة يمكن للمراجع اتباعها. ("1. شغّل التطبيق. 2. انتقل إلى النتائج. 3. انقر على تصدير — يجب أن يُنزَّل ملف باسم <code dir="ltr">results.csv</code>.")<br><br>
+          <strong>لقطات شاشة / قبل وبعد</strong> (لتغييرات الواجهة) — صورة واحدة توفّر خمس دقائق من جهد المراجع.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>كثير من الفرق تستخدم قالب PR (ملف <code dir="ltr">.github/pull_request_template.md</code>) يملأ الوصف مسبقاً بالأقسام المطلوبة. إذا كان مستودعك يمتلك واحداً، املأ كل قسم دائماً.</div>
+        <div class="key-point"><div class="key-point-dot"></div>يتبع العنوان نفس اتفاقية رسائل الـ commit: صيغة الأمر، أقل من 72 حرفاً. "Add CSV export to results panel" — لا "Added export" أو "Export stuff".</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">ماذا تفعل حين يتقدّم <code dir="ltr">main</code> على فرع الميزة الخاص بك؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ أساسي</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">فرعك تباعَد — أدخل <code dir="ltr">main</code> قبل الدمج</div>
+      <div class="strategy-text">أنت تعمل على فرع منذ يومين. في هذا الوقت، دمج ثلاثة زملاء PRs-هم في <code dir="ltr">main</code>. الآن فرعك متأخر — لا يمكن دمج الـ PR بشكل نظيف، وإذا كان فريقك يشترط تحديث الفرع، فزر الدمج في GitHub رمادي. تحتاج إلى إدخال <code dir="ltr">main</code> في فرعك.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الحل المعياري — دمج <code dir="ltr">main</code> في فرعك</div>
+        <div class="answer-box-text">
+<div class="code-block" dir="ltr"># تأكد أن main المحلي محدَّث
+git switch main
+git pull
+
+# ارجع إلى فرع الميزة
+git switch feature/add-export-button
+
+# أدخل تغييرات main
+git merge main
+
+# في حال وجود تعارضات، أحلّها (راجع الموضوع 3)، ثم:
+git add .
+git commit   # Git يملأ رسالة merge commit مسبقاً
+
+# ادفع الفرع المحدَّث
+git push</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>بعض الفرق تفضّل <code dir="ltr">git rebase main</code> بدلاً من <code dir="ltr">git merge main</code> — الـ rebase يعيد كتابة commits-ك فوق أحدث <code dir="ltr">main</code>، منتجاً تاريخاً خطياً. كلا النهجين صالح؛ اتبع اتفاقية فريقك.</div>
+        <div class="key-point"><div class="key-point-dot"></div>إذا أجريت rebase والفرع موجود بالفعل على GitHub، ستحتاج <code dir="ltr">git push --force-with-lease</code> (لا <code dir="ltr">--force</code>) — هذا هو الاستخدام الوحيد المشروع لـ force-push، وفقط على فرع الميزة الخاص بك.</div>
+        <div class="key-point"><div class="key-point-dot"></div>افعل هذا بانتظام على الفروع طويلة الأمد — مرة يومياً ليس مبالغة. عمليات الدمج الصغيرة والمتكررة أسهل بكثير من دمج كبير واحد في النهاية.</div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ لا تستخدم <code dir="ltr">git rebase</code> أبداً على فرع يعمل عليه أشخاص آخرون أيضاً — إنه يعيد كتابة هاشات الـ commit، مما يكسر نسختهم المحلية من الفرع.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">كيف تستجيب لتعليق مراجعة — خاصةً تعليقاً لا توافق عليه؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ أساسي</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">مراجعة الكود حوار، لا حكم</div>
+      <div class="strategy-text">تلقّي أول تعليق مراجعة نقدي يبدو شخصياً. إنه ليس كذلك — المراجعون يعلّقون على الكود، لا عليك. طريقة استجابتك للمراجعة تُشكّل سمعتك في الفريق أكثر من الكود نفسه. المطورون الذين يتعاملون بتفكّر يُوثَق بهم بمسؤوليات أكبر بشكل أسرع.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">نمط الاستجابة الصحيح</div>
+        <div class="answer-box-text">
+          <strong>حين توافق:</strong> أجرِ التغيير، ادفع الـ commit، ورد على التعليق بشيء قصير — "تم" أو "مُصلَّح في آخر دفع" — حتى يعلم المراجع بالمراجعة من جديد. لا تدفع بصمت فقط.<br><br>
+          <strong>حين لا توافق أو تحتاج توضيحاً:</strong> اسأل — لا تتجاهل التعليق. "اخترت X لأن Y — هل هذا يعالج قلقك؟" رد احترافي تماماً. المراجعون لا يملكون سياقك الكامل؛ أنت تملكه.<br><br>
+          <strong>حين يكون التعليق خارج نطاق PR:</strong> اعترف به وافتح issue منفصلاً. "نقطة جيدة — فتحت #47 لتتبع هذا بشكل منفصل حتى لا يُعيق هذا الـ PR."
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>أحلّ دائماً التعليق — إما بإجراء التغيير أو بشرح سبب عدم قيامك به. التعليقات غير المحلولة هي السبب الأكثر شيوعاً لتعثّر PRs.</div>
+        <div class="key-point"><div class="key-point-dot"></div>على GitHub، المراجع (لا المؤلف) هو من ينقر على "Resolve conversation" حين يقتنع. لا تحلّ تعليقاتك بنفسك — دع المراجع يغلقها.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">ما القواعد التي يخرقها معظم المطورين الجدد في اليوم الأول؟</span>
+      <span class="q-badges"><span class="badge badge-common">شائع</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">أربع عادات تميّز لاعب فريق متمرس عن وافد جديد</div>
+      <div class="strategy-text">هذه ليست مواضيع Git متقدمة — إنها عادات سير عمل يتبعها المطورون المتمرسون تلقائياً. خرقها لا يكسر Git، لكنه يُنشئ احتكاكاً لكل شخص في الفريق ويُشير للمطورين الأقدم أن الشخص لم يعمل على قاعدة كود مشتركة من قبل.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">القواعد الأربع</div>
+        <div class="answer-box-text">
+          <strong>1. أنشئ commit على فرع، لا مباشرةً على <code dir="ltr">main</code>.</strong> حتى لإصلاح سطر واحد. الفروع مجانية — لا مبرر لتخطي هذه الخطوة.<br><br>
+          <strong>2. اسحب قبل أن تدفع.</strong> <code dir="ltr">git pull</code> قبل بدء العمل وقبل فتح PR. إن تخطيت هذا، قد يُرفض دفعك أو يكون الـ PR به تعارضات لا داعي لها.<br><br>
+          <strong>3. حافظ على commits مركّزة ورسائل ذات معنى.</strong> رسائل "fixes" أو "wip" تجعل <code dir="ltr">git log</code> عديم الفائدة للجميع. الاتفاقية: صيغة أمر، مضارع، أقل من 72 حرفاً.<br><br>
+          <strong>4. لا تدفع أسراراً أبداً على أي فرع.</strong> مفاتيح API وكلمات مرور وتوكنز وملفات <code dir="ltr">.env</code> لا تنتمي لـ Git — حتى على فرع "خاص" تنوي تنظيفه لاحقاً.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <strong>الأسرار المدفوعة لا يمكن "حذفها" بـ commit عادي.</strong> تبقى في التاريخ الكامل للمستودع، مرئية لكل من لديه صلاحية قراءة. إن دفعت سراً بالخطأ، غيّره فوراً واتصل بمسؤول فريقك — لا تنتظر.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">كيف تؤثر استراتيجية الدمج على تاريخ الفريق — Squash مقابل Merge مقابل Rebase؟</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 نصيحة</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">ثلاثة أزرار دمج، ثلاث نتائج مختلفة جداً في <code dir="ltr">git log</code></div>
+      <div class="strategy-text">يُقدّم GitHub ثلاث استراتيجيات دمج عند إغلاق PR. تختار معظم الفرق واحدة وتُطبّقها باتساق. معرفة ما تُنتجه كل منها في التاريخ يساعدك على فهم لماذا اتخذ فريقك هذا الاختيار — ويمنع المفاجآت حين تنظر في <code dir="ltr">git log</code> بعد الدمج.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الاستراتيجيات الثلاث</div>
+        <div class="answer-box-text">
+          <strong>Merge commit (الافتراضي)</strong> — تُحفظ جميع commits الفرع كما هي، بالإضافة إلى إضافة merge commit. يُظهر التاريخ بالضبط ما حدث ومتى. توبولوجيا الفرع مرئية في <code dir="ltr">git log --graph</code>. مفضَّل حين يكون تاريخ commits الميزة ذا معنى.<br><br>
+          <strong>Squash and merge</strong> — تُجمَّع جميع commits الفرع في commit واحد على <code dir="ltr">main</code>. يصبح عمل الـ PR كله commit واحداً نظيفاً. مفضَّل حين تكون commits الفرع نقاط تفتيش فوضوية.<br><br>
+          <strong>Rebase and merge</strong> — تُعاد commits الفرع واحداً تلو الآخر فوق أحدث <code dir="ltr">main</code>، بلا merge commit. التاريخ خطي تماماً. مفضَّل على الفرق التي تُولي <code dir="ltr">git log</code> النظيف الأولوية القصوى.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>تحقق من الاستراتيجية التي يستخدمها فريقك قبل فتح أول PR — يؤثر ذلك على كيفية كتابة commits وما إذا كانت رسائل commits الفردية ستظهر في سجل <code dir="ltr">main</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Squash هو الأكثر تسامحاً للوافدين الجدد — commits الفرع الفوضوية تُطوى في إدخال نظيف واحد. كثير من فرق البحث تستخدم squash كافتراضي لهذا السبب بالضبط.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🛠️</div>
+    <div>
+      <div class="section-title">التطبيق العملي</div>
+      <div class="section-subtitle">محاكاة دورة PR جماعية كاملة من الصفر — فرعان، "زميل" واحد، دمج واحد</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>شغّل الحلقة الجماعية الكاملة في مستودع تدريبي محلي</h2>
+    <p>السكريبت التالي يحاكي عملك <em>أنت</em> و<em>زميل</em> على نفس المستودع معاً — زميلك يدمج في <code dir="ltr">main</code> بينما أنت في منتصف ميزة، بالضبط الوضع الذي يفاجئ المطورين الجدد. مرّ عليه مرة واحدة وستشعر بأن الحلقة أصبحت آلية (بالمعنى الإيجابي) من تلك اللحظة.</p>
+    <div class="code-block" dir="ltr"># ─── الإعداد: إنشاء مستودع تدريبي مشترك ─────────────────────────────────────
+git init team-workflow-practice && cd team-workflow-practice
+echo "# Team App" > README.md
+git add . && git commit -m "chore: initial commit"
+
+# ─── أنت: ابدأ فرع ميزة ───────────────────────────────────────────────────────
+git switch -c feature/add-dashboard
+echo "dashboard placeholder" > dashboard.txt
+git add . && git commit -m "feat: scaffold dashboard page"
+
+# ─── محاكاة زميل يدمج في main بينما تعمل ─────────────────────────────────────
+git switch main
+echo "utility function" > utils.txt
+git add . && git commit -m "feat: add shared utility (teammate's work)"
+
+# ─── أنت: ارجع إلى فرعك وحدّثه ──────────────────────────────────────────────
+git switch feature/add-dashboard
+git merge main
+# → لا تعارض هنا — ملفات مختلفة. يُنشأ merge commit.
+git log --oneline --graph
+# → يمكنك رؤية تاريخ فرعك والدمج من main
+
+# ─── أنت: أكمل الميزة ────────────────────────────────────────────────────────
+echo "dashboard complete" >> dashboard.txt
+git add . && git commit -m "feat: complete dashboard implementation"
+
+# ─── محاكاة PR: دمج فرعك في main ─────────────────────────────────────────────
+git switch main
+git merge feature/add-dashboard --no-ff -m "Merge pull request: Add dashboard page"
+
+# ─── التنظيف: حذف فرع الميزة ─────────────────────────────────────────────────
+git branch -d feature/add-dashboard
+git log --oneline --graph
+# → main يحتوي الآن على عمل الزميل ولوحة التحكم الخاصة بك، مدموجَين بنظافة</div>
+    <p>كرّر هذا بتغيير <em>متعارض</em> — دع كليكما أنت و"زميلك" يحرران نفس الملف — وأحلّ التعارض باستخدام خطوات الموضوع الثالث. تلك هي الحلقة الكاملة بكل التعقيدات الحقيقية مشمولةً.</p>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> انتهيت من هذا الموضوع عندما...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع وصف دورة حياة الـ PR الكاملة من البداية للنهاية: سحب <code dir="ltr">main</code> → إنشاء فرع → commit → push → فتح PR → دورة المراجعة → دمج → حذف الفرع.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تعرف كيف تحدّث فرع ميزة قديم باستخدام <code dir="ltr">git merge main</code>، ويمكنك شرح متى (ولماذا) قد يختار فريق <code dir="ltr">git rebase main</code> بدلاً من ذلك.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع كتابة وصف PR بهيكل ماذا/لماذا/كيف-تختبر واضح، وتعرف كيف تستجيب لتعليق مراجعة — بما في ذلك تعليق لا توافق عليه — باحترافية.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع تسمية القواعد الأربع التي يخرقها معظم المطورين الجدد في اليوم الأول وشرح عواقب خرق كل منها على بقية الفريق.</div>
+  </div>
+
+</div><!-- /tab-ar -->
+
+  </div><!-- /body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'lms_github_05_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+</body>
+</html>

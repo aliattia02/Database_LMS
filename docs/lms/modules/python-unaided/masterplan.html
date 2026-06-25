@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Unaided Coding — Course Index</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── Masterplan page-specific styles — copied verbatim from ref-masterplan.html ── */
+
+.intro-text {
+  color: var(--slate);
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 700px;
+  margin-bottom: 26px;
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 14px;
+}
+
+.course-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 18px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: inherit;
+  width: 100%;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.course-card:hover { border-color: var(--blue); transform: translateY(-2px); }
+.course-card:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.course-card-top { display: flex; align-items: center; gap: 10px; }
+.course-num {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: var(--blue-bg); color: var(--blue);
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.course-title    { font-size: 14px; font-weight: 700; color: var(--navy); }
+.course-subtitle { font-size: 12.5px; color: var(--slate); line-height: 1.55; }
+.course-open {
+  margin-top: auto;
+  font-size: 11.5px; font-weight: 600; color: var(--blue);
+  display: flex; align-items: center; gap: 4px;
+}
+
+.course-card.featured { border-color: var(--blue-border); background: var(--blue-bg); }
+.course-card.featured .course-num { background: var(--blue); color: #fff; }
+
+.weight-badge {
+  font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px;
+  white-space: nowrap; display: inline-block; margin-top: 4px; align-self: flex-start;
+}
+.w-critical { background: #fee2e2; color: #b91c1c; }
+.w-high     { background: #ffedd5; color: #c2410c; }
+.w-medium   { background: #dbeafe; color: #1d4ed8; }
+.w-low      { background: #dcfce7; color: #15803d; }
+
+.grid-group-label {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted); margin: 24px 0 10px;
+  display: flex; align-items: center; gap: 10px;
+}
+.grid-group-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.decoder-block {
+  background: var(--amber-bg); border: 1.5px solid var(--amber-border);
+  border-radius: var(--radius); margin-bottom: 28px; overflow: hidden;
+}
+.decoder-trigger {
+  width: 100%; background: none; border: none; text-align: left;
+  padding: 16px 20px; cursor: pointer; display: flex; align-items: center;
+  justify-content: space-between; font-family: inherit;
+}
+.decoder-trigger-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--amber-text);
+  display: flex; align-items: center; gap: 8px;
+}
+.decoder-chevron {
+  font-size: 12px; color: var(--amber-text); transition: transform .2s;
+}
+.decoder-trigger.open .decoder-chevron { transform: rotate(180deg); }
+.decoder-body { display: none; padding: 0 20px 20px; }
+.decoder-body.open { display: block; }
+
+.decoder-section { margin-bottom: 18px; }
+.decoder-section h3 {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--amber-text); margin-bottom: 10px;
+}
+
+.must-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.must-pill  { font-size: 11px; padding: 3px 10px; border-radius: 99px; font-weight: 700; background: #fca5a5; color: #7f1d1d; }
+.nice-pill  { font-size: 11px; padding: 3px 10px; border-radius: 99px; font-weight: 600; background: var(--blue-bg); color: var(--blue); }
+
+.rank-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; }
+.rank-label { font-size: 12px; font-weight: 600; color: var(--navy); min-width: 240px; }
+.rank-bar-wrap { flex: 1; background: #fde68a; border-radius: 99px; height: 7px; overflow: hidden; }
+.rank-bar-fill { height: 7px; border-radius: 99px; }
+.rank-bar-critical { background: #dc2626; }
+.rank-bar-high     { background: #ea580c; }
+.rank-bar-medium   { background: #d97706; }
+.rank-lbl { font-size: 11px; font-weight: 700; min-width: 90px; color: var(--amber-text); }
+
+.client-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.client-tag {
+  font-size: 11px; padding: 3px 10px; border-radius: 8px;
+  background: var(--white); border: 1px solid var(--amber-border);
+  color: var(--amber-text); font-weight: 600;
+}
+.decoder-note {
+  font-size: 12.5px; color: var(--amber-text); line-height: 1.65; margin-bottom: 6px;
+}
+
+[dir="rtl"] .course-card       { text-align: right; }
+[dir="rtl"] .course-open       { flex-direction: row-reverse; }
+[dir="rtl"] .grid-group-label  { flex-direction: row-reverse; }
+[dir="rtl"] .grid-group-label::after  { display: none; }
+[dir="rtl"] .grid-group-label::before { content: ''; flex: 1; height: 1px; background: var(--border); }
+[dir="rtl"] .decoder-trigger   { flex-direction: row-reverse; }
+[dir="rtl"] .decoder-trigger-label { flex-direction: row-reverse; }
+[dir="rtl"] .rank-row          { flex-direction: row-reverse; }
+</style>
+</head>
+<body>
+
+<!-- Masterplan = indexRoute, loaded inside the LMS shell — no .home-nav needed. -->
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">PYTHON UNAIDED CODING &mdash; Course Index</div>
+    <h1>Python Unaided Coding</h1>
+    <p class="header-sub">
+      Build the automaticity to write, read, and debug <code>Python</code> by hand —
+      no AI assist — so you're ready for live coding, code review, and the UKM
+      hospital-data integration work ahead.
+    </p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de', this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar', this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="decoder-block">
+    <button class="decoder-trigger" onclick="toggleDecoder(this)">
+      <span class="decoder-trigger-label">⚑ Topic Priority Guide</span>
+      <span class="decoder-chevron">▾</span>
+    </button>
+    <div class="decoder-body">
+
+      <div class="decoder-section">
+        <h3>Must-Know Skills</h3>
+        <div class="must-pills">
+          <span class="must-pill">Manual function writing</span>
+          <span class="must-pill">Error tracing</span>
+          <span class="must-pill">Exception handling patterns</span>
+          <span class="must-pill">Print/breakpoint debugging</span>
+        </div>
+        <h3 style="margin-top:10px">Nice-to-Have</h3>
+        <div class="must-pills">
+          <span class="nice-pill">List comprehensions</span>
+          <span class="nice-pill">Generators &amp; iterators</span>
+          <span class="nice-pill">Context managers</span>
+        </div>
+      </div>
+
+      <div class="decoder-section">
+        <h3>Topic Priority Ranking</h3>
+        <div class="rank-row">
+          <span class="rank-label">Reading Code &amp; Spotting Bugs</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
+          <span class="rank-lbl">🔴 Critical</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Exception Handling</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
+          <span class="rank-lbl">🔴 Critical</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Debugging: Prints &amp; Breakpoints</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 High</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Refactor a Real Module</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 High</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Manual Function Writing</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-medium" style="width:50%"></div></div>
+          <span class="rank-lbl">🟡 Medium</span>
+        </div>
+      </div>
+
+      <div class="decoder-section">
+        <h3>Where This Shows Up</h3>
+        <div class="client-tags">
+          <span class="client-tag">Live coding interviews</span>
+          <span class="client-tag">Code review without AI</span>
+          <span class="client-tag">UKM: HL7 / FHIR / PACS integration</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <p class="intro-text">
+    New here? Start with <strong>General Overview</strong> for the why, then
+    <strong>Mind Map</strong> to see how the five phases connect. The phases build on
+    each other — work through them in order — but prioritise
+    <strong>Reading Code &amp; Spotting Bugs</strong> and <strong>Exception Handling</strong>
+    first if you're short on time before the UKM integration work starts.
+  </p>
+
+  <div class="grid-group-label">Orientation — start here</div>
+  <div class="course-grid">
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/general.html')">
+      <div class="course-card-top">
+        <span class="course-num">00A</span>
+        <span class="course-title">General Overview</span>
+      </div>
+      <span class="course-subtitle">
+        Competency question: Can you explain what "unaided coding" means and why it matters
+        before you touch hospital data?
+      </span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic0-mindmap.html')">
+      <div class="course-card-top">
+        <span class="course-num">00B</span>
+        <span class="course-title">Mind Map</span>
+      </div>
+      <span class="course-subtitle">
+        Competency question: Can you see how writing, reading, debugging, and exception
+        handling reinforce each other?
+      </span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+  </div>
+
+  <div class="grid-group-label">Study Phases — 5 deep dives</div>
+  <div class="course-grid">
+
+    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic1-manual-functions.html')">
+      <div class="course-card-top">
+        <span class="course-num">01</span>
+        <span class="course-title">Manual Function Writing</span>
+      </div>
+      <span class="course-subtitle">
+        Competency question: Can you write a 5–10 line function from scratch — correct
+        types, edge cases, no AI?
+      </span>
+      <span class="weight-badge w-medium">📘 MEDIUM · ~4h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic2-reading-bugs.html')">
+      <div class="course-card-top">
+        <span class="course-num">02</span>
+        <span class="course-title">Reading Code &amp; Spotting Bugs — Critical Topic</span>
+      </div>
+      <span class="course-subtitle">
+        Competency question: Can you read a stack trace, trace it to its source, and
+        explain why the bug happens?
+      </span>
+      <span class="weight-badge w-critical">⚡ CRITICAL · ~8h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic3-debugging.html')">
+      <div class="course-card-top">
+        <span class="course-num">03</span>
+        <span class="course-title">Debugging: Prints &amp; Breakpoints</span>
+      </div>
+      <span class="course-subtitle">
+        Competency question: Can you debug a "runs but wrong" function with print
+        statements, then again with PyCharm breakpoints?
+      </span>
+      <span class="weight-badge w-high">🔥 HIGH · ~4h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic4-exceptions.html')">
+      <div class="course-card-top">
+        <span class="course-num">04</span>
+        <span class="course-title">Exception Handling — Critical Topic</span>
+      </div>
+      <span class="course-subtitle">
+        Competency question: Can you catch a specific exception, log it, and fall back
+        gracefully instead of crashing?
+      </span>
+      <span class="weight-badge w-critical">⚡ CRITICAL · ~4h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic5-refactor.html')">
+      <div class="course-card-top">
+        <span class="course-num">05</span>
+        <span class="course-title">Refactor a Real Module</span>
+      </div>
+      <span class="course-subtitle">
+        Competency question: Can you port your own DiaTwin/Morafek logic into clean,
+        typed, tested Python — unaided?
+      </span>
+      <span class="weight-badge w-high">🔥 HIGH · ~8h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+  </div>
+
+</div><!-- /tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="decoder-block">
+    <button class="decoder-trigger" onclick="toggleDecoder(this)">
+      <span class="decoder-trigger-label">⚑ Themen-Prioritätsleitfaden</span>
+      <span class="decoder-chevron">▾</span>
+    </button>
+    <div class="decoder-body">
+
+      <div class="decoder-section">
+        <h3>Muss-Kenntnisse</h3>
+        <div class="must-pills">
+          <span class="must-pill">Funktionen manuell schreiben</span>
+          <span class="must-pill">Fehler zurückverfolgen</span>
+          <span class="must-pill">Exception-Handling-Muster</span>
+          <span class="must-pill">Debugging mit Print/Breakpoint</span>
+        </div>
+        <h3 style="margin-top:10px">Nice-to-Have</h3>
+        <div class="must-pills">
+          <span class="nice-pill">List Comprehensions</span>
+          <span class="nice-pill">Generatoren &amp; Iteratoren</span>
+          <span class="nice-pill">Context Manager</span>
+        </div>
+      </div>
+
+      <div class="decoder-section">
+        <h3>Themen-Priorität</h3>
+        <div class="rank-row">
+          <span class="rank-label">Code lesen &amp; Bugs finden</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
+          <span class="rank-lbl">🔴 Kritisch</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Exception Handling</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
+          <span class="rank-lbl">🔴 Kritisch</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Debugging: Print &amp; Breakpoints</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 Hoch</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Eigenes Modul refaktorieren</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 Hoch</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Funktionen manuell schreiben</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-medium" style="width:50%"></div></div>
+          <span class="rank-lbl">🟡 Mittel</span>
+        </div>
+      </div>
+
+      <div class="decoder-section">
+        <h3>Wo das wichtig wird</h3>
+        <div class="client-tags">
+          <span class="client-tag">Live-Coding-Interviews</span>
+          <span class="client-tag">Code-Review ohne KI</span>
+          <span class="client-tag">UKM: HL7-/FHIR-/PACS-Integration</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <p class="intro-text">
+    Zum ersten Mal hier? Beginne mit dem <strong>Allgemeinen Überblick</strong> für das
+    „Warum", dann mit der <strong>Mindmap</strong>, um zu sehen, wie die fünf Phasen
+    zusammenhängen. Die Phasen bauen aufeinander auf — arbeite sie der Reihe nach durch —
+    priorisiere aber <strong>Code lesen &amp; Bugs finden</strong> und
+    <strong>Exception Handling</strong>, falls die Zeit vor Beginn der UKM-Integration knapp ist.
+  </p>
+
+  <div class="grid-group-label">Orientierung — hier anfangen</div>
+  <div class="course-grid">
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/general.html')">
+      <div class="course-card-top">
+        <span class="course-num">00A</span>
+        <span class="course-title">Allgemeiner Überblick</span>
+      </div>
+      <span class="course-subtitle">
+        Kompetenzfrage: Kannst du erklären, was „eigenständiges Coden" bedeutet und warum
+        es wichtig ist, bevor du Krankenhausdaten berührst?
+      </span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic0-mindmap.html')">
+      <div class="course-card-top">
+        <span class="course-num">00B</span>
+        <span class="course-title">Mindmap</span>
+      </div>
+      <span class="course-subtitle">
+        Kompetenzfrage: Siehst du, wie sich Schreiben, Lesen, Debuggen und Exception
+        Handling gegenseitig verstärken?
+      </span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+  </div>
+
+  <div class="grid-group-label">Lernphasen — 5 Vertiefungen</div>
+  <div class="course-grid">
+
+    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic1-manual-functions.html')">
+      <div class="course-card-top">
+        <span class="course-num">01</span>
+        <span class="course-title">Funktionen manuell schreiben</span>
+      </div>
+      <span class="course-subtitle">
+        Kompetenzfrage: Kannst du eine 5–10-zeilige Funktion von Grund auf schreiben —
+        korrekte Typen, Randfälle, ohne KI?
+      </span>
+      <span class="weight-badge w-medium">📘 MITTEL · ~4 Std.</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic2-reading-bugs.html')">
+      <div class="course-card-top">
+        <span class="course-num">02</span>
+        <span class="course-title">Code lesen &amp; Bugs finden — kritisches Thema</span>
+      </div>
+      <span class="course-subtitle">
+        Kompetenzfrage: Kannst du einen Stacktrace lesen, ihn zur Quelle zurückverfolgen
+        und erklären, warum der Bug auftritt?
+      </span>
+      <span class="weight-badge w-critical">⚡ KRITISCH · ~8 Std.</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic3-debugging.html')">
+      <div class="course-card-top">
+        <span class="course-num">03</span>
+        <span class="course-title">Debugging: Print &amp; Breakpoints</span>
+      </div>
+      <span class="course-subtitle">
+        Kompetenzfrage: Kannst du eine „läuft, aber falsch"-Funktion mit Print-Statements
+        und danach mit PyCharm-Breakpoints debuggen?
+      </span>
+      <span class="weight-badge w-high">🔥 HOCH · ~4 Std.</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic4-exceptions.html')">
+      <div class="course-card-top">
+        <span class="course-num">04</span>
+        <span class="course-title">Exception Handling — kritisches Thema</span>
+      </div>
+      <span class="course-subtitle">
+        Kompetenzfrage: Kannst du eine konkrete Exception abfangen, loggen und sauber
+        zurückfallen, statt abzustürzen?
+      </span>
+      <span class="weight-badge w-critical">⚡ KRITISCH · ~4 Std.</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic5-refactor.html')">
+      <div class="course-card-top">
+        <span class="course-num">05</span>
+        <span class="course-title">Eigenes Modul refaktorieren</span>
+      </div>
+      <span class="course-subtitle">
+        Kompetenzfrage: Kannst du deine eigene DiaTwin-/Morafek-Logik in sauberes,
+        typisiertes, getestetes Python übertragen — ohne KI?
+      </span>
+      <span class="weight-badge w-high">🔥 HOCH · ~8 Std.</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+  </div>
+
+</div><!-- /tab-de -->
+
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="decoder-block">
+    <button class="decoder-trigger" onclick="toggleDecoder(this)">
+      <span class="decoder-trigger-label">⚑ دليل أولوية الموضوعات</span>
+      <span class="decoder-chevron">▾</span>
+    </button>
+    <div class="decoder-body">
+
+      <div class="decoder-section">
+        <h3>المهارات الأساسية المطلوبة</h3>
+        <div class="must-pills">
+          <span class="must-pill">كتابة الدوال يدويًا</span>
+          <span class="must-pill">تتبّع الأخطاء</span>
+          <span class="must-pill">أنماط معالجة الاستثناءات</span>
+          <span class="must-pill">التصحيح بالطباعة ونقاط التوقف</span>
+        </div>
+        <h3 style="margin-top:10px">ميزة إضافية</h3>
+        <div class="must-pills">
+          <span class="nice-pill">تعبيرات القوائم (List Comprehensions)</span>
+          <span class="nice-pill">المولّدات والمكرّرات</span>
+          <span class="nice-pill">مدراء السياق (Context Managers)</span>
+        </div>
+      </div>
+
+      <div class="decoder-section">
+        <h3>ترتيب أولوية الموضوعات</h3>
+        <div class="rank-row">
+          <span class="rank-label">قراءة الكود وتحديد الأخطاء</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
+          <span class="rank-lbl">🔴 بالغ الأهمية</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">معالجة الاستثناءات</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
+          <span class="rank-lbl">🔴 بالغ الأهمية</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">التصحيح: الطباعة ونقاط التوقف</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 مرتفع</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">إعادة هيكلة وحدة حقيقية</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 مرتفع</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">كتابة الدوال يدويًا</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-medium" style="width:50%"></div></div>
+          <span class="rank-lbl">🟡 متوسط</span>
+        </div>
+      </div>
+
+      <div class="decoder-section">
+        <h3>أين يظهر هذا في العمل</h3>
+        <div class="client-tags">
+          <span class="client-tag">مقابلات الترميز المباشر</span>
+          <span class="client-tag">مراجعة الكود بدون ذكاء اصطناعي</span>
+          <span class="client-tag">تكامل UKM: HL7 / FHIR / PACS</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <p class="intro-text">
+    هل أنت هنا للمرة الأولى؟ ابدأ بـ<strong>النظرة العامة</strong> لفهم السبب، ثم
+    <strong>الخريطة الذهنية</strong> لترى كيف ترتبط المراحل الخمس ببعضها. تُبنى المراحل
+    فوق بعضها — اعمل عليها بالترتيب — لكن قدّم <strong>قراءة الكود وتحديد الأخطاء</strong>
+    و<strong>معالجة الاستثناءات</strong> إذا كان وقتك محدودًا قبل بدء عمل تكامل UKM.
+  </p>
+
+  <div class="grid-group-label">التوجيه — ابدأ من هنا</div>
+  <div class="course-grid">
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/general.html')">
+      <div class="course-card-top">
+        <span class="course-num">00A</span>
+        <span class="course-title">النظرة العامة</span>
+      </div>
+      <span class="course-subtitle">
+        سؤال الكفاءة: هل يمكنك شرح معنى "الترميز المستقل" وأهميته قبل التعامل مع بيانات المستشفى؟
+      </span>
+      <span class="course-open">فتح الدرس ←</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic0-mindmap.html')">
+      <div class="course-card-top">
+        <span class="course-num">00B</span>
+        <span class="course-title">الخريطة الذهنية</span>
+      </div>
+      <span class="course-subtitle">
+        سؤال الكفاءة: هل ترى كيف يعزز الكتابة والقراءة والتصحيح ومعالجة الاستثناءات بعضها بعضًا؟
+      </span>
+      <span class="course-open">فتح الدرس ←</span>
+    </button>
+
+  </div>
+
+  <div class="grid-group-label">مراحل الدراسة — 5 محاور متعمقة</div>
+  <div class="course-grid">
+
+    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic1-manual-functions.html')">
+      <div class="course-card-top">
+        <span class="course-num">01</span>
+        <span class="course-title">كتابة الدوال يدويًا</span>
+      </div>
+      <span class="course-subtitle">
+        سؤال الكفاءة: هل يمكنك كتابة دالة من 5 إلى 10 أسطر من الصفر — بأنواع صحيحة وحالات
+        حدّية، بدون ذكاء اصطناعي؟
+      </span>
+      <span class="weight-badge w-medium">📘 متوسط · ~4 س</span>
+      <span class="course-open">فتح الدرس ←</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic2-reading-bugs.html')">
+      <div class="course-card-top">
+        <span class="course-num">02</span>
+        <span class="course-title">قراءة الكود وتحديد الأخطاء — موضوع حرج</span>
+      </div>
+      <span class="course-subtitle">
+        سؤال الكفاءة: هل يمكنك قراءة تتبّع الاستدعاءات (stack trace) وتتبّعه إلى مصدره
+        وشرح سبب حدوث الخطأ؟
+      </span>
+      <span class="weight-badge w-critical">⚡ حرج · ~8 س</span>
+      <span class="course-open">فتح الدرس ←</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic3-debugging.html')">
+      <div class="course-card-top">
+        <span class="course-num">03</span>
+        <span class="course-title">التصحيح: الطباعة ونقاط التوقف</span>
+      </div>
+      <span class="course-subtitle">
+        سؤال الكفاءة: هل يمكنك تصحيح دالة "تعمل لكنها خاطئة" باستخدام جمل الطباعة، ثم
+        مرة أخرى باستخدام نقاط التوقف في PyCharm؟
+      </span>
+      <span class="weight-badge w-high">🔥 مرتفع · ~4 س</span>
+      <span class="course-open">فتح الدرس ←</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic4-exceptions.html')">
+      <div class="course-card-top">
+        <span class="course-num">04</span>
+        <span class="course-title">معالجة الاستثناءات — موضوع حرج</span>
+      </div>
+      <span class="course-subtitle">
+        سؤال الكفاءة: هل يمكنك اعتراض استثناء محدد وتسجيله والرجوع إلى حل بديل بدلًا من الانهيار؟
+      </span>
+      <span class="weight-badge w-critical">⚡ حرج · ~4 س</span>
+      <span class="course-open">فتح الدرس ←</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic5-refactor.html')">
+      <div class="course-card-top">
+        <span class="course-num">05</span>
+        <span class="course-title">إعادة هيكلة وحدة حقيقية</span>
+      </div>
+      <span class="course-subtitle">
+        سؤال الكفاءة: هل يمكنك نقل منطق DiaTwin/Morafek الخاص بك إلى بايثون نظيف ومُنمَّط
+        ومُختبَر — دون مساعدة؟
+      </span>
+      <span class="weight-badge w-high">🔥 مرتفع · ~8 س</span>
+      <span class="course-open">فتح الدرس ←</span>
+    </button>
+
+  </div>
+
+</div><!-- /tab-ar -->
+
+</div><!-- /body -->
+</main>
+
+<script src="../shared/lesson-ui.js"></script>
+<script>
+/**
+ * MASTERPLAN INTEGRATION
+ * Registered in registry.js as indexRoute for module 'python-unaided', and as the
+ * first lesson (progress.type='untracked') so it appears in the sidebar list too.
+ * See registry-entry.python-unaided.js for the full module object.
+ */
+function openLesson(route) {
+  if (window.parent !== window) {
+    try {
+      window.parent.postMessage({ type: 'lms:openLesson', route: route }, '*');
+      return;
+    } catch (_) { /* fall through */ }
+  }
+  location.href = route.replace('lms/modules/python-unaided/', './');
+}
+
+function toggleDecoder(btn) {
+  btn.classList.toggle('open');
+  const body = btn.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+guardLanguageTab('ar');
+guardLanguageTab('de');
+</script>
+</body>
+</html>

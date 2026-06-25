@@ -3,250 +3,507 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LMS Platform</title>
+  <title>SkillMap LMS — by Clidatech</title>
   <link rel="stylesheet" href="lms/core/styles.css" />
+  <link rel="stylesheet" href="lms/core/styles_enhanced.css" />
   <style>
-    /* ── Account bar (Phase 0 fix) ──────────────────────────────────────────
-       Self-contained styling for the persistent top-right sign-in widget.
-       Not yet merged into lms/core/styles.css (that file wasn't part of this
-       upload) — every rule below uses var(--token, fallback) so it renders
-       correctly whether or not --surface/--border/--text/--muted/--accent/
-       --accent-soft are already defined globally. Safe to delete this block
-       once these rules are moved into styles.css proper.
+    /* ── Sidebar account section ─────────────────────────────────────────────
+       Replaces the old floating top-right .account-bar <details> pill.
+       All element IDs are unchanged so app.js needs zero edits.
     ──────────────────────────────────────────────────────────────────────── */
-    .account-bar {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      z-index: 1000;
-      font-family: inherit;
-    }
-    .account-bar > summary {
-      list-style: none;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: .45rem;
-      padding: .5rem .9rem;
-      background: var(--surface, #ffffff);
-      border: 1px solid var(--border, #e2e8f0);
-      border-radius: 999px;
-      box-shadow: 0 2px 10px rgba(15, 23, 42, .08);
-      color: var(--text, #0f172a);
-      font-size: .85rem;
-      font-weight: 600;
-      user-select: none;
-    }
-    .account-bar > summary::-webkit-details-marker { display: none; }
-    .account-bar > summary::marker { content: ""; }
-    .account-bar > summary:hover,
-    .account-bar[open] > summary {
-      border-color: var(--accent, #2563eb);
-      color: var(--accent, #2563eb);
-    }
-    .account-bar > summary svg { flex-shrink: 0; }
 
-    .account-bar-panel {
-      position: absolute;
-      top: calc(100% + .5rem);
-      right: 0;
-      width: 280px;
-      max-width: calc(100vw - 2rem);
-      box-sizing: border-box;
-      background: var(--surface, #ffffff);
-      border: 1px solid var(--border, #e2e8f0);
-      border-radius: 14px;
-      box-shadow: 0 16px 40px rgba(15, 23, 42, .16);
-      padding: 1.1rem;
+    /* Container — sits above the progress bars in .sidebar-footer */
+    .sidebar-account {
+      border-bottom: 1px solid var(--sb-border-med, rgba(255,255,255,.08));
+      margin-bottom: 2px;
     }
 
-    .account-bar-panel .panel-title {
-      font-size: .72rem;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-      font-weight: 700;
-      color: var(--muted, #64748b);
-      margin: 0 0 .7rem;
-    }
-
-    .account-bar-panel .auth-btn {
+    /* Trigger row — always visible, looks like a sidebar row */
+    .sidebar-account-trigger {
       width: 100%;
-      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--sb-text, #e2e8f0);
+      font-size: 13px;
+      font-family: inherit;
+      text-align: left;
+      transition: background .15s;
+      border-radius: 0;
+    }
+    .sidebar-account-trigger:hover,
+    .sidebar-account-trigger.open {
+      background: var(--sb-surface, rgba(255,255,255,.06));
+    }
+
+    /* Signed-out state inside trigger */
+    .sa-signed-out {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+      color: var(--sb-muted-soft, #94a3b8);
+      font-weight: 600;
+      font-size: 12.5px;
+    }
+    .sa-icon { flex-shrink: 0; opacity: .7; }
+    .sa-label { }
+
+    /* Signed-in state inside trigger */
+    .sa-signed-in {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex: 1;
+      min-width: 0;
+    }
+    .sa-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--sb-surface, rgba(255,255,255,.12));
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1.5px solid var(--sb-border-med, rgba(255,255,255,.15));
+    }
+    .sa-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .sa-name {
+      font-weight: 600;
+      font-size: 12.5px;
+      color: var(--sb-text, #e2e8f0);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Chevron — rotates 180° when the panel is open */
+    .sa-chevron {
+      flex-shrink: 0;
+      color: var(--sb-muted-soft, #94a3b8);
+      transition: transform .2s;
+    }
+    .sidebar-account-trigger.open .sa-chevron { transform: rotate(180deg); }
+
+    /* Expandable auth panel */
+    .sa-panel {
+      border-top: 1px solid var(--sb-border-med, rgba(255,255,255,.06));
+      padding: 0;
+      background: var(--sb-surface, rgba(255,255,255,.04));
+    }
+    .sa-panel-inner {
+      padding: 14px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    /* Auth buttons & inputs — reuse existing .auth-btn / .auth-divider
+       classes already styled in styles.css. Add sidebar-specific overrides. */
+    .sa-panel-inner .auth-btn {
+      font-size: 12px;
+      padding: .5rem .7rem;
+      border-radius: 8px;
+      border: 1px solid var(--sb-border-med, rgba(255,255,255,.12));
+      background: var(--sb-surface, rgba(255,255,255,.06));
+      color: var(--sb-text, #e2e8f0);
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: .5rem;
-      padding: .6rem .75rem;
-      border-radius: 10px;
-      border: 1px solid var(--border, #e2e8f0);
-      background: var(--surface, #ffffff);
-      color: var(--text, #0f172a);
-      font-size: .85rem;
+      gap: 7px;
+      width: 100%;
       font-weight: 600;
-      cursor: pointer;
+      transition: background .15s;
     }
-    .account-bar-panel .auth-btn:hover { background: var(--accent-soft, #eff6ff); }
+    .sa-panel-inner .auth-btn:hover { background: var(--sb-surface-2, rgba(255,255,255,.10)); }
 
-    .account-bar-panel .auth-divider {
+    .sa-panel-inner .auth-divider {
       text-align: center;
-      font-size: .72rem;
+      font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: .04em;
-      color: var(--muted, #94a3b8);
-      margin: .7rem 0;
+      letter-spacing: .05em;
+      color: var(--sb-muted, #475569);
+      margin: 0;
     }
 
-    .account-bar-panel input {
+    .sa-panel-inner input {
       display: block;
       width: 100%;
       box-sizing: border-box;
-      padding: .55rem .7rem;
-      margin-bottom: .5rem;
-      border-radius: 8px;
-      border: 1px solid var(--border, #e2e8f0);
-      background: var(--bg, #f8fafc);
-      color: var(--text, #0f172a);
-      font-size: .85rem;
+      padding: .45rem .6rem;
+      border-radius: 7px;
+      border: 1px solid var(--sb-border-med, rgba(255,255,255,.12));
+      background: var(--sb-bg, #0f172a);
+      color: var(--sb-text, #e2e8f0);
+      font-size: 12px;
+      font-family: inherit;
     }
-    .account-bar-panel input::placeholder { color: var(--muted, #94a3b8); }
+    .sa-panel-inner input::placeholder { color: var(--sb-muted, #475569); }
+    .sa-panel-inner input:focus { outline: none; border-color: var(--accent, #4f46e5); }
 
-    .account-bar-panel .auth-actions {
+    .sa-panel-inner .auth-actions {
       display: flex;
-      gap: .5rem;
-      margin-top: .2rem;
+      gap: 5px;
     }
-    .account-bar-panel .auth-actions button {
+    .sa-panel-inner .auth-actions button {
       flex: 1;
-      padding: .55rem;
-      border-radius: 8px;
-      border: 1px solid var(--accent, #2563eb);
-      background: var(--accent, #2563eb);
-      color: #ffffff;
-      font-weight: 600;
-      font-size: .8rem;
-      cursor: pointer;
-    }
-    .account-bar-panel .auth-actions button:last-child {
-      background: var(--surface, #ffffff);
-      color: var(--accent, #2563eb);
-    }
-
-    .account-bar-panel .auth-error {
-      margin: .65rem 0 0;
-      font-size: .78rem;
-      line-height: 1.4;
-      color: #dc2626;
-    }
-
-    .account-bar-panel .auth-user {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      margin-bottom: .8rem;
-    }
-    .account-bar-panel .auth-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--accent-soft, #dbeafe);
-      object-fit: cover;
-      flex-shrink: 0;
-    }
-    .account-bar-panel #auth-display-name {
-      flex: 1;
-      min-width: 0;
-      font-weight: 600;
-      font-size: .85rem;
-      color: var(--text, #0f172a);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .account-bar-panel .tier-badge {
-      flex-shrink: 0;
-      font-size: .68rem;
+      padding: .45rem;
+      border-radius: 7px;
+      border: 1px solid var(--accent, #4f46e5);
+      background: var(--accent, #4f46e5);
+      color: #fff;
       font-weight: 700;
-      text-transform: uppercase;
-      padding: .15rem .5rem;
-      border-radius: 999px;
-      background: var(--accent-soft, #dbeafe);
-      color: var(--accent, #2563eb);
+      font-size: 11.5px;
+      cursor: pointer;
+      font-family: inherit;
     }
-    .account-bar-panel .tier-badge.pro { background: #fef3c7; color: #b45309; }
+    .sa-panel-inner .auth-actions button:last-child {
+      background: transparent;
+      color: var(--accent, #818cf8);
+      border-color: rgba(129,140,248,.35);
+    }
+    .sa-panel-inner .auth-actions button:hover { opacity: .85; }
 
-    .account-bar-panel .admin-link {
+    .sa-panel-inner .auth-error {
+      font-size: 11px;
+      color: #f87171;
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .sa-panel-inner .admin-link {
       display: block;
-      margin-bottom: .7rem;
-      font-size: .8rem;
+      font-size: 11.5px;
       font-weight: 600;
-      color: var(--accent, #2563eb);
+      color: var(--accent, #818cf8);
       text-decoration: none;
     }
-    .account-bar-panel .admin-link:hover { text-decoration: underline; }
+    .sa-panel-inner .admin-link:hover { text-decoration: underline; }
 
-    .account-bar-panel .danger-btn {
+    .sa-signout-btn {
+      width: 100%;
+      padding: .6rem;
+      border-radius: 8px;
+      border: 1px solid rgba(248,113,113,.35);
+      background: rgba(248,113,113,.1);
+      color: #f87171;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .sa-signout-btn:hover { background: rgba(248,113,113,.18); }
+
+    /* IMPORTANT: styles.css has a `.sidebar-footer .danger-btn { margin: 0 20px
+       18px; width: calc(100% - 40px); }` rule meant for the "Reset all
+       progress" button, a direct child of .sidebar-footer. #btn-signout is
+       ALSO a .danger-btn, and is ALSO (more deeply) nested inside
+       .sidebar-footer → that rule was unintentionally matching it too,
+       overriding its width/margin and making it render squeezed/offset to
+       the point of looking like it wasn't there at all. Reset both back to
+       the correct values here — same specificity (two classes), but this
+       block is declared later (inline <style>, after the styles.css <link>),
+       so it wins the cascade. */
+    .sa-panel-inner .danger-btn {
+      margin: 0;
+      width: 100%;
+    }
+
+    /* tier-badge inside the sidebar trigger */
+    .sidebar-account-trigger .tier-badge {
+      font-size: .62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: .1rem .4rem;
+      border-radius: 999px;
+      background: rgba(129,140,248,.18);
+      color: #a5b4fc;
+    }
+    .sidebar-account-trigger .tier-badge.pro { background: rgba(251,191,36,.15); color: #fbbf24; }
+
+    /* ── Floating account widget — fields-landing / field-overview pages ─────
+         The sidebar account section above only exists inside #app-shell.
+         Before a module is opened (on the landing page and the module-
+         picker page) there was no way to sign in at all, so this adds a
+         floating account widget, fixed to the top-right corner of the
+         viewport, shown on those two pages and hidden once the app-shell
+         (which has its own, smaller account section) takes over. Sized and
+         styled to read as a clear, prominent call-to-action — bold gradient
+         pill while signed out, larger avatar/name once signed in — since
+         it's the only sign-in entry point on these two pages.
+         Light-themed to match those pages' white/lavender background.
+         Element IDs are new (landing-*) so app.js's showSignedIn()/
+         showSignedOut() can update this widget in lock-step with the
+         sidebar one — same Firebase auth state, two places it's reflected.
+    ──────────────────────────────────────────────────────────────────────── */
+    .landing-account {
+      position: fixed;
+      top: 22px;
+      right: 28px;
+      z-index: 50;
+    }
+    [dir="rtl"] .landing-account { right: auto; left: 28px; }
+
+    .landing-account-trigger {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 22px;
+      border-radius: 999px;
+      border: 1px solid var(--border, #e2e8f0);
+      background: var(--surface, #ffffff);
+      color: var(--text, #1e293b);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(30,41,59,.10);
+      transition: border-color .15s, box-shadow .15s, transform .15s, background .15s;
+    }
+    .landing-account-trigger:hover { transform: translateY(-1px); }
+
+    /* Signed-out: bold brand-gradient CTA — this is the one button on the
+       page meant to grab attention, so it gets the same gradient treatment
+       as the "LMS" wordmark instead of blending in with the white cards. */
+    .landing-account-trigger:has(#landing-auth-signed-out:not([hidden])) {
+      border: none;
+      background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(79,70,229,.32);
+    }
+    .landing-account-trigger:has(#landing-auth-signed-out:not([hidden])):hover {
+      box-shadow: 0 10px 26px rgba(79,70,229,.4);
+    }
+    .landing-account-trigger:has(#landing-auth-signed-out:not([hidden])) .la-chevron {
+      color: rgba(255,255,255,.85);
+    }
+    .landing-account-trigger.open {
+      box-shadow: 0 10px 26px rgba(79,70,229,.4);
+    }
+
+    .la-signed-out { display: flex; align-items: center; gap: 9px; }
+    .la-signed-out svg { flex-shrink: 0; }
+
+    .la-signed-in { display: flex; align-items: center; gap: 11px; }
+    .la-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      object-fit: cover; background: var(--accent-soft, #eef2ff);
+      border: 2px solid var(--accent-mid, #c7d2fe);
+    }
+    .la-info { display: flex; flex-direction: column; gap: 2px; align-items: flex-start; }
+    .la-name {
+      font-size: 14.5px; font-weight: 700; color: var(--text, #1e293b);
+      max-width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .la-chevron {
+      flex-shrink: 0;
+      color: var(--muted, #64748b);
+      transition: transform .2s;
+      margin-inline-start: 2px;
+    }
+    .landing-account-trigger.open .la-chevron { transform: rotate(180deg); }
+
+    .landing-account-trigger .tier-badge {
+      font-size: .66rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: .12rem .45rem;
+      border-radius: 999px;
+      background: var(--accent-soft, #eef2ff);
+      color: var(--accent, #4f46e5);
+    }
+    .landing-account-trigger .tier-badge.pro { background: rgba(251,191,36,.18); color: #b45309; }
+
+    /* Expandable panel — Google + email/password form, or admin/sign-out */
+    .la-panel {
+      position: absolute;
+      top: calc(100% + 12px);
+      right: 0;
+      width: 310px;
+      background: var(--surface, #ffffff);
+      border: 1px solid var(--border, #e2e8f0);
+      border-radius: 16px;
+      box-shadow: 0 18px 44px rgba(30,41,59,.18);
+      overflow: hidden;
+    }
+    [dir="rtl"] .la-panel { right: auto; left: 0; }
+
+    .la-panel-inner { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+
+    /* Reuse existing .auth-btn / .auth-divider / .auth-actions / .auth-error /
+       .admin-link / .danger-btn classes (already styled in styles.css for the
+       dark sidebar) but override colors + sizing here for this bigger,
+       light-themed panel. */
+    .la-panel-inner .auth-btn {
+      border: 1px solid var(--border, #e2e8f0);
+      background: var(--surface-2, #f8fafc);
+      color: var(--text, #1e293b);
+      padding: 11px 14px;
+      font-size: 13.5px;
+      border-radius: 10px;
+    }
+    .la-panel-inner .auth-btn:hover {
+      background: var(--bg, #f0f4f8);
+      border-color: var(--accent, #4f46e5);
+    }
+
+    .la-panel-inner .auth-divider { color: var(--muted, #64748b); margin: 3px 0; font-size: 11px; }
+
+    .la-panel-inner input {
+      display: block;
       width: 100%;
       box-sizing: border-box;
-      padding: .55rem;
-      border-radius: 8px;
-      border: 1px solid #fecaca;
-      background: #fef2f2;
-      color: #dc2626;
-      font-weight: 600;
-      font-size: .8rem;
-      cursor: pointer;
+      padding: .65rem .8rem;
+      border-radius: 10px;
+      border: 1px solid var(--border, #e2e8f0);
+      background: var(--bg, #f0f4f8);
+      color: var(--text, #1e293b);
+      font-size: 13.5px;
+      font-family: inherit;
     }
-    .account-bar-panel .danger-btn:hover { background: #fee2e2; }
+    .la-panel-inner input::placeholder { color: var(--muted, #64748b); }
+    .la-panel-inner input:focus { outline: none; border-color: var(--accent, #4f46e5); }
 
-    @media (max-width: 480px) {
-      .account-bar { top: .6rem; right: .6rem; }
-      .account-bar-panel { width: calc(100vw - 1.2rem); }
+    .la-panel-inner .auth-actions { display: flex; gap: 7px; }
+    .la-panel-inner .auth-actions button {
+      flex: 1;
+      padding: .65rem;
+      border-radius: 10px;
+      border: 1px solid var(--accent, #4f46e5);
+      background: var(--accent, #4f46e5);
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .la-panel-inner .auth-actions button:last-child {
+      background: transparent;
+      color: var(--accent, #4f46e5);
+      border-color: var(--accent-mid, #c7d2fe);
+    }
+    .la-panel-inner .auth-actions button:hover { opacity: .85; }
+
+    .la-panel-inner .auth-error {
+      font-size: 12px;
+      color: var(--danger, #ef4444);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .la-panel-inner .admin-link {
+      display: block;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent, #4f46e5);
+      background: var(--accent-soft, #eef2ff);
+      border: 1px solid var(--accent-mid, #c7d2fe);
+      text-decoration: none;
+      padding: 9px;
+      border-radius: 10px;
+    }
+    .la-panel-inner .admin-link:hover { background: var(--accent-mid, #c7d2fe); }
+
+    .la-panel-inner .danger-btn {
+      width: 100%;
+      padding: .65rem;
+      border-radius: 10px;
+      border: 1px solid rgba(239,68,68,.25);
+      background: rgba(239,68,68,.07);
+      color: var(--danger, #ef4444);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .la-panel-inner .danger-btn:hover { background: rgba(239,68,68,.14); }
+
+    @media (max-width: 720px) {
+      .landing-account { top: 14px; right: 16px; }
+      [dir="rtl"] .landing-account { right: auto; left: 16px; }
+      .landing-account-trigger { padding: 10px 16px; font-size: 13.5px; gap: 9px; }
+      .la-name { max-width: 110px; }
+      .la-panel { width: 270px; }
     }
   </style>
+
 </head>
 <body>
 
-  <!-- ⓪  Account bar (Phase 0 fix) ───────────────────────────────────────────
-       Lives outside BOTH #fields-landing and #app-shell, as a sibling of both,
-       so sign-in is reachable on the very first screen — not just after a
-       field has been entered. Previously #auth-panel lived inside the
-       sidebar, which is hidden on #fields-landing, so anonymous visitors had
-       no way to sign in (and therefore no way to unlock 🔒 locked fields)
-       without first picking a field they might not even have access to.
+  <!-- Account panel now lives inside the sidebar footer — see #sidebar-account
+       below. All element IDs (#auth-signed-out, #auth-signed-in, #auth-email …)
+       are unchanged so app.js requires zero edits. ──────────────────────────── -->
 
-       Implemented as a native <details>/<summary> disclosure so the
-       collapsed/expanded toggle needs no JavaScript at all — it floats as a
-       small pill in the top-right corner and expands into the same sign-in /
-       account card either way.
+  <!-- ⓪  Floating account widget — fields-landing / field-overview pages ─────
+       The sidebar account section only exists inside #app-shell, so before a
+       module is opened there was no sign-in entry point at all. This floating
+       pill is shown (via app.js render()) whenever #app-shell is hidden — i.e.
+       on the fields landing page and the field-overview module picker — and
+       hidden once a module is opened, since the sidebar takes over from there.
+       Uses the SAME Firebase auth flow as the sidebar (signInWithGoogle /
+       signInWithEmail / signUpWithEmail / signOutUser / onAuthChange); IDs are
+       new (landing-*) so app.js's showSignedIn()/showSignedOut() can update
+       both this widget and the sidebar one in lock-step. ─────────────────── -->
+  <div id="landing-account" class="landing-account" hidden>
 
-       All element IDs inside (#auth-signed-out, #auth-signed-in, #auth-email,
-       etc.) are UNCHANGED from before — app.js looks them up via
-       document.getElementById, so this move required zero app.js edits.
-  ─────────────────────────────────────────────────────────────────────────── -->
-  <details id="account-bar" class="account-bar">
-    <summary class="account-bar-trigger" aria-label="Account">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-        <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
-        <path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <button
+      id="landing-account-trigger"
+      class="landing-account-trigger"
+      type="button"
+      aria-expanded="false"
+      aria-controls="landing-account-panel">
+
+      <!-- Signed-out state: icon + label ─────────────────────────────────── -->
+      <div id="landing-auth-signed-out" class="la-signed-out">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span data-i18n="auth.accountMenu">Sign in</span>
+      </div>
+
+      <!-- Signed-in state: avatar + name + tier ────────────────────────────  -->
+      <div id="landing-auth-signed-in" class="la-signed-in" hidden>
+        <img id="landing-auth-avatar" src="" alt="" class="la-avatar" />
+        <span class="la-info">
+          <span id="landing-auth-display-name" class="la-name"></span>
+          <span id="landing-auth-tier-badge" class="tier-badge"></span>
+        </span>
+      </div>
+
+      <!-- Chevron — rotates 180° when the panel is open ───────────────────── -->
+      <svg class="la-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <span data-i18n="auth.accountMenu">Account</span>
-    </summary>
+    </button>
 
-    <!-- ③  Auth panel (Phase 3) ────────────────────────────────────────────
-         Toggled by app.js based on onAuthChange():
-           • Signed out → #auth-signed-out visible, #auth-signed-in hidden
-           • Signed in  → #auth-signed-in visible,  #auth-signed-out hidden
-    ───────────────────────────────────────────────────────────────────────── -->
-    <section id="auth-panel" class="account-bar-panel">
+    <!-- Expandable auth panel ─────────────────────────────────────────────── -->
+    <section id="landing-account-panel" class="la-panel" hidden>
+      <div class="la-panel-inner">
 
-      <!-- Signed-out view ───────────────────────────────────────────────── -->
-      <div id="auth-signed-out">
-        <div class="panel-title" data-i18n="auth.signInTitle">Sign in to sync progress</div>
-
-        <!-- Google sign-in button -->
-        <button id="btn-google-signin" class="auth-btn google-btn" type="button">
-          <!-- Google "G" logo (official brand colours) -->
-          <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <!-- Google sign-in -->
+        <button id="landing-btn-google-signin" class="auth-btn google-btn" type="button">
+          <svg width="17" height="17" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908C16.658 14.018 17.64 11.71 17.64 9.2z" fill="#4285F4"/>
             <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
             <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
@@ -257,117 +514,334 @@
 
         <div class="auth-divider" data-i18n="auth.orDivider">or</div>
 
-        <!-- Email / password fields -->
-        <input id="auth-email"    type="email"    placeholder="Email"    autocomplete="email" />
-        <input id="auth-password" type="password" placeholder="Password" autocomplete="current-password" />
+        <input id="landing-auth-email"    type="email"    placeholder="Email"    autocomplete="email" />
+        <input id="landing-auth-password" type="password" placeholder="Password" autocomplete="current-password" />
 
         <div class="auth-actions">
-          <button id="btn-email-signin" type="button" data-i18n="auth.signInButton">Sign in</button>
-          <button id="btn-email-signup" type="button" data-i18n="auth.signUpButton">Sign up</button>
+          <button id="landing-btn-email-signin" type="button" data-i18n="auth.signInButton">Sign in</button>
+          <button id="landing-btn-email-signup" type="button" data-i18n="auth.signUpButton">Sign up</button>
         </div>
 
-        <!-- Inline error message (shown by showAuthError() in app.js) -->
-        <p id="auth-error" class="auth-error" hidden></p>
-      </div>
+        <p id="landing-auth-error" class="auth-error" hidden></p>
 
-      <!-- Signed-in view ────────────────────────────────────────────────── -->
-      <div id="auth-signed-in" hidden>
-        <div class="auth-user">
-          <img id="auth-avatar"       src="" alt="" class="auth-avatar" />
-          <span id="auth-display-name"></span>
-          <span id="auth-tier-badge"  class="tier-badge"></span>
-        </div>
-        <a id="btn-admin-panel" href="lms/admin/" target="_blank"
+        <!-- Signed-in actions (admin link + sign out) ────────────────────── -->
+        <a id="landing-btn-admin-panel" href="lms/admin/" target="_blank"
            class="admin-link" hidden data-i18n="auth.adminPanel">Admin panel ↗</a>
-        <button id="btn-signout" type="button" class="danger-btn" data-i18n="auth.signOut">
-          Sign out
+        <button id="landing-btn-signout" type="button" class="danger-btn" hidden>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span data-i18n="auth.signOut">Sign out</span>
         </button>
-      </div>
 
+      </div>
     </section>
-    <!-- end #auth-panel ──────────────────────────────────────────────────── -->
-  </details>
-  <!-- end #account-bar ────────────────────────────────────────────────────── -->
+  </div>
+  <!-- end #landing-account ────────────────────────────────────────────────── -->
 
   <!-- ①  Fields landing ─────────────────────────────────────────────────────
        Shown when activeFieldId is null (i.e. no field has been entered yet).
        Hidden by renderShell(); revealed by renderFieldsLanding() / exitToFields().
   ─────────────────────────────────────────────────────────────────────────── -->
   <div id="fields-landing" class="fields-landing">
+
+    <!-- ── Hero header ──────────────────────────────────────────────────────── -->
     <header class="fields-header">
-      <h1 id="fields-brand">LMS<span>·Platform</span></h1>
-      <p id="fields-tagline" data-i18n="fields.tagline">Choose a field to begin</p>
+      <div class="fields-brand-lockup">
+        <span class="fields-by">by</span>
+        <a href="https://clidatech.com" target="_blank" rel="noopener" class="fields-clidatech-link">
+          <span class="fields-clidatech-logo">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+              <path d="M8 12h8M12 8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Clidatech
+          </span>
+        </a>
+      </div>
+      <h1 id="fields-brand">SkillMap<span>·LMS</span></h1>
+      <p id="fields-tagline" data-i18n="fields.tagline">Most courses are built for an average learner. SkillMap listens first, then builds the course you're actually missing.</p>
+
+      <!-- Feature pills row -->
+      <div class="fields-feature-pills">
+        <span class="fpill">🔐 Per-user access control</span>
+        <span class="fpill">📈 Real-time progress sync</span>
+        <span class="fpill">✨ Personalized lesson blueprints</span>
+        <span class="fpill">🌍 EN · AR · DE lessons</span>
+      </div>
     </header>
-    <div id="fields-grid" class="fields-grid">
-      <!-- Field cards injected by renderFieldsLanding() in app.js.
-           The Personalized Lessons card is appended at the end of this grid
-           by renderFieldsLanding() — it is NOT in LMS_CONFIG.fields because
-           its content is per-user Firestore data, not shared config. -->
+
+    <!-- ── Feature strip ────────────────────────────────────────────────────── -->
+    <div class="fields-features-strip">
+      <div class="ffeature">
+        <div class="ffeature-icon">📚</div>
+        <div class="ffeature-body">
+          <strong>Ready-made Tracks</strong>
+          <span>Curated paths covering SQL, Python, React, React Native, and Interview Prep — each with measurable, lesson-level progress.</span>
+        </div>
+      </div>
+      <div class="ffeature">
+        <div class="ffeature-icon">✨</div>
+        <div class="ffeature-body">
+          <strong>Personalized Lessons</strong>
+          <span>Tell us what you want to learn, where you're starting from, and what you need to do by when. We turn that into a lesson built just for you.</span>
+        </div>
+      </div>
+      <div class="ffeature">
+        <div class="ffeature-icon">☁️</div>
+        <div class="ffeature-body">
+          <strong>Cloud-synced Progress</strong>
+          <span>Sign in with Google or email to sync progress across devices via Firestore. Access is enforced per-user, at the database level.</span>
+        </div>
+      </div>
+      <div class="ffeature">
+        <div class="ffeature-icon">🌍</div>
+        <div class="ffeature-body">
+          <strong>Multilingual Content</strong>
+          <span>Lessons available in English, German, and Arabic. Language preference is saved per-user and applied instantly.</span>
+        </div>
+      </div>
     </div>
+
+    <!-- ── Personalized Lessons entry (featured, above field cards) ─────────── -->
+    <div id="fields-footer" class="fields-footer"></div>
+
+    <!-- ── Section label ────────────────────────────────────────────────────── -->
+    <div class="fields-section-label">
+      <span>Choose your learning track</span>
+    </div>
+
+    <!-- ── Field cards ──────────────────────────────────────────────────────── -->
+    <div id="fields-grid" class="fields-grid">
+      <!-- Field cards injected by renderFieldsLanding() in app.js. -->
+    </div>
+
+    <!-- ── Page footer ──────────────────────────────────────────────────────── -->
+    <footer class="fields-page-footer">
+      <div class="fields-page-footer-inner">
+        <span class="fpf-brand">SkillMap<span>·LMS</span></span>
+        <span class="fpf-sep">·</span>
+        <span class="fpf-by">Built by <a href="https://clidatech.com" target="_blank" rel="noopener">Clidatech</a></span>
+        <span class="fpf-sep">·</span>
+        <span class="fpf-tagline">A course that fits you is worth more than a hundred that don't</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ①.5  Field overview — module picker sub-page ──────────────────────────
+       Shown after a field has been entered (enterField) but before a
+       specific module has been chosen — i.e. activeFieldId is set and
+       activeModuleId is still null. Lets the person see what's inside a
+       field, and pick a module deliberately, instead of landing straight
+       in the module shell the moment they click a field card.
+
+       Reuses the .fields-landing / .fields-header / .fields-grid /
+       .field-card classes from section ① above on purpose: same visual
+       language, one level down. Hidden by renderFieldsLanding()/
+       renderShell(); revealed by renderFieldOverview() in app.js.
+  ─────────────────────────────────────────────────────────────────────────── -->
+  <div id="field-overview" class="fields-landing" hidden>
+
+    <div class="field-overview-topbar">
+      <button id="btn-back-to-fields" class="pl-back-btn" type="button">
+        ← <span data-i18n="shell.backToFields">All fields</span>
+      </button>
+    </div>
+
+    <header class="fields-header">
+      <div class="field-overview-icon" id="field-overview-icon">📚</div>
+      <h1 id="field-overview-title">Field title</h1>
+      <p  id="field-overview-subtitle">Field subtitle</p>
+    </header>
+
+    <!-- ── Section label ────────────────────────────────────────────────────── -->
+    <div class="fields-section-label">
+      <span data-i18n="field.chooseModule">Choose a module to start</span>
+    </div>
+
+    <!-- ── Module cards ─────────────────────────────────────────────────────── -->
+    <div id="module-overview-grid" class="fields-grid">
+      <!-- Module cards injected by renderFieldOverview() in app.js. -->
+    </div>
+
   </div>
 
   <!-- ②  App shell ──────────────────────────────────────────────────────────
-       Hidden until a field is picked (or when no fields are configured,
-       renderShell() shows it immediately on load — backward-compat mode).
+       Hidden until a field AND a module have been picked (or when no
+       fields are configured, renderShell() shows it immediately on load —
+       backward-compat mode).
   ─────────────────────────────────────────────────────────────────────────── -->
   <div id="app-shell" class="app-shell" hidden>
 
     <aside class="sidebar">
 
-      <!-- Back to fields (Phase 0) ─────────────────────────────────────── -->
-      <button id="btn-back-fields" class="back-btn" type="button">
-        ← <span data-i18n="shell.backToFields">Fields</span>
-      </button>
+      <div class="sidebar-header">
 
-      <!-- Brand ──────────────────────────────────────────────────────────── -->
-      <div class="brand">
-        <h2 id="brand-name">LMS<span>·Platform</span></h2>
-        <p  id="brand-subtitle" class="brand-subtitle"></p>
-        <!-- Subtitle populated at runtime from active module titles (app.js) -->
-      </div>
+        <!-- Back to modules/fields (Phase 0, enhanced) ───────────────────
+             Label + destination are context-aware, set in app.js:
+               • Inside a normal field → "Modules", returns to the
+                 field-overview module picker (exitToFieldOverview()).
+               • Inside Personalized Lessons → "Fields", returns all the
+                 way out (exitToFields()) since that field has no
+                 module-overview step of its own.
+        ───────────────────────────────────────────────────────────────── -->
+        <button id="btn-back-fields" class="back-btn" type="button">
+          <span class="back-btn-arrow" aria-hidden="true">←</span>
+          <span id="back-fields-label" data-i18n="shell.backToFields">Fields</span>
+        </button>
 
-      <!-- Language switcher (Phase 2) ──────────────────────────────────── -->
-      <div class="lang-switcher">
-        <button data-lang="en" class="lang-btn active">EN</button>
-        <button data-lang="ar" class="lang-btn">AR</button>
-      </div>
-
-      <!-- Module navigation ──────────────────────────────────────────────── -->
-      <section class="panel-block">
-        <div class="panel-title" id="module-nav-label" data-i18n="shell.modulesTitle">Modules</div>
-        <nav id="module-nav" class="module-nav">
-          <!-- Module buttons injected by renderModuleNav() in app.js.
-               In Personalized Lessons mode, renderPersonalizedSidebarNav()
-               replaces this content with lessons + pending request entries. -->
-        </nav>
-      </section>
-
-      <!-- Lesson navigation ──────────────────────────────────────────────── -->
-      <section class="panel-block" id="lesson-nav-block">
-        <div class="panel-title" data-i18n="shell.lessonsTitle">Lessons</div>
-        <nav id="lesson-nav" class="lesson-nav">
-          <!-- Lesson buttons injected by renderLessonNav() in app.js.
-               Hidden in Personalized Lessons mode (no sub-lesson nav). -->
-        </nav>
-      </section>
-
-      <!-- Progress stats ─────────────────────────────────────────────────── -->
-      <section class="panel-block stats-block">
-        <div id="progress-bars">
-          <!-- Progress rows injected by renderProgressBars() in app.js -->
+        <!-- Brand ────────────────────────────────────────────────────────── -->
+        <div class="brand">
+          <h2 id="brand-name">SkillMap<span>·LMS</span></h2>
+          <p  id="brand-subtitle" class="brand-subtitle"></p>
+          <!-- Subtitle populated at runtime from active module titles (app.js) -->
         </div>
-      </section>
 
-      <!-- Auth panel used to live here (Phase 3). It now lives in the
-           persistent #account-bar at the top of <body> — see the comment
-           there for why — so its DOM elements are no longer in the sidebar.
-           app.js looks everything up via document.getElementById, so the
-           move required zero JS changes. ─────────────────────────────────── -->
+        <!-- Language switcher (Phase 2) ────────────────────────────────── -->
+        <div class="lang-switcher">
+          <button data-lang="en" class="lang-btn active">EN</button>
+          <button data-lang="ar" class="lang-btn">AR</button>
+          <button data-lang="de" class="lang-btn">DE</button>
+        </div>
 
-      <!-- Reset progress (always visible) ───────────────────────────────── -->
-      <button id="reset-progress" class="danger-btn" type="button" data-i18n="shell.resetButton">
-        Reset all progress
-      </button>
+      </div><!-- end .sidebar-header -->
+
+      <div class="sidebar-scroll">
+        <section class="panel-block">
+          <div class="panel-title" id="module-nav-label" data-i18n="shell.modulesTitle">Modules</div>
+          <nav id="module-nav" class="module-nav">
+            <!-- Just the active module, injected by renderModuleNav() in
+                 app.js — picking a different module now happens one level
+                 up, on the field-overview page, not here. Clicking this
+                 card returns there. In Personalized Lessons mode,
+                 renderPersonalizedSidebarNav() replaces this content with
+                 lessons + pending request entries instead. -->
+          </nav>
+        </section>
+
+        <!-- Lesson navigation ──────────────────────────────────────────── -->
+        <section class="panel-block" id="lesson-nav-block">
+          <div class="panel-title" data-i18n="shell.lessonsTitle">Lessons</div>
+          <nav id="lesson-nav" class="lesson-nav">
+            <!-- Lesson buttons injected by renderLessonNav() in app.js.
+                 Hidden in Personalized Lessons mode (no sub-lesson nav). -->
+          </nav>
+        </section>
+
+      </div><!-- end .sidebar-scroll -->
+
+      <!-- Sticky footer: progress + reset — always visible, never scrolls
+           out of view, regardless of how long the lesson list above is. -->
+      <div class="sidebar-footer">
+
+        <!-- ── Sidebar account section ──────────────────────────────────────
+             Replaces the old floating top-right <details> pill. Two states:
+               • Signed out → compact "Sign in" row (click expands auth form)
+               • Signed in  → avatar + name + tier row (click expands panel)
+             The expandable panel (#auth-panel) slides open inline below the
+             trigger row. All IDs are UNCHANGED from the original account-bar
+             implementation so app.js needs zero edits.
+        ─────────────────────────────────────────────────────────────────── -->
+        <div id="sidebar-account" class="sidebar-account">
+
+          <!-- Trigger row: always visible, toggles the panel below ──────── -->
+          <button
+            id="sidebar-account-trigger"
+            class="sidebar-account-trigger"
+            type="button"
+            aria-expanded="false"
+            aria-controls="auth-panel">
+
+            <!-- Signed-out state: icon + label ─────────────────────────── -->
+            <div id="auth-signed-out" class="sa-signed-out">
+              <svg class="sa-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
+                <path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span class="sa-label" data-i18n="auth.accountMenu">Sign in</span>
+            </div>
+
+            <!-- Signed-in state: avatar + name + tier ──────────────────── -->
+            <div id="auth-signed-in" class="sa-signed-in" hidden>
+              <img id="auth-avatar" src="" alt="" class="sa-avatar" />
+              <span class="sa-info">
+                <span id="auth-display-name" class="sa-name"></span>
+                <span id="auth-tier-badge" class="tier-badge"></span>
+              </span>
+            </div>
+
+            <!-- Chevron, rotates when open ──────────────────────────────── -->
+            <svg class="sa-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <!-- Expandable auth panel ───────────────────────────────────────
+               Hidden by default; toggled by #sidebar-account-trigger.
+               In signed-out mode: Google button + email/password form.
+               In signed-in mode: admin link + sign-out button.
+          ─────────────────────────────────────────────────────────────────  -->
+          <section id="auth-panel" class="sa-panel" hidden>
+
+            <!-- Signed-out form is inside #auth-signed-out (the trigger)
+                 but the inputs need to be accessible when the panel is
+                 open, so they live here in the panel body instead. ────── -->
+            <div class="sa-panel-inner">
+
+              <!-- Google sign-in -->
+              <button id="btn-google-signin" class="auth-btn google-btn" type="button">
+                <svg width="16" height="16" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908C16.658 14.018 17.64 11.71 17.64 9.2z" fill="#4285F4"/>
+                  <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+                  <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
+                  <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
+                </svg>
+                <span data-i18n="auth.googleButton">Continue with Google</span>
+              </button>
+
+              <div class="auth-divider" data-i18n="auth.orDivider">or</div>
+
+              <input id="auth-email"    type="email"    placeholder="Email"    autocomplete="email" />
+              <input id="auth-password" type="password" placeholder="Password" autocomplete="current-password" />
+
+              <div class="auth-actions">
+                <button id="btn-email-signin" type="button" data-i18n="auth.signInButton">Sign in</button>
+                <button id="btn-email-signup" type="button" data-i18n="auth.signUpButton">Sign up</button>
+              </div>
+
+              <p id="auth-error" class="auth-error" hidden></p>
+
+              <!-- Signed-in actions (admin link + sign out) ────────────── -->
+              <a id="btn-admin-panel" href="lms/admin/" target="_blank"
+                 class="admin-link" hidden data-i18n="auth.adminPanel">Admin panel ↗</a>
+              <button id="btn-signout" type="button" class="danger-btn sa-signout-btn" hidden>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span data-i18n="auth.signOut">Sign out</span>
+              </button>
+
+            </div>
+          </section>
+        </div>
+        <!-- end #sidebar-account ─────────────────────────────────────────── -->
+
+        <!-- Progress stats ───────────────────────────────────────────────── -->
+        <section class="panel-block stats-block">
+          <div id="progress-bars">
+            <!-- Progress rows injected by renderProgressBars() in app.js -->
+          </div>
+        </section>
+
+        <!-- Reset progress (always visible) ─────────────────────────────── -->
+        <button id="reset-progress" class="danger-btn" type="button" data-i18n="shell.resetButton">
+          Reset all progress
+        </button>
+
+      </div><!-- end .sidebar-footer -->
 
     </aside><!-- end .sidebar -->
 

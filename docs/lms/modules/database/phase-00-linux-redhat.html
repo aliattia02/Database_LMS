@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linux &amp; Red Hat — DBA Foundation · DB·MASTERY</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── Phase 00-L page-specific styles ── */
+.l1{background:var(--pill-l1);color:var(--pill-l1t)} .l2{background:var(--pill-l2);color:var(--pill-l2t)}
+.l3{background:var(--pill-l3);color:var(--pill-l3t)} .l4{background:var(--pill-l4);color:var(--pill-l4t)}
+.section-label{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.ladder{display:flex;flex-direction:column;gap:14px}
+.ladder-level{border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.level-head{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#f8fafc;border-bottom:1px solid var(--border)}
+.level-pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+.level-title{font-weight:600;font-size:14px;color:var(--navy2)}
+.level-bullets{padding:14px 16px}
+.level-bullets ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.level-bullets li{font-size:13.5px;color:#334155;padding-left:18px;position:relative;line-height:1.55}
+.level-bullets li::before{content:'›';position:absolute;left:0;color:var(--muted);font-weight:700}
+
+.section{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:20px;box-shadow:var(--shadow)}
+.section h2{font-size:18px;font-weight:700;margin-bottom:14px;color:var(--navy)}
+.section p{font-size:14px;color:#334155;line-height:1.65;margin-bottom:12px}
+.section p:last-child{margin-bottom:0}
+
+/* Code blocks */
+.code-block{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border)}
+.code-label{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.code-label.bash{color:#059669}.code-label.output{color:#d97706}.code-label.conf{color:#7c3aed}.code-label.sql{color:#0284c7}
+.copy-btn{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);background:none;border:1px solid var(--border);border-radius:5px;padding:3px 8px;cursor:pointer;transition:color .15s,border-color .15s}
+.copy-btn:hover{color:var(--navy)}.copy-btn.copied{color:#059669;border-color:#059669}
+.code-body{padding:16px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#334155;line-height:1.75;overflow-x:auto;white-space:pre}
+.kw{color:#0284c7;font-weight:600}.fn{color:#7c3aed}.str{color:#059669}.cm{color:#94a3b8}.num{color:#d97706}.op{color:#db2777}.tp{color:#b45309}.tb{color:#0d9488}.flag-hl{color:#dc2626}
+
+/* Concept cards */
+.concepts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.concept{background:var(--white);border:1px solid var(--border);border-left:3px solid var(--border);border-radius:8px;padding:12px 16px}
+.concept.blue{border-left-color:#0284c7}.concept.green{border-left-color:#059669}.concept.orange{border-left-color:#d97706}
+.concept.teal{border-left-color:#0d9488}.concept.purple{border-left-color:#7c3aed}.concept.red{border-left-color:#dc2626}
+.concept-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.concept-desc{font-size:12px;color:var(--slate);line-height:1.6}
+
+/* Callouts */
+.callout{border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:16px;border:1px solid transparent;border-left-width:3px}
+.callout .lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.callout p,.callout li{font-size:12px;line-height:1.65}
+.callout ul{padding-left:16px}.callout li{margin-bottom:4px}
+.callout.tip{background:#d1fae5;border-color:#a7f3d0;border-left-color:#059669}.callout.tip .lbl{color:#059669}.callout.tip p,.callout.tip li{color:#065f46}
+.callout.warn{background:#fef3c7;border-color:#fde68a;border-left-color:#b45309}.callout.warn .lbl{color:#b45309}.callout.warn p,.callout.warn li{color:#78350f}
+.callout.info{background:#e0f2fe;border-color:#bae6fd;border-left-color:#0284c7}.callout.info .lbl{color:#0284c7}.callout.info p,.callout.info li{color:#075985}
+.callout.phr{background:#ccfbf1;border-color:#99f6e4;border-left-color:#0d9488}.callout.phr .lbl{color:#0d9488}.callout.phr p,.callout.phr li{color:#0f766e}
+.callout.scenario{background:#1e293b;border-left-color:#dc2626;border-left-width:4px;border-color:transparent}
+.callout.scenario .lbl{color:#f87171}.callout.scenario p{color:#e2e8f0}
+
+/* Reference table */
+.ref-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.ref-table thead tr{background:#334155;color:#fff}
+.ref-table thead th{padding:10px 14px;text-align:left;font-weight:700}
+.ref-table tbody tr{border-bottom:1px solid var(--border)}
+.ref-table tbody tr:last-child{border-bottom:none}
+.ref-table tbody tr:nth-child(even){background:var(--bg)}
+.ref-table tbody td{padding:9px 14px;vertical-align:top;line-height:1.55}
+.ref-table .mono{font-family:'JetBrains Mono',monospace;font-size:11px}
+.win{color:#059669;font-weight:700}.lose{color:#dc2626}.neutral{color:#d97706}
+
+/* Must-know */
+.must-know-item{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--amber-text);line-height:1.55}
+.flag{color:var(--amber-icon);font-size:15px;flex-shrink:0;margin-top:1px}
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./db-masterplan-v2.html">← Back to DB·MASTERY</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">DB·MASTERY &mdash; Phase 00-L &middot; OS Foundation</div>
+    <h1>Linux &amp; Red Hat — DBA Foundation</h1>
+    <p class="header-sub">Filesystem navigation, systemd service management, dnf/rpm packages, SELinux, networking, and bash scripting — the OS skills every DBA needs on RHEL 8 / 9.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de', this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar', this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══════════════════════════════════════════════════
+     ENGLISH TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="progress-bar">
+    <span class="progress-label">Study progress</span>
+    <div id="prog-en" class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>
+    <span id="prog-count-en" class="prog-label">0 / 15 opened</span>
+  </div>
+
+  <!-- Section 1: Filesystem -->
+  <div class="section">
+    <div class="section-label">Section 1</div>
+    <h2>Filesystem Navigation &amp; Key Directories</h2>
+    <p>Linux has a single unified tree rooted at <code style="font-family:'JetBrains Mono',monospace;font-size:12px">/</code>. Knowing where databases, logs, configs, and binaries live saves you minutes every incident.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">DBA-critical directory map</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <table class="ref-table">
+            <thead><tr><th>Path</th><th>Contents</th><th>DBA relevance</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">/etc/my.cnf.d/</td><td>MariaDB configuration fragments</td><td>First stop for every tuning change</td></tr>
+              <tr><td class="mono">/var/lib/mysql/</td><td>InnoDB data &amp; redo logs, binlogs</td><td>Where your data actually lives</td></tr>
+              <tr><td class="mono">/var/log/mariadb/</td><td>Error log, slow query log</td><td>First stop during incident response</td></tr>
+              <tr><td class="mono">/var/log/</td><td>System journals, auth.log, messages</td><td>OS-level errors, OOM events</td></tr>
+              <tr><td class="mono">/etc/</td><td>All system configuration files</td><td>firewalld, SELinux, network configs</td></tr>
+              <tr><td class="mono">/usr/bin/ /usr/sbin/</td><td>Executables (mariadb, mysqladmin…)</td><td>Know where binaries are, for cron &amp; scripts</td></tr>
+              <tr><td class="mono">/tmp/ /var/tmp/</td><td>Temp files — purged on reboot</td><td>MariaDB uses for sort/tmp tables</td></tr>
+              <tr><td class="mono">/proc/sys/</td><td>Live kernel parameters</td><td>Tune without reboot: swappiness, vm.dirty_*</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">Essential navigation commands — with real DBA examples</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label bash">bash — navigation</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm"># Where am I? What's here?</span>
+<span class="fn">pwd</span>                             <span class="cm"># print working directory</span>
+<span class="fn">ls</span> <span class="flag-hl">-lah</span> /var/lib/mysql/          <span class="cm"># list with human-readable sizes</span>
+<span class="fn">ls</span> <span class="flag-hl">-lt</span>  /var/lib/mysql/ | head   <span class="cm"># newest files first</span>
+
+<span class="cm"># Move around</span>
+<span class="fn">cd</span> /var/lib/mysql
+<span class="fn">cd</span> -                             <span class="cm"># jump back to previous directory</span>
+
+<span class="cm"># Find something fast</span>
+<span class="fn">find</span> /etc <span class="flag-hl">-name</span> <span class="str">"*.cnf"</span>          <span class="cm"># all MariaDB config fragments</span>
+<span class="fn">find</span> /var/lib/mysql <span class="flag-hl">-name</span> <span class="str">"*.ibd"</span> <span class="flag-hl">-newer</span> /tmp/ref  <span class="cm"># recently modified tables</span>
+
+<span class="cm"># Disk usage — critical for DBA</span>
+<span class="fn">df</span> <span class="flag-hl">-h</span>                            <span class="cm"># free space on all mounts</span>
+<span class="fn">du</span> <span class="flag-hl">-sh</span> /var/lib/mysql/*          <span class="cm"># which databases use the most space</span>
+<span class="fn">du</span> <span class="flag-hl">-sh</span> /var/lib/mysql/           <span class="cm"># total data directory size</span></div>
+          </div>
+          <div class="callout warn"><div class="lbl">Common DBA mistake</div><p>Filling <code style="font-family:'JetBrains Mono',monospace;font-size:11px">/var/lib/mysql/</code> causes MariaDB to crash with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ERROR 28: No space left on device</code>. Run <code style="font-family:'JetBrains Mono',monospace;font-size:11px">df -h</code> and <code style="font-family:'JetBrains Mono',monospace;font-size:11px">du -sh /var/lib/mysql/</code> before every <code style="font-family:'JetBrains Mono',monospace;font-size:11px">mariabackup</code> run.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Reading Logs -->
+  <div class="section">
+    <div class="section-label">Section 2</div>
+    <h2>Reading Files &amp; Logs</h2>
+    <p>A DBA spends a significant portion of every incident reading logs. Know how to get to the relevant part of a large log file instantly.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">grep, tail, less — the three tools you use in every incident</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label bash">bash — log reading</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm"># tail: see the live log (like watching a live feed)</span>
+<span class="fn">tail</span> <span class="flag-hl">-f</span> /var/log/mariadb/mariadb.log    <span class="cm"># follow as new lines arrive</span>
+<span class="fn">tail</span> <span class="flag-hl">-n</span> <span class="num">200</span> /var/log/mariadb/mariadb.log  <span class="cm"># last 200 lines</span>
+
+<span class="cm"># grep: find the signal in the noise</span>
+<span class="fn">grep</span> <span class="flag-hl">-i</span> <span class="str">"error"</span>   /var/log/mariadb/mariadb.log
+<span class="fn">grep</span> <span class="flag-hl">-i</span> <span class="str">"galera\|wsrep\|sst"</span> /var/log/mariadb/mariadb.log  <span class="cm"># Galera events</span>
+<span class="fn">grep</span> <span class="flag-hl">-c</span> <span class="str">"Aborted"</span> /var/log/mariadb/mariadb.log   <span class="cm"># count aborted connections</span>
+
+<span class="cm"># Combined: live filtered stream</span>
+<span class="fn">tail</span> <span class="flag-hl">-f</span> /var/log/mariadb/mariadb.log | <span class="fn">grep</span> <span class="flag-hl">--line-buffered</span> <span class="str">"ERROR\|WARN"</span>
+
+<span class="cm"># less: navigate a huge file</span>
+<span class="fn">less</span> /var/log/mariadb/mariadb.log
+<span class="cm"># Inside less: G=end  g=top  /pattern=search  n=next  q=quit</span>
+
+<span class="cm"># journald: system-level logs for MariaDB service</span>
+<span class="fn">journalctl</span> <span class="flag-hl">-u</span> mariadb <span class="flag-hl">--since</span> <span class="str">"2 hours ago"</span>
+<span class="fn">journalctl</span> <span class="flag-hl">-u</span> mariadb <span class="flag-hl">-p</span> err              <span class="cm"># errors only</span>
+<span class="fn">journalctl</span> <span class="flag-hl">-u</span> mariadb <span class="flag-hl">-f</span>                  <span class="cm"># follow live</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: systemd -->
+  <div class="section">
+    <div class="section-label">Section 3</div>
+    <h2>systemd — Service Management</h2>
+    <p>MariaDB on RHEL 8/9 runs as a systemd unit. Every DBA command set starts and ends with systemctl.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">The twelve systemctl commands you need by reflex</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label bash">bash — systemctl</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm"># Status — is it running? Why did it fail?</span>
+<span class="fn">systemctl</span> status mariadb
+<span class="fn">systemctl</span> is-active mariadb   <span class="cm"># exits 0 if active, 3 if not</span>
+<span class="fn">systemctl</span> is-enabled mariadb  <span class="cm"># will it start on boot?</span>
+
+<span class="cm"># Lifecycle</span>
+<span class="fn">systemctl</span> start   mariadb
+<span class="fn">systemctl</span> stop    mariadb
+<span class="fn">systemctl</span> restart mariadb     <span class="cm"># full stop + start</span>
+<span class="fn">systemctl</span> reload  mariadb     <span class="cm"># reload config without full restart (if supported)</span>
+
+<span class="cm"># Boot behaviour</span>
+<span class="fn">systemctl</span> enable  mariadb     <span class="cm"># start on boot</span>
+<span class="fn">systemctl</span> disable mariadb     <span class="cm"># do not start on boot</span>
+
+<span class="cm"># Other units (firewall, MaxScale)</span>
+<span class="fn">systemctl</span> status  firewalld
+<span class="fn">systemctl</span> status  maxscale
+
+<span class="cm"># Logs via journalctl</span>
+<span class="fn">journalctl</span> <span class="flag-hl">-u</span> mariadb <span class="flag-hl">-n</span> <span class="num">50</span> <span class="flag-hl">--no-pager</span>   <span class="cm"># last 50 lines</span></div>
+          </div>
+          <div class="callout tip"><div class="lbl">Incident first step</div><p>Always run <code style="font-family:'JetBrains Mono',monospace;font-size:11px">systemctl status mariadb</code> before anything else. The status output shows the last few log lines and the exit code — 90% of the time it tells you exactly what went wrong.</p></div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">systemd unit file — understanding MariaDB's service definition</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm"># View the unit file</span>
+<span class="fn">systemctl</span> cat mariadb
+
+<span class="cm"># Override without editing the original (survives package upgrades)</span>
+<span class="fn">systemctl</span> edit mariadb
+<span class="cm"># Creates /etc/systemd/system/mariadb.service.d/override.conf</span>
+<span class="cm"># Example: add an environment variable or LimitNOFILE increase</span></div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label conf">override.conf — raise open file limit</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body">[Service]
+LimitNOFILE=65536    <span class="cm"># needed when open_files_limit is set high in my.cnf</span>
+TimeoutStartSec=300  <span class="cm"># give MariaDB time to perform SST before systemd kills it</span></div>
+          </div>
+          <div class="callout warn"><div class="lbl">TimeoutStartSec — Galera gotcha</div><p>During Galera SST (full state transfer), MariaDB can take several minutes to start. If systemd's <code style="font-family:'JetBrains Mono',monospace;font-size:11px">TimeoutStartSec</code> is too short (default 90s), systemd kills the node before SST finishes. Always set it to at least <code style="font-family:'JetBrains Mono',monospace;font-size:11px">300</code> or <code style="font-family:'JetBrains Mono',monospace;font-size:11px">infinity</code> on Galera nodes.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Package Management -->
+  <div class="section">
+    <div class="section-label">Section 4</div>
+    <h2>Package Management — dnf &amp; rpm</h2>
+    <p>MariaDB, MaxScale, and their dependencies are installed and updated via <code style="font-family:'JetBrains Mono',monospace;font-size:12px">dnf</code> (RHEL 8/9). Knowing rpm for verification and troubleshooting is equally important.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">dnf commands — install, update, inspect</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label bash">bash — dnf</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm"># Query and information</span>
+<span class="fn">dnf</span> info mariadb-server          <span class="cm"># version, repo, size</span>
+<span class="fn">dnf</span> list installed | <span class="fn">grep</span> maria   <span class="cm"># what's installed</span>
+<span class="fn">dnf</span> repolist                      <span class="cm"># active repositories</span>
+
+<span class="cm"># Install</span>
+<span class="fn">dnf</span> install <span class="flag-hl">-y</span> mariadb-server mariadb-backup
+<span class="fn">dnf</span> install <span class="flag-hl">-y</span> maxscale           <span class="cm"># from MariaDB Enterprise repo</span>
+
+<span class="cm"># Update safely (single package)</span>
+<span class="fn">dnf</span> update mariadb-server <span class="flag-hl">--setopt=protected_packages=</span>
+
+<span class="cm"># Hold a package at current version</span>
+<span class="fn">dnf</span> versionlock add mariadb-server  <span class="cm"># requires dnf-plugin-versionlock</span>
+
+<span class="cm"># Clean up</span>
+<span class="fn">dnf</span> clean all                     <span class="cm"># clear metadata cache</span>
+<span class="fn">dnf</span> autoremove                    <span class="cm"># remove unused dependencies</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">rpm — verify installed files and check versions</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label bash">bash — rpm</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm"># What version is installed?</span>
+<span class="fn">rpm</span> <span class="flag-hl">-q</span> mariadb-server              <span class="cm"># e.g. mariadb-server-10.11.4-1.el9</span>
+
+<span class="cm"># Which package owns a file?</span>
+<span class="fn">rpm</span> <span class="flag-hl">-qf</span> /usr/sbin/mysqld          <span class="cm"># useful when debugging "where did this come from"</span>
+
+<span class="cm"># List all files in a package</span>
+<span class="fn">rpm</span> <span class="flag-hl">-ql</span> mariadb-server             <span class="cm"># all files installed by the package</span>
+
+<span class="cm"># Verify file integrity (detects tampering or corruption)</span>
+<span class="fn">rpm</span> <span class="flag-hl">-V</span> mariadb-server             <span class="cm"># silent = OK; output = changed file</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: Networking -->
+  <div class="section">
+    <div class="section-label">Section 5</div>
+    <h2>Networking for DBAs</h2>
+    <p>Galera uses ports 3306, 4444, 4567, and 4568. MaxScale listens on 3306 or 3307. If any of these are blocked, the cluster fails. Knowing how to inspect and configure the firewall is non-negotiable.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">Port reference — MariaDB, Galera, MaxScale</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <table class="ref-table">
+            <thead><tr><th>Port</th><th>Protocol</th><th>Used by</th><th>Block this and…</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">3306</td><td>TCP</td><td>MariaDB client connections</td><td>No apps can connect</td></tr>
+              <tr><td class="mono">4444</td><td>TCP</td><td>Galera SST (full state transfer)</td><td>New nodes can never join</td></tr>
+              <tr><td class="mono">4567</td><td>TCP+UDP</td><td>Galera replication traffic (wsrep)</td><td>Cluster loses quorum immediately</td></tr>
+              <tr><td class="mono">4568</td><td>TCP</td><td>Galera IST (incremental state transfer)</td><td>IST falls back to slow SST</td></tr>
+              <tr><td class="mono">3307</td><td>TCP</td><td>MaxScale listener (read/write split)</td><td>Apps lose the proxy layer</td></tr>
+              <tr><td class="mono">6603</td><td>TCP</td><td>MaxScale REST API &amp; maxctrl</td><td>maxctrl commands fail</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">firewall-cmd — open and verify ports on RHEL</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label bash">bash — firewalld</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm"># Check current state</span>
+<span class="fn">firewall-cmd</span> <span class="flag-hl">--list-all</span>
+
+<span class="cm"># Open ports permanently (Galera cluster node)</span>
+<span class="fn">firewall-cmd</span> <span class="flag-hl">--permanent</span> <span class="flag-hl">--add-port</span>=3306/tcp
+<span class="fn">firewall-cmd</span> <span class="flag-hl">--permanent</span> <span class="flag-hl">--add-port</span>=4444/tcp
+<span class="fn">firewall-cmd</span> <span class="flag-hl">--permanent</span> <span class="flag-hl">--add-port</span>=4567/tcp
+<span class="fn">firewall-cmd</span> <span class="flag-hl">--permanent</span> <span class="flag-hl">--add-port</span>=4567/udp
+<span class="fn">firewall-cmd</span> <span class="flag-hl">--permanent</span> <span class="flag-hl">--add-port</span>=4568/tcp
+<span class="fn">firewall-cmd</span> <span class="flag-hl">--reload</span>
+
+<span class="cm"># Verify a specific port is open</span>
+<span class="fn">firewall-cmd</span> <span class="flag-hl">--query-port</span>=4567/tcp   <span class="cm"># returns yes/no</span>
+
+<span class="cm"># Check what's actually listening (from OS side)</span>
+<span class="fn">ss</span> <span class="flag-hl">-tlnp</span>                           <span class="cm"># all TCP listening + PID</span>
+<span class="fn">ss</span> <span class="flag-hl">-tlnp</span> | <span class="fn">grep</span> <span class="str">"3306\|4567\|4444"</span>
+
+<span class="cm"># Test connectivity from another node</span>
+<span class="fn">nc</span> <span class="flag-hl">-zv</span> node2.internal <span class="num">4567</span>        <span class="cm"># is port 4567 reachable?</span>
+<span class="fn">telnet</span> node2.internal <span class="num">3306</span>        <span class="cm"># quick MariaDB connectivity test</span></div>
+          </div>
+          <div class="callout warn"><div class="lbl">Always --permanent + --reload</div><p>Without <code style="font-family:'JetBrains Mono',monospace;font-size:11px">--permanent</code>, the firewall rule is lost after the next <code style="font-family:'JetBrains Mono',monospace;font-size:11px">firewall-cmd --reload</code> or system reboot. Without <code style="font-family:'JetBrains Mono',monospace;font-size:11px">--reload</code>, the permanent rule is not active yet.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6: SELinux -->
+  <div class="section">
+    <div class="section-label">Section 6</div>
+    <h2>Permissions &amp; SELinux</h2>
+    <p>SELinux on RHEL 8/9 runs in enforcing mode by default. It blocks MariaDB from accessing non-standard paths and ports silently — your database just fails with a cryptic error. Know how to check and fix SELinux denials without disabling it.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">SELinux concepts and DBA commands</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="concepts">
+            <div class="concept orange"><div class="concept-name">enforcing</div><div class="concept-desc">SELinux actively blocks policy violations. The correct production state — never disable SELinux on KRITIS systems.</div></div>
+            <div class="concept blue"><div class="concept-name">permissive</div><div class="concept-desc">SELinux logs violations but does not block them. Use temporarily to diagnose — <strong>not</strong> a permanent fix.</div></div>
+            <div class="concept red"><div class="concept-name">disabled</div><div class="concept-desc">SELinux completely off. Requires reboot to re-enable. Never acceptable on production KRITIS infrastructure.</div></div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label bash">bash — SELinux for DBAs</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm"># Check current mode</span>
+<span class="fn">getenforce</span>                      <span class="cm"># Enforcing / Permissive / Disabled</span>
+<span class="fn">sestatus</span>                        <span class="cm"># detailed status + policy</span>
+
+<span class="cm"># Check for recent denials (the AVC audit log)</span>
+<span class="fn">ausearch</span> <span class="flag-hl">-m</span> avc <span class="flag-hl">-ts</span> recent        <span class="cm"># recent denials</span>
+<span class="fn">grep</span> <span class="str">"denied"</span> /var/log/audit/audit.log | <span class="fn">grep</span> mysql
+
+<span class="cm"># Generate a fix policy from the denials (use with care)</span>
+<span class="fn">ausearch</span> <span class="flag-hl">-m</span> avc <span class="flag-hl">-ts</span> recent | <span class="fn">audit2allow</span> <span class="flag-hl">-M</span> mariadb_custom
+<span class="fn">semodule</span> <span class="flag-hl">-i</span> mariadb_custom.pp
+
+<span class="cm"># Fix: relabel a non-standard data directory</span>
+<span class="fn">semanage</span> fcontext <span class="flag-hl">-a</span> <span class="flag-hl">-t</span> mysqld_db_t <span class="str">'/data/mysql(/.*)?'</span>
+<span class="fn">restorecon</span> <span class="flag-hl">-Rv</span> /data/mysql/
+
+<span class="cm"># Temporarily switch to permissive for diagnosis only</span>
+<span class="fn">setenforce</span> <span class="num">0</span>   <span class="cm"># permissive (not persistent across reboot)</span>
+<span class="fn">setenforce</span> <span class="num">1</span>   <span class="cm"># back to enforcing</span></div>
+          </div>
+          <div class="callout warn"><div class="lbl">Never permanently disable SELinux</div><p>On OS GmbH KRITIS infrastructure, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">setenforce 0</code> is a temporary diagnostic step only. Setting <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SELINUX=disabled</code> in <code style="font-family:'JetBrains Mono',monospace;font-size:11px">/etc/selinux/config</code> violates the security baseline. Use <code style="font-family:'JetBrains Mono',monospace;font-size:11px">audit2allow</code> to build a proper policy module instead.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 7: Bash Scripting -->
+  <div class="section">
+    <div class="section-label">Section 7</div>
+    <h2>Bash Scripting Essentials for DBAs</h2>
+    <p>Every DBA at OS GmbH writes scripts — health checks, backup wrappers, cluster monitoring, on-call alerts. The patterns below cover 90% of real DBA scripts.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">Script skeleton — safe defaults every DBA script should start with</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label bash">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm">#!/usr/bin/env bash</span>
+<span class="cm"># mariadb-healthcheck.sh — checks all Galera nodes are in sync</span>
+<span class="kw">set</span> <span class="flag-hl">-euo</span> pipefail    <span class="cm"># -e exit on error, -u unset var = error, -o pipefail</span>
+<span class="kw">IFS</span>=<span class="str">$'\n\t'</span>
+
+<span class="cm"># Constants — edit here, not scattered through the script</span>
+<span class="kw">readonly</span> DB_HOST=<span class="str">"127.0.0.1"</span>
+<span class="kw">readonly</span> DB_USER=<span class="str">"healthcheck"</span>
+<span class="kw">readonly</span> DB_PASS_FILE=<span class="str">"/etc/mariadb/.healthcheck.pwd"</span>
+<span class="kw">readonly</span> LOG_FILE=<span class="str">"/var/log/mariadb/healthcheck.log"</span>
+
+<span class="cm"># Logging helper</span>
+<span class="fn">log()</span> { <span class="fn">echo</span> <span class="str">"[$(date '+%Y-%m-%d %H:%M:%S')] $*"</span> | <span class="fn">tee</span> <span class="flag-hl">-a</span> <span class="str">"$LOG_FILE"</span>; }
+
+<span class="cm"># Read password safely (never put passwords in scripts)</span>
+DB_PASS=$(&lt;<span class="str">"$DB_PASS_FILE"</span>)
+
+<span class="cm"># Run a query and capture output</span>
+wsrep_state=$(<span class="fn">mysql</span> <span class="flag-hl">-h</span> <span class="str">"$DB_HOST"</span> <span class="flag-hl">-u</span> <span class="str">"$DB_USER"</span> <span class="flag-hl">-p</span><span class="str">"$DB_PASS"</span> <span class="flag-hl">-sNe</span> \
+  <span class="str">"SHOW GLOBAL STATUS LIKE 'wsrep_local_state_comment'"</span> 2&gt;&amp;1 | <span class="fn">awk</span> <span class="str">'{print $2}'</span>)
+
+<span class="kw">if</span> [[ <span class="str">"$wsrep_state"</span> != <span class="str">"Synced"</span> ]]; then
+  <span class="fn">log</span> <span class="str">"ERROR: wsrep_local_state_comment = $wsrep_state (expected Synced)"</span>
+  <span class="kw">exit</span> <span class="num">1</span>
+<span class="kw">fi</span>
+
+<span class="fn">log</span> <span class="str">"OK: node is Synced"</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">Cron jobs — scheduling DBA tasks</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label bash">bash — crontab</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm"># Edit crontab for the mariadb system user</span>
+<span class="fn">crontab</span> <span class="flag-hl">-u</span> mysql <span class="flag-hl">-e</span>
+
+<span class="cm"># Format: minute hour day-of-month month day-of-week command</span>
+<span class="cm">#   *     *    *             *      *          /path/to/script</span>
+
+<span class="cm"># Full backup every night at 01:30</span>
+<span class="num">30</span> <span class="num">1</span> * * * /usr/local/bin/mariadb-backup-full.sh &gt;&gt; /var/log/mariadb/backup.log <span class="num">2</span>&gt;&amp;<span class="num">1</span>
+
+<span class="cm"># Incremental backup every hour during business hours</span>
+<span class="num">0</span> <span class="num">8</span><span class="op">-</span><span class="num">18</span> * * <span class="num">1</span><span class="op">-</span><span class="num">5</span> /usr/local/bin/mariadb-backup-incr.sh &gt;&gt; /var/log/mariadb/backup.log <span class="num">2</span>&gt;&amp;<span class="num">1</span>
+
+<span class="cm"># Health check every 5 minutes</span>
+<span class="op">*</span><span class="op">/</span><span class="num">5</span> * * * * /usr/local/bin/mariadb-healthcheck.sh
+
+<span class="cm"># List current cron jobs</span>
+<span class="fn">crontab</span> <span class="flag-hl">-u</span> mysql <span class="flag-hl">-l</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 8: Interview Q&A -->
+  <div class="section">
+    <div class="section-label">Section 8</div>
+    <h2>Interview Questions</h2>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">"MariaDB won't start. Walk me through your first five steps."</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="acc-strategy-label">This is the most common on-call scenario question</div>
+          <div class="callout phr"><div class="lbl">Sample answer</div><p>"First: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">systemctl status mariadb</code> — this tells me if the service failed to start and shows the last few journal lines with the exit code. Second: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">journalctl -u mariadb -n 100 --no-pager</code> to see the full startup log. Third: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">tail -n 200 /var/log/mariadb/mariadb.log</code> for the MariaDB error log — this usually shows the root cause. Fourth: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">df -h</code> to rule out a full disk. Fifth: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ausearch -m avc -ts recent</code> for SELinux denials if the error mentions permission denied. By step five, I've diagnosed 99% of startup failures."</p></div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">"How do you add a Galera port exception without disabling the firewall?"</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="callout phr"><div class="lbl">Sample answer</div><p>"With <code style="font-family:'JetBrains Mono',monospace;font-size:11px">firewall-cmd</code>. I add the four Galera ports with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">--permanent</code> and then reload: ports 3306 TCP (client), 4444 TCP (SST), 4567 TCP+UDP (wsrep replication), and 4568 TCP (IST). The <code style="font-family:'JetBrains Mono',monospace;font-size:11px">--permanent</code> flag makes the rule survive reboots and reloads. Without it, the next reload wipes the rule. I verify with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">firewall-cmd --list-all</code> and <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ss -tlnp</code> to confirm MariaDB is actually listening on those ports."</p></div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">"SELinux is blocking MariaDB from accessing a new data directory. How do you fix it?"</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="callout phr"><div class="lbl">Sample answer</div><p>"I never disable SELinux. I check the audit log with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ausearch -m avc -ts recent | grep mysql</code> to confirm the denial, then I apply the correct SELinux file context to the new directory: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">semanage fcontext -a -t mysqld_db_t '/newpath(/.*)?'</code> followed by <code style="font-family:'JetBrains Mono',monospace;font-size:11px">restorecon -Rv /newpath/</code>. This labels the files with the policy MariaDB expects. If a custom context is needed, I'd generate a module with <code style="font-family:'JetBrains Mono',monospace;font-size:11px">audit2allow</code>."</p></div>
+          <div class="callout warn"><div class="lbl">Never say this in the interview</div><p>"I just set <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SELINUX=disabled</code> in the config." On KRITIS infrastructure this is a security violation, not a solution.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Learning Ladder -->
+  <div class="section">
+    <div class="section-label">Learning Ladder</div>
+    <h2>How Deep Do You Need to Go?</h2>
+    <div class="ladder">
+      <div class="ladder-level">
+        <div class="level-head"><span class="level-pill l1">Level 1</span><span class="level-title">Interview awareness — answer any Linux concept question</span></div>
+        <div class="level-bullets"><ul>
+          <li>Explain the Linux directory hierarchy and where MariaDB data and logs live</li>
+          <li>Describe what systemd is and name the five most common systemctl commands</li>
+          <li>Name the four Galera cluster ports and what each one is used for</li>
+          <li>Explain the three SELinux modes and which is correct for production</li>
+        </ul></div>
+      </div>
+      <div class="ladder-level">
+        <div class="level-head"><span class="level-pill l2">Level 2</span><span class="level-title">Operational — execute on a live RHEL system</span></div>
+        <div class="level-bullets"><ul>
+          <li>Start/stop/check MariaDB and interpret the systemctl status output</li>
+          <li>Tail and grep the MariaDB error log to find a startup failure cause</li>
+          <li>Open Galera ports with firewall-cmd and verify with ss and firewall-cmd --list-all</li>
+          <li>Install and update packages with dnf; pin a version with versionlock</li>
+        </ul></div>
+      </div>
+      <div class="ladder-level">
+        <div class="level-head"><span class="level-pill l3">Level 3</span><span class="level-title">Practitioner — diagnose and fix OS-level DB issues</span></div>
+        <div class="level-bullets"><ul>
+          <li>Diagnose and fix a MariaDB startup failure step by step (systemd → journal → error log → disk → SELinux)</li>
+          <li>Relabel a non-standard data directory with semanage + restorecon</li>
+          <li>Write a bash health-check script with set -euo pipefail and journald logging</li>
+          <li>Set TimeoutStartSec in a systemd override to prevent SST timeouts</li>
+        </ul></div>
+      </div>
+      <div class="ladder-level">
+        <div class="level-head"><span class="level-pill l4">Level 4</span><span class="level-title">Expert — tune the OS for database workloads</span></div>
+        <div class="level-bullets"><ul>
+          <li>Tune kernel parameters (vm.swappiness, vm.dirty_ratio) via /proc/sys/ and sysctl.conf</li>
+          <li>Build a custom SELinux policy module with audit2allow for non-standard MariaDB requirements</li>
+          <li>Design and implement a cron-based backup + alert pipeline meeting a 15-minute RPO</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Must-Know -->
+  <div class="must-know">
+    <div class="section-label" style="color:#b45309">⚑ Must-Know Before the Interview</div>
+    <div class="must-know-list">
+      <div class="must-know-item"><span class="flag">⚑</span><span>Galera requires 4 ports open: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">3306</code> (client), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">4444</code> (SST), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">4567 TCP+UDP</code> (wsrep), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">4568</code> (IST). Block any one and the cluster fails silently.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span><code style="font-family:'JetBrains Mono',monospace;font-size:11px">systemctl status mariadb</code> is always your first command during an incident. Never start guessing before reading it.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>SELinux: never disable it on KRITIS production. Use <code style="font-family:'JetBrains Mono',monospace;font-size:11px">semanage fcontext + restorecon</code> for path issues, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">audit2allow</code> for custom policy.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>Add <code style="font-family:'JetBrains Mono',monospace;font-size:11px">TimeoutStartSec=300</code> (or infinity) to the systemd MariaDB override on all Galera nodes — default 90s is not enough for SST.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>Always use <code style="font-family:'JetBrains Mono',monospace;font-size:11px">set -euo pipefail</code> at the top of every bash script. It turns silent failures into visible errors — essential for production automation.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span><code style="font-family:'JetBrains Mono',monospace;font-size:11px">df -h</code> before every backup. A full disk is the single most common cause of DBA incidents at 3am — it is also the most embarrassing.</span></div>
+    </div>
+  </div>
+
+</div><!-- /tab-en -->
+
+<!-- ═══════════════════════════════════════════════════
+     GERMAN TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="progress-bar">
+    <span class="progress-label">Lernfortschritt</span>
+    <div id="prog-de" class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>
+    <span id="prog-count-de" class="prog-label">0 / 15 geöffnet</span>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Abschnitt 1</div>
+    <h2>Dateisystem-Navigation &amp; Schlüsselverzeichnisse</h2>
+    <p>Linux hat einen einzigen, einheitlichen Verzeichnisbaum, der bei <code style="font-family:'JetBrains Mono',monospace;font-size:12px">/</code> beginnt. Wer weiß, wo Datenbankdaten, Logs, Konfigurationen und Binärdateien liegen, spart bei jedem Vorfall wertvolle Minuten.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">DBA-kritische Verzeichnisse</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="concepts">
+            <div class="concept blue"><div class="concept-name">/etc/my.cnf.d/ — Konfiguration</div><div class="concept-desc">MariaDB-Konfigurationsfragmente. Erste Anlaufstelle für jede Tuning-Änderung.</div></div>
+            <div class="concept green"><div class="concept-name">/var/lib/mysql/ — Datendirectory</div><div class="concept-desc">InnoDB-Datendateien, Redo-Logs, Binary-Logs. Hier liegen die eigentlichen Daten.</div></div>
+            <div class="concept orange"><div class="concept-name">/var/log/mariadb/ — Logs</div><div class="concept-desc">Fehlerprotokoll, Slow-Query-Log. Erste Anlaufstelle bei der Incident-Analyse.</div></div>
+            <div class="concept teal"><div class="concept-name">/proc/sys/ — Live-Kernel-Parameter</div><div class="concept-desc">Kernel-Parameter im Betrieb tunen (swappiness, vm.dirty_*) — ohne Neustart.</div></div>
+          </div>
+          <div class="callout warn"><div class="lbl">Häufiger DBA-Fehler</div><p>Wenn <code style="font-family:'JetBrains Mono',monospace;font-size:11px">/var/lib/mysql/</code> voll läuft, bricht MariaDB mit <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ERROR 28: No space left on device</code> ab. Immer <code style="font-family:'JetBrains Mono',monospace;font-size:11px">df -h</code> und <code style="font-family:'JetBrains Mono',monospace;font-size:11px">du -sh /var/lib/mysql/</code> vor jedem Backup prüfen.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Abschnitt 2</div>
+    <h2>systemd — Dienstverwaltung</h2>
+    <p>MariaDB auf RHEL 8/9 läuft als systemd-Unit. Jeder DBA-Befehlssatz beginnt und endet mit systemctl.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">Die wichtigsten systemctl-Befehle</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="concepts">
+            <div class="concept blue"><div class="concept-name">systemctl status mariadb</div><div class="concept-desc">Erster Befehl bei jedem Vorfall. Zeigt ob der Dienst läuft, letzte Log-Zeilen und den Exit-Code.</div></div>
+            <div class="concept green"><div class="concept-name">systemctl start / stop / restart mariadb</div><div class="concept-desc">Dienst starten, stoppen, neu starten. restart = vollständiger Stopp + Start.</div></div>
+            <div class="concept teal"><div class="concept-name">systemctl enable / disable mariadb</div><div class="concept-desc">Festlegen, ob MariaDB beim Systemstart automatisch gestartet wird.</div></div>
+            <div class="concept orange"><div class="concept-name">journalctl -u mariadb -f</div><div class="concept-desc">Live-Stream der systemd-Logs für den MariaDB-Dienst — entspricht tail -f auf Systemebene.</div></div>
+          </div>
+          <div class="callout warn"><div class="lbl">Galera: TimeoutStartSec erhöhen</div><p>Während Galera SST (vollständige Zustandsübertragung) kann MariaDB mehrere Minuten zum Starten brauchen. Wenn systemd's <code style="font-family:'JetBrains Mono',monospace;font-size:11px">TimeoutStartSec</code> zu kurz ist (Standard: 90s), beendet systemd den Node vor dem Ende des SST. Auf Galera-Nodes mindestens <code style="font-family:'JetBrains Mono',monospace;font-size:11px">300</code> oder <code style="font-family:'JetBrains Mono',monospace;font-size:11px">infinity</code> setzen.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Abschnitt 3</div>
+    <h2>Netzwerk &amp; Firewall für DBAs</h2>
+    <p>Galera benötigt die Ports 3306, 4444, 4567 und 4568. MaxScale hört auf 3306 oder 3307. Wenn einer dieser Ports blockiert ist, schlägt der Cluster stillschweigend fehl.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">Galera-Ports permanent mit firewall-cmd öffnen</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <table class="ref-table">
+            <thead><tr><th>Port</th><th>Verwendet von</th><th>Wenn blockiert…</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">3306/tcp</td><td>MariaDB-Clients</td><td>Keine App kann verbinden</td></tr>
+              <tr><td class="mono">4444/tcp</td><td>Galera SST</td><td>Neue Nodes können nie beitreten</td></tr>
+              <tr><td class="mono">4567/tcp+udp</td><td>wsrep-Replikation</td><td>Cluster verliert sofort das Quorum</td></tr>
+              <tr><td class="mono">4568/tcp</td><td>Galera IST</td><td>IST fällt auf langsamen SST zurück</td></tr>
+            </tbody>
+          </table>
+          <div class="callout warn"><div class="lbl">Immer --permanent + --reload</div><p>Ohne <code style="font-family:'JetBrains Mono',monospace;font-size:11px">--permanent</code> geht die Firewallregel beim nächsten Reload oder Neustart verloren. Ohne <code style="font-family:'JetBrains Mono',monospace;font-size:11px">--reload</code> ist die permanente Regel noch nicht aktiv.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Abschnitt 4</div>
+    <h2>SELinux — sicher verwalten, nie deaktivieren</h2>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">SELinux-Denial beheben — der richtige Weg</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="callout phr"><div class="lbl">Musterlösung im Vorstellungsgespräch</div><p>„Ich deaktiviere SELinux nie. Ich prüfe das Audit-Log mit <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ausearch -m avc -ts recent | grep mysql</code> zur Bestätigung des Denials. Dann weise ich dem neuen Verzeichnis den richtigen SELinux-Dateikontext zu: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">semanage fcontext -a -t mysqld_db_t '/neupfad(/.*)?'</code> und anschließend <code style="font-family:'JetBrains Mono',monospace;font-size:11px">restorecon -Rv /neupfad/</code>. Bei Bedarf erstelle ich ein eigenes Richtlinienmodul mit <code style="font-family:'JetBrains Mono',monospace;font-size:11px">audit2allow</code>."</p></div>
+          <div class="callout warn"><div class="lbl">Nie im Vorstellungsgespräch sagen</div><p>„Ich setze einfach SELINUX=disabled." Auf KRITIS-Infrastruktur ist das ein Sicherheitsverstoß, keine Lösung.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Must-Know DE -->
+  <div class="must-know">
+    <div class="section-label" style="color:#b45309">⚑ Vor dem Gespräch sicher wissen</div>
+    <div class="must-know-list">
+      <div class="must-know-item"><span class="flag">⚑</span><span>Galera benötigt 4 offene Ports: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">3306</code> (Client), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">4444</code> (SST), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">4567 TCP+UDP</code> (wsrep), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">4568</code> (IST). Jeder blockierte Port lässt den Cluster still versagen.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span><code style="font-family:'JetBrains Mono',monospace;font-size:11px">systemctl status mariadb</code> ist immer der erste Befehl bei einem Vorfall — nie vorher raten.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>SELinux auf KRITIS-Produktion nie deaktivieren. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">semanage fcontext + restorecon</code> für Pfadprobleme, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">audit2allow</code> für eigene Richtlinien.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span><code style="font-family:'JetBrains Mono',monospace;font-size:11px">TimeoutStartSec=300</code> (oder infinity) im systemd-Override auf allen Galera-Nodes setzen — Standard 90s reicht für SST nicht aus.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>Immer <code style="font-family:'JetBrains Mono',monospace;font-size:11px">set -euo pipefail</code> am Anfang jedes Bash-Skripts. Es macht stille Fehler sichtbar — unverzichtbar für Produktionsautomatisierung.</span></div>
+    </div>
+  </div>
+
+</div><!-- /tab-de -->
+
+</div><!-- /body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'phase_00_linux_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<script>
+function copyCode(btn) {
+  const body = btn.closest('.code-block').querySelector('.code-body');
+  const text = (body.innerText || body.textContent).replace(/\u00A0/g, ' ');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1800);
+  }).catch(() => { btn.textContent = 'failed'; setTimeout(() => { btn.textContent = 'copy'; }, 1500); });
+}
+guardLanguageTab('ar');
+updateProgress();
+</script>
+</body>
+</html>

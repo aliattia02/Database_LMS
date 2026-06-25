@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redirecting…</title>
+  <!--
+    module.html — redirect shim (Issue 1 fix)
+
+    This file previously drove a standalone multi-page module shell via
+    module-shell.js. The canonical entry point is now index.html (the SPA /
+    app.js), which handles field + module selection via query params.
+
+    Old URL: lms/modules/module.html?id=<moduleId>&from=<fieldId>
+    New URL: ../../index.html?field=<fieldId>&module=<moduleId>
+
+    Parameter mapping
+      ?id=   → ?module=   (the module to open)
+      ?from= → ?field=    (the field context, used to scope the sidebar)
+
+    module-shell.js is no longer imported here. Delete it from the repo once
+    you confirm nothing else references it (grep -r "module-shell.js").
+  -->
+  <script>
+    (function () {
+      var p      = new URLSearchParams(location.search);
+      var moduleId = p.get('id');
+      var fieldId  = p.get('from');
+
+      // Build path to index.html — two levels up from lms/modules/
+      var base   = '../../index.html';
+      var params = new URLSearchParams();
+      if (fieldId)  params.set('field',  fieldId);
+      if (moduleId) params.set('module', moduleId);
+
+      var qs = params.toString();
+      // location.replace keeps the shim out of browser history.
+      location.replace(qs ? base + '?' + qs : base);
+    })();
+  </script>
+</head>
+<body>
+  <!-- Fallback for the (near-impossible) case of JS being disabled. -->
+  <p style="font-family:sans-serif;padding:2rem">
+    Redirecting… <a href="../../index.html">Click here if not redirected.</a>
+  </p>
+</body>
+</html>

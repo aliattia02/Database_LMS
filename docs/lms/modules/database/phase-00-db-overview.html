@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Databases — The Big Picture · DB·MASTERY</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── Phase 00-A page-specific styles ── */
+
+/* Learning ladder (from topic1-gics-gpas pattern) */
+.section-label { font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+.l1{background:var(--pill-l1);color:var(--pill-l1t)} .l2{background:var(--pill-l2);color:var(--pill-l2t)}
+.l3{background:var(--pill-l3);color:var(--pill-l3t)} .l4{background:var(--pill-l4);color:var(--pill-l4t)}
+.ladder{display:flex;flex-direction:column;gap:14px}
+.ladder-level{border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.level-head{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#f8fafc;border-bottom:1px solid var(--border)}
+.level-pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+.level-title{font-weight:600;font-size:14px;color:var(--navy2)}
+.level-bullets{padding:14px 16px}
+.level-bullets ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.level-bullets li{font-size:13.5px;color:#334155;padding-left:18px;position:relative;line-height:1.55}
+.level-bullets li::before{content:'›';position:absolute;left:0;color:var(--muted);font-weight:700}
+
+/* Section cards */
+.section{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:20px;box-shadow:var(--shadow)}
+.section h2{font-size:18px;font-weight:700;margin-bottom:14px;color:var(--navy)}
+.section p{font-size:14px;color:#334155;line-height:1.65;margin-bottom:12px}
+.section p:last-child{margin-bottom:0}
+
+/* Code blocks */
+.code-block{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border)}
+.code-label{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.code-label.sql{color:#0284c7}.code-label.bash{color:#059669}
+.copy-btn{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);background:none;border:1px solid var(--border);border-radius:5px;padding:3px 8px;cursor:pointer;transition:color .15s,border-color .15s}
+.copy-btn:hover{color:var(--navy)}.copy-btn.copied{color:#059669;border-color:#059669}
+.code-body{padding:16px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#334155;line-height:1.75;overflow-x:auto;white-space:pre}
+.kw{color:#0284c7;font-weight:600}.fn{color:#7c3aed}.str{color:#059669}.cm{color:#94a3b8}.num{color:#d97706}.op{color:#db2777}.tp{color:#b45309}.tb{color:#0d9488}
+
+/* Concept cards */
+.concepts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.concept{background:var(--white);border:1px solid var(--border);border-left:3px solid var(--border);border-radius:8px;padding:12px 16px}
+.concept.blue{border-left-color:#0284c7}.concept.green{border-left-color:#059669}.concept.orange{border-left-color:#d97706}
+.concept.teal{border-left-color:#0d9488}.concept.purple{border-left-color:#7c3aed}.concept.red{border-left-color:#dc2626}
+.concept-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.concept-desc{font-size:12px;color:var(--slate);line-height:1.6}
+
+/* Callouts */
+.callout{border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:16px;border:1px solid transparent;border-left-width:3px}
+.callout .lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.callout p,.callout li{font-size:12px;line-height:1.65}
+.callout ul{padding-left:16px}.callout li{margin-bottom:4px}
+.callout.tip{background:#d1fae5;border-color:#a7f3d0;border-left-color:#059669}.callout.tip .lbl{color:#059669}.callout.tip p,.callout.tip li{color:#065f46}
+.callout.warn{background:#fef3c7;border-color:#fde68a;border-left-color:#b45309}.callout.warn .lbl{color:#b45309}.callout.warn p{color:#78350f}
+.callout.info{background:#e0f2fe;border-color:#bae6fd;border-left-color:#0284c7}.callout.info .lbl{color:#0284c7}.callout.info p,.callout.info li{color:#075985}
+.callout.phr{background:#ccfbf1;border-color:#99f6e4;border-left-color:#0d9488}.callout.phr .lbl{color:#0d9488}.callout.phr p,.callout.phr li{color:#0f766e}
+
+/* Reference table */
+.ref-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.ref-table thead tr{background:#334155;color:#fff}
+.ref-table thead th{padding:10px 14px;text-align:left;font-weight:700}
+.ref-table tbody tr{border-bottom:1px solid var(--border)}
+.ref-table tbody tr:last-child{border-bottom:none}
+.ref-table tbody tr:nth-child(even){background:var(--bg)}
+.ref-table tbody td{padding:9px 14px;vertical-align:top;line-height:1.55}
+.ref-table .mono{font-family:'JetBrains Mono',monospace;font-size:11px}
+.win{color:#059669;font-weight:700}.lose{color:#dc2626}.neutral{color:#d97706}
+
+/* DB engine grid */
+.db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+.db-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;box-shadow:var(--shadow);transition:transform .15s}
+.db-card:hover{transform:translateY(-2px)}
+.db-icon{font-size:26px;margin-bottom:6px}
+.db-name{font-size:13px;font-weight:700;margin-bottom:2px;color:var(--navy)}
+.db-type{font-size:10px;font-family:'JetBrains Mono',monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+
+/* Verdict cards */
+.verdict{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;box-shadow:var(--shadow)}
+.verdict-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.verdict-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.verdict-desc{font-size:12px;color:var(--slate);line-height:1.6}
+.pill-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:6px}
+
+/* Must-know (re-used from theme.css pattern) */
+.must-know-item{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--amber-text);line-height:1.55}
+.flag{color:var(--amber-icon);font-size:15px;flex-shrink:0;margin-top:1px}
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./db-masterplan-v2.html">← Back to DB·MASTERY</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">DB·MASTERY &mdash; Phase 00-A &middot; Foundation</div>
+    <h1>Databases — The Big Picture</h1>
+    <p class="header-sub">What a database is, when to use SQL vs NoSQL, the engine landscape, and the decision framework — the conceptual foundation before you write a single query.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de', this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar', this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══════════════════════════════════════════════════
+     ENGLISH TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-en" class="tab-content active">
+
+  <!-- Progress bar -->
+  <div class="progress-bar">
+    <span class="progress-label">Study progress</span>
+    <div id="prog-en" class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>
+    <span id="prog-count-en" class="prog-label">0 / 6 opened</span>
+  </div>
+
+  <!-- Section 1: What Is a Database -->
+  <div class="section">
+    <div class="section-label">Section 1</div>
+    <h2>What Is a Database?</h2>
+    <p>A database is an organised collection of data that can be stored, retrieved, and modified efficiently. But so is a spreadsheet. The key difference is what happens at scale — with many users, billions of rows, and the need for guaranteed data integrity.</p>
+
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>Why not just use a spreadsheet?</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <table class="ref-table">
+            <thead><tr><th>Feature</th><th>Spreadsheet</th><th>Database</th></tr></thead>
+            <tbody>
+              <tr><td>Data volume</td><td class="lose">~1M rows before it breaks</td><td class="win">Billions of rows, no problem</td></tr>
+              <tr><td>Simultaneous users</td><td class="lose">1 user editing safely</td><td class="win">Thousands of concurrent users</td></tr>
+              <tr><td>Data integrity</td><td class="lose">You can type anything anywhere</td><td class="win">Enforced types, constraints, foreign keys</td></tr>
+              <tr><td>Query speed</td><td class="lose">Slow on large data</td><td class="win">Indexed queries in milliseconds</td></tr>
+              <tr><td>Relationships</td><td class="neutral">VLOOKUP / manual linking</td><td class="win">Native JOINs across any tables</td></tr>
+              <tr><td>Crash recovery</td><td class="lose">File corruption risk</td><td class="win">WAL, transactions, ACID</td></tr>
+              <tr><td>Access control</td><td class="lose">File-level only</td><td class="win">Row-level, column-level permissions</td></tr>
+            </tbody>
+          </table>
+          <div class="callout tip"><div class="lbl">Mental model</div><p>Think of a spreadsheet as a personal notebook and a database as a professional filing system with staff, locks, an index, and a security desk. Both store information — they serve completely different scales.</p></div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>The three core database guarantees</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept teal"><div class="concept-name">Storage — Data persists reliably</div><div class="concept-desc">A database stores data on disk so it survives power loss, crashes, and restarts. Unlike a variable in a running program, database data is durable.</div></div>
+            <div class="concept blue"><div class="concept-name">Retrieval — Data is queryable</div><div class="concept-desc">You don't scan every row to find what you need. Indexes and query planners let you find one record in billions in milliseconds.</div></div>
+            <div class="concept green"><div class="concept-name">Integrity — Data is correct</div><div class="concept-desc">Rules (constraints, types, foreign keys) prevent bad data from entering in the first place. A database rejects <code style="font-family:'JetBrains Mono',monospace;font-size:11px">age = "hello"</code>. A spreadsheet accepts it.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>ACID — the four guarantees that make transactions safe</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue"><div class="concept-name">A — Atomicity: All or nothing</div><div class="concept-desc">A transaction either completes fully or rolls back completely. Transferring money: if the debit succeeds but the credit fails, the entire transaction is undone. No partial writes.</div></div>
+            <div class="concept teal"><div class="concept-name">C — Consistency: Valid state to valid state</div><div class="concept-desc">A transaction can only bring the database from one valid state to another. Rules (constraints, foreign keys) are never violated mid-transaction.</div></div>
+            <div class="concept orange"><div class="concept-name">I — Isolation: Concurrent transactions don't interfere</div><div class="concept-desc">Multiple users running queries simultaneously see consistent results. Transaction A's in-progress work is invisible to Transaction B until A commits.</div></div>
+            <div class="concept green"><div class="concept-name">D — Durability: Committed data survives crashes</div><div class="concept-desc">Once the database says "COMMIT succeeded," the data is on disk — even if the power goes out one millisecond later. The Write-Ahead Log (WAL) guarantees this.</div></div>
+          </div>
+          <div class="callout phr"><div class="lbl">Key insight</div><p>ACID is what makes databases trustworthy enough to handle money transfers, medical records, and booking systems. For healthcare or finance data, these guarantees are not optional — they are a correctness requirement.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Relational Model -->
+  <div class="section">
+    <div class="section-label">Section 2</div>
+    <h2>The Relational Model &amp; SQL</h2>
+    <p>Relational databases organise data into tables with rows and columns, linked by keys and queried with SQL. This model runs banks, hospitals, e-commerce, and almost every enterprise system on earth.</p>
+
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>Core relational concepts — the vocabulary</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <table class="ref-table">
+            <thead><tr><th>Concept</th><th>What it is</th><th>Why it matters</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">Table (Relation)</td><td>Rows and columns — one real-world entity type per table</td><td>Fundamental unit of storage</td></tr>
+              <tr><td class="mono">Primary Key</td><td>Unique identifier for each row — never null, never duplicate</td><td>Always find and reference exactly one row</td></tr>
+              <tr><td class="mono">Foreign Key</td><td>Column referencing another table's primary key</td><td>Links tables; enforces referential integrity</td></tr>
+              <tr><td class="mono">Schema</td><td>Blueprint — which tables, columns, types exist</td><td>Defined upfront; changes are controlled migrations</td></tr>
+              <tr><td class="mono">Index</td><td>Pre-sorted lookup structure on one or more columns</td><td>Turns O(n) full scans into O(log n) lookups</td></tr>
+              <tr><td class="mono">SQL</td><td>Structured Query Language — universal relational DB language</td><td>Learn once, works on MariaDB, PostgreSQL, MySQL, Oracle…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>How tables link together — the no-duplication rule</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout info"><div class="lbl">The core idea</div><p>Instead of one giant table with duplicated data, split into smaller focused tables and <strong>link them with keys</strong>. Update in one place; every reference stays consistent automatically.</p></div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label sql">SQL — linked tables</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm">-- Passengers table (master data)</span>
+<span class="kw">CREATE TABLE</span> passengers (
+  passenger_id  <span class="tp">INT</span> <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  full_name     <span class="tp">VARCHAR(100)</span> <span class="kw">NOT NULL</span>,
+  email         <span class="tp">VARCHAR(255)</span> <span class="kw">UNIQUE NOT NULL</span>
+);
+<span class="cm">-- Bookings table links passengers ↔ flights via foreign keys</span>
+<span class="kw">CREATE TABLE</span> bookings (
+  booking_id    <span class="tp">INT</span> <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  passenger_id  <span class="tp">INT</span> <span class="kw">NOT NULL</span>,
+  flight_id     <span class="tp">INT</span> <span class="kw">NOT NULL</span>,
+  <span class="kw">FOREIGN KEY</span> (passenger_id) <span class="kw">REFERENCES</span> passengers(passenger_id),
+  <span class="kw">FOREIGN KEY</span> (flight_id)    <span class="kw">REFERENCES</span> flights(flight_id)
+);</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: SQL Engines -->
+  <div class="section">
+    <div class="section-label">Section 3</div>
+    <h2>MySQL vs MariaDB vs PostgreSQL</h2>
+    <p>All three are relational databases that speak SQL. The differences matter when choosing an engine, writing admin commands, and explaining architectural decisions in system design discussions.</p>
+
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>Head-to-head comparison table</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <table class="ref-table">
+            <thead><tr><th>Feature</th><th>MySQL 8</th><th>MariaDB 10.11</th><th>PostgreSQL 16</th></tr></thead>
+            <tbody>
+              <tr><td>License</td><td>GPL / Commercial (Oracle)</td><td>GPL (MariaDB Foundation)</td><td>PostgreSQL License (very open)</td></tr>
+              <tr><td>Default auth</td><td class="mono">caching_sha2_password</td><td class="mono">ed25519</td><td class="mono">scram-sha-256</td></tr>
+              <tr><td>Multi-master clustering</td><td>InnoDB Cluster</td><td><strong style="color:#059669">Galera ★</strong></td><td>Patroni / Citus</td></tr>
+              <tr><td>Window functions</td><td><span class="win">✓</span> (8.0+)</td><td><span class="win">✓</span></td><td><span class="win">✓</span> Most advanced</td></tr>
+              <tr><td>RETURNING clause</td><td><span class="lose">✗</span></td><td><span class="win">✓</span> (10.5+)</td><td><span class="win">✓</span></td></tr>
+              <tr><td>JSON support</td><td><span class="neutral">±</span></td><td><span class="neutral">±</span></td><td><span class="win">✓</span> Best (JSONB)</td></tr>
+              <tr><td>MySQL compatible</td><td><span style="color:#0d9488;font-weight:700">✓ Reference</span></td><td><span class="win">✓</span> ~99%</td><td><span class="lose">✗</span> Different dialect</td></tr>
+              <tr><td>Best for</td><td>Web apps, WordPress</td><td><strong>This track ★ Enterprise + Galera</strong></td><td>Analytics, GIS, complex queries</td></tr>
+            </tbody>
+          </table>
+          <div class="callout phr"><div class="lbl">Why choose MariaDB?</div><p>MariaDB is a drop-in MySQL replacement (~99% syntax compatible), adds useful features like <code style="font-family:'JetBrains Mono',monospace;font-size:11px">RETURNING</code> and <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ed25519</code> auth, and ships Galera multi-master clustering as a first-class feature — all fully open source with no Oracle dependencies.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: NoSQL Landscape -->
+  <div class="section">
+    <div class="section-label">Section 4</div>
+    <h2>NoSQL Landscape</h2>
+    <p>NoSQL databases were built to solve problems that relational databases struggle with: unstructured data, massive horizontal write scaling, and non-tabular data models. Understanding <em>what problem each type solves</em> is how you pick the right tool.</p>
+
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>The four major NoSQL categories</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="db-grid">
+            <div class="db-card"><div class="db-icon">🍃</div><div class="db-name">MongoDB</div><div class="db-type" style="color:#d97706">Document</div></div>
+            <div class="db-card"><div class="db-icon">⚡</div><div class="db-name">Redis</div><div class="db-type" style="color:#dc2626">Key-Value</div></div>
+            <div class="db-card"><div class="db-icon">💍</div><div class="db-name">Cassandra</div><div class="db-type" style="color:#0284c7">Wide-Column</div></div>
+            <div class="db-card"><div class="db-icon">🔵</div><div class="db-name">Neo4j</div><div class="db-type" style="color:#7c3aed">Graph</div></div>
+            <div class="db-card"><div class="db-icon">🔶</div><div class="db-name">DynamoDB</div><div class="db-type" style="color:#d97706">Key-Value/Doc</div></div>
+            <div class="db-card"><div class="db-icon">🔍</div><div class="db-name">Elasticsearch</div><div class="db-type" style="color:#0d9488">Search</div></div>
+          </div>
+          <div class="concepts">
+            <div class="concept orange"><div class="concept-name">Document stores (MongoDB)</div><div class="concept-desc">JSON-like documents instead of rows. Flexible schema — great for products with varying attributes. Poor at multi-table JOINs.</div></div>
+            <div class="concept red"><div class="concept-name">Key-value (Redis)</div><div class="concept-desc">In-memory, microsecond latency. Sessions, caching, pub/sub, rate limiting. Not a replacement for a primary database — a complement.</div></div>
+            <div class="concept blue"><div class="concept-name">Wide-column (Cassandra)</div><div class="concept-desc">Massive write throughput, no single master, append-mostly. Netflix, Apple iCloud. Queries by partition key only — no ad-hoc JOINs.</div></div>
+            <div class="concept purple"><div class="concept-name">Graph (Neo4j)</div><div class="concept-desc">Relationship traversal as a first-class operation. Social graphs, fraud detection, recommendation engines. Wrong choice for tabular/transactional data.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: Decision Framework -->
+  <div class="section">
+    <div class="section-label">Section 5</div>
+    <h2>SQL vs NoSQL — The Decision Framework</h2>
+
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>Six questions to answer before choosing a database</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <table class="ref-table">
+            <thead><tr><th>#</th><th>Question</th><th>→ SQL if…</th><th>→ NoSQL if…</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td><strong>How structured is your data?</strong></td><td>Consistent columns, well-defined schema</td><td>Varied fields per record, nested, hierarchical</td></tr>
+              <tr><td>2</td><td><strong>Do you need transactions?</strong></td><td>Money, medical records, orders</td><td>Logs, analytics, caches, recommendations</td></tr>
+              <tr><td>3</td><td><strong>How related is your data?</strong></td><td>Many relationships, JOINs needed, FK integrity</td><td>Self-contained per document / key</td></tr>
+              <tr><td>4</td><td><strong>What scale do you need?</strong></td><td>Millions of rows, one strong server</td><td>Billions of writes/day, global distribution</td></tr>
+              <tr><td>5</td><td><strong>Schema stability?</strong></td><td>Rarely changes — mature domain</td><td>Frequently changes — MVP, evolving product</td></tr>
+              <tr><td>6</td><td><strong>Team expertise?</strong></td><td>SQL is universal — everyone can write it</td><td>Team has specific NoSQL expertise</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>Scenario verdicts — real-world examples</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="verdict">
+            <div class="verdict-icon" style="background:#ccfbf1">🏥</div>
+            <div>
+              <div class="verdict-title">Healthcare EHR <span class="pill-tag" style="background:#ccfbf1;color:#0d9488">→ MariaDB + Galera</span></div>
+              <div class="verdict-desc">Patient data, vitals, prescriptions — highly structured, ACID required for regulatory compliance, complex JOINs, audit trails. SQL is the only sensible choice. Galera for high availability.</div>
+            </div>
+          </div>
+          <div class="verdict">
+            <div class="verdict-icon" style="background:#dbeafe">🚂</div>
+            <div>
+              <div class="verdict-title">Transport Booking System <span class="pill-tag" style="background:#dbeafe;color:#0284c7">→ MariaDB + Redis</span></div>
+              <div class="verdict-desc">Booking and seat inventory → MariaDB (structured, transactional). Real-time departure boards → Redis (in-memory pub/sub, sub-millisecond updates). Two databases, each doing its job.</div>
+            </div>
+          </div>
+          <div class="verdict">
+            <div class="verdict-icon" style="background:#ffedd5">📊</div>
+            <div>
+              <div class="verdict-title">Analytics Dashboard <span class="pill-tag" style="background:#ffedd5;color:#c2410c">→ ClickHouse / BigQuery</span></div>
+              <div class="verdict-desc">Aggregating billions of events — row-oriented SQL is slow here. Columnar databases scan only the columns needed, 100× faster for GROUP BY / SUM queries at scale.</div>
+            </div>
+          </div>
+          <div class="verdict">
+            <div class="verdict-icon" style="background:#fee2e2">⚡</div>
+            <div>
+              <div class="verdict-title">API Rate Limiting &amp; Sessions <span class="pill-tag" style="background:#fee2e2;color:#b91c1c">→ Redis</span></div>
+              <div class="verdict-desc">Needs sub-millisecond response on every API call. Redis TTL and atomic INCR make this trivial. Don't use a relational database for this.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6: Self-Check Questions -->
+  <div class="section">
+    <div class="section-label">Section 6</div>
+    <h2>Self-Check Questions</h2>
+
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>SQL or NoSQL — how do you decide which to use for a booking system?</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout phr"><div class="lbl">Explanation</div><p>The choice depends on the data model and requirements. SQL is the default — ACID guarantees and relational integrity are hard to replicate at the application level, and SQL expertise transfers across every engine. NoSQL is appropriate when data is genuinely unstructured, when horizontal write scaling beyond what sharding can provide is needed, or for a specific pattern like Redis for caching or a graph DB for relationship traversal. For a booking system — transactional, relational data with inventory integrity — a relational database like MariaDB is the correct answer.</p></div>
+          <div class="callout warn"><div class="lbl">Common misconceptions</div><p>"NoSQL scales better" is an oversimplification. SQL scales well too, with proper indexing, read replicas, and connection pooling. Never pick NoSQL "because it's modern" when the data is fundamentally relational.</p></div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>What is ACID and why does it matter for production databases?</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout phr"><div class="lbl">Explanation</div><p>ACID is the set of properties that make database transactions reliable. Atomicity means all steps in a transaction succeed or none do — no partial writes. Consistency means the database always goes from one valid state to another. Isolation means concurrent transactions don't interfere — MariaDB's default REPEATABLE READ isolation prevents dirty reads. Durability means a committed transaction survives a crash — guaranteed by the InnoDB redo log. For systems handling financial data, medical records, or critical bookings, these properties are not optional — they are fundamental correctness requirements.</p></div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>Why did MariaDB fork from MySQL, and what are the key differences?</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout phr"><div class="lbl">Explanation</div><p>MariaDB was forked from MySQL in 2009 by MySQL's original developer Michael Widenius after Oracle acquired Sun Microsystems, which owned MySQL. The concern was that Oracle's commercial interests might conflict with open development. Practically, MariaDB adds Galera multi-master clustering as a first-class feature, uses ed25519 by default for stronger authentication, supports the RETURNING clause, and is governed by the MariaDB Foundation independently of Oracle. It is ~99% SQL-compatible with MySQL — admin commands and config files are nearly identical.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Learning Ladder -->
+  <div class="section">
+    <div class="section-label">Learning Ladder</div>
+    <h2>How Deep Do You Need to Go?</h2>
+    <div class="ladder">
+      <div class="ladder-level">
+        <div class="level-head"><span class="level-pill l1">Level 1</span><span class="level-title">Conceptual fluency — explain core ideas clearly</span></div>
+        <div class="level-bullets"><ul>
+          <li>Explain what a relational database is and how it differs from a spreadsheet</li>
+          <li>Define ACID with one concrete example per property</li>
+          <li>Name the four NoSQL categories and give a real use-case for each</li>
+          <li>Explain why MariaDB differs from MySQL and what advantages it offers</li>
+        </ul></div>
+      </div>
+      <div class="ladder-level">
+        <div class="level-head"><span class="level-pill l2">Level 2</span><span class="level-title">Operational — create databases and make the right engine choice</span></div>
+        <div class="level-bullets"><ul>
+          <li>Create a database, table, and foreign key relationship in MariaDB</li>
+          <li>Apply the six-question decision framework to any system design scenario</li>
+          <li>Explain what the InnoDB storage engine does and why it is the default</li>
+          <li>Identify when to add Redis next to MariaDB vs when SQL alone is enough</li>
+        </ul></div>
+      </div>
+      <div class="ladder-level">
+        <div class="level-head"><span class="level-pill l3">Level 3</span><span class="level-title">Practitioner — evaluate and defend architectural choices</span></div>
+        <div class="level-bullets"><ul>
+          <li>Compare InnoDB vs MyISAM and explain why MyISAM should never be used in production</li>
+          <li>Explain CAP theorem and where MariaDB/Galera sits on the spectrum</li>
+          <li>Recommend and justify a multi-database architecture for a high-availability system</li>
+        </ul></div>
+      </div>
+      <div class="ladder-level">
+        <div class="level-head"><span class="level-pill l4">Level 4</span><span class="level-title">Expert — lead the technology decision and defend it to stakeholders</span></div>
+        <div class="level-bullets"><ul>
+          <li>Evaluate NoSQL vs NewSQL (CockroachDB, TiDB) trade-offs for a given workload</li>
+          <li>Design the database tier for a new critical application from scratch</li>
+          <li>Articulate when Galera's synchronous replication is a liability vs an asset</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Takeaways -->
+  <div class="must-know">
+    <div class="section-label" style="color:#b45309">⚑ Key Takeaways</div>
+    <div class="must-know-list">
+      <div class="must-know-item"><span class="flag">⚑</span><span>MariaDB is NOT just a MySQL rename — it has Galera multi-master clustering, ed25519 auth, the RETURNING clause, and is governed by the MariaDB Foundation independent of Oracle.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>ACID's Durability is guaranteed by the InnoDB redo log (WAL). <code style="font-family:'JetBrains Mono',monospace;font-size:11px">innodb_flush_log_at_trx_commit=1</code> is the only setting that fully preserves D. Never use 0 or 2 on production systems where data loss is unacceptable.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>MariaDB's default isolation level is REPEATABLE READ (same as MySQL). PostgreSQL defaults to READ COMMITTED. Understanding both is essential for working across database engines.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>Redis is not a primary database replacement — it is an in-memory cache/queue layer. The typical pattern is a relational database for persistent data and Redis for sub-millisecond caching and pub-sub.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>The "NoSQL scales better" claim is misleading. SQL with proper indexes, read replicas, and connection pooling handles most workloads. Choose NoSQL for a specific, measured reason — not speculation.</span></div>
+    </div>
+  </div>
+
+</div><!-- /tab-en -->
+
+<!-- ═══════════════════════════════════════════════════
+     GERMAN TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="progress-bar">
+    <span class="progress-label">Lernfortschritt</span>
+    <div id="prog-de" class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>
+    <span id="prog-count-de" class="prog-label">0 / 6 geöffnet</span>
+  </div>
+
+  <!-- Section 1 DE -->
+  <div class="section">
+    <div class="section-label">Abschnitt 1</div>
+    <h2>Was ist eine Datenbank?</h2>
+    <p>Eine Datenbank ist eine organisierte Sammlung von Daten, die effizient gespeichert, abgerufen und geändert werden kann. Das trifft auch auf ein Tabellenblatt zu — der entscheidende Unterschied liegt im Maßstab: viele gleichzeitige Benutzer, Milliarden von Zeilen und garantierte Datenintegrität.</p>
+
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>Warum reicht eine Tabellenkalkulation nicht aus?</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <table class="ref-table">
+            <thead><tr><th>Merkmal</th><th>Tabellenkalkulation</th><th>Datenbank</th></tr></thead>
+            <tbody>
+              <tr><td>Datenvolumen</td><td class="lose">~1 Mio. Zeilen bis zum Absturz</td><td class="win">Milliarden Zeilen, kein Problem</td></tr>
+              <tr><td>Gleichzeitige Benutzer</td><td class="lose">1 Benutzer bearbeitet sicher</td><td class="win">Tausende gleichzeitig</td></tr>
+              <tr><td>Datenintegrität</td><td class="lose">Jede Eingabe möglich</td><td class="win">Typen, Constraints, Fremdschlüssel erzwungen</td></tr>
+              <tr><td>Abfragegeschwindigkeit</td><td class="lose">Langsam bei großen Daten</td><td class="win">Indizierte Abfragen in Millisekunden</td></tr>
+              <tr><td>Absturzsicherheit</td><td class="lose">Risiko der Dateibeschädigung</td><td class="win">WAL, Transaktionen, ACID</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>ACID — die vier Garantien, die Transaktionen sicher machen</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue"><div class="concept-name">A — Atomarität: Alles oder nichts</div><div class="concept-desc">Eine Transaktion wird entweder vollständig ausgeführt oder vollständig zurückgerollt. Kein partielles Schreiben.</div></div>
+            <div class="concept teal"><div class="concept-name">C — Konsistenz: Von einem gültigen Zustand zum nächsten</div><div class="concept-desc">Eine Transaktion überführt die Datenbank immer von einem gültigen Zustand in einen anderen. Regeln (Constraints, Fremdschlüssel) werden nie verletzt.</div></div>
+            <div class="concept orange"><div class="concept-name">I — Isolation: Nebenläufige Transaktionen stören sich nicht</div><div class="concept-desc">Mehrere Benutzer sehen konsistente Ergebnisse. Nicht abgeschlossene Änderungen von Transaktion A sind für Transaktion B unsichtbar.</div></div>
+            <div class="concept green"><div class="concept-name">D — Dauerhaftigkeit: Bestätigte Daten überleben Abstürze</div><div class="concept-desc">Sobald die Datenbank COMMIT bestätigt, sind die Daten auf Disk — garantiert durch das Write-Ahead Log (WAL / Redo-Log in InnoDB).</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2 DE -->
+  <div class="section">
+    <div class="section-label">Abschnitt 2</div>
+    <h2>Das relationale Modell &amp; SQL</h2>
+    <p>Relationale Datenbanken organisieren Daten in Tabellen mit Zeilen und Spalten, die über Schlüssel verknüpft und mit SQL abgefragt werden. Dieses Modell betreibt Banken, Krankenhäuser, E-Commerce und nahezu jedes Unternehmenssystem der Welt.</p>
+
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>Kernkonzepte des relationalen Modells</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue"><div class="concept-name">Primärschlüssel (PRIMARY KEY)</div><div class="concept-desc">Eindeutiger Identifikator für jede Zeile — niemals NULL, niemals doppelt. Ermöglicht das genaue Auffinden und Referenzieren genau einer Zeile.</div></div>
+            <div class="concept teal"><div class="concept-name">Fremdschlüssel (FOREIGN KEY)</div><div class="concept-desc">Eine Spalte, die auf den Primärschlüssel einer anderen Tabelle verweist. Verknüpft Tabellen und erzwingt referenzielle Integrität.</div></div>
+            <div class="concept green"><div class="concept-name">Index</div><div class="concept-desc">Vorberechnete Suchstruktur auf einer oder mehreren Spalten. Wandelt O(n) Tabellenscans in O(log n) Suchoperationen um.</div></div>
+          </div>
+          <div class="callout phr"><div class="lbl">Kein Duplizieren</div><p>Statt einer riesigen Tabelle mit duplizierten Daten: kleinere, spezialisierte Tabellen, verknüpft über Schlüssel. Aktualisierung an einer Stelle — alle Referenzen bleiben automatisch konsistent.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3 DE -->
+  <div class="section">
+    <div class="section-label">Abschnitt 3</div>
+    <h2>SQL vs. NoSQL — Entscheidungsrahmen</h2>
+
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>Sechs Fragen vor der Datenbankwahl</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue"><div class="concept-name">1. Wie strukturiert sind die Daten?</div><div class="concept-desc">Konsistente Spalten, klar definiertes Schema → SQL. Unterschiedliche Felder pro Datensatz, verschachtelt, hierarchisch → NoSQL.</div></div>
+            <div class="concept green"><div class="concept-name">2. Werden Transaktionen benötigt?</div><div class="concept-desc">Geld, medizinische Akten, Bestellungen → SQL/ACID. Logs, Analysen, Caches → NoSQL.</div></div>
+            <div class="concept orange"><div class="concept-name">3. Wie verknüpft sind die Daten?</div><div class="concept-desc">Viele Beziehungen, JOINs, Fremdschlüssel-Integrität → SQL. Eigenständige Datensätze pro Dokument/Schlüssel → NoSQL.</div></div>
+          </div>
+          <div class="callout phr"><div class="lbl">Kernentscheidung: SQL oder NoSQL?</div><p>Die Wahl hängt vom Datenmodell ab. SQL ist der Standardfall — ACID-Garantien sind schwer auf Anwendungsebene nachzubauen, und SQL-Kenntnisse übertragen sich auf jede Engine. NoSQL ist sinnvoll, wenn Daten genuint unstrukturiert sind, horizontale Schreibskalierung benötigt wird oder ein spezielles Zugriffsmuster vorliegt — etwa Redis für Caching. In den meisten Produktivsystemen kommen beide Typen zum Einsatz.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Takeaways DE -->
+  <div class="must-know">
+    <div class="section-label" style="color:#b45309">⚑ Wichtigste Erkenntnisse</div>
+    <div class="must-know-list">
+      <div class="must-know-item"><span class="flag">⚑</span><span>MariaDB ist KEIN einfaches MySQL-Umbenennungs-Projekt — es hat Galera-Clustering, ed25519-Auth, RETURNING und wird unabhängig von Oracle durch die MariaDB Foundation verwaltet.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>ACID's Dauerhaftigkeit (D) wird durch das InnoDB-Redo-Log (WAL) garantiert. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">innodb_flush_log_at_trx_commit=1</code> ist die einzige vollständig ACID-konforme Einstellung — niemals 0 oder 2 auf Produktivsystemen verwenden, wo Datenverlust inakzeptabel ist.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>MariaDB's Standard-Isolationslevel ist REPEATABLE READ. PostgreSQL's Standard ist READ COMMITTED. Beide zu kennen ist grundlegend für die Arbeit mit verschiedenen Datenbank-Engines.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>Redis ist kein Ersatz für eine Primärdatenbank, sondern ein In-Memory-Cache/Warteschlange. Das typische Muster: relationale Datenbank für persistente Daten und Redis für Sub-Millisekunden-Caching und Pub-Sub.</span></div>
+    </div>
+  </div>
+
+</div><!-- /tab-de -->
+
+</div><!-- /body -->
+</main>
+
+<script src="../shared/lesson-ui.js"></script>
+<script>
+function copyCode(btn) {
+  const body = btn.closest('.code-block').querySelector('.code-body');
+  const text = (body.innerText || body.textContent).replace(/\u00A0/g, ' ');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1800);
+  }).catch(() => { btn.textContent = 'failed'; setTimeout(() => { btn.textContent = 'copy'; }, 1500); });
+}
+guardLanguageTab('ar');
+updateProgress();
+</script>
+</body>
+</html>

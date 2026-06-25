@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MODULE NAME — Course Index</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── Masterplan page-specific styles — copy this block verbatim ── */
+
+.intro-text {
+  color: var(--slate);
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 700px;
+  margin-bottom: 26px;
+}
+
+/* Course grid — same pattern as lesson_index.html */
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 14px;
+}
+
+.course-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 18px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: inherit;
+  width: 100%;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.course-card:hover { border-color: var(--blue); transform: translateY(-2px); }
+.course-card:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.course-card-top { display: flex; align-items: center; gap: 10px; }
+.course-num {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: var(--blue-bg); color: var(--blue);
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.course-title    { font-size: 14px; font-weight: 700; color: var(--navy); }
+.course-subtitle { font-size: 12.5px; color: var(--slate); line-height: 1.55; }
+.course-open {
+  margin-top: auto;
+  font-size: 11.5px; font-weight: 600; color: var(--blue);
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* Featured cards (orientation / highest-priority lessons) */
+.course-card.featured { border-color: var(--blue-border); background: var(--blue-bg); }
+.course-card.featured .course-num { background: var(--blue); color: #fff; }
+
+/* ── WEIGHT BADGES — priority indicators shown on topic cards ──────────────
+   Use exactly one badge per card; pick the tier that matches importance.
+   Tiers: w-critical (red) | w-high (orange) | w-medium (blue) | w-low (green)        */
+.weight-badge {
+  font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px;
+  white-space: nowrap; display: inline-block; margin-top: 4px; align-self: flex-start;
+}
+.w-critical { background: #fee2e2; color: #b91c1c; }
+.w-high     { background: #ffedd5; color: #c2410c; }
+.w-medium   { background: #dbeafe; color: #1d4ed8; }
+.w-low      { background: #dcfce7; color: #15803d; }
+
+/* ── SECTION LABELS — horizontal dividers between grid groups ──────────── */
+.grid-group-label {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted); margin: 24px 0 10px;
+  display: flex; align-items: center; gap: 10px;
+}
+.grid-group-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── DECODER / PRIORITY GUIDE — collapsible amber info block ──────────────
+   Used for "Topic Priority Guide", "Must-Know Checklist", or any
+   high-level orientation block that learners can expand once and ignore
+   on return visits.                                                          */
+.decoder-block {
+  background: var(--amber-bg); border: 1.5px solid var(--amber-border);
+  border-radius: var(--radius); margin-bottom: 28px; overflow: hidden;
+}
+.decoder-trigger {
+  width: 100%; background: none; border: none; text-align: left;
+  padding: 16px 20px; cursor: pointer; display: flex; align-items: center;
+  justify-content: space-between; font-family: inherit;
+}
+.decoder-trigger-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--amber-text);
+  display: flex; align-items: center; gap: 8px;
+}
+.decoder-chevron {
+  font-size: 12px; color: var(--amber-text); transition: transform .2s;
+}
+.decoder-trigger.open .decoder-chevron { transform: rotate(180deg); }
+.decoder-body { display: none; padding: 0 20px 20px; }
+.decoder-body.open { display: block; }
+
+/* Decoder sub-sections */
+.decoder-section { margin-bottom: 18px; }
+.decoder-section h3 {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--amber-text); margin-bottom: 10px;
+}
+
+/* ── MUST-PILLS — skill tags inside the decoder ── */
+.must-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.must-pill  { font-size: 11px; padding: 3px 10px; border-radius: 99px; font-weight: 700; background: #fca5a5; color: #7f1d1d; }
+.nice-pill  { font-size: 11px; padding: 3px 10px; border-radius: 99px; font-weight: 600; background: var(--blue-bg); color: var(--blue); }
+
+/* ── PRIORITY RANK ROWS — bar-chart style ranking inside the decoder ── */
+.rank-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; }
+.rank-label { font-size: 12px; font-weight: 600; color: var(--navy); min-width: 240px; }
+.rank-bar-wrap { flex: 1; background: #fde68a; border-radius: 99px; height: 7px; overflow: hidden; }
+.rank-bar-fill { height: 7px; border-radius: 99px; }
+.rank-bar-critical { background: #dc2626; }
+.rank-bar-high     { background: #ea580c; }
+.rank-bar-medium   { background: #d97706; }
+.rank-lbl { font-size: 11px; font-weight: 700; min-width: 90px; color: var(--amber-text); }
+
+/* ── CLIENT / CONTEXT TAGS (optional) ── */
+.client-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.client-tag {
+  font-size: 11px; padding: 3px 10px; border-radius: 8px;
+  background: var(--white); border: 1px solid var(--amber-border);
+  color: var(--amber-text); font-weight: 600;
+}
+.decoder-note {
+  font-size: 12.5px; color: var(--amber-text); line-height: 1.65; margin-bottom: 6px;
+}
+
+/* ── RTL OVERRIDES ── */
+[dir="rtl"] .course-card       { text-align: right; }
+[dir="rtl"] .course-open       { flex-direction: row-reverse; }
+[dir="rtl"] .grid-group-label  { flex-direction: row-reverse; }
+[dir="rtl"] .grid-group-label::after  { display: none; }
+[dir="rtl"] .grid-group-label::before { content: ''; flex: 1; height: 1px; background: var(--border); }
+[dir="rtl"] .decoder-trigger   { flex-direction: row-reverse; }
+[dir="rtl"] .decoder-trigger-label { flex-direction: row-reverse; }
+[dir="rtl"] .rank-row          { flex-direction: row-reverse; }
+</style>
+</head>
+<body>
+
+<!-- NOTE: Masterplan pages are typically loaded as the module landing (indexRoute)
+     inside the LMS shell iframe. They do NOT need a .home-nav back link because
+     the shell sidebar provides navigation. Only add a .home-nav if this file is
+     also served as a standalone page outside the shell. -->
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">MODULE NAME &mdash; Course Index</div>
+    <h1>MODULE FULL TITLE</h1>
+    <p class="header-sub">
+      One or two sentences: what the module covers, who it's for, and the outcome.
+      Use <code>key terms</code> to make the scope concrete.
+    </p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de', this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar', this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══════════════════════════════════════════════════════
+     ENGLISH TAB
+════════════════════════════════════════════════════════ -->
+<div id="tab-en" class="tab-content active">
+
+  <!-- ── DECODER BLOCK — Topic Priority Guide ───────────────────────────────
+       This block is OPTIONAL but strongly recommended for modules with 5+
+       lessons. It gives first-time visitors a quick orientation on what to
+       prioritise without removing anything from the course structure.
+
+       Pattern: one decoder block per tab, with the same structure
+       (must-know pills → priority rank rows → optional context tags).     -->
+  <div class="decoder-block">
+    <button class="decoder-trigger" onclick="toggleDecoder(this)">
+      <span class="decoder-trigger-label">⚑ Topic Priority Guide</span>
+      <span class="decoder-chevron">▾</span>
+    </button>
+    <div class="decoder-body">
+
+      <!-- MUST-KNOW PILLS: core skills tested / needed for this module -->
+      <div class="decoder-section">
+        <h3>Must-Know Skills</h3>
+        <div class="must-pills">
+          <span class="must-pill">Skill A</span>
+          <span class="must-pill">Skill B</span>
+          <span class="must-pill">Skill C</span>
+        </div>
+        <h3 style="margin-top:10px">Nice-to-Have</h3>
+        <div class="must-pills">
+          <span class="nice-pill">Optional Skill X</span>
+          <span class="nice-pill">Optional Skill Y</span>
+        </div>
+      </div>
+
+      <!-- PRIORITY RANK ROWS: bar chart of topic importance
+           Fill widths: critical=100% | high=80% | medium=50% | low=30%    -->
+      <div class="decoder-section">
+        <h3>Topic Priority Ranking</h3>
+        <div class="rank-row">
+          <span class="rank-label">Topic Title — most important</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
+          <span class="rank-lbl">🔴 Critical</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Topic Title — second tier</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 High</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Topic Title — moderate importance</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-medium" style="width:50%"></div></div>
+          <span class="rank-lbl">🟡 Medium</span>
+        </div>
+        <!-- PATTERN: repeat .rank-row for each topic, sorted critical → low -->
+      </div>
+
+      <!-- OPTIONAL: context tags (use cases, client names, environments)
+      <div class="decoder-section">
+        <h3>Typical Use Cases</h3>
+        <div class="client-tags">
+          <span class="client-tag">Use case A</span>
+          <span class="client-tag">Use case B</span>
+        </div>
+      </div>
+      -->
+
+    </div>
+  </div>
+
+  <!-- ── INTRO TEXT ───────────────────────────────────────────────────────── -->
+  <p class="intro-text">
+    New here? Start with <strong>ORIENTATION LESSON A</strong> for the landscape overview,
+    then <strong>ORIENTATION LESSON B</strong> to build your foundation.
+    The numbered lessons are self-contained deep dives — work through them in order,
+    but prioritise <strong>Lesson N (CRITICAL TOPIC)</strong>
+    first if you want the highest-impact material earliest.
+  </p>
+
+  <!-- ── GRID GROUP: Orientation — always first ───────────────────────────── -->
+  <div class="grid-group-label">Orientation — start here</div>
+  <div class="course-grid">
+
+    <!-- FEATURED card: always use class="course-card featured" for orientation/overview lessons -->
+    <button class="course-card featured" onclick="openLesson('lms/modules/FOLDER_NAME/lesson-a.html')">
+      <div class="course-card-top">
+        <span class="course-num">00A</span>
+        <span class="course-title">Orientation Lesson A</span>
+      </div>
+      <span class="course-subtitle">
+        Competency question: Can you explain X, Y, and Z at a high level?
+      </span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/FOLDER_NAME/lesson-b.html')">
+      <div class="course-card-top">
+        <span class="course-num">00B</span>
+        <span class="course-title">Orientation Lesson B</span>
+      </div>
+      <span class="course-subtitle">
+        Competency question: Can you perform task A, B, and C comfortably?
+      </span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+  </div>
+
+  <!-- ── GRID GROUP: Main Lessons — numbered phases / topics ──────────────── -->
+  <div class="grid-group-label">Study Phases — N deep dives</div>
+  <div class="course-grid">
+
+    <!-- REGULAR card with LOW weight badge -->
+    <button class="course-card" onclick="openLesson('lms/modules/FOLDER_NAME/phase-01.html')">
+      <div class="course-card-top">
+        <span class="course-num">01</span>
+        <span class="course-title">Phase 1 Title</span>
+      </div>
+      <span class="course-subtitle">
+        Competency question: Can you do X from scratch and explain why Y matters?
+      </span>
+      <span class="weight-badge w-low">📗 LOW · ~Nh</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <!-- REGULAR card with MEDIUM weight badge -->
+    <button class="course-card" onclick="openLesson('lms/modules/FOLDER_NAME/phase-02.html')">
+      <div class="course-card-top">
+        <span class="course-num">02</span>
+        <span class="course-title">Phase 2 Title</span>
+      </div>
+      <span class="course-subtitle">
+        Competency question: Can you solve problem X, read output Y, and justify choice Z?
+      </span>
+      <span class="weight-badge w-medium">📘 MEDIUM · ~Nh</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <!-- REGULAR card with HIGH weight badge -->
+    <button class="course-card" onclick="openLesson('lms/modules/FOLDER_NAME/phase-03.html')">
+      <div class="course-card-top">
+        <span class="course-num">03</span>
+        <span class="course-title">Phase 3 Title</span>
+      </div>
+      <span class="course-subtitle">
+        Competency question: Could you set up X, manage Y, and restore Z to a specific point?
+      </span>
+      <span class="weight-badge w-high">🔥 HIGH · ~Nh</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <!-- FEATURED + CRITICAL card: use featured class for highest-priority topics -->
+    <button class="course-card featured" onclick="openLesson('lms/modules/FOLDER_NAME/phase-04.html')">
+      <div class="course-card-top">
+        <span class="course-num">04</span>
+        <span class="course-title">Phase 4 Title — Critical Topic</span>
+      </div>
+      <span class="course-subtitle">
+        Competency question: Can you explain internals, diagnose failure X, and recover from Y?
+      </span>
+      <span class="weight-badge w-critical">⚡ CRITICAL · ~Nh</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <!-- PATTERN: add more course-card rows here
+         Numbering: 05, 06 … matching the registry lesson order
+         Weight badges: exactly ONE per card, matching lesson importance        -->
+
+  </div>
+
+  <!-- OPTIONAL THIRD GROUP: e.g. "Advanced / Optional" or "Reference" -->
+  <!--
+  <div class="grid-group-label">Advanced Topics — optional</div>
+  <div class="course-grid">
+    <button class="course-card" onclick="openLesson('lms/modules/FOLDER_NAME/advanced-01.html')">
+      ...
+    </button>
+  </div>
+  -->
+
+</div><!-- /tab-en -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     GERMAN TAB
+════════════════════════════════════════════════════════ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="decoder-block">
+    <button class="decoder-trigger" onclick="toggleDecoder(this)">
+      <span class="decoder-trigger-label">⚑ Themen-Prioritätsleitfaden</span>
+      <span class="decoder-chevron">▾</span>
+    </button>
+    <div class="decoder-body">
+
+      <div class="decoder-section">
+        <h3>Muss-Kenntnisse</h3>
+        <div class="must-pills">
+          <span class="must-pill">Fähigkeit A</span>
+          <span class="must-pill">Fähigkeit B</span>
+          <span class="must-pill">Fähigkeit C</span>
+        </div>
+        <h3 style="margin-top:10px">Wäre ein Plus</h3>
+        <div class="must-pills">
+          <span class="nice-pill">Optionale Fähigkeit X</span>
+          <span class="nice-pill">Optionale Fähigkeit Y</span>
+        </div>
+      </div>
+
+      <div class="decoder-section">
+        <h3>Themen-Prioritätsranking</h3>
+        <div class="rank-row">
+          <span class="rank-label">Thementitel — am wichtigsten</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
+          <span class="rank-lbl">🔴 Kritisch</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Thementitel — zweite Ebene</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 Hoch</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Thementitel — mittlere Wichtigkeit</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-medium" style="width:50%"></div></div>
+          <span class="rank-lbl">🟡 Mittel</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <p class="intro-text">
+    Neu hier? Beginnen Sie mit <strong>ORIENTIERUNGSLEKTION A</strong> für den Überblick,
+    dann mit <strong>ORIENTIERUNGSLEKTION B</strong> als Grundlage.
+    Die nummerierten Lektionen sind selbstständige Vertiefungen — arbeiten Sie sie der
+    Reihe nach durch, priorisieren Sie aber <strong>Lektion N (KRITISCHES THEMA)</strong>
+    für den größten Lerneffekt.
+  </p>
+
+  <div class="grid-group-label">Orientierung — hier beginnen</div>
+  <div class="course-grid">
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/FOLDER_NAME/lesson-a.html')">
+      <div class="course-card-top">
+        <span class="course-num">00A</span>
+        <span class="course-title">Orientierungslektion A</span>
+      </div>
+      <span class="course-subtitle">
+        Kompetenzfrage: Können Sie X, Y und Z auf hohem Niveau erklären?
+      </span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/FOLDER_NAME/lesson-b.html')">
+      <div class="course-card-top">
+        <span class="course-num">00B</span>
+        <span class="course-title">Orientierungslektion B</span>
+      </div>
+      <span class="course-subtitle">
+        Kompetenzfrage: Können Sie Aufgaben A, B und C sicher ausführen?
+      </span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+  </div>
+
+  <div class="grid-group-label">Studienphasen — N Vertiefungen</div>
+  <div class="course-grid">
+
+    <button class="course-card" onclick="openLesson('lms/modules/FOLDER_NAME/phase-01.html')">
+      <div class="course-card-top">
+        <span class="course-num">01</span>
+        <span class="course-title">Phase 1 Titel</span>
+      </div>
+      <span class="course-subtitle">
+        Kompetenzfrage: Können Sie X aus dem Stand erklären und warum Y wichtig ist?
+      </span>
+      <span class="weight-badge w-low">📗 NIEDRIG · ~Nh</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/FOLDER_NAME/phase-02.html')">
+      <div class="course-card-top">
+        <span class="course-num">02</span>
+        <span class="course-title">Phase 2 Titel</span>
+      </div>
+      <span class="course-subtitle">
+        Kompetenzfrage: Können Sie Problem X lösen, Ausgabe Y lesen und Wahl Z begründen?
+      </span>
+      <span class="weight-badge w-medium">📘 MITTEL · ~Nh</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/FOLDER_NAME/phase-03.html')">
+      <div class="course-card-top">
+        <span class="course-num">03</span>
+        <span class="course-title">Phase 3 Titel</span>
+      </div>
+      <span class="course-subtitle">
+        Kompetenzfrage: Könnten Sie X einrichten, Y verwalten und Z zu einem bestimmten Zeitpunkt wiederherstellen?
+      </span>
+      <span class="weight-badge w-high">🔥 HOCH · ~Nh</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/FOLDER_NAME/phase-04.html')">
+      <div class="course-card-top">
+        <span class="course-num">04</span>
+        <span class="course-title">Phase 4 Titel — Kritisches Thema</span>
+      </div>
+      <span class="course-subtitle">
+        Kompetenzfrage: Können Sie Interna erklären, Fehler X diagnostizieren und nach Y wiederherstellen?
+      </span>
+      <span class="weight-badge w-critical">⚡ KRITISCH · ~Nh</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+  </div>
+
+</div><!-- /tab-de -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     ARABIC TAB
+════════════════════════════════════════════════════════ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="decoder-block">
+    <button class="decoder-trigger" onclick="toggleDecoder(this)">
+      <span class="decoder-trigger-label">⚑ دليل أولويات الموضوعات</span>
+      <span class="decoder-chevron">▾</span>
+    </button>
+    <div class="decoder-body">
+
+      <div class="decoder-section">
+        <h3>المهارات الأساسية المطلوبة</h3>
+        <div class="must-pills">
+          <span class="must-pill">المهارة أ</span>
+          <span class="must-pill">المهارة ب</span>
+          <span class="must-pill">المهارة ج</span>
+        </div>
+        <h3 style="margin-top:10px">ميزة إضافية</h3>
+        <div class="must-pills">
+          <span class="nice-pill">المهارة الاختيارية س</span>
+          <span class="nice-pill">المهارة الاختيارية ع</span>
+        </div>
+      </div>
+
+      <div class="decoder-section">
+        <h3>ترتيب أولوية الموضوعات</h3>
+        <div class="rank-row">
+          <span class="rank-label">عنوان الموضوع — الأهم</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
+          <span class="rank-lbl">🔴 بالغ الأهمية</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">عنوان الموضوع — المستوى الثاني</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 مرتفع</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">عنوان الموضوع — أهمية متوسطة</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-medium" style="width:50%"></div></div>
+          <span class="rank-lbl">🟡 متوسط</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <p class="intro-text">
+    هل أنت هنا للمرة الأولى؟ ابدأ بـ<strong>درس التوجيه أ</strong> للحصول على نظرة عامة،
+    ثم <strong>درس التوجيه ب</strong> لبناء أساسك.
+    الدروس المرقمة عمق مستقل — اعمل عليها بالترتيب، لكن قدّم
+    <strong>الدرس N (الموضوع الحرج)</strong> إذا أردت أعلى تأثير في وقت أقل.
+  </p>
+
+  <div class="grid-group-label">التوجيه — ابدأ من هنا</div>
+  <div class="course-grid">
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/FOLDER_NAME/lesson-a.html')">
+      <div class="course-card-top">
+        <span class="course-num">00A</span>
+        <span class="course-title">درس التوجيه أ</span>
+      </div>
+      <span class="course-subtitle">
+        سؤال الكفاءة: هل يمكنك شرح X وY وZ على مستوى عالٍ؟
+      </span>
+      <span class="course-open">فتح الدرس ←</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/FOLDER_NAME/lesson-b.html')">
+      <div class="course-card-top">
+        <span class="course-num">00B</span>
+        <span class="course-title">درس التوجيه ب</span>
+      </div>
+      <span class="course-subtitle">
+        سؤال الكفاءة: هل يمكنك أداء المهام أ وب وج بثقة؟
+      </span>
+      <span class="course-open">فتح الدرس ←</span>
+    </button>
+
+  </div>
+
+  <div class="grid-group-label">مراحل الدراسة — N محاور متعمقة</div>
+  <div class="course-grid">
+
+    <button class="course-card" onclick="openLesson('lms/modules/FOLDER_NAME/phase-01.html')">
+      <div class="course-card-top">
+        <span class="course-num">01</span>
+        <span class="course-title">عنوان المرحلة 1</span>
+      </div>
+      <span class="course-subtitle">
+        سؤال الكفاءة: هل يمكنك كتابة X من الصفر وشرح لماذا يهم Y؟
+      </span>
+      <span class="weight-badge w-low">📗 منخفض · ~Nس</span>
+      <span class="course-open">فتح الدرس ←</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/FOLDER_NAME/phase-02.html')">
+      <div class="course-card-top">
+        <span class="course-num">02</span>
+        <span class="course-title">عنوان المرحلة 2</span>
+      </div>
+      <span class="course-subtitle">
+        سؤال الكفاءة: هل يمكنك حل مشكلة X وقراءة مخرج Y وتبرير اختيار Z؟
+      </span>
+      <span class="weight-badge w-medium">📘 متوسط · ~Nس</span>
+      <span class="course-open">فتح الدرس ←</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/FOLDER_NAME/phase-03.html')">
+      <div class="course-card-top">
+        <span class="course-num">03</span>
+        <span class="course-title">عنوان المرحلة 3</span>
+      </div>
+      <span class="course-subtitle">
+        سؤال الكفاءة: هل يمكنك إعداد X وإدارة Y والاستعادة إلى نقطة زمنية محددة؟
+      </span>
+      <span class="weight-badge w-high">🔥 مرتفع · ~Nس</span>
+      <span class="course-open">فتح الدرس ←</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/FOLDER_NAME/phase-04.html')">
+      <div class="course-card-top">
+        <span class="course-num">04</span>
+        <span class="course-title">عنوان المرحلة 4 — موضوع حرج</span>
+      </div>
+      <span class="course-subtitle">
+        سؤال الكفاءة: هل يمكنك شرح الآليات الداخلية وتشخيص الخطأ X والتعافي من Y؟
+      </span>
+      <span class="weight-badge w-critical">⚡ حرج · ~Nس</span>
+      <span class="course-open">فتح الدرس ←</span>
+    </button>
+
+  </div>
+
+</div><!-- /tab-ar -->
+
+</div><!-- /body -->
+</main>
+
+<script src="../shared/lesson-ui.js"></script>
+<script>
+/**
+ * MASTERPLAN INTEGRATION — READ THIS BEFORE EDITING
+ * ─────────────────────────────────────────────────
+ * This file is registered in registry.js as a lesson with progress.type='untracked'
+ * (masterplan pages are orientation, not tracked checkpoints). It is also registered
+ * as the module's `indexRoute` so the shell loads it automatically when the module
+ * is selected in the sidebar — before any lesson is opened.
+ *
+ * Example registry.js entry for this file:
+ *
+ *   {
+ *     id: 'YOUR_MODULE_ID',
+ *     title: 'Module Title',
+ *     subtitle: 'Short subtitle',
+ *     theme: { accent: '#2563eb', accentSoft: '#dbeafe' },
+ *     indexRoute: 'lms/modules/FOLDER_NAME/masterplan.html',  ← THIS FILE
+ *     lessons: [
+ *       {
+ *         id: 'masterplan',
+ *         title: 'Masterplan',
+ *         subtitle: 'Full track overview',
+ *         route: 'lms/modules/FOLDER_NAME/masterplan.html',
+ *         progress: { type: 'untracked', total: 0 }
+ *       },
+ *       // ... remaining lessons
+ *     ]
+ *   }
+ *
+ * The openLesson() function below sends a postMessage to the parent shell so
+ * clicking any card navigates within the shell (sidebar highlights, back button
+ * works). The location.href fallback handles standalone / direct-URL access.
+ *
+ * REPLACE 'FOLDER_NAME' with your actual module folder name, e.g. 'database'.
+ */
+function openLesson(route) {
+  if (window.parent !== window) {
+    try {
+      window.parent.postMessage({ type: 'lms:openLesson', route: route }, '*');
+      return;
+    } catch (_) { /* fall through */ }
+  }
+  location.href = route.replace('lms/modules/FOLDER_NAME/', './');
+}
+
+/**
+ * toggleDecoder — opens/closes the amber decoder / priority-guide block.
+ * Provided inline here rather than in lesson-ui.js so the masterplan file
+ * is self-contained. Do not rename; the onclick="toggleDecoder(this)" calls
+ * in the HTML above depend on this exact function name.
+ */
+function toggleDecoder(btn) {
+  btn.classList.toggle('open');
+  const body = btn.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+/**
+ * guardLanguageTab — called for tabs that might be missing content in older
+ * versions of this file. lesson-ui.js provides this function; calling it
+ * defensively here prevents a silent JS error if the script loads before
+ * lesson-ui.js in a non-standard environment.
+ * Remove these calls once all three language tabs are fully populated.
+ */
+guardLanguageTab('ar');
+guardLanguageTab('de');
+</script>
+</body>
+</html>

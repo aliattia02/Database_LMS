@@ -4,7 +4,7 @@
    ============================================================ */
 
 /* ── Fonts ── */
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
 
 /* ── Design tokens ── */
 :root {
@@ -39,6 +39,10 @@
 
   --radius: 10px;
   --shadow: 0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+
+  /* Height of the sticky .tabs-bar — used by .progress-bar top offset.
+     Override this custom property on pages with a taller/shorter tab bar. */
+  --tabs-bar-h: 44px;
 }
 
 /* ── Reset ── */
@@ -129,6 +133,81 @@ body {
 .tab-btn:not(.active):hover { color: #fff; }
 .tab-content             { display: none; }
 .tab-content.active      { display: block; }
+
+/* The Arabic tab button keeps its own font even though the tab
+   bar itself stays LTR chrome (see ARABIC / RTL SUPPORT below). */
+.tab-btn[lang="ar"] { font-family: 'Cairo', 'IBM Plex Sans', sans-serif; }
+
+/* ── "Pending" tab button — lesson not yet translated ─────────────────
+   The button stays enabled (clicking shows the request-translation
+   banner). A faint italic style signals the content is incomplete
+   without blocking access.
+────────────────────────────────────────────────────────────────────── */
+.tab-btn.tab-pending {
+  opacity: .55;
+  font-style: italic;
+}
+
+/* ── No-translation banner  (.ntb-*)  ─────────────────────────────────
+   Injected automatically by lesson-ui.js when #tab-{lang} is absent.
+   Rendered inside the tab-content div, so it inherits dir="rtl" for AR.
+────────────────────────────────────────────────────────────────────── */
+.ntb-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 64px 24px 80px;
+  min-height: 320px;
+}
+.ntb-card {
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 44px 36px 40px;
+  box-shadow: var(--shadow);
+}
+.ntb-globe {
+  font-size: 44px;
+  line-height: 1;
+  margin-bottom: 18px;
+  opacity: .8;
+}
+.ntb-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy2);
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+.ntb-body {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+.ntb-request {
+  display: inline-block;
+  padding: 11px 26px;
+  background: var(--blue);
+  color: #fff !important;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity .15s, transform .1s;
+  letter-spacing: .01em;
+}
+.ntb-request:hover {
+  opacity: .88;
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+/* RTL adjustment — centre the globe, right-align the rest */
+[dir="rtl"] .ntb-globe { text-align: center; }
+[dir="rtl"] .ntb-card  { text-align: right; }
 
 /* ── Page body wrapper ── */
 .body { max-width: 820px; margin: 0 auto; padding: 32px 24px 64px; }
@@ -413,36 +492,73 @@ body {
   flex-shrink: 0;
   min-width: 24px;
 }
-.q-text   { flex: 1; line-height: 1.45; }
+.q-text   { flex: 1; line-height: 1.45; overflow-wrap: break-word; word-break: break-word; min-width: 0; }
 .q-badges { display: flex; gap: 6px; flex-shrink: 0; align-items: flex-start; padding-top: 1px; }
 .q-panel  { display: none; padding: 16px; border-top: 1px solid var(--border); font-size: 13.5px; color: #334155; line-height: 1.65; }
 .q-panel.open { display: block; }
 
 /* ── Progress bar (general.html style) ── */
+/*
+   Auto-injected by lesson-ui.js into every tab that has trackable
+   content (.q-card, .amap-item, .branch-item).  No per-page HTML
+   needed.  Hand-coded bars still work — lesson-ui.js skips injection
+   when #prog-{lang} already exists on the page.
+
+   Layout: sticky strip just below the tab bar so it remains visible
+   while scrolling.  The fill bar animates width on every update.
+   When progress reaches 100% the fill turns green automatically.
+*/
 .progress-bar {
+  position: sticky;
+  top: var(--tabs-bar-h);  /* sits just below .tabs-bar */
+  z-index: 90;         /* below tabs-bar (z-index:100) */
   background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 18px;
-  margin-bottom: 24px;
-  box-shadow: var(--shadow);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 24px;
+  margin: 0 0 24px;    /* bottom gap before lesson content */
   display: flex;
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,.04);
+}
+/* When injected directly into a tab-content the bar spans full width;
+   when hand-coded inside .body it respects the content max-width. */
+.body .progress-bar {
+  position: static;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+  padding: 14px 18px;
 }
 .progress-label {
   font-size: 11.5px; font-weight: 700;
   text-transform: uppercase; letter-spacing: .08em;
   color: var(--slate); white-space: nowrap;
 }
-.progress-track { flex: 1; min-width: 120px; height: 7px; background: var(--border); border-radius: 99px; overflow: hidden; }
-.progress-fill  { height: 100%; border-radius: 99px; background: var(--blue); transition: width .4s ease; }
-.progress-count { font-size: 12px; font-weight: 600; color: var(--slate); white-space: nowrap; }
+.progress-track {
+  flex: 1; min-width: 120px; height: 7px;
+  background: var(--border); border-radius: 99px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; border-radius: 99px;
+  background: var(--blue);
+  transition: width .4s ease, background .3s ease;
+  width: 0%;
+}
+/* Green fill once complete */
+.progress-fill[style*="width: 100"],
+.progress-fill[style*="width:100"] {
+  background: #16a34a;
+}
+.progress-count {
+  font-size: 12px; font-weight: 600; color: var(--slate); white-space: nowrap;
+}
 
 /* ── Must-know list (plain, neutral) ── */
 .must-list  { display: flex; flex-direction: column; gap: 8px; }
-.must-item  { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: #334155; line-height: 1.55; }
+.must-item  { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: #334155; line-height: 1.55; overflow-wrap: break-word; word-break: break-word; min-width: 0; }
 .must-bullet { font-size: 15px; flex-shrink: 0; }
 
 /* ── Study plan (multi-day task cards) ── */
@@ -690,6 +806,106 @@ body {
   padding-left: 16px; margin-left: 4px; border-left: 1px solid var(--border);
 }
 
+/* ── Lesson navigation bar (Prev / Next) ──────────────────────────────────
+   Auto-injected by lesson-ui.js at the bottom of each lesson page.
+   Hidden (display:none) until the parent shell replies with nav info.
+   Lives outside .body so it spans full page width at the bottom.
+──────────────────────────────────────────────────────────────────────── */
+.lnav {
+  display: none;                /* shown by JS once lms:navInfo arrives */
+  background: var(--white);
+  border-top: 2px solid var(--border);
+  padding: 20px 24px 26px;
+}
+.lnav-inner {
+  max-width: 820px;
+  margin: 0 auto;
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  justify-content: space-between;
+}
+.lnav-btn {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: var(--shadow);
+  transition: border-color .15s, background .15s, box-shadow .15s, transform .1s;
+}
+.lnav-btn:hover:not(:disabled) {
+  border-color: var(--blue);
+  background: var(--blue-bg);
+  box-shadow: 0 2px 12px rgba(37,99,235,.13);
+  transform: translateY(-1px);
+}
+.lnav-btn:disabled {
+  opacity: 0.38;
+  cursor: default;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+/* Prev: arrow left, text left-aligned */
+.lnav-prev { flex-direction: row; text-align: left; }
+/* Next: arrow right, text right-aligned */
+.lnav-next { flex-direction: row-reverse; text-align: right; }
+
+.lnav-arrow {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+  color: var(--blue);
+  transition: transform .15s;
+}
+.lnav-prev:hover:not(:disabled) .lnav-arrow { transform: translateX(-3px); }
+.lnav-next:hover:not(:disabled) .lnav-arrow { transform: translateX( 3px); }
+.lnav-btn:disabled .lnav-arrow { color: var(--muted); }
+
+.lnav-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
+}
+.lnav-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  line-height: 1;
+  transition: color .15s;
+}
+.lnav-btn:hover:not(:disabled) .lnav-label { color: var(--blue-text); }
+
+.lnav-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.35;
+  transition: color .15s;
+}
+.lnav-btn:hover:not(:disabled) .lnav-title { color: var(--blue); }
+.lnav-btn:disabled .lnav-title { color: var(--muted); }
+
+/* RTL: mirror arrows so they point in the logical reading direction */
+[dir="rtl"] .lnav-prev { flex-direction: row-reverse; text-align: right; }
+[dir="rtl"] .lnav-next { flex-direction: row;          text-align: left;  }
+[dir="rtl"] .lnav-prev:hover:not(:disabled) .lnav-arrow { transform: translateX( 3px); }
+[dir="rtl"] .lnav-next:hover:not(:disabled) .lnav-arrow { transform: translateX(-3px); }
+
 /* ── Mobile ── */
 @media (max-width: 540px) {
   .header  { padding: 20px 16px 0; }
@@ -701,4 +917,192 @@ body {
   .term-cell { width: 36%; white-space: normal; }
   .tabs-inner { gap: 0; }
   .tab-btn { padding: 9px 14px; font-size: 12px; }
+  .lnav { padding: 14px 14px 20px; }
+  .lnav-btn { padding: 12px 12px; gap: 9px; }
+  .lnav-title { font-size: 12.5px; }
+}
+/* ============================================================
+   ARABIC / RTL SUPPORT
+   ──────────────────────────────────────────────────────────
+   Applied via dir="rtl" set on the #tab-ar content div (not
+   on <html>). This scopes all RTL layout to the content pane
+   only — the chrome (header, tab bar, home-nav) stays LTR.
+
+   Font: Cairo (Google Fonts) is optimised for Arabic and
+   shares the geometric, clean style of IBM Plex Sans.
+
+   How it works with lesson-ui.js:
+     – LANGS array now includes 'ar'.
+     – initMindmap / initMindmapAdvanced build an Arabic grid
+       when DATA.ar exists and <div id="grid-ar"> is present.
+     – updateProgress handles Arabic label text.
+     – switchTab('ar', btn) activates #tab-ar normally.
+
+   How to add Arabic to a lesson page — see ar-tab-guide.md
+   ============================================================ */
+
+/* ── Arabic font within RTL content ── */
+[dir="rtl"],
+[dir="rtl"] button,
+[dir="rtl"] input,
+[dir="rtl"] select,
+[dir="rtl"] textarea {
+  font-family: 'Cairo', 'IBM Plex Sans', sans-serif;
+}
+
+/* ── Base text direction ── */
+[dir="rtl"] { text-align: right; }
+
+/* ── Progress bar ──────────────────────────────── */
+/* Keep fill direction LTR (left→right reads as "progress") */
+[dir="rtl"] .progress-bar   { flex-direction: row-reverse; }
+[dir="rtl"] .progress-fill  { direction: ltr; }
+
+/* ── Accordion (acc-trigger / acc-body) ──────────────────── */
+[dir="rtl"] .acc-trigger {
+  text-align: right;
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .acc-body { text-align: right; }
+[dir="rtl"] .acc-strategy-label { text-align: right; }
+
+/* ── Collapsible section (section-toggle / section-body) ─── */
+[dir="rtl"] .section-toggle { flex-direction: row-reverse; }
+[dir="rtl"] .toggle-left    { text-align: right; }
+[dir="rtl"] .section-body p { text-align: right; }
+
+/* ── Must-know callout box ───────────────────────────────── */
+/* Flip the prominent left accent border to the right */
+[dir="rtl"] .must-know {
+  border-left:  1px solid #fde68a;
+  border-right: 4px solid var(--amber-border);
+}
+[dir="rtl"] .must-know-item {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+/* ── Callout boxes (amber / blue / green variants) ────────── */
+[dir="rtl"] .callout {
+  border-left:  none;
+  border-right: 3px solid;
+  text-align:   right;
+}
+
+/* ── Learning ladder ─────────────────────────────────────── */
+[dir="rtl"] .level-head {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .level-bullets li {
+  padding-left:  0;
+  padding-right: 18px;
+}
+[dir="rtl"] .level-bullets li::before {
+  left:  auto;
+  right: 0;
+}
+
+/* ── Connection cards ────────────────────────────────────── */
+[dir="rtl"] .connection-card { flex-direction: row-reverse; text-align: right; }
+[dir="rtl"] .conn-text       { text-align: right; }
+
+/* ── Section header (icon + title row) ──────────────────── */
+[dir="rtl"] .section-header   { flex-direction: row-reverse; }
+[dir="rtl"] .section-title    { text-align: right; }
+[dir="rtl"] .section-subtitle { text-align: right; }
+
+/* ── Q-card (general.html / tab-style accordion) ─────────── */
+[dir="rtl"] .q-trigger {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+[dir="rtl"] .q-panel   { text-align: right; }
+
+/* ── Must-list (neutral variant) ─────────────────────────── */
+[dir="rtl"] .must-item { flex-direction: row-reverse; text-align: right; }
+
+/* ── Study plan ───────────────────────────────────────────── */
+[dir="rtl"] .day-head  { flex-direction: row-reverse; }
+[dir="rtl"] .day-focus { text-align: right; }
+[dir="rtl"] .day-task  { text-align: right; }
+
+/* ── Glossary table ───────────────────────────────────────── */
+[dir="rtl"] .glossary-table th,
+[dir="rtl"] .glossary-table td { text-align: right; }
+
+/* ── BASIC MINDMAP (branch-card / item-panel) ────────────── */
+[dir="rtl"] .branch-header { flex-direction: row-reverse; }
+[dir="rtl"] .branch-title  { text-align: right; }
+
+[dir="rtl"] .branch-item {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+/* In RTL, the inline border accent moves from left → right.
+   The color is set via inline style; we neutralise the left
+   side and mirror it right so JS inline styles take effect. */
+[dir="rtl"] .item-panel {
+  border-left:        none;
+  border-right-width: 3px;
+  border-right-style: solid;
+  text-align:         right;
+}
+
+[dir="rtl"] .must-know-inline  { direction: rtl; }
+[dir="rtl"] .panel-info        { text-align: right; }
+[dir="rtl"] .panel-row         { text-align: right; }
+[dir="rtl"] .panel-row-label   { text-align: right; }
+[dir="rtl"] .panel-row-text    { text-align: right; }
+
+[dir="rtl"] .legend-items { flex-direction: row-reverse; flex-wrap: wrap-reverse; }
+[dir="rtl"] .legend-item  { flex-direction: row-reverse; }
+[dir="rtl"] .legend-must  {
+  padding-left:  0;
+  margin-left:   0;
+  padding-right: 16px;
+  margin-right:  4px;
+  border-left:   none;
+  border-right:  1px solid var(--border);
+}
+
+/* ── ADVANCED MINDMAP (amap-* classes) ───────────────────── */
+[dir="rtl"] .amap-header { flex-direction: row-reverse; }
+[dir="rtl"] .amap-title  { text-align: right; }
+
+[dir="rtl"] .amap-item {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+[dir="rtl"] .amap-panel {
+  border-left:        none;
+  border-right-width: 3px;
+  border-right-style: solid;
+  text-align:         right;
+}
+
+[dir="rtl"] .amap-panel-info  { text-align: right; }
+[dir="rtl"] .amap-panel-row   { text-align: right; }
+[dir="rtl"] .amap-row-label   { text-align: right; }
+[dir="rtl"] .amap-row-text    { text-align: right; }
+[dir="rtl"] .amap-panel-must  { direction: rtl; }
+
+[dir="rtl"] .amap-legend-items { flex-direction: row-reverse; flex-wrap: wrap-reverse; }
+[dir="rtl"] .amap-legend-item  { flex-direction: row-reverse; }
+[dir="rtl"] .amap-legend-must  {
+  padding-left:  0;
+  margin-left:   0;
+  padding-right: 16px;
+  margin-right:  4px;
+  border-left:   none;
+  border-right:  1px solid var(--border);
+}
+
+/* ── RTL mobile overrides ────────────────────────────────── */
+@media (max-width: 600px) {
+  [dir="rtl"] .q-panel { padding-right: 20px; padding-left: 20px; }
+}
+@media (max-width: 540px) {
+  [dir="rtl"] .q-panel { padding-right: 20px; }
 }

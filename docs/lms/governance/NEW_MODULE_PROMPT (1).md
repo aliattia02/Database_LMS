@@ -2,47 +2,72 @@
 <!-- Save this file. To create a new module, paste its entire contents into a new
      Claude conversation, then add your instructions below the divider at the bottom. -->
 
+> **Scope note:** this prompt covers **Path A — static, file-based modules**
+> registered in `registry.js`. The platform is Firebase-backed (auth,
+> per-user/tier access control, an admin console, personalized lessons, and
+> admin-authored dynamic courses) — see the platform documentation and
+> `repository-structure.md` for the full picture. If the content doesn't
+> need to live in git (AI-drafted, one-off, or frequently revised), use the
+> admin **Courses** tab or **Requests** tab instead; see
+> `contribution-workflow.md`.
+
 ---
 
 ## Context: what this LMS is
 
-A file-based learning system. No build step, no framework. Every module is a self-contained folder inside `docs/lms/modules/`. Each folder holds:
+A file-based learning system. No build step, no framework. Every module is a self-contained folder inside `docs/lms/modules/` (or `docs/lms/personalied_modules/` for a personalized-tree variant — note the intentionally-kept folder-name typo, see `naming-versioning-conventions.md`). Each module folder holds only its own content:
 
 | File | Role |
 |---|---|
-| `theme.css` | Shared design tokens, layout, all reusable component styles |
-| `lesson-ui.js` | Shared JS: tab switching, accordions, sections, progress bars, mindmap |
 | `index.html` | Module landing page — links to all topic pages |
 | `topicN-slug.html` | Individual topic/lesson pages |
 
-Pages reference shared files with **relative paths** (`./theme.css`, `./lesson-ui.js`, `./index.html`). No CDN, no imports, no bundler. Drop the folder anywhere and it works.
+`theme.css` (design tokens/styles) and `lesson-ui.js` (tab switching, accordions, sections, progress bars, mindmap) are **not** duplicated per module — they live once at `docs/lms/modules/shared/` (or `docs/lms/personalied_modules/shared/` for the personalized tree) and every module folder references them one directory up: `../shared/theme.css`, `../shared/lesson-ui.js`. Same-folder links (`./index.html`) are used only for files that actually live in that module's own folder. No CDN, no imports, no bundler.
 
 ---
 
 ## Folder naming convention
 
 ```
-docs/lms/modules/<Category>-<name>/
+docs/lms/modules/<module-id>/
 ```
+
+`<module-id>` should be lowercase kebab-case and match the `id` you'll register in `registry.js` exactly (see `naming-versioning-conventions.md`). A `<Category>-<name>` style id (e.g. `Interview-main`) is acceptable for thematic grouping but is **not required** — plain kebab-case names (`database`, `python`, `react`, `react-native`) are equally valid and are what most existing modules use. Don't invent a new prefix scheme; check `registry.js` for the closest existing module and follow its pattern.
 
 Examples already in the repo:
 - `Interview-main/` — Treuhandstelle interview prep
-- `Interview-ukm/` — UKM job start prep
-- `database/lessons/` — MariaDB/MySQL curriculum
-- `python/lessons/` — Python curriculum
+- `database/` — MariaDB/MySQL curriculum
+- `python/` — Python curriculum
+- `react/`, `react-native/` — frontend curricula
 
-**For a new module:** choose `<Category>` from Interview / Onboarding / Technical / Language / Compliance, then a short kebab-case name.
+Personalized-tree variants live in `docs/lms/personalied_modules/<module-id>_pers/` (e.g. `database_pers/`), registered as a separate module id suffixed `-pers`.
 
 ---
 
-## Files to copy verbatim (never edit these)
+## Shared files — reference, don't copy
 
-Copy both from `docs/lms/modules/Interview-main/` into your new module folder:
+The design system and runtime live **once**, shared across all modules in a
+tree:
 
 ```
-theme.css      ← full design system, do not touch
-lesson-ui.js   ← all interactive behaviour, do not touch
+docs/lms/modules/shared/theme.css
+docs/lms/modules/shared/lesson-ui.js
 ```
+
+(the personalized tree has its own parallel copy at
+`docs/lms/personalied_modules/shared/`). **Do not copy these files into
+your new module folder** — every module folder references the shared
+files one directory up:
+
+```html
+<link rel="stylesheet" href="../shared/theme.css" />
+<script src="../shared/lesson-ui.js"></script>
+```
+
+Copying them per-module would defeat the point of having a shared design
+system (every module would drift independently). If you genuinely need new
+shared components or styles, add them to the shared files directly — see
+`module-authoring-guide.md`.
 
 ---
 
@@ -59,7 +84,7 @@ Use this exact template. Fill in the three `<!-- FILL -->` values:
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><!-- FILL: Module title --></title>
-  <link rel="stylesheet" href="./theme.css" />
+  <link rel="stylesheet" href="../shared/theme.css" />
   <style>
     body { padding: 24px; }
     .container {
@@ -143,7 +168,7 @@ Use this exact template. Fill in the three `<!-- FILL -->` values:
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Topic N — Page Title | Module Name</title>
-  <link rel="stylesheet" href="./theme.css"/>
+  <link rel="stylesheet" href="../shared/theme.css"/>
   <style>
     /* Page-specific styles only — no overriding theme.css base tokens here */
   </style>
@@ -183,7 +208,7 @@ Use this exact template. Fill in the three `<!-- FILL -->` values:
 
 </div><!-- /body -->
 
-<script src="./lesson-ui.js"></script>
+<script src="../shared/lesson-ui.js"></script>
 </body>
 </html>
 ```
@@ -392,8 +417,8 @@ If the user provides an existing `.html` file as content for a topic, apply thes
 
 1. **`<title>`** → `Topic N — Page title | Module Name`
 2. **`header-meta`** → `Module Name &nbsp;·&nbsp; Topic N &nbsp;·&nbsp; [date or context]`
-3. **`<link rel="stylesheet">`** → must point to `./theme.css`
-4. **`<script src="...">`** → must point to `./lesson-ui.js` and be the last element before `</body>`
+3. **`<link rel="stylesheet">`** → must point to `../shared/theme.css`
+4. **`<script src="...">`** → must point to `../shared/lesson-ui.js` and be the last element before `</body>`
 5. **Back link** → `<a class="home-link" href="./index.html">← Back to main page</a>` — already correct if the file already uses `./index.html`
 6. Do **not** change any content, component structure, or page-specific CSS.
 
@@ -469,18 +494,23 @@ Append a new object to the `modules` array. Place it near related modules (e.g. 
   title: 'Module Display Name',
   subtitle: 'One-line description shown in the sidebar',
   theme: { accent: '#HEX', accentSoft: '#HEX' },
+  indexRoute: 'lms/modules/FOLDER-NAME/index.html',   // optional — shows this page immediately on module select instead of the generic welcome panel
   lessons: [
     {
       id: 'lesson-unique-id',     // kebab-case, unique across ALL modules
       title: 'Lesson Title',
       subtitle: 'Short description shown under the title',
       route: 'lms/modules/FOLDER-NAME/topicN-slug.html',   // relative to docs/
-      progress: { type: 'untracked', total: 0 }            // see progress types below
+      progress: { type: 'untracked', total: 0 },           // see progress types below
+      requiresAuth: false,        // optional — gate this lesson behind sign-in
+      requiresPro: false          // optional — gate behind the 'pro' tier; implies requiresAuth
     }
     // add more lessons here
   ]
 }
 ```
+
+Omit `requiresAuth`/`requiresPro` entirely for an ungated lesson — don't set them to `false` explicitly unless you're intentionally documenting that the gate was considered and rejected.
 
 #### Progress types
 
@@ -489,11 +519,23 @@ Append a new object to the `modules` array. Place it near related modules (e.g. 
 | `untracked` | Static/reference pages — no checkboxes | none |
 | `checklist` | Pages with interactive checkboxes | `storageKey` (unique string), `total` (number of checkboxes), `ignoreKeys: ['home']` |
 
-`storageKey` naming convention: `lms_<moduleid>_<lessonN>_done` — e.g. `lms_ukm_01_done`.
+`storageKey` naming convention:
+- Shared-tree modules: `lms_<moduleid>_<lessonN>_done` — e.g. `lms_ukm_01_done`.
+- Personalized-tree modules (`lms/personalied_modules/`): `lms_local_<slug>_done`.
+
+**Storage keys are global, not per-field or per-module** — pick one that doesn't collide with any other lesson's key anywhere in `registry.js`, not just within this module.
+
+If you're duplicating an existing module into the personalized tree, register it as a separate module id (e.g. `<name>-pers`) with `route`s pointing at the `personalied_modules/` copies.
 
 ---
 
 ### Complete example — the UKM module (already in registry)
+
+> Note: in the current repo, the UKM content lives in the **personalized
+> tree** (`docs/lms/personalied_modules/UKM_pers/`), not
+> `docs/lms/modules/UKM/`. The example below reflects that — if you're
+> registering a genuinely shared (non-personalized) module, point `route`
+> at `lms/modules/<id>/...` instead.
 
 ```js
 // In fields:
@@ -517,7 +559,7 @@ Append a new object to the `modules` array. Place it near related modules (e.g. 
       id: 'ukm-hoffmann',
       title: 'Meeting: Frau Hoffmann',
       subtitle: 'Contract signing & §16 TV-L Stufe request',
-      route: 'lms/modules/UKM/topic1-meeting-hoffmann.html',
+      route: 'lms/personalied_modules/UKM_pers/topic1-meeting-hoffmann.html',
       progress: { type: 'untracked', total: 0 }
     }
   ]
@@ -533,6 +575,15 @@ For every new module, the deliverables are:
 - [ ] `index.html` — landing page listing all topics
 - [ ] `topicN-slug.html` — one file per topic
 - [ ] **`registry.js` patch** — field update + new module object
-- [ ] Reminder to user: copy `theme.css` and `lesson-ui.js` verbatim from `Interview-main/`
+- [ ] Confirm both `<link>`/`<script>` tags reference the shared files at `../shared/theme.css` and `../shared/lesson-ui.js` — do **not** copy them into the new module folder.
+- [ ] If the module/field id is new, reminder to add `module.<id>.*` /
+      `field.<id>.*` / `lesson.<id>.*` keys to `lms/i18n/de.js` and
+      `lms/i18n/ar.js` if translations exist (optional — missing keys fall
+      back to English silently).
+- [ ] If any lesson should be gated, reminder to set `requiresAuth`/
+      `requiresPro` and to verify the gate in the admin Users/Categories
+      tabs once deployed (see `quality-gates.md`).
+- [ ] Reminder to run through `quality-gates.md` before considering the
+      module onboarded.
 
-Do **not** output `theme.css` or `lesson-ui.js` — they are copied unchanged.
+Do **not** output `theme.css` or `lesson-ui.js` — they already exist once in the shared folder and should never be regenerated or duplicated per module.

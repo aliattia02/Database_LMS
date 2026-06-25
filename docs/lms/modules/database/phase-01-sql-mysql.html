@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Foundations — Phase 01 · DB·MASTERY</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── Phase 01 page-specific styles ── */
+.l1{background:var(--pill-l1);color:var(--pill-l1t)} .l2{background:var(--pill-l2);color:var(--pill-l2t)}
+.l3{background:var(--pill-l3);color:var(--pill-l3t)} .l4{background:var(--pill-l4);color:var(--pill-l4t)}
+.section-label{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.ladder{display:flex;flex-direction:column;gap:14px}
+.ladder-level{border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.level-head{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#f8fafc;border-bottom:1px solid var(--border)}
+.level-pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+.level-title{font-weight:600;font-size:14px;color:var(--navy2)}
+.level-bullets{padding:14px 16px}
+.level-bullets ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.level-bullets li{font-size:13.5px;color:#334155;padding-left:18px;position:relative;line-height:1.55}
+.level-bullets li::before{content:'›';position:absolute;left:0;color:var(--muted);font-weight:700}
+
+.section{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:20px;box-shadow:var(--shadow)}
+.section h2{font-size:18px;font-weight:700;margin-bottom:14px;color:var(--navy)}
+.section p{font-size:14px;color:#334155;line-height:1.65;margin-bottom:12px}
+.section p:last-child{margin-bottom:0}
+
+/* Code blocks */
+.code-block{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border)}
+.code-label{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.code-label.sql{color:#0284c7}.code-label.bash{color:#059669}.code-label.output{color:#d97706}
+.copy-btn{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);background:none;border:1px solid var(--border);border-radius:5px;padding:3px 8px;cursor:pointer;transition:color .15s,border-color .15s}
+.copy-btn:hover{color:var(--navy)}.copy-btn.copied{color:#059669;border-color:#059669}
+.code-body{padding:16px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#334155;line-height:1.75;overflow-x:auto;white-space:pre}
+.kw{color:#0284c7;font-weight:600}.fn{color:#7c3aed}.str{color:#059669}.cm{color:#94a3b8}.num{color:#d97706}.op{color:#db2777}.tp{color:#b45309}.tb{color:#0d9488}
+
+/* Concepts */
+.concepts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.concept{background:var(--white);border:1px solid var(--border);border-left:3px solid var(--border);border-radius:8px;padding:12px 16px}
+.concept.blue{border-left-color:#0284c7}.concept.green{border-left-color:#059669}.concept.orange{border-left-color:#d97706}
+.concept.teal{border-left-color:#0d9488}.concept.purple{border-left-color:#7c3aed}.concept.red{border-left-color:#dc2626}
+.concept-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.concept-desc{font-size:12px;color:var(--slate);line-height:1.6}
+
+/* Callouts */
+.callout{border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:16px;border:1px solid transparent;border-left-width:3px}
+.callout .lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.callout p,.callout li{font-size:12px;line-height:1.65}
+.callout ul{padding-left:16px}.callout li{margin-bottom:4px}
+.callout.tip{background:#d1fae5;border-color:#a7f3d0;border-left-color:#059669}.callout.tip .lbl{color:#059669}.callout.tip p,.callout.tip li{color:#065f46}
+.callout.warn{background:#fef3c7;border-color:#fde68a;border-left-color:#b45309}.callout.warn .lbl{color:#b45309}.callout.warn p,.callout.warn li{color:#78350f}
+.callout.info{background:#e0f2fe;border-color:#bae6fd;border-left-color:#0284c7}.callout.info .lbl{color:#0284c7}.callout.info p,.callout.info li{color:#075985}
+.callout.phr{background:#ccfbf1;border-color:#99f6e4;border-left-color:#0d9488}.callout.phr .lbl{color:#0d9488}.callout.phr p,.callout.phr li{color:#0f766e}
+
+/* Reference table */
+.ref-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.ref-table thead tr{background:#334155;color:#fff}
+.ref-table thead th{padding:10px 14px;text-align:left;font-weight:700}
+.ref-table tbody tr{border-bottom:1px solid var(--border)}
+.ref-table tbody tr:last-child{border-bottom:none}
+.ref-table tbody tr:nth-child(even){background:var(--bg)}
+.ref-table tbody td{padding:9px 14px;vertical-align:top;line-height:1.55}
+.ref-table .mono{font-family:'JetBrains Mono',monospace;font-size:11px}
+.win{color:#059669;font-weight:700}.lose{color:#dc2626}.neutral{color:#d97706}
+
+/* Must-know */
+.must-know-item{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--amber-text);line-height:1.55}
+.flag{color:var(--amber-icon);font-size:15px;flex-shrink:0;margin-top:1px}
+
+/* Two-column layout for data type grid */
+.type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+@media(max-width:640px){.type-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./db-masterplan-v2.html">← Back to DB·MASTERY</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">DB·MASTERY &mdash; Phase 01 &middot; LOW weight &middot; ~20h</div>
+    <h1>SQL Foundations — MariaDB Edition</h1>
+    <p class="header-sub">SELECT, JOINs, aggregations, DML, DDL, transactions, and indexes — the universal language of relational databases, applied to the MariaDB dialect you'll use every day at OS GmbH.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de', this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar', this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══════════════════════════════════════════════════
+     ENGLISH TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="progress-bar">
+    <span class="progress-label">Study progress</span>
+    <div id="prog-en" class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>
+    <span id="prog-count-en" class="prog-label">0 / 17 opened</span>
+  </div>
+
+  <!-- Section 1: Setup -->
+  <div class="section">
+    <div class="section-label">Section 1</div>
+    <h2>Setting Up Your Sandbox</h2>
+    <p>Every SQL concept should be practised on a live database, not just read. The commands below get a MariaDB sandbox running in minutes via Docker — no installation required.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">Sandbox via Docker — up in 60 seconds</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label bash">bash — docker sandbox</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm"># Start MariaDB 10.11 in Docker</span>
+docker run <span class="flag-hl">--name</span> mariadb-sandbox \
+  <span class="flag-hl">-e</span> <span class="tp">MARIADB_ROOT_PASSWORD</span>=rootpass \
+  <span class="flag-hl">-e</span> <span class="tp">MARIADB_DATABASE</span>=hospital \
+  <span class="flag-hl">-p</span> <span class="num">3306</span>:<span class="num">3306</span> \
+  <span class="flag-hl">-d</span> mariadb:<span class="num">10.11</span>
+
+<span class="cm"># Connect via the MariaDB CLI inside the container</span>
+docker exec <span class="flag-hl">-it</span> mariadb-sandbox mariadb <span class="flag-hl">-u</span> root <span class="flag-hl">-p</span>rootpass hospital
+
+<span class="cm"># Or connect from the host if mariadb-client is installed</span>
+mariadb <span class="flag-hl">-h</span> <span class="num">127.0.0.1</span> <span class="flag-hl">-P</span> <span class="num">3306</span> <span class="flag-hl">-u</span> root <span class="flag-hl">-p</span>rootpass hospital</div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label sql">SQL — first commands once connected</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="kw">SHOW DATABASES</span>;          <span class="cm">-- list all databases</span>
+<span class="kw">SELECT VERSION</span>();         <span class="cm">-- confirm MariaDB version</span>
+<span class="kw">SELECT USER</span>();            <span class="cm">-- confirm who you are</span>
+<span class="kw">SHOW TABLES</span>;             <span class="cm">-- list tables in current database</span>
+<span class="kw">SHOW FULL PROCESSLIST</span>;   <span class="cm">-- what queries are running right now</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: DDL -->
+  <div class="section">
+    <div class="section-label">Section 2</div>
+    <h2>DDL — Defining the Schema</h2>
+    <p>DDL (Data Definition Language) is how you create, alter, and drop tables and databases. The schema you define here determines every query, index, and join you'll write for the life of the application.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">Data types — choose wisely, migrate painfully</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="type-grid">
+            <div class="concept blue"><div class="concept-name">INT / BIGINT</div><div class="concept-desc">Whole numbers. Use INT for IDs &lt;2.1B rows. BIGINT for anything larger, or for Unix timestamps.</div></div>
+            <div class="concept teal"><div class="concept-name">VARCHAR(n)</div><div class="concept-desc">Variable-length string up to n bytes. Best for names, emails. Don't use TEXT unless you need &gt;65,535 chars.</div></div>
+            <div class="concept orange"><div class="concept-name">DECIMAL(p,s)</div><div class="concept-desc">Exact decimal. Use for money — never FLOAT or DOUBLE for currency (floating-point rounding errors).</div></div>
+            <div class="concept green"><div class="concept-name">DATETIME / TIMESTAMP</div><div class="concept-desc">TIMESTAMP stores in UTC and converts to session timezone. DATETIME stores literally. Use TIMESTAMP for audit fields.</div></div>
+            <div class="concept purple"><div class="concept-name">BOOLEAN / TINYINT(1)</div><div class="concept-desc">MariaDB has no native BOOL — it's TINYINT(1). TRUE=1, FALSE=0.</div></div>
+            <div class="concept red"><div class="concept-name">ENUM</div><div class="concept-desc">Fixed set of string values. Use sparingly — adding a value requires ALTER TABLE, which is slow on large tables.</div></div>
+          </div>
+          <div class="callout warn"><div class="lbl">Common mistakes</div><ul>
+            <li>Using FLOAT/DOUBLE for money — causes rounding errors. Use DECIMAL(10,2).</li>
+            <li>Using TEXT instead of VARCHAR when you know the max length — TEXT can't be fully indexed.</li>
+            <li>Using CHAR for variable-length data — wastes space with trailing spaces.</li>
+          </ul></div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">CREATE TABLE — hospital schema example</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label sql">SQL — CREATE TABLE</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="kw">CREATE TABLE</span> patients (
+  patient_id   <span class="tp">INT UNSIGNED</span>    <span class="kw">NOT NULL AUTO_INCREMENT</span>,
+  first_name   <span class="tp">VARCHAR(80)</span>     <span class="kw">NOT NULL</span>,
+  last_name    <span class="tp">VARCHAR(80)</span>     <span class="kw">NOT NULL</span>,
+  date_of_birth <span class="tp">DATE</span>           <span class="kw">NOT NULL</span>,
+  email        <span class="tp">VARCHAR(255)</span>    <span class="kw">NULL</span>,
+  active       <span class="tp">TINYINT(1)</span>     <span class="kw">NOT NULL DEFAULT</span> <span class="num">1</span>,
+  created_at   <span class="tp">TIMESTAMP</span>      <span class="kw">NOT NULL DEFAULT CURRENT_TIMESTAMP</span>,
+  <span class="kw">PRIMARY KEY</span> (patient_id),
+  <span class="kw">UNIQUE KEY</span> uq_email (email)      <span class="cm">-- email must be unique if provided</span>
+) <span class="kw">ENGINE</span>=InnoDB <span class="kw">DEFAULT CHARSET</span>=utf8mb4 <span class="kw">COLLATE</span>=utf8mb4_unicode_ci;
+
+<span class="kw">CREATE TABLE</span> appointments (
+  appt_id      <span class="tp">INT UNSIGNED</span>    <span class="kw">NOT NULL AUTO_INCREMENT</span>,
+  patient_id   <span class="tp">INT UNSIGNED</span>    <span class="kw">NOT NULL</span>,
+  doctor_id    <span class="tp">INT UNSIGNED</span>    <span class="kw">NOT NULL</span>,
+  scheduled_at <span class="tp">DATETIME</span>       <span class="kw">NOT NULL</span>,
+  status       <span class="tp">ENUM</span>(<span class="str">'pending'</span>,<span class="str">'confirmed'</span>,<span class="str">'cancelled'</span>) <span class="kw">NOT NULL DEFAULT</span> <span class="str">'pending'</span>,
+  notes        <span class="tp">TEXT</span>           <span class="kw">NULL</span>,
+  <span class="kw">PRIMARY KEY</span>  (appt_id),
+  <span class="kw">KEY</span>          idx_patient (patient_id),   <span class="cm">-- index for JOIN speed</span>
+  <span class="kw">KEY</span>          idx_doctor  (doctor_id),
+  <span class="kw">KEY</span>          idx_scheduled (scheduled_at),
+  <span class="kw">CONSTRAINT</span>   fk_appt_patient <span class="kw">FOREIGN KEY</span> (patient_id) <span class="kw">REFERENCES</span> patients(patient_id)
+) <span class="kw">ENGINE</span>=InnoDB;</div>
+          </div>
+          <div class="callout tip"><div class="lbl">Always add ENGINE=InnoDB</div><p>InnoDB is the default in MariaDB 10.x but state it explicitly. It's the only engine that supports foreign keys, ACID transactions, and row-level locking — all of which matter for production systems.</p></div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">ALTER TABLE — common operations and gotchas</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label sql">SQL — ALTER TABLE</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm">-- Add a column</span>
+<span class="kw">ALTER TABLE</span> patients <span class="kw">ADD COLUMN</span> phone <span class="tp">VARCHAR(20)</span> <span class="kw">NULL AFTER</span> email;
+
+<span class="cm">-- Change a column's type</span>
+<span class="kw">ALTER TABLE</span> patients <span class="kw">MODIFY COLUMN</span> first_name <span class="tp">VARCHAR(120)</span> <span class="kw">NOT NULL</span>;
+
+<span class="cm">-- Rename a column (MariaDB 10.5+)</span>
+<span class="kw">ALTER TABLE</span> patients <span class="kw">RENAME COLUMN</span> email <span class="kw">TO</span> email_address;
+
+<span class="cm">-- Add an index</span>
+<span class="kw">ALTER TABLE</span> appointments <span class="kw">ADD INDEX</span> idx_status (status);
+
+<span class="cm">-- Drop a column</span>
+<span class="kw">ALTER TABLE</span> patients <span class="kw">DROP COLUMN</span> phone;</div>
+          </div>
+          <div class="callout warn"><div class="lbl">ALTER TABLE locks tables on large data</div><p>On a table with millions of rows, an ALTER TABLE can lock reads and writes for minutes. In production, use <code style="font-family:'JetBrains Mono',monospace;font-size:11px">pt-online-schema-change</code> (Percona Toolkit) or MariaDB's <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ALGORITHM=INSTANT</code> (for supported operations) to avoid downtime.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: SELECT -->
+  <div class="section">
+    <div class="section-label">Section 3</div>
+    <h2>SELECT — Querying Data</h2>
+    <p>The SELECT statement is the most important SQL command. Understanding the logical order of execution (not the written order) is the key to writing correct, efficient queries.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">Logical execution order — why WHERE runs before SELECT</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="callout info"><div class="lbl">Written order vs execution order</div><p>You write <code style="font-family:'JetBrains Mono',monospace;font-size:11px">SELECT → FROM → WHERE → GROUP BY → HAVING → ORDER BY → LIMIT</code>, but MariaDB processes them in a completely different order: <strong>FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT</strong>. This is why you can't use a column alias defined in SELECT inside a WHERE clause — WHERE runs before SELECT.</p></div>
+          <table class="ref-table">
+            <thead><tr><th>#</th><th>Clause</th><th>What it does</th><th>Can reference…</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td class="mono">FROM / JOIN</td><td>Identifies the source tables and builds the combined dataset</td><td>Table names, aliases</td></tr>
+              <tr><td>2</td><td class="mono">WHERE</td><td>Filters rows before any grouping</td><td>Table columns — NOT SELECT aliases</td></tr>
+              <tr><td>3</td><td class="mono">GROUP BY</td><td>Groups remaining rows into buckets</td><td>Table columns</td></tr>
+              <tr><td>4</td><td class="mono">HAVING</td><td>Filters grouped results (post-aggregation WHERE)</td><td>Aggregate functions + table columns</td></tr>
+              <tr><td>5</td><td class="mono">SELECT</td><td>Chooses and transforms columns to return</td><td>Anything — aliases defined here</td></tr>
+              <tr><td>6</td><td class="mono">ORDER BY</td><td>Sorts the final result set</td><td>Table columns + SELECT aliases ✓</td></tr>
+              <tr><td>7</td><td class="mono">LIMIT</td><td>Truncates result to n rows</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">Essential SELECT patterns — with hospital examples</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label sql">SQL — SELECT patterns</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm">-- Basic: all columns, all rows</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">patients</span>;
+
+<span class="cm">-- Column selection with alias</span>
+<span class="kw">SELECT</span>
+  patient_id                          <span class="kw">AS</span> id,
+  <span class="fn">CONCAT</span>(first_name, <span class="str">' '</span>, last_name)  <span class="kw">AS</span> full_name,
+  <span class="fn">TIMESTAMPDIFF</span>(<span class="tp">YEAR</span>, date_of_birth, <span class="fn">CURDATE</span>()) <span class="kw">AS</span> age
+<span class="kw">FROM</span> <span class="tb">patients</span>
+<span class="kw">WHERE</span> active = <span class="num">1</span>
+<span class="kw">ORDER BY</span> last_name, first_name;
+
+<span class="cm">-- Filter with pattern matching</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">patients</span>
+<span class="kw">WHERE</span> email <span class="kw">LIKE</span> <span class="str">'%@fraport.de'</span>;  <span class="cm">-- Fraport employees</span>
+
+<span class="cm">-- NULL handling — must use IS NULL, not = NULL</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">patients</span> <span class="kw">WHERE</span> email <span class="kw">IS NULL</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">patients</span> <span class="kw">WHERE</span> email <span class="kw">IS NOT NULL</span>;
+<span class="kw">SELECT</span> <span class="fn">COALESCE</span>(email, <span class="str">'no email'</span>) <span class="kw">FROM</span> <span class="tb">patients</span>;
+
+<span class="cm">-- Range and IN</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">appointments</span>
+<span class="kw">WHERE</span> scheduled_at <span class="kw">BETWEEN</span> <span class="str">'2025-01-01'</span> <span class="kw">AND</span> <span class="str">'2025-01-31'</span>
+  <span class="kw">AND</span> status <span class="kw">IN</span> (<span class="str">'confirmed'</span>, <span class="str">'pending'</span>);
+
+<span class="cm">-- Pagination</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">patients</span>
+<span class="kw">ORDER BY</span> created_at <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="num">20</span> <span class="kw">OFFSET</span> <span class="num">40</span>;  <span class="cm">-- page 3 (0-indexed), 20 per page</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Aggregations -->
+  <div class="section">
+    <div class="section-label">Section 4</div>
+    <h2>Aggregations — GROUP BY, COUNT, SUM, AVG</h2>
+    <p>Aggregation transforms many rows into summary statistics — the foundation of reports, dashboards, and analytics queries.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">GROUP BY + aggregate functions — hospital reporting</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label sql">SQL — aggregations</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm">-- How many appointments per doctor?</span>
+<span class="kw">SELECT</span>
+  doctor_id,
+  <span class="fn">COUNT</span>(*)                                         <span class="kw">AS</span> total_appts,
+  <span class="fn">COUNT</span>(<span class="kw">CASE WHEN</span> status = <span class="str">'confirmed'</span> <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">END</span>) <span class="kw">AS</span> confirmed,
+  <span class="fn">COUNT</span>(<span class="kw">CASE WHEN</span> status = <span class="str">'cancelled'</span> <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">END</span>) <span class="kw">AS</span> cancelled
+<span class="kw">FROM</span> <span class="tb">appointments</span>
+<span class="kw">WHERE</span> scheduled_at &gt;= <span class="str">'2025-01-01'</span>
+<span class="kw">GROUP BY</span> doctor_id
+<span class="kw">HAVING</span> total_appts &gt; <span class="num">10</span>    <span class="cm">-- HAVING filters groups (not rows)</span>
+<span class="kw">ORDER BY</span> total_appts <span class="kw">DESC</span>;
+
+<span class="cm">-- Daily appointment count for the last 30 days</span>
+<span class="kw">SELECT</span>
+  <span class="fn">DATE</span>(scheduled_at)      <span class="kw">AS</span> appt_date,
+  <span class="fn">COUNT</span>(*)                <span class="kw">AS</span> daily_count
+<span class="kw">FROM</span> <span class="tb">appointments</span>
+<span class="kw">WHERE</span> scheduled_at &gt;= <span class="fn">DATE_SUB</span>(<span class="fn">CURDATE</span>(), <span class="kw">INTERVAL</span> <span class="num">30</span> <span class="tp">DAY</span>)
+<span class="kw">GROUP BY</span> <span class="fn">DATE</span>(scheduled_at)
+<span class="kw">ORDER BY</span> appt_date;</div>
+          </div>
+          <div class="callout warn"><div class="lbl">WHERE vs HAVING — the most tested interview distinction</div><p><strong>WHERE</strong> filters individual rows before grouping — it can reference table columns but NOT aggregate functions. <strong>HAVING</strong> filters groups after aggregation — it can reference aggregate functions. Using <code style="font-family:'JetBrains Mono',monospace;font-size:11px">WHERE COUNT(*) > 10</code> is a syntax error. Use HAVING.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: JOINs -->
+  <div class="section">
+    <div class="section-label">Section 5</div>
+    <h2>JOINs — Combining Tables</h2>
+    <p>Joins are the core of relational database power. Most production queries involve at least one join — understanding exactly what rows each type returns prevents hours of debugging.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">INNER, LEFT, RIGHT — when to use each</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="concepts">
+            <div class="concept blue"><div class="concept-name">INNER JOIN — matching rows only</div><div class="concept-desc">Returns rows that have a matching value in BOTH tables. If a patient has no appointment, they won't appear. Most common join type.</div></div>
+            <div class="concept green"><div class="concept-name">LEFT JOIN — all rows from left, matched from right</div><div class="concept-desc">Returns ALL rows from the left table, with NULL for right-table columns when there's no match. Use to find patients with no appointments.</div></div>
+            <div class="concept orange"><div class="concept-name">RIGHT JOIN — all rows from right, matched from left</div><div class="concept-desc">Same as LEFT JOIN with tables swapped. Rarely used — rewrite as LEFT JOIN for readability.</div></div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label sql">SQL — JOIN examples</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm">-- INNER JOIN: appointments with patient names (only matched rows)</span>
+<span class="kw">SELECT</span>
+  a.appt_id,
+  a.scheduled_at,
+  <span class="fn">CONCAT</span>(p.first_name, <span class="str">' '</span>, p.last_name) <span class="kw">AS</span> patient_name,
+  a.status
+<span class="kw">FROM</span>       <span class="tb">appointments</span> a
+<span class="kw">INNER JOIN</span> <span class="tb">patients</span>     p <span class="kw">ON</span> a.patient_id = p.patient_id
+<span class="kw">WHERE</span> a.status = <span class="str">'confirmed'</span>
+<span class="kw">ORDER BY</span> a.scheduled_at;
+
+<span class="cm">-- LEFT JOIN: all patients, even those with no appointments</span>
+<span class="kw">SELECT</span>
+  p.patient_id,
+  <span class="fn">CONCAT</span>(p.first_name, <span class="str">' '</span>, p.last_name) <span class="kw">AS</span> patient_name,
+  <span class="fn">COUNT</span>(a.appt_id)                          <span class="kw">AS</span> appt_count
+<span class="kw">FROM</span>      <span class="tb">patients</span>     p
+<span class="kw">LEFT JOIN</span> <span class="tb">appointments</span> a <span class="kw">ON</span> p.patient_id = a.patient_id
+<span class="kw">GROUP BY</span> p.patient_id, p.first_name, p.last_name
+<span class="kw">ORDER BY</span> appt_count <span class="kw">DESC</span>;
+
+<span class="cm">-- Find patients with NO appointments (anti-join pattern)</span>
+<span class="kw">SELECT</span> p.*
+<span class="kw">FROM</span>      <span class="tb">patients</span>     p
+<span class="kw">LEFT JOIN</span> <span class="tb">appointments</span> a <span class="kw">ON</span> p.patient_id = a.patient_id
+<span class="kw">WHERE</span> a.appt_id <span class="kw">IS NULL</span>;  <span class="cm">-- NULL here means no match found</span></div>
+          </div>
+          <div class="callout tip"><div class="lbl">Interview tip on JOINs</div><p>The NULL-checking anti-join pattern (<code style="font-family:'JetBrains Mono',monospace;font-size:11px">LEFT JOIN … WHERE right.id IS NULL</code>) comes up in almost every SQL interview. Know it cold.</p></div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">Multi-table JOIN — three tables in one query</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label sql">SQL — three-table JOIN</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm">-- Appointments with both patient name and doctor name</span>
+<span class="kw">SELECT</span>
+  a.appt_id,
+  a.scheduled_at,
+  <span class="fn">CONCAT</span>(p.first_name, <span class="str">' '</span>, p.last_name) <span class="kw">AS</span> patient,
+  <span class="fn">CONCAT</span>(d.first_name, <span class="str">' '</span>, d.last_name) <span class="kw">AS</span> doctor,
+  a.status
+<span class="kw">FROM</span>       <span class="tb">appointments</span> a
+<span class="kw">INNER JOIN</span> <span class="tb">patients</span>     p <span class="kw">ON</span> a.patient_id = p.patient_id
+<span class="kw">INNER JOIN</span> <span class="tb">doctors</span>      d <span class="kw">ON</span> a.doctor_id  = d.doctor_id
+<span class="kw">WHERE</span> a.scheduled_at <span class="kw">BETWEEN</span> <span class="str">'2025-03-01'</span> <span class="kw">AND</span> <span class="str">'2025-03-31'</span>
+<span class="kw">ORDER BY</span> a.scheduled_at;</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6: DML -->
+  <div class="section">
+    <div class="section-label">Section 6</div>
+    <h2>DML — Modifying Data</h2>
+    <p>INSERT, UPDATE, and DELETE modify the data in your tables. Knowing their safe patterns — especially limiting UPDATE and DELETE — prevents production disasters.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">INSERT, UPDATE, DELETE — with safety patterns</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label sql">SQL — DML patterns</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm">-- INSERT: single row</span>
+<span class="kw">INSERT INTO</span> <span class="tb">patients</span> (first_name, last_name, date_of_birth, email)
+<span class="kw">VALUES</span> (<span class="str">'Fatima'</span>, <span class="str">'Al-Rashid'</span>, <span class="str">'1990-03-15'</span>, <span class="str">'f.alrashid@example.com'</span>);
+
+<span class="cm">-- INSERT: multiple rows (more efficient than one at a time)</span>
+<span class="kw">INSERT INTO</span> <span class="tb">patients</span> (first_name, last_name, date_of_birth)
+<span class="kw">VALUES</span>
+  (<span class="str">'Ahmed'</span>,   <span class="str">'Hassan'</span>,  <span class="str">'1985-07-22'</span>),
+  (<span class="str">'Leila'</span>,   <span class="str">'Müller'</span>,  <span class="str">'1978-11-08'</span>),
+  (<span class="str">'Mohamed'</span>, <span class="str">'Schmidt'</span>, <span class="str">'1995-02-14'</span>);
+
+<span class="cm">-- INSERT … ON DUPLICATE KEY UPDATE (upsert)</span>
+<span class="kw">INSERT INTO</span> <span class="tb">patients</span> (patient_id, email)
+<span class="kw">VALUES</span> (<span class="num">1001</span>, <span class="str">'new@email.com'</span>)
+<span class="kw">ON DUPLICATE KEY UPDATE</span> email = <span class="fn">VALUES</span>(email);
+
+<span class="cm">-- UPDATE: always use WHERE — limit rows affected explicitly</span>
+<span class="kw">UPDATE</span> <span class="tb">patients</span>
+<span class="kw">SET</span>   active = <span class="num">0</span>,
+      email  = <span class="str">'archived@void.invalid'</span>
+<span class="kw">WHERE</span> patient_id = <span class="num">1001</span>   <span class="cm">-- ← NEVER omit WHERE on UPDATE</span>
+<span class="kw">LIMIT</span> <span class="num">1</span>;                  <span class="cm">-- safety net: never update more than 1 row</span>
+
+<span class="cm">-- DELETE: preview with SELECT first, then delete</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">appointments</span>
+<span class="kw">WHERE</span> status = <span class="str">'cancelled'</span>
+  <span class="kw">AND</span> scheduled_at &lt; <span class="str">'2024-01-01'</span>;  <span class="cm">-- run SELECT first to confirm rows</span>
+
+<span class="kw">DELETE FROM</span> <span class="tb">appointments</span>
+<span class="kw">WHERE</span> status = <span class="str">'cancelled'</span>
+  <span class="kw">AND</span> scheduled_at &lt; <span class="str">'2024-01-01'</span>;  <span class="cm">-- then delete with identical WHERE</span></div>
+          </div>
+          <div class="callout warn"><div class="lbl">The most dangerous SQL mistake</div><p><code style="font-family:'JetBrains Mono',monospace;font-size:11px">UPDATE patients SET active = 0;</code> without a WHERE clause deactivates EVERY patient. Always write SELECT + WHERE first, verify the row count, then convert to UPDATE/DELETE with the same WHERE clause. In a transaction if possible — so you can ROLLBACK if something's wrong.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 7: Transactions -->
+  <div class="section">
+    <div class="section-label">Section 7</div>
+    <h2>Transactions — The Safety Net</h2>
+    <p>A transaction wraps multiple SQL statements into an atomic unit. Either all succeed together, or all are rolled back together. Essential for any operation that modifies related rows across tables.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">START TRANSACTION / COMMIT / ROLLBACK — live pattern</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label sql">SQL — transaction with error handling pattern</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm">-- Safe multi-step operation: cancel appointment + log the cancellation</span>
+
+<span class="kw">START TRANSACTION</span>;
+
+<span class="kw">UPDATE</span> <span class="tb">appointments</span>
+<span class="kw">SET</span>   status = <span class="str">'cancelled'</span>
+<span class="kw">WHERE</span> appt_id = <span class="num">5001</span>
+<span class="kw">LIMIT</span> <span class="num">1</span>;
+
+<span class="cm">-- If affected rows = 0, something's wrong — ROLLBACK</span>
+<span class="cm">-- (In application code, check ROW_COUNT() here)</span>
+
+<span class="kw">INSERT INTO</span> <span class="tb">audit_log</span> (entity, entity_id, action, performed_by, ts)
+<span class="kw">VALUES</span> (<span class="str">'appointment'</span>, <span class="num">5001</span>, <span class="str">'cancelled'</span>, <span class="str">'dr.schmidt'</span>, <span class="fn">NOW</span>());
+
+<span class="kw">COMMIT</span>;  <span class="cm">-- both changes are written to disk atomically</span>
+
+<span class="cm">-- If anything above fails (or you discover a mistake):</span>
+<span class="cm">-- ROLLBACK;  -- undoes everything since START TRANSACTION</span></div>
+          </div>
+          <div class="callout tip"><div class="lbl">MariaDB autocommit</div><p>By default, MariaDB runs in <code style="font-family:'JetBrains Mono',monospace;font-size:11px">autocommit=ON</code> — every statement is its own instant transaction. Once you issue <code style="font-family:'JetBrains Mono',monospace;font-size:11px">START TRANSACTION</code>, autocommit is suspended until you COMMIT or ROLLBACK. Forgetting COMMIT leaves the connection holding locks — other sessions block.</p></div>
+          <div class="callout warn"><div class="lbl">Galera: transaction scope matters even more</div><p>In a Galera cluster, a transaction is replicated to all nodes at COMMIT time using write-set replication. Long-running transactions or large write-sets increase certification conflict probability and can trigger flow control, stalling the entire cluster. Keep transactions short and targeted.</p></div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">Isolation levels — what each one protects against</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <table class="ref-table">
+            <thead><tr><th>Level</th><th>Dirty Read</th><th>Non-Repeatable Read</th><th>Phantom Read</th><th>Use case</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">READ UNCOMMITTED</td><td class="lose">Possible</td><td class="lose">Possible</td><td class="lose">Possible</td><td>Never in production</td></tr>
+              <tr><td class="mono">READ COMMITTED</td><td class="win">Protected</td><td class="lose">Possible</td><td class="lose">Possible</td><td>PostgreSQL default; high concurrency reporting</td></tr>
+              <tr><td class="mono">REPEATABLE READ</td><td class="win">Protected</td><td class="win">Protected</td><td class="neutral">Usually*</td><td><strong>MariaDB/MySQL default ★</strong></td></tr>
+              <tr><td class="mono">SERIALIZABLE</td><td class="win">Protected</td><td class="win">Protected</td><td class="win">Protected</td><td>Financial transactions; very low throughput</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:12px;color:var(--muted)">* InnoDB's MVCC implementation largely prevents phantoms even at REPEATABLE READ.</p>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label sql">SQL — check and set isolation level</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="kw">SELECT</span> @@transaction_isolation;           <span class="cm">-- current session level</span>
+<span class="kw">SET</span> <span class="tp">SESSION</span> TRANSACTION ISOLATION LEVEL <span class="tp">READ COMMITTED</span>;  <span class="cm">-- change for session</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 8: Indexes -->
+  <div class="section">
+    <div class="section-label">Section 8</div>
+    <h2>Indexes — Making Queries Fast</h2>
+    <p>An index trades storage and write speed for dramatic read speed gains. Without indexes, every query scans every row — fine for 100 rows, catastrophic for 100 million.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">Creating and using EXPLAIN to verify indexes are used</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="code-block">
+            <div class="code-header"><span class="code-label sql">SQL — index creation</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="cm">-- Single-column index (most common)</span>
+<span class="kw">CREATE INDEX</span> idx_appt_scheduled <span class="kw">ON</span> <span class="tb">appointments</span> (scheduled_at);
+
+<span class="cm">-- Composite index — column ORDER matters!</span>
+<span class="cm">-- Useful for: WHERE doctor_id = ? AND status = ?</span>
+<span class="kw">CREATE INDEX</span> idx_doctor_status <span class="kw">ON</span> <span class="tb">appointments</span> (doctor_id, status);
+
+<span class="cm">-- Unique index (prevents duplicates)</span>
+<span class="kw">CREATE UNIQUE INDEX</span> uq_patient_email <span class="kw">ON</span> <span class="tb">patients</span> (email);
+
+<span class="cm">-- Check index usage with EXPLAIN</span>
+<span class="kw">EXPLAIN SELECT</span> * <span class="kw">FROM</span> <span class="tb">appointments</span>
+<span class="kw">WHERE</span> scheduled_at <span class="kw">BETWEEN</span> <span class="str">'2025-03-01'</span> <span class="kw">AND</span> <span class="str">'2025-03-31'</span>;</div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label output">EXPLAIN output — what to look for</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body">+----+-------+------+------+---------------------+------+-------+
+| id | table | type | key  | key_len             | rows | Extra |
++----+-------+------+------+---------------------+------+-------+
+|  1 | appointments | range | idx_appt_scheduled | 5 |  247 | Using index condition |
++----+-------+------+------+---------------------+------+-------+
+
+type=range → Good. Uses index for a range scan.
+type=ALL  → Bad. Full table scan. Add an index or fix the WHERE clause.
+type=ref  → Good. Index lookup on equality condition.
+rows      → Estimated rows examined. Lower = faster.</div>
+          </div>
+          <div class="callout warn"><div class="lbl">Common index killers</div><ul>
+            <li>Wrapping an indexed column in a function: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">WHERE YEAR(scheduled_at) = 2025</code> forces a full scan — use <code style="font-family:'JetBrains Mono',monospace;font-size:11px">WHERE scheduled_at BETWEEN '2025-01-01' AND '2025-12-31'</code></li>
+            <li>Leading wildcard: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">WHERE last_name LIKE '%müller'</code> can't use a B-tree index. Trailing wildcard <code style="font-family:'JetBrains Mono',monospace;font-size:11px">LIKE 'müller%'</code> can.</li>
+            <li>Implicit type conversion: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">WHERE patient_id = '1001'</code> (string vs INT) may prevent index use — match types explicitly.</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 9: Interview Q&A -->
+  <div class="section">
+    <div class="section-label">Section 9</div>
+    <h2>Interview Questions</h2>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">"What is the difference between WHERE and HAVING?"</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="acc-strategy-label">Interview strategy</div>
+          This is a screening question — answer it in one confident sentence, then give an example.
+          <div class="callout phr" style="margin-top:12px"><div class="lbl">Sample answer</div><p>"WHERE filters individual rows before grouping; HAVING filters grouped results after aggregation. If I want appointments from January, that's a WHERE clause — it narrows the rows the GROUP BY sees. If I want only doctors who have more than 10 appointments in that period, that's a HAVING clause — it filters the groups that GROUP BY produced. You can't use aggregate functions in WHERE; you must use HAVING."</p></div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">"How would you find all duplicate email addresses in the patients table?"</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="acc-strategy-label">Classic data quality / GROUP BY interview question</div>
+          <div class="callout phr" style="margin-top:12px"><div class="lbl">Sample answer</div><p>"I'd group by email and use HAVING to filter for any count greater than 1:"</p></div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label sql">SQL — find duplicates</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <div class="code-body"><span class="kw">SELECT</span>
+  email,
+  <span class="fn">COUNT</span>(*) <span class="kw">AS</span> occurrences
+<span class="kw">FROM</span>   <span class="tb">patients</span>
+<span class="kw">WHERE</span>  email <span class="kw">IS NOT NULL</span>
+<span class="kw">GROUP BY</span> email
+<span class="kw">HAVING</span> occurrences &gt; <span class="num">1</span>
+<span class="kw">ORDER BY</span> occurrences <span class="kw">DESC</span>;</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">"Explain the difference between INNER JOIN and LEFT JOIN with a realistic example."</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="callout phr"><div class="lbl">Sample answer</div><p>"INNER JOIN returns only rows with a match in both tables. If I INNER JOIN patients to appointments, patients who have never booked an appointment are excluded. LEFT JOIN returns all rows from the left table — patients — plus appointment data where it exists, with NULLs where it doesn't. So if I want to find patients who have never had an appointment, I LEFT JOIN appointments and then filter WHERE appt_id IS NULL. That's the anti-join pattern and it comes up constantly in production data audits."</p></div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">"A query is running slowly. What's your first step?"</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="acc-strategy-label">This tests your EXPLAIN knowledge and systematic thinking</div>
+          <div class="callout phr" style="margin-top:12px"><div class="lbl">Sample answer</div><p>"First I run EXPLAIN on the query to see the execution plan — specifically I look at the type column. If I see 'ALL', that's a full table scan and I need an index. The rows column tells me how many rows MariaDB estimates it needs to examine. If the right index exists but isn't being used, I check whether the WHERE clause wraps the column in a function, or there's an implicit type conversion — both prevent index use. For a query on the slow query log, I check log_queries_not_using_indexes to confirm. Then I add or adjust the index and re-run EXPLAIN to verify the plan improves."</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Learning Ladder -->
+  <div class="section">
+    <div class="section-label">Learning Ladder</div>
+    <h2>How Deep Do You Need to Go?</h2>
+    <div class="ladder">
+      <div class="ladder-level">
+        <div class="level-head"><span class="level-pill l1">Level 1</span><span class="level-title">Interview awareness — write and read basic SQL</span></div>
+        <div class="level-bullets"><ul>
+          <li>Write SELECT, WHERE, ORDER BY, and LIMIT correctly</li>
+          <li>Explain the difference between WHERE and HAVING with an example</li>
+          <li>Write an INNER JOIN between two tables and explain what rows it returns</li>
+          <li>Explain what a transaction is and what ROLLBACK does</li>
+        </ul></div>
+      </div>
+      <div class="ladder-level">
+        <div class="level-head"><span class="level-pill l2">Level 2</span><span class="level-title">Operational — write production-quality queries</span></div>
+        <div class="level-bullets"><ul>
+          <li>Write multi-table JOINs with aggregate functions and HAVING correctly</li>
+          <li>Write safe UPDATE and DELETE with WHERE + LIMIT</li>
+          <li>Use EXPLAIN to check whether a query uses an index, and fix it if not</li>
+          <li>Handle NULLs correctly with IS NULL, IS NOT NULL, and COALESCE</li>
+        </ul></div>
+      </div>
+      <div class="ladder-level">
+        <div class="level-head"><span class="level-pill l3">Level 3</span><span class="level-title">Practitioner — optimise and design</span></div>
+        <div class="level-bullets"><ul>
+          <li>Design composite indexes for multi-column WHERE clauses (column order matters)</li>
+          <li>Use INSERT … ON DUPLICATE KEY UPDATE for upsert operations</li>
+          <li>Explain all four transaction isolation levels and when each is appropriate</li>
+          <li>Identify and fix the three main index killers: functions, type mismatch, leading wildcards</li>
+        </ul></div>
+      </div>
+      <div class="ladder-level">
+        <div class="level-head"><span class="level-pill l4">Level 4</span><span class="level-title">Expert — lead the SQL layer for a production system</span></div>
+        <div class="level-bullets"><ul>
+          <li>Write complex queries with window functions (ROW_NUMBER, LAG, LEAD) and CTEs</li>
+          <li>Use pt-online-schema-change or ALGORITHM=INSTANT for zero-downtime ALTER TABLE</li>
+          <li>Optimise schema for a specific read/write pattern using covering indexes</li>
+          <li>Explain how Galera's write-set replication interacts with long-running transactions</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Must-Know -->
+  <div class="must-know">
+    <div class="section-label" style="color:#b45309">⚑ Must-Know Before the Interview</div>
+    <div class="must-know-list">
+      <div class="must-know-item"><span class="flag">⚑</span><span>WHERE filters rows, HAVING filters groups. You cannot use aggregate functions in WHERE. This distinction is tested in almost every SQL interview.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>NULL comparisons require <code style="font-family:'JetBrains Mono',monospace;font-size:11px">IS NULL</code> / <code style="font-family:'JetBrains Mono',monospace;font-size:11px">IS NOT NULL</code>. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">= NULL</code> always returns NULL (unknown) — never TRUE.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span><code style="font-family:'JetBrains Mono',monospace;font-size:11px">LEFT JOIN … WHERE right.id IS NULL</code> is the anti-join pattern for "rows in A with no match in B". Know it cold.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>EXPLAIN type column: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ALL</code> = full scan (bad), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">range/ref</code> = index used (good). This is the first thing to check on a slow query.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>MariaDB's default isolation level is REPEATABLE READ. Never use READ UNCOMMITTED in production — it allows dirty reads of uncommitted data.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>Never use FLOAT or DOUBLE for money — floating-point rounding errors corrupt financial data. Use <code style="font-family:'JetBrains Mono',monospace;font-size:11px">DECIMAL(10,2)</code>.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>In Galera: keep transactions short. Long transactions or large write-sets create certification conflicts that stall the cluster and trigger flow control.</span></div>
+    </div>
+  </div>
+
+</div><!-- /tab-en -->
+
+<!-- ═══════════════════════════════════════════════════
+     GERMAN TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="progress-bar">
+    <span class="progress-label">Lernfortschritt</span>
+    <div id="prog-de" class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>
+    <span id="prog-count-de" class="prog-label">0 / 17 geöffnet</span>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Abschnitt 1</div>
+    <h2>DDL — Das Schema definieren</h2>
+    <p>DDL (Data Definition Language) wird verwendet, um Tabellen und Datenbanken zu erstellen, zu ändern und zu löschen. Das hier definierte Schema bestimmt jede Abfrage, jeden Index und jeden JOIN für die gesamte Lebensdauer der Anwendung.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">Datentypen — die wichtigsten für MariaDB</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="concepts">
+            <div class="concept blue"><div class="concept-name">INT / BIGINT — Ganzzahlen</div><div class="concept-desc">INT für IDs &lt;2,1 Mrd. Zeilen. BIGINT für größere Mengen oder Unix-Timestamps.</div></div>
+            <div class="concept teal"><div class="concept-name">VARCHAR(n) — Zeichenketten variabler Länge</div><div class="concept-desc">Optimal für Namen und E-Mails. TEXT nur verwenden, wenn mehr als 65.535 Zeichen benötigt werden.</div></div>
+            <div class="concept orange"><div class="concept-name">DECIMAL(p,s) — exakte Dezimalzahlen</div><div class="concept-desc">Immer für Geldbeträge verwenden — niemals FLOAT oder DOUBLE (Rundungsfehler bei Fließkomma).</div></div>
+            <div class="concept green"><div class="concept-name">DATETIME / TIMESTAMP</div><div class="concept-desc">TIMESTAMP speichert in UTC und konvertiert in die Session-Zeitzone. DATETIME speichert den Wert literal. TIMESTAMP für Audit-Felder verwenden.</div></div>
+          </div>
+          <div class="callout warn"><div class="lbl">Häufige Fehler</div><ul>
+            <li>FLOAT/DOUBLE für Geldbeträge — führt zu Rundungsfehlern. DECIMAL(10,2) verwenden.</li>
+            <li>TEXT statt VARCHAR, wenn die Maximallänge bekannt ist — TEXT kann nicht vollständig indiziert werden.</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Abschnitt 2</div>
+    <h2>SELECT — Daten abfragen</h2>
+    <p>Die logische Ausführungsreihenfolge (nicht die Schreibreihenfolge) zu verstehen ist der Schlüssel zum Schreiben korrekter Abfragen.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">WHERE vs. HAVING — das am häufigsten geprüfte Unterscheidungsmerkmal</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="callout info"><div class="lbl">Die wichtigste Regel</div><p><strong>WHERE</strong> filtert einzelne Zeilen vor dem Gruppieren — keine Aggregatfunktionen erlaubt. <strong>HAVING</strong> filtert Gruppen nach der Aggregation — Aggregatfunktionen sind erlaubt. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">WHERE COUNT(*) &gt; 10</code> ist ein Syntaxfehler. HAVING verwenden.</p></div>
+          <div class="callout phr"><div class="lbl">Musterantwort im Vorstellungsgespräch</div><p>„WHERE filtert Zeilen vor dem Gruppieren, HAVING filtert Gruppen nach der Aggregation. Termine aus Januar zu filtern ist ein WHERE-Ausdruck. Nur Ärzte mit mehr als 10 Terminen zu filtern ist ein HAVING-Ausdruck — es filtert die durch GROUP BY erzeugten Gruppen."</p></div>
+        </div>
+      </div>
+
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">JOINs — INNER vs. LEFT und das Anti-Join-Muster</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="concepts">
+            <div class="concept blue"><div class="concept-name">INNER JOIN — nur übereinstimmende Zeilen</div><div class="concept-desc">Gibt Zeilen zurück, die in BEIDEN Tabellen übereinstimmen. Patienten ohne Termin erscheinen nicht.</div></div>
+            <div class="concept green"><div class="concept-name">LEFT JOIN — alle Zeilen links, übereinstimmende rechts</div><div class="concept-desc">Gibt ALLE Zeilen der linken Tabelle zurück, mit NULL für Spalten der rechten Tabelle, wenn keine Übereinstimmung vorhanden ist.</div></div>
+          </div>
+          <div class="callout tip"><div class="lbl">Anti-Join-Muster</div><p><code style="font-family:'JetBrains Mono',monospace;font-size:11px">LEFT JOIN … WHERE rechte.id IS NULL</code> findet Patienten ohne Termine. Dieses Muster kommt in fast jedem SQL-Gespräch vor — auswendig lernen.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Abschnitt 3</div>
+    <h2>Transaktionen — das Sicherheitsnetz</h2>
+    <p>Eine Transaktion bündelt mehrere SQL-Anweisungen zu einer atomaren Einheit. Entweder alle Schritte gelingen gemeinsam, oder alle werden zurückgerollt.</p>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">Isolationslevel — MariaDB's Standard und wann er wichtig ist</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="callout phr"><div class="lbl">Schlüsselfakt</div><p>MariaDB's Standardisolationslevel ist <strong>REPEATABLE READ</strong>. Das bedeutet: während einer Transaktion sieht man immer dieselben Daten, auch wenn andere Transaktionen Änderungen commiten. PostgreSQL's Standard ist READ COMMITTED — ein wichtiger Unterschied, der im Gespräch getestet wird.</p></div>
+          <div class="callout warn"><div class="lbl">Galera-Besonderheit</div><p>In Galera wird eine Transaktion bei COMMIT über alle Knoten repliziert. Lange Transaktionen oder große Write-Sets erhöhen die Wahrscheinlichkeit von Zertifizierungskonflikten und können Flow Control auslösen, wodurch der gesamte Cluster blockiert wird. Transaktionen kurz und gezielt halten.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Abschnitt 4</div>
+    <h2>Indizes — Abfragen beschleunigen</h2>
+
+    <div class="accordion">
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-text">EXPLAIN — Ausführungsplan lesen und interpretieren</span><span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="callout phr"><div class="lbl">Musterantwort zu „Langsame Abfrage"</div><p>„Als erstes führe ich EXPLAIN auf der Abfrage aus, um den Ausführungsplan zu sehen — insbesondere die Spalte type. Sehe ich 'ALL', ist das ein vollständiger Tabellenscan und ich brauche einen Index. Die Spalte rows zeigt, wie viele Zeilen MariaDB schätzt prüfen zu müssen. Wenn der richtige Index existiert aber nicht verwendet wird, prüfe ich, ob die WHERE-Klausel die Spalte in eine Funktion einbettet oder eine implizite Typkonvertierung stattfindet — beides verhindert die Indexnutzung."</p></div>
+          <div class="callout warn"><div class="lbl">Drei Index-Killer</div><ul>
+            <li>Funktion um indizierte Spalte: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">YEAR(scheduled_at) = 2025</code> → erzwingt Tabellenscan</li>
+            <li>Führender Wildcard: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">LIKE '%müller'</code> → B-Tree-Index kann nicht verwendet werden</li>
+            <li>Implizite Typkonvertierung: Zeichenkette mit INTEGER-Spalte vergleichen</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Must-Know DE -->
+  <div class="must-know">
+    <div class="section-label" style="color:#b45309">⚑ Vor dem Gespräch sicher wissen</div>
+    <div class="must-know-list">
+      <div class="must-know-item"><span class="flag">⚑</span><span>WHERE filtert Zeilen, HAVING filtert Gruppen. Aggregatfunktionen sind in WHERE nicht erlaubt. Dieser Unterschied wird in fast jedem SQL-Gespräch getestet.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>NULL-Vergleiche erfordern <code style="font-family:'JetBrains Mono',monospace;font-size:11px">IS NULL</code> / <code style="font-family:'JetBrains Mono',monospace;font-size:11px">IS NOT NULL</code>. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">= NULL</code> ergibt immer NULL (unbekannt) — niemals TRUE.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>EXPLAIN-Spalte type: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ALL</code> = Tabellenscan (schlecht), <code style="font-family:'JetBrains Mono',monospace;font-size:11px">range/ref</code> = Index verwendet (gut). Erste Prüfung bei langsamen Abfragen.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>MariaDB's Standard-Isolationslevel ist REPEATABLE READ. PostgreSQL's Standard ist READ COMMITTED. Beide kennen — wird im Gespräch gefragt.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>Niemals FLOAT oder DOUBLE für Geldbeträge — Fließkomma-Rundungsfehler korrumpieren Finanzdaten. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">DECIMAL(10,2)</code> verwenden.</span></div>
+      <div class="must-know-item"><span class="flag">⚑</span><span>In Galera: Transaktionen kurz halten. Lange Transaktionen erzeugen Zertifizierungskonflikte und können Flow Control auslösen — blockiert den gesamten Cluster.</span></div>
+    </div>
+  </div>
+
+</div><!-- /tab-de -->
+
+</div><!-- /body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'phase_01_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<script>
+function copyCode(btn) {
+  const body = btn.closest('.code-block').querySelector('.code-body');
+  const text = (body.innerText || body.textContent).replace(/\u00A0/g, ' ');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1800);
+  }).catch(() => { btn.textContent = 'failed'; setTimeout(() => { btn.textContent = 'copy'; }, 1500); });
+}
+guardLanguageTab('ar');
+updateProgress();
+</script>
+</body>
+</html>

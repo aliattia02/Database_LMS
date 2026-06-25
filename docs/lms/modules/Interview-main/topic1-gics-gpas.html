@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Topic 1 — gICS &amp; gPAS | Treuhandstelle Interview Prep</title>
-  <link rel="stylesheet" href="./theme.css"/>
+  <link rel="stylesheet" href="../shared/theme.css"/>
   <style>
     /* ── Topic 1 page-specific styles ── */
     .section-label {
@@ -60,7 +60,7 @@
 <body>
 
 <div class="home-nav">
-  <a class="home-link" href="./index.html">← Back to main page</a>
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
 </div>
 
 <div class="header">
@@ -85,7 +85,14 @@
 <div id="tab-en" class="tab-content active">
 
   <!-- 1. What is it -->
-  <div class="section">
+  <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">01</span>
+    <span class="q-text">What is it</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
     <div class="section-label">Section 1</div>
     <h2>What is it</h2>
     <p><strong>gICS</strong> (generic Informed Consent Service) and <strong>gPAS</strong> (generic Pseudonym Administration Service) are two open-source software tools developed by University Medicine Greifswald as part of the <strong>MOSAIC project</strong>. Together, they form the technical core of most German hospital Treuhandstellen (trusted third parties).</p>
@@ -93,17 +100,35 @@
     <p><strong>gPAS</strong> manages pseudonyms. Before a patient's records reach a researcher, gPAS replaces all identifying information (name, date of birth, insurance number) with a code. Only the Treuhandstelle — via gPAS — can reverse that code back to a real patient. To prevent different research projects from cross-linking patient records, gPAS assigns a <em>different</em> pseudonym for each study "domain."</p>
     <p>Both tools are free, actively maintained, expose REST APIs for integration, and have become the de-facto standard across Germany's Medizininformatik-Initiative (MII) hospital network.</p>
   </div>
+  </div>
+</div>
 
   <!-- 2. Why it matters -->
-  <div class="section">
+  <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">02</span>
+    <span class="q-text">Why it matters for this role</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
     <div class="section-label">Section 2</div>
     <h2>Why it matters for this role</h2>
     <p>At Universitätsmedizin Frankfurt, gICS and gPAS are either already deployed or are the expected tools for the THS. As Leitung, you are the accountable person for their operation. Concretely, this means: keeping the software running and up to date, training your team, configuring consent policies for new studies, integrating with the hospital information system and the DIZ's FHIR pipelines, and explaining the whole system clearly to researchers, clinicians, auditors, and your data protection officer.</p>
     <p>The interviewer will not expect you to have written code for gICS. They <em>will</em> expect you to explain how the tools work, what risks they carry, and how you would manage them in a live hospital environment. Speaking confidently about gICS and gPAS is one of the clearest signals that you understand the job.</p>
   </div>
+  </div>
+</div>
 
   <!-- 3. Learning ladder -->
-  <div class="section">
+  <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">03</span>
+    <span class="q-text">Zero to hero — learning ladder</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
     <div class="section-label">Section 3</div>
     <h2>Zero to hero — learning ladder</h2>
     <div class="ladder">
@@ -165,9 +190,18 @@
 
     </div>
   </div>
+  </div>
+</div>
 
   <!-- 4. Must-know -->
-  <div class="must-know">
+  <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">04</span>
+    <span class="q-text">Must-know facts</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="must-know">
     <div class="section-label">Section 4</div>
     <h2>Must-know facts</h2>
     <div class="must-know-list">
@@ -180,9 +214,18 @@
       <div class="must-know-item"><span class="flag">⚑</span><span>Both tools expose REST APIs. Integration with the hospital HIS, the DIZ's FHIR server, and researcher-facing portals goes through these APIs — no direct database access is granted to external systems.</span></div>
     </div>
   </div>
+  </div>
+</div>
 
   <!-- 5. Glossary -->
-  <div class="section">
+  <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">05</span>
+    <span class="q-text">Key terms glossary</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
     <div class="section-label">Section 5</div>
     <h2>Key terms glossary</h2>
     <table class="glossary-table">
@@ -201,9 +244,18 @@
       </tbody>
     </table>
   </div>
+  </div>
+</div>
 
   <!-- 6. Interview questions -->
-  <div class="section">
+  <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">06</span>
+    <span class="q-text">Likely interview questions</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
     <div class="section-label">Section 6</div>
     <h2>Likely interview questions</h2>
     <div class="accordion">
@@ -265,9 +317,18 @@
 
     </div>
   </div>
+  </div>
+</div>
 
   <!-- 7. Connections to your background -->
-  <div class="section">
+  <div class="q-card" data-lang="en">
+  <button class="q-trigger" onclick="toggle(this)">
+    <span class="q-num">07</span>
+    <span class="q-text">Connections to your existing experience</span>
+    <span class="q-arrow">▾</span>
+  </button>
+  <div class="q-panel">
+<div class="section">
     <div class="section-label">Section 7</div>
     <h2>Connections to your existing experience</h2>
     <div class="connections-grid">
@@ -278,6 +339,8 @@
       <div class="connection-card"><span class="conn-badge">M.Sc. Digital Health</span><span class="conn-text">Your academic programme covers health data interoperability and informatics — gICS and gPAS sit at precisely this intersection. Frame your theoretical foundation as the reason you could get up to speed on the tools quickly and evaluate architectural decisions critically.</span></div>
     </div>
   </div>
+  </div>
+</div>
 
 </div><!-- /tab-en -->
 
@@ -666,6 +729,7 @@
 
 </div><!-- /body -->
 
-<script src="./lesson-ui.js"></script>
+<script>window.LMS_STORAGE_KEY = 'lms_local_il_gics_done';</script>
+<script src="../shared/lesson-ui.js"></script>
 </body>
 </html>

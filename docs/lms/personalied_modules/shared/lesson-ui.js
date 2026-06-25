@@ -42,6 +42,13 @@ var LANGS = ['en', 'de', 'ar'];
 var LMS_DEFAULT_REQUEST_URL = 'https://github.com/YOUR_ORG/YOUR_REPO/issues/new?template=translation_request.md&title=Translation+request+%5BAR%5D&labels=translation';
 
 /* ─────────────────────────────────────────────────────────────
+   LMS BRIDGE
+   Key used by lms/core/app.js to persist the selected language.
+   Must match LANG_KEY exported from lms/core/registry.js.
+───────────────────────────────────────────────────────────── */
+var LMS_LANG_KEY = 'lms_lang';
+
+/* ─────────────────────────────────────────────────────────────
    LANGUAGE AVAILABILITY GUARD
    Runs on every page load — no per-file flag or config needed.
 
@@ -66,6 +73,20 @@ var LMS_DEFAULT_REQUEST_URL = 'https://github.com/YOUR_ORG/YOUR_REPO/issues/new?
 ───────────────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', function() {
   guardLanguageTab('ar');
+
+  // Touch point ①: read the shell's saved language and switch to it immediately.
+  // Works both when loaded inside the LMS iframe and when opened standalone.
+  var savedLang = localStorage.getItem(LMS_LANG_KEY);
+  if (savedLang && LANGS.indexOf(savedLang) !== -1) {
+    var matchBtn = null;
+    document.querySelectorAll('.tab-btn').forEach(function(b) {
+      if ((b.getAttribute('lang') || '') === savedLang ||
+          (b.getAttribute('onclick') || '').indexOf("switchTab('" + savedLang + "'") !== -1) {
+        matchBtn = b;
+      }
+    });
+    switchTab(savedLang, matchBtn);
+  }
 });
 
 /**
@@ -205,6 +226,12 @@ function switchTab(lang, btn, closeAcc) {
 
   // Re-apply mindmap open state if a mindmap grid exists on the page
   if (typeof applyMindmapOpenState === 'function') applyMindmapOpenState(lang);
+
+  // Touch point ③: tell the parent shell the user switched tabs, so its
+  // lang-btn active state and localStorage stay in sync.
+  if (window.parent !== window) {
+    try { window.parent.postMessage({ type: 'lms:langChanged', lang: lang }, '*'); } catch (_) {}
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -535,3 +562,22 @@ function toggleMindmapItemAdvanced(id, color, bg, border) {
     setTimeout(function() { panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 50);
   }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   LMS BRIDGE — postMessage listener
+   Touch point ②: the shell posts {type:'lms:setLang', lang}
+   whenever the user switches language. Mirror that here.
+───────────────────────────────────────────────────────────── */
+window.addEventListener('message', function(e) {
+  if (!e.data || e.data.type !== 'lms:setLang') return;
+  var lang = e.data.lang;
+  if (!lang || LANGS.indexOf(lang) === -1) return;
+  var matchBtn = null;
+  document.querySelectorAll('.tab-btn').forEach(function(b) {
+    if ((b.getAttribute('lang') || '') === lang ||
+        (b.getAttribute('onclick') || '').indexOf("switchTab('" + lang + "'") !== -1) {
+      matchBtn = b;
+    }
+  });
+  switchTab(lang, matchBtn);
+});

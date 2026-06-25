@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Topic 4 — Undo Without Disaster | Git &amp; GitHub Team Workflows</title>
+  <link rel="stylesheet" href="../shared/theme.css"/>
+  <style>
+    /* ── Topic 4 page-specific styles ── */
+
+    .badge {
+      font-size: 10.5px; font-weight: 700;
+      padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+    }
+    .badge-must   { background: #fef3c7; color: #92400e; }
+    .badge-common { background: #dbeafe; color: #1e40af; }
+    .badge-tip    { background: #f0fdf4; color: #166534; }
+
+    .q-arrow {
+      font-size: 12px; color: var(--muted);
+      padding-top: 3px; flex-shrink: 0; transition: transform .2s;
+    }
+    .q-trigger.open .q-arrow { transform: rotate(180deg); }
+    .q-panel { padding: 18px 20px 16px 52px; }
+
+    .strategy-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    }
+    .strategy-text {
+      font-size: 13.5px; color: var(--navy2); line-height: 1.65; margin-bottom: 14px;
+    }
+
+    .answer-box {
+      background: var(--green-bg); border: 1px solid var(--green-border);
+      border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;
+    }
+    .answer-box-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--green-text); margin-bottom: 8px;
+    }
+    .answer-box-text { font-size: 13.5px; color: #14532d; line-height: 1.7; }
+
+    .warning-box {
+      background: var(--amber-bg); border: 1px solid #fde68a;
+      border-radius: 8px; padding: 12px 14px; margin-bottom: 12px;
+    }
+    .warning-box-text { font-size: 13px; color: var(--amber-text); line-height: 1.55; }
+
+    .key-points { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+    .key-point {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 13.5px; color: var(--navy2); line-height: 1.55;
+    }
+    .key-point-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #2563eb;
+      flex-shrink: 0; margin-top: 7px;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+      font-size: 12.5px; background: #f1f5f9;
+      padding: 1px 5px; border-radius: 3px; color: var(--navy);
+    }
+    .code-block {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+      font-size: 12px; background: #f8fafc;
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 10px 14px; margin: 10px 0;
+      color: var(--navy); line-height: 1.65;
+      white-space: pre; overflow-x: auto;
+    }
+
+    .section {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px 28px;
+      margin-bottom: 20px; box-shadow: var(--shadow);
+    }
+    .section h2 { font-size: 18px; font-weight: 700; margin-bottom: 14px; }
+    .section p  { font-size: 14px; color: #334155; line-height: 1.65; margin-bottom: 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .must-block {
+      background: var(--amber-bg); border: 1.5px solid var(--amber-border);
+      border-radius: var(--radius); padding: 18px 20px; margin: 28px 0 0;
+    }
+    .must-block-title {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--amber-text); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .must-block .must-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      font-size: 13.5px; color: #78350f; line-height: 1.6;
+      padding: 9px 0; border-bottom: 1px solid #fde68a;
+    }
+    .must-block .must-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .must-block .must-bullet { font-size: 15px; flex-shrink: 0; }
+
+    /* RTL overrides */
+    [dir="rtl"] .q-panel      { padding: 18px 52px 16px 20px; }
+    [dir="rtl"] .key-point    { flex-direction: row-reverse; }
+    [dir="rtl"] .must-item    { flex-direction: row-reverse; }
+    [dir="rtl"] .must-block-title { flex-direction: row-reverse; }
+    [dir="rtl"] .answer-box-text .code-block,
+    [dir="rtl"] .section .code-block { direction: ltr; text-align: left; }
+
+    @media (max-width: 600px) {
+      .q-panel { padding-left: 20px; }
+      .q-badges { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Git &amp; GitHub &mdash; Topic 4 of 5</div>
+    <h1><span>Undo</span> Without Disaster</h1>
+    <p class="header-sub">git reset, git revert, git stash, git cherry-pick — three scenarios, the right tool for each, zero accidental data loss.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de', this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar', this)">العربية</button>
+  </div>
+</div>
+
+<main>
+  <div class="body">
+
+<!-- ═══════════════════════════════════════════════════
+     ENGLISH TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🧭</div>
+    <div>
+      <div class="section-title">Where Are You? The Three Undo Scenarios</div>
+      <div class="section-subtitle">The right undo command depends entirely on how far your change has travelled — get this picture right first</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Every undo question reduces to one question: where does this change live?</h2>
+    <p>Before you reach for any undo command, answer one question first: has the change been staged? Committed? Pushed? Git gives you a different, safer tool for each stage — and reaching for the wrong one is exactly how "undo" turns into "lost work" or "broken history for the whole team."</p>
+    <p>The three scenarios below map directly onto the three commands this topic covers. Identify which one you're in before you type anything.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Unstaged or staged, not committed:</strong> the change only exists in your working directory or the index. Nothing is in the commit history yet. → <code>git restore</code></div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Committed, not pushed:</strong> the change is saved in a commit, but that commit exists only on your machine — no one else has it. → <code>git reset</code></div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Committed and pushed:</strong> the commit exists on the shared remote. A teammate may have already pulled it onto their own machine. → <code>git revert</code></div>
+    </div>
+    <div class="warning-box">
+      <div class="warning-box-text">⚠️ <strong>The golden rule: never rewrite history that anyone else might already have.</strong> <code>git reset</code> and <code>git commit --amend</code> rewrite commits — that's only safe on commits that exist solely on your machine. Once a commit is pushed, undo it forward with a new commit (<code>git revert</code>), never backward by erasing it.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#faf5ff;">🔧</div>
+    <div>
+      <div class="section-title">restore vs reset vs revert</div>
+      <div class="section-subtitle">Same goal — undo something — but each command operates at a completely different layer</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Three commands, three different layers of "undo"</h2>
+    <p><code>git restore</code> works on your working directory and staging area only — it never touches commit history. <code>git reset</code> moves your branch pointer to an earlier commit and can erase commits from local history entirely. <code>git revert</code> does the opposite of a commit by creating a brand-new commit that cancels it out — history only ever grows forward, which is exactly why it's the only one of the three that's safe to use after pushing.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code>git restore &lt;file&gt;</code> — working directory only. Throws away uncommitted edits. History untouched.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>git reset</code> — moves your branch pointer backward. Can discard commits entirely. Rewrites local history — never use it on commits you've already pushed.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>git revert</code> — adds a new commit that reverses an old one. History grows forward, nothing is erased. Safe to push at any time.</div>
+    </div>
+    <p>You'll constantly need to say "how far back" with both <code>reset</code> and <code>revert</code> — that's what <code>HEAD~1</code>, <code>HEAD~2</code> notation is for. <code>HEAD</code> always points at your current commit; <code>HEAD~1</code> means "one commit before HEAD," <code>HEAD~2</code> means "two commits before HEAD," and so on.</p>
+    <div class="code-block">git log --oneline -3
+# a1b2c3d (HEAD -> main) fix: typo in readme
+# e4f5g6h feat: add patient lookup
+# i7j8k9l chore: initial commit
+
+git reset --soft HEAD~1   # undoes only the "fix: typo" commit</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code>reset</code> also has three modes — <code>--soft</code>, <code>--mixed</code>, <code>--hard</code> — that decide what happens to your staged changes and working files. Covered in full in the Q&amp;A below.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🧰</div>
+    <div>
+      <div class="section-title">Key Concepts — Open Every Card</div>
+      <div class="section-subtitle">The undo questions every developer eventually needs answered, usually under mild panic</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">How do I undo an unstaged (or staged) change?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Throwing away edits you haven't committed</div>
+      <div class="strategy-text">You edited a file, didn't like the result, and want it back exactly as it was at the last commit. Nothing has been committed yet — this is the simplest undo there is.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The fix</div>
+        <div class="answer-box-text">
+<div class="code-block"># Discard changes to one file
+git restore src/models/device.py
+
+# Discard changes to everything in the working directory
+git restore .
+
+# If the change is already staged (git add), restore the staged copy too
+git restore --staged src/models/device.py
+git restore src/models/device.py</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>git restore</code> replaced the older, more confusing <code>git checkout -- &lt;file&gt;</code> syntax (Git 2.23+). Both still work, but <code>restore</code> says exactly what it does.</div>
+        <div class="key-point"><div class="key-point-dot"></div>This is destructive and instant — there's no "are you sure?" prompt. If you need that code back later, it's only recoverable through your editor's own undo history, not Git's.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">How do I undo a local commit that hasn't been pushed yet?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">It's still only on your machine — full freedom to rewrite</div>
+      <div class="strategy-text">You committed something locally — wrong message, wrong files, or you just changed your mind — and haven't run <code>git push</code> yet. Because no one else has this commit, you're free to rewrite history.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Three flavors, by how much you want to keep</div>
+        <div class="answer-box-text">
+          <strong>Keep changes staged, just undo the commit</strong> (most common)<br><br>
+<div class="code-block">git reset --soft HEAD~1</div>
+          <strong>Keep changes, but unstaged</strong> — edit further before re-committing<br><br>
+<div class="code-block">git reset HEAD~1   # --mixed is the default</div>
+          <strong>Discard the commit AND its changes completely</strong> — use with care<br><br>
+<div class="code-block">git reset --hard HEAD~1</div>
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code>git reset --hard</code> permanently discards uncommitted work with no confirmation prompt. Run <code>git status</code> and <code>git diff</code> first to double-check — there's no built-in undo for <code>--hard</code> beyond <code>git reflog</code> (an advanced, not-guaranteed recovery path).</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>HEAD~1</code> means "one commit back." Use <code>HEAD~2</code>, <code>HEAD~3</code>, etc. to undo several commits at once.</div>
+        <div class="key-point"><div class="key-point-dot"></div>All three flavors only move your local branch pointer — never run them on a commit someone else might have already pulled.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">How do I undo a commit that's already been pushed?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">The commit is shared now — rewrite forward, not backward</div>
+      <div class="strategy-text">A teammate may have already pulled this commit onto their machine. Running <code>git reset</code> here would rewrite history they already have, causing painful conflicts the next time they pull. The safe tool is <code>git revert</code>.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Undo a pushed commit</div>
+        <div class="answer-box-text">
+<div class="code-block"># Find the commit you want to undo
+git log --oneline -5
+
+# Create a new commit that reverses it
+git revert a1b2c3d
+
+# Git opens an editor with a pre-filled message:
+# "Revert 'feat: add patient lookup'"
+# Save and close to accept it
+
+git push</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>revert</code> never deletes a commit — it adds a new one that cancels the old one's changes. The original commit stays visible in history, which is exactly what makes this safe to share.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>git revert HEAD~2..HEAD</code> reverts a range of commits in one go, useful when several commits need undoing together.</div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Never run <code>git reset</code> or <code>git push --force</code> on a branch others pull from (<code>main</code>, <code>develop</code>, etc.) to "undo" a pushed commit — that rewrites history out from under your teammates.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">What is <code>git stash</code> and when do I use it?</span>
+      <span class="q-badges"><span class="badge badge-common">Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">A shelf for unfinished work you're not ready to commit</div>
+      <div class="strategy-text">You're mid-change but need to switch branches right now — an urgent bug, a teammate's update to pull, or just something to check — and your edits aren't commit-worthy yet. Stashing saves them aside without a commit.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Save, switch, restore</div>
+        <div class="answer-box-text">
+<div class="code-block"># Save your uncommitted changes (staged + unstaged) and clean the working dir
+git stash
+
+# Switch branches, do whatever you needed to do...
+git switch main
+git pull
+
+# Come back and reapply your stashed changes
+git switch feature/patient-lookup
+git stash pop</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>git stash push -m "wip: patient lookup"</code> gives the stash a label — helpful once you have more than one saved.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>git stash list</code> shows everything you've stashed. <code>git stash pop</code> applies and removes the most recent one; <code>git stash apply</code> applies it but keeps it in the list, useful if you want to apply the same stash to more than one branch.</div>
+        <div class="key-point"><div class="key-point-dot"></div>A stash can conflict on <code>pop</code>, just like a merge — resolve the markers the same way you would a merge conflict (Topic 3).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">What is <code>git cherry-pick</code> and when would I use it?</span>
+      <span class="q-badges"><span class="badge badge-common">Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Move exactly one commit, leave the rest behind</div>
+      <div class="strategy-text">A commit exists on another branch that you want — and only that one commit, not the whole branch's history. Cherry-pick copies a single commit's changes onto your current branch as a brand-new commit.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Pick a commit across branches</div>
+        <div class="answer-box-text">
+<div class="code-block"># Find the commit's hash on the other branch
+git log feature/device-model --oneline
+
+# Switch to the branch that should receive it
+git switch hotfix/release-1.4
+
+# Apply just that one commit here
+git cherry-pick a1b2c3d</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Common real-world case: a bugfix landed on <code>main</code> but also needs to ship on an older release branch that can't take all of <code>main</code>'s history.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Cherry-picking creates a new commit with a new hash — it's a copy, not a move. The original commit still exists on its original branch too.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Conflicts can happen during a cherry-pick, just like a merge — resolve the markers, then <code>git cherry-pick --continue</code> (or <code>--abort</code> to cancel).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">What's the actual difference between <code>reset --soft</code>, <code>--mixed</code>, and <code>--hard</code>?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Tip</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Same command, three very different blast radii</div>
+      <div class="strategy-text">All three modes move your branch pointer to a target commit. What differs is what happens to the staging area and your working directory files — and that difference decides whether your edits survive.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The three modes</div>
+        <div class="answer-box-text">
+          <strong>--soft</strong> — moves the branch pointer only. Changes from the undone commit(s) land back in the staging area, ready to re-commit immediately.<br><br>
+          <strong>--mixed (the default)</strong> — moves the pointer and unstages the changes, but keeps them in your working directory as edits. You'll need <code>git add</code> again before committing.<br><br>
+          <strong>--hard</strong> — moves the pointer and discards the changes completely, from both staging and the working directory. Nothing remains — use only when you're certain.<br><br>
+<div class="code-block">git reset --soft HEAD~1    # safest — keeps everything staged
+git reset HEAD~1           # mixed — keeps everything, unstaged
+git reset --hard HEAD~1    # most destructive — keeps nothing</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Mental shortcut: <strong>soft</strong> keeps the most, <strong>hard</strong> keeps the least, <strong>mixed</strong> sits in between (and is the default if you omit the flag).</div>
+        <div class="key-point"><div class="key-point-dot"></div>When unsure which to use, default to <code>--soft</code> or plain <code>reset</code> — you can always discard the changes afterward, but you can't easily get them back after <code>--hard</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🛠️</div>
+    <div>
+      <div class="section-title">Hands-On Practice</div>
+      <div class="section-subtitle">Run every undo tool once in a throwaway repo — ten minutes, zero risk</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Try all five tools in one practice repo</h2>
+    <p>Reading about <code>restore</code>, <code>reset</code>, <code>revert</code>, <code>stash</code>, and <code>cherry-pick</code> is no substitute for typing them. Run this script in a disposable folder — it walks through every tool in this topic in sequence, with nothing real at stake.</p>
+    <div class="code-block"># 1. Fresh practice repo
+git init undo-practice && cd undo-practice
+echo "v1" > notes.txt
+git add . && git commit -m "Initial notes"
+
+# 2. Unstaged change — discard it with restore
+echo "oops, bad edit" >> notes.txt
+git restore notes.txt
+cat notes.txt
+# → back to "v1" only
+
+# 3. Commit something, then undo the commit but keep the change staged
+echo "v2" >> notes.txt
+git commit -am "Add v2 line"
+git reset --soft HEAD~1
+git status
+# → the v2 line is staged again, ready to re-commit or discard
+
+# 4. Stash a half-finished change, switch away and back, then pop it
+echo "wip change" >> notes.txt
+git stash
+git status
+# → clean working directory
+git stash pop
+# → "wip change" line is back
+
+# 5. Commit it, branch off, and cherry-pick that exact commit elsewhere
+git commit -am "Add wip line"
+git log --oneline -1
+git switch -c other-branch main
+git cherry-pick &lt;hash-from-the-log-above&gt;
+
+# 6. Revert a commit as if it had already been pushed
+git switch undo-practice 2>/dev/null || git switch main
+git log --oneline
+git revert HEAD
+git log --oneline
+# → a brand-new commit now undoes the previous one — nothing was erased</div>
+    <p>After this you'll have personally used every command in this topic at least once — which is the only way the difference between "rewriting" and "reverting" history really sticks.</p>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You're done with this topic when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can name which of the three undo scenarios you're in — unstaged, committed-not-pushed, or pushed — before reaching for any command.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can recover from a bad local commit with <code>git reset --soft</code>, plain <code>reset</code>, or <code>--hard</code>, and explain exactly what each one leaves behind.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can safely undo a commit that's already been pushed using <code>git revert</code>, and you can explain why <code>git reset</code> is never the answer there.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You've used <code>git stash</code> to shelve work and <code>git cherry-pick</code> to move a single commit across branches at least once in a practice repo.</div>
+  </div>
+
+</div><!-- /tab-en -->
+
+<!-- ═══════════════════════════════════════════════════
+     DEUTSCH TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🧭</div>
+    <div>
+      <div class="section-title">Wo befindest du dich? Die drei Undo-Szenarien</div>
+      <div class="section-subtitle">Der richtige Undo-Befehl hängt vollständig davon ab, wie weit deine Änderung schon gereist ist — verstehe dieses Bild zuerst</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Jede Undo-Frage reduziert sich auf eine Frage: Wo lebt diese Änderung?</h2>
+    <p>Bevor du zu irgendeinem Undo-Befehl greifst, beantworte zuerst eine Frage: Wurde die Änderung gestaged? Committet? Gepusht? Git gibt dir für jede Stufe ein anderes, sichereres Werkzeug — und das falsche zu wählen ist genau der Weg, wie aus "Rückgängig machen" "verlorene Arbeit" oder "kaputter Verlauf für das ganze Team" wird.</p>
+    <p>Die drei Szenarien unten entsprechen direkt den drei Befehlen, die dieses Thema behandelt. Identifiziere zuerst, in welchem du dich befindest, bevor du irgendetwas eingibst.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Nicht gestaged oder gestaged, aber nicht committet:</strong> die Änderung existiert nur in deinem Arbeitsverzeichnis oder im Index. Noch nichts ist im Commit-Verlauf. → <code>git restore</code></div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Committet, nicht gepusht:</strong> die Änderung ist in einem Commit gespeichert, aber dieser Commit existiert nur auf deinem Rechner — niemand sonst hat ihn. → <code>git reset</code></div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Committet und gepusht:</strong> der Commit existiert auf dem gemeinsamen Remote. Ein Teammitglied hat ihn vielleicht schon auf den eigenen Rechner gepullt. → <code>git revert</code></div>
+    </div>
+    <div class="warning-box">
+      <div class="warning-box-text">⚠️ <strong>Die goldene Regel: schreibe niemals Verlauf um, den jemand anders schon haben könnte.</strong> <code>git reset</code> und <code>git commit --amend</code> schreiben Commits um — das ist nur sicher bei Commits, die ausschließlich auf deinem Rechner existieren. Sobald ein Commit gepusht ist, mache ihn mit einem neuen Commit rückgängig (<code>git revert</code>), niemals rückwärts durch Löschen.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#faf5ff;">🔧</div>
+    <div>
+      <div class="section-title">restore vs. reset vs. revert</div>
+      <div class="section-subtitle">Gleiches Ziel — etwas rückgängig machen — aber jeder Befehl arbeitet auf einer völlig anderen Ebene</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Drei Befehle, drei verschiedene Ebenen von "Undo"</h2>
+    <p><code>git restore</code> wirkt nur auf dein Arbeitsverzeichnis und den Staging-Bereich — es rührt den Commit-Verlauf nie an. <code>git reset</code> verschiebt deinen Branch-Zeiger auf einen früheren Commit und kann Commits vollständig aus dem lokalen Verlauf entfernen. <code>git revert</code> macht das Gegenteil eines Commits, indem es einen brandneuen Commit erzeugt, der ihn aufhebt — der Verlauf wächst nur nach vorne, und genau das macht es als einziges der drei sicher nach dem Push.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code>git restore &lt;Datei&gt;</code> — nur Arbeitsverzeichnis. Verwirft nicht committete Änderungen. Verlauf unberührt.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>git reset</code> — verschiebt deinen Branch-Zeiger zurück. Kann Commits vollständig verwerfen. Schreibt lokalen Verlauf um — niemals auf bereits gepushte Commits anwenden.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>git revert</code> — fügt einen neuen Commit hinzu, der einen alten umkehrt. Der Verlauf wächst nach vorne, nichts wird gelöscht. Jederzeit sicher zu pushen.</div>
+    </div>
+    <p>Bei <code>reset</code> und <code>revert</code> musst du ständig sagen "wie weit zurück" — dafür ist die <code>HEAD~1</code>-, <code>HEAD~2</code>-Notation da. <code>HEAD</code> zeigt immer auf deinen aktuellen Commit; <code>HEAD~1</code> bedeutet "ein Commit vor HEAD", <code>HEAD~2</code> bedeutet "zwei Commits vor HEAD" und so weiter.</p>
+    <div class="code-block">git log --oneline -3
+# a1b2c3d (HEAD -> main) fix: Tippfehler im Readme
+# e4f5g6h feat: Patient-Lookup hinzufügen
+# i7j8k9l chore: initialer Commit
+
+git reset --soft HEAD~1   # macht nur den "fix: Tippfehler"-Commit rückgängig</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code>reset</code> hat außerdem drei Modi — <code>--soft</code>, <code>--mixed</code>, <code>--hard</code> — die entscheiden, was mit deinen gestagten Änderungen und Arbeitsdateien passiert. Vollständig erklärt im Q&amp;A unten.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🧰</div>
+    <div>
+      <div class="section-title">Schlüsselkonzepte — Öffne jede Karte</div>
+      <div class="section-subtitle">Die Undo-Fragen, die irgendwann jeder Entwickler beantworten muss — meist unter leichter Panik</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Wie mache ich eine nicht gestagte (oder gestagte) Änderung rückgängig?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Pflicht</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Nicht committete Änderungen verwerfen</div>
+      <div class="strategy-text">Du hast eine Datei bearbeitet, das Ergebnis gefällt dir nicht, und du willst sie genau so zurück, wie sie beim letzten Commit war. Noch nichts wurde committet — das ist das einfachste Undo, das es gibt.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Lösung</div>
+        <div class="answer-box-text">
+<div class="code-block"># Änderungen an einer Datei verwerfen
+git restore src/models/device.py
+
+# Änderungen am gesamten Arbeitsverzeichnis verwerfen
+git restore .
+
+# Wenn die Änderung schon gestaged ist (git add), auch die gestagte Kopie zurücksetzen
+git restore --staged src/models/device.py
+git restore src/models/device.py</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>git restore</code> ersetzt die ältere, verwirrendere Syntax <code>git checkout -- &lt;Datei&gt;</code> (Git 2.23+). Beide funktionieren noch, aber <code>restore</code> sagt genau, was es tut.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Das ist destruktiv und sofort wirksam — es gibt keine "Bist du sicher?"-Abfrage. Wenn du diesen Code später brauchst, ist er nur über die eigene Undo-Historie deines Editors wiederherstellbar, nicht über Git.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Wie mache ich einen lokalen Commit rückgängig, der noch nicht gepusht wurde?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Pflicht</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Er existiert nur auf deinem Rechner — volle Freiheit zum Umschreiben</div>
+      <div class="strategy-text">Du hast etwas lokal committet — falsche Nachricht, falsche Dateien, oder du hast einfach deine Meinung geändert — und noch nicht <code>git push</code> ausgeführt. Weil niemand sonst diesen Commit hat, darfst du den Verlauf frei umschreiben.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Drei Varianten, je nachdem, wie viel du behalten willst</div>
+        <div class="answer-box-text">
+          <strong>Änderungen gestaged behalten, nur den Commit rückgängig machen</strong> (am häufigsten)<br><br>
+<div class="code-block">git reset --soft HEAD~1</div>
+          <strong>Änderungen behalten, aber ungestaged</strong> — vor dem erneuten Committen weiter bearbeiten<br><br>
+<div class="code-block">git reset HEAD~1   # --mixed ist der Standard</div>
+          <strong>Den Commit UND seine Änderungen vollständig verwerfen</strong> — mit Vorsicht verwenden<br><br>
+<div class="code-block">git reset --hard HEAD~1</div>
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code>git reset --hard</code> verwirft nicht committete Arbeit dauerhaft, ohne Bestätigung. Prüfe vorher mit <code>git status</code> und <code>git diff</code> — es gibt kein eingebautes Undo für <code>--hard</code>, abgesehen von <code>git reflog</code> (eine fortgeschrittene, nicht garantierte Rettungsmöglichkeit).</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>HEAD~1</code> bedeutet "einen Commit zurück." Nutze <code>HEAD~2</code>, <code>HEAD~3</code> usw., um mehrere Commits gleichzeitig rückgängig zu machen.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Alle drei Varianten verschieben nur deinen lokalen Branch-Zeiger — wende sie nie auf einen Commit an, den jemand anders schon gepullt haben könnte.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Wie mache ich einen Commit rückgängig, der schon gepusht wurde?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Pflicht</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Der Commit ist jetzt geteilt — vorwärts umkehren, nicht rückwärts umschreiben</div>
+      <div class="strategy-text">Ein Teammitglied hat diesen Commit vielleicht schon auf den eigenen Rechner gepullt. <code>git reset</code> würde hier Verlauf umschreiben, den die Person schon hat, und beim nächsten Pull schmerzhafte Konflikte verursachen. Das sichere Werkzeug ist <code>git revert</code>.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Einen gepushten Commit rückgängig machen</div>
+        <div class="answer-box-text">
+<div class="code-block"># Den Commit finden, den du rückgängig machen willst
+git log --oneline -5
+
+# Einen neuen Commit erstellen, der ihn umkehrt
+git revert a1b2c3d
+
+# Git öffnet einen Editor mit vorausgefüllter Nachricht:
+# "Revert 'feat: add patient lookup'"
+# Speichern und schließen, um sie zu übernehmen
+
+git push</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>revert</code> löscht nie einen Commit — es fügt einen neuen hinzu, der die Änderungen des alten aufhebt. Der ursprüngliche Commit bleibt im Verlauf sichtbar, und genau das macht es sicher zu teilen.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>git revert HEAD~2..HEAD</code> macht mehrere Commits in einem Schritt rückgängig — nützlich, wenn mehrere zusammen rückgängig gemacht werden müssen.</div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Führe niemals <code>git reset</code> oder <code>git push --force</code> auf einem Branch aus, von dem andere pullen (<code>main</code>, <code>develop</code> usw.), um einen gepushten Commit "rückgängig zu machen" — das schreibt deinen Teammitgliedern den Verlauf unter den Füßen weg um.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Was ist <code>git stash</code> und wann benutze ich es?</span>
+      <span class="q-badges"><span class="badge badge-common">Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Ein Regal für unfertige Arbeit, die noch nicht commit-würdig ist</div>
+      <div class="strategy-text">Du bist mitten in einer Änderung, musst aber jetzt sofort den Branch wechseln — ein dringender Bug, ein Update eines Teammitglieds zum Pullen, oder einfach etwas, das du nachsehen musst — und deine Änderungen sind noch nicht reif für einen Commit. Stashen legt sie ohne Commit zur Seite.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Sichern, wechseln, zurückholen</div>
+        <div class="answer-box-text">
+<div class="code-block"># Nicht committete Änderungen sichern (gestaged + ungestaged) und Arbeitsverzeichnis säubern
+git stash
+
+# Branch wechseln, das Nötige erledigen ...
+git switch main
+git pull
+
+# Zurückkehren und die gestashten Änderungen wieder anwenden
+git switch feature/patient-lookup
+git stash pop</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>git stash push -m "wip: Patient-Lookup"</code> gibt dem Stash eine Beschriftung — hilfreich, sobald du mehr als einen gespeichert hast.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>git stash list</code> zeigt alles, was du gestasht hast. <code>git stash pop</code> wendet den neuesten Stash an und entfernt ihn aus der Liste; <code>git stash apply</code> wendet ihn an, lässt ihn aber in der Liste — nützlich, wenn du denselben Stash auf mehrere Branches anwenden willst.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Ein Stash kann beim <code>pop</code> in Konflikt geraten, genau wie ein Merge — löse die Markierungen genauso wie einen Merge-Konflikt (Thema 3).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Was ist <code>git cherry-pick</code> und wann würde ich es benutzen?</span>
+      <span class="q-badges"><span class="badge badge-common">Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Genau einen Commit verschieben, den Rest zurücklassen</div>
+      <div class="strategy-text">Auf einem anderen Branch existiert ein Commit, den du willst — und nur diesen einen, nicht die gesamte Branch-Historie. Cherry-pick kopiert die Änderungen eines einzelnen Commits als brandneuen Commit auf deinen aktuellen Branch.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Einen Commit über Branches hinweg auswählen</div>
+        <div class="answer-box-text">
+<div class="code-block"># Den Hash des Commits auf dem anderen Branch finden
+git log feature/device-model --oneline
+
+# Zum Branch wechseln, der ihn erhalten soll
+git switch hotfix/release-1.4
+
+# Nur diesen einen Commit hier anwenden
+git cherry-pick a1b2c3d</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Häufiger realer Fall: ein Bugfix landet auf <code>main</code>, muss aber auch auf einem älteren Release-Branch ausgeliefert werden, der nicht die gesamte Historie von <code>main</code> übernehmen kann.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Cherry-pick erzeugt einen neuen Commit mit neuem Hash — es ist eine Kopie, keine Verschiebung. Der ursprüngliche Commit existiert weiterhin auf seinem ursprünglichen Branch.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Konflikte können bei einem Cherry-pick genauso auftreten wie bei einem Merge — Markierungen lösen, dann <code>git cherry-pick --continue</code> (oder <code>--abort</code> zum Abbrechen).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Was ist der tatsächliche Unterschied zwischen <code>reset --soft</code>, <code>--mixed</code> und <code>--hard</code>?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Tipp</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Gleicher Befehl, drei sehr unterschiedliche Wirkungsradien</div>
+      <div class="strategy-text">Alle drei Modi verschieben deinen Branch-Zeiger auf einen Ziel-Commit. Der Unterschied liegt darin, was mit dem Staging-Bereich und deinen Arbeitsdateien passiert — und das entscheidet, ob deine Änderungen überleben.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die drei Modi</div>
+        <div class="answer-box-text">
+          <strong>--soft</strong> — verschiebt nur den Branch-Zeiger. Änderungen aus dem rückgängig gemachten Commit landen wieder im Staging-Bereich, bereit zum sofortigen erneuten Committen.<br><br>
+          <strong>--mixed (der Standard)</strong> — verschiebt den Zeiger und entfernt die Änderungen aus dem Staging-Bereich, behält sie aber als Bearbeitungen im Arbeitsverzeichnis. Du musst vor dem Committen erneut <code>git add</code> ausführen.<br><br>
+          <strong>--hard</strong> — verschiebt den Zeiger und verwirft die Änderungen vollständig, sowohl aus dem Staging-Bereich als auch dem Arbeitsverzeichnis. Nichts bleibt übrig — nur verwenden, wenn du dir absolut sicher bist.<br><br>
+<div class="code-block">git reset --soft HEAD~1    # am sichersten — behält alles gestaged
+git reset HEAD~1           # mixed — behält alles, ungestaged
+git reset --hard HEAD~1    # am destruktivsten — behält nichts</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Eselsbrücke: <strong>soft</strong> behält am meisten, <strong>hard</strong> behält am wenigsten, <strong>mixed</strong> liegt dazwischen (und ist der Standard, wenn du die Option weglässt).</div>
+        <div class="key-point"><div class="key-point-dot"></div>Im Zweifel <code>--soft</code> oder das einfache <code>reset</code> wählen — du kannst Änderungen danach immer noch verwerfen, aber nach <code>--hard</code> bekommst du sie nicht leicht zurück.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🛠️</div>
+    <div>
+      <div class="section-title">Praktische Übung</div>
+      <div class="section-subtitle">Jedes Undo-Werkzeug einmal in einem Wegwerf-Repo ausführen — zehn Minuten, kein Risiko</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Alle fünf Werkzeuge in einem Übungs-Repo ausprobieren</h2>
+    <p>Über <code>restore</code>, <code>reset</code>, <code>revert</code>, <code>stash</code> und <code>cherry-pick</code> zu lesen ersetzt nicht, sie selbst einzutippen. Führe dieses Skript in einem Wegwerf-Ordner aus — es geht jedes Werkzeug dieses Themas der Reihe nach durch, ohne dass etwas Echtes auf dem Spiel steht.</p>
+    <div class="code-block"># 1. Frisches Übungs-Repo
+git init undo-practice && cd undo-practice
+echo "v1" > notes.txt
+git add . && git commit -m "Initial notes"
+
+# 2. Nicht gestagte Änderung — mit restore verwerfen
+echo "oops, schlechte Änderung" >> notes.txt
+git restore notes.txt
+cat notes.txt
+# → wieder nur "v1"
+
+# 3. Etwas committen, dann den Commit rückgängig machen, Änderung bleibt gestaged
+echo "v2" >> notes.txt
+git commit -am "v2-Zeile hinzufügen"
+git reset --soft HEAD~1
+git status
+# → die v2-Zeile ist wieder gestaged, bereit zum erneuten Committen oder Verwerfen
+
+# 4. Eine halbfertige Änderung stashen, weg- und zurückwechseln, dann pop
+echo "wip Änderung" >> notes.txt
+git stash
+git status
+# → sauberes Arbeitsverzeichnis
+git stash pop
+# → "wip Änderung"-Zeile ist zurück
+
+# 5. Committen, abzweigen, und genau diesen Commit anderswo cherry-picken
+git commit -am "wip-Zeile hinzufügen"
+git log --oneline -1
+git switch -c other-branch main
+git cherry-pick &lt;Hash-aus-dem-Log-oben&gt;
+
+# 6. Einen Commit rückgängig machen, als wäre er schon gepusht worden
+git switch main
+git log --oneline
+git revert HEAD
+git log --oneline
+# → ein brandneuer Commit macht jetzt den vorigen rückgängig — nichts wurde gelöscht</div>
+    <p>Danach hast du jeden Befehl dieses Themas mindestens einmal selbst benutzt — und nur so bleibt der Unterschied zwischen "Verlauf umschreiben" und "Verlauf rückgängig machen" wirklich hängen.</p>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist fertig mit diesem Thema, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du benennen kannst, in welchem der drei Undo-Szenarien du dich befindest — nicht gestaged, committet-nicht-gepusht, oder gepusht — bevor du zu einem Befehl greifst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du dich von einem schlechten lokalen Commit mit <code>git reset --soft</code>, einfachem <code>reset</code> oder <code>--hard</code> erholen kannst und genau erklären kannst, was jeder davon übrig lässt.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du einen schon gepushten Commit sicher mit <code>git revert</code> rückgängig machen kannst und erklären kannst, warum <code>git reset</code> dort niemals die Antwort ist.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du <code>git stash</code> benutzt hast, um Arbeit zur Seite zu legen, und <code>git cherry-pick</code>, um mindestens einmal in einem Übungs-Repo einen einzelnen Commit zwischen Branches zu verschieben.</div>
+  </div>
+
+</div><!-- /tab-de -->
+
+<!-- ═══════════════════════════════════════════════════
+     ARABIC TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🧭</div>
+    <div>
+      <div class="section-title">أين أنت؟ سيناريوهات التراجع الثلاثة</div>
+      <div class="section-subtitle">الأمر الصحيح للتراجع يعتمد كلياً على مدى المسافة التي قطعتها تغييرتك — افهم هذه الصورة أولاً</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>كل سؤال تراجع يُختصر إلى سؤال واحد: أين تعيش هذه التغيير؟</h2>
+    <p>قبل أن تستخدم أي أمر تراجع، أجب أولاً عن سؤال واحد: هل تم stage للتغيير؟ هل تم commit له؟ هل تم push له؟ يمنحك Git أداة مختلفة وأكثر أماناً لكل مرحلة — واستخدام الأداة الخاطئة هو بالضبط كيف يتحول "التراجع" إلى "عمل ضائع" أو "تاريخ معطّل لكل الفريق."</p>
+    <p>السيناريوهات الثلاثة أدناه تقابل مباشرة الأوامر الثلاثة التي يغطيها هذا الموضوع. حدّد أيها ينطبق عليك قبل أن تكتب أي شيء.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>غير مُهيّأ (unstaged) أو مُهيّأ، لم يُنفَّذ commit له:</strong> التغيير موجود فقط في مجلد العمل أو في الفهرس (index). لا شيء في تاريخ الـ commits بعد. ← <code dir="ltr">git restore</code></div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>تم commit له، لم يُدفع (push):</strong> التغيير محفوظ في commit، لكن هذا الـ commit موجود فقط على جهازك — لا أحد آخر يملكه. ← <code dir="ltr">git reset</code></div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>تم commit له ودُفع (push):</strong> الـ commit موجود على الـ remote المشترك. قد يكون زميلك قد سحبه (pull) بالفعل إلى جهازه. ← <code dir="ltr">git revert</code></div>
+    </div>
+    <div class="warning-box">
+      <div class="warning-box-text">⚠️ <strong>القاعدة الذهبية: لا تُعِد كتابة تاريخ قد يملكه شخص آخر بالفعل.</strong> <code dir="ltr">git reset</code> و<code dir="ltr">git commit --amend</code> يُعيدان كتابة الـ commits — وهذا آمن فقط على commits موجودة حصرياً على جهازك. بمجرد أن يُدفع commit، تراجع عنه بـ commit جديد للأمام (<code dir="ltr">git revert</code>)، أبداً للخلف بحذفه.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#faf5ff;">🔧</div>
+    <div>
+      <div class="section-title">restore وreset وrevert</div>
+      <div class="section-subtitle">نفس الهدف — التراجع عن شيء — لكن كل أمر يعمل على طبقة مختلفة تماماً</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>ثلاثة أوامر، ثلاث طبقات مختلفة من "التراجع"</h2>
+    <p><code dir="ltr">git restore</code> يعمل فقط على مجلد العمل ومنطقة الـ staging — لا يلمس تاريخ الـ commits أبداً. <code dir="ltr">git reset</code> يُحرّك مؤشر الـ branch إلى commit أقدم ويمكنه حذف commits بالكامل من التاريخ المحلي. <code dir="ltr">git revert</code> يفعل عكس الـ commit بإنشاء commit جديد تماماً يُلغي تأثيره — التاريخ ينمو للأمام فقط، وهذا بالضبط ما يجعله الأداة الآمنة الوحيدة من الثلاثة بعد الـ push.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git restore &lt;file&gt;</code> — مجلد العمل فقط. يتخلى عن التعديلات غير المُنفَّذ لها commit. التاريخ غير ملموس.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git reset</code> — يُحرّك مؤشر branch-ك للخلف. يمكنه حذف commits بالكامل. يُعيد كتابة التاريخ المحلي — لا تستخدمه أبداً على commits دُفعت بالفعل.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git revert</code> — يضيف commit جديداً يعكس commit قديماً. التاريخ ينمو للأمام، لا شيء يُحذف. آمن للـ push في أي وقت.</div>
+    </div>
+    <p>ستحتاج باستمرار لتحديد "إلى أي مدى للخلف" مع <code dir="ltr">reset</code> و<code dir="ltr">revert</code> — لهذا وُجدت ترميزات <code dir="ltr">HEAD~1</code> و<code dir="ltr">HEAD~2</code>. <code dir="ltr">HEAD</code> يشير دائماً إلى commit-ك الحالي؛ <code dir="ltr">HEAD~1</code> تعني "commit واحد قبل HEAD"، و<code dir="ltr">HEAD~2</code> تعني "commit-ان قبل HEAD"، وهكذا.</p>
+    <div class="code-block" dir="ltr">git log --oneline -3
+# a1b2c3d (HEAD -> main) fix: typo in readme
+# e4f5g6h feat: add patient lookup
+# i7j8k9l chore: initial commit
+
+git reset --soft HEAD~1   # يتراجع فقط عن commit "fix: typo"</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">reset</code> له أيضاً ثلاثة أنماط — <code dir="ltr">--soft</code>، <code dir="ltr">--mixed</code>، <code dir="ltr">--hard</code> — تُحدد ما يحدث لتغييراتك المُهيّأة (staged) وملفات مجلد عملك. مغطّاة بالتفصيل في الأسئلة أدناه.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🧰</div>
+    <div>
+      <div class="section-title">المفاهيم الأساسية — افتح كل بطاقة</div>
+      <div class="section-subtitle">أسئلة التراجع التي يحتاج كل مطور للإجابة عنها عاجلاً أم آجلاً، عادةً تحت ذعر خفيف</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">كيف أتراجع عن تغيير غير مُهيّأ (أو مُهيّأ)؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">التخلي عن تعديلات لم تُنفَّذ لها commit</div>
+      <div class="strategy-text">عدّلت ملفاً، ولم تُعجبك النتيجة، وتريده تماماً كما كان عند آخر commit. لم يُنفَّذ أي commit بعد — هذا أبسط تراجع موجود.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الحل</div>
+        <div class="answer-box-text">
+<div class="code-block" dir="ltr"># التراجع عن التغييرات في ملف واحد
+git restore src/models/device.py
+
+# التراجع عن التغييرات في كل مجلد العمل
+git restore .
+
+# إذا كان التغيير مُهيّأ بالفعل (git add)، أعد ضبط النسخة المُهيّأة أيضاً
+git restore --staged src/models/device.py
+git restore src/models/device.py</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git restore</code> حلّ محل الصياغة الأقدم والأكثر إرباكاً <code dir="ltr">git checkout -- &lt;file&gt;</code> (Git 2.23+). كلاهما يعمل، لكن <code dir="ltr">restore</code> يقول بالضبط ماذا يفعل.</div>
+        <div class="key-point"><div class="key-point-dot"></div>هذا تدميري وفوري — لا يوجد سؤال "هل أنت متأكد؟". إذا احتجت هذا الكود لاحقاً، فهو قابل للاستعادة فقط عبر سجل التراجع الخاص بمحرّرك، لا عبر Git.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">كيف أتراجع عن commit محلي لم يُدفع (push) بعد؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">لا يزال موجوداً فقط على جهازك — حرية كاملة لإعادة الكتابة</div>
+      <div class="strategy-text">نفّذت commit محلياً — رسالة خاطئة، ملفات خاطئة، أو غيّرت رأيك فقط — ولم تُنفّذ <code dir="ltr">git push</code> بعد. لأن لا أحد آخر يملك هذا الـ commit، أنت حر في إعادة كتابة التاريخ.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">ثلاث طرق، حسب ما تريد الاحتفاظ به</div>
+        <div class="answer-box-text">
+          <strong>الاحتفاظ بالتغييرات مُهيّأة، فقط التراجع عن الـ commit</strong> (الأكثر شيوعاً)<br><br>
+<div class="code-block" dir="ltr">git reset --soft HEAD~1</div>
+          <strong>الاحتفاظ بالتغييرات، لكن غير مُهيّأة</strong> — للتعديل أكثر قبل إعادة الـ commit<br><br>
+<div class="code-block" dir="ltr">git reset HEAD~1   # --mixed هو الافتراضي</div>
+          <strong>التخلي عن الـ commit وتغييراته بالكامل</strong> — استخدمه بحذر<br><br>
+<div class="code-block" dir="ltr">git reset --hard HEAD~1</div>
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code dir="ltr">git reset --hard</code> يتخلى بشكل دائم عن العمل غير المُنفَّذ له commit دون أي تأكيد. نفّذ <code dir="ltr">git status</code> و<code dir="ltr">git diff</code> أولاً للتحقق — لا يوجد تراجع مدمج عن <code dir="ltr">--hard</code> بخلاف <code dir="ltr">git reflog</code> (طريقة استعادة متقدمة وغير مضمونة).</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">HEAD~1</code> تعني "commit واحد للخلف." استخدم <code dir="ltr">HEAD~2</code>، <code dir="ltr">HEAD~3</code> وهكذا للتراجع عن عدة commits معاً.</div>
+        <div class="key-point"><div class="key-point-dot"></div>الطرق الثلاث جميعها تُحرّك فقط مؤشر branch-ك المحلي — لا تستخدمها أبداً على commit قد يكون شخص آخر سحبه (pull) بالفعل.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">كيف أتراجع عن commit تم دفعه (push) بالفعل؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">الـ commit مشترك الآن — تراجع للأمام، لا تُعِد الكتابة للخلف</div>
+      <div class="strategy-text">قد يكون زميلك قد سحب هذا الـ commit بالفعل إلى جهازه. استخدام <code dir="ltr">git reset</code> هنا سيُعيد كتابة تاريخ يملكه بالفعل، ويسبب تعارضات مؤلمة عند سحبه التالي. الأداة الآمنة هي <code dir="ltr">git revert</code>.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">التراجع عن commit مدفوع</div>
+        <div class="answer-box-text">
+<div class="code-block" dir="ltr"># ابحث عن الـ commit الذي تريد التراجع عنه
+git log --oneline -5
+
+# أنشئ commit جديداً يعكسه
+git revert a1b2c3d
+
+# يفتح Git محرراً برسالة مُعدّة مسبقاً:
+# "Revert 'feat: add patient lookup'"
+# احفظ وأغلق لقبولها
+
+git push</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">revert</code> لا يحذف commit أبداً — يضيف واحداً جديداً يُلغي تغييرات القديم. يبقى الـ commit الأصلي مرئياً في التاريخ، وهذا بالضبط ما يجعله آمناً للمشاركة.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git revert HEAD~2..HEAD</code> يتراجع عن مجموعة من الـ commits دفعة واحدة، مفيد عندما تحتاج عدة commits للتراجع معاً.</div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ لا تُنفّذ أبداً <code dir="ltr">git reset</code> أو <code dir="ltr">git push --force</code> على branch يسحب منه آخرون (<code dir="ltr">main</code>، <code dir="ltr">develop</code> إلخ) لـ"التراجع" عن commit مدفوع — هذا يُعيد كتابة التاريخ من تحت أقدام زملائك.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">ما هو <code dir="ltr">git stash</code> ومتى أستخدمه؟</span>
+      <span class="q-badges"><span class="badge badge-common">شائع</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">رفّ لعمل غير مكتمل لست جاهزاً لتنفيذ commit له</div>
+      <div class="strategy-text">أنت في منتصف تغيير، لكنك تحتاج لتبديل الـ branch الآن — خطأ عاجل، تحديث من زميلك لسحبه، أو فقط شيء للتحقق منه — وتعديلاتك ليست جاهزة لـ commit بعد. الـ stash يحفظها جانباً دون commit.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">حفظ، تبديل، استعادة</div>
+        <div class="answer-box-text">
+<div class="code-block" dir="ltr"># حفظ تغييراتك غير المُنفَّذ لها commit (المُهيّأة + غير المُهيّأة) وتنظيف مجلد العمل
+git stash
+
+# بدّل الـ branch، نفّذ ما تحتاجه...
+git switch main
+git pull
+
+# عُد وأعد تطبيق تغييراتك المحفوظة
+git switch feature/patient-lookup
+git stash pop</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git stash push -m "wip: patient lookup"</code> يعطي الـ stash تسمية — مفيد بعد أن يصبح لديك أكثر من واحد محفوظ.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git stash list</code> يُظهر كل ما حفظته. <code dir="ltr">git stash pop</code> يطبّق الأحدث ويحذفه من القائمة؛ <code dir="ltr">git stash apply</code> يطبّقه لكن يحتفظ به في القائمة — مفيد إن أردت تطبيق نفس الـ stash على أكثر من branch.</div>
+        <div class="key-point"><div class="key-point-dot"></div>قد يتعارض الـ stash عند <code dir="ltr">pop</code>، تماماً كالدمج — حلّ العلامات بنفس طريقة حل تعارض الدمج (الموضوع 3).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">ما هو <code dir="ltr">git cherry-pick</code> ومتى أستخدمه؟</span>
+      <span class="q-badges"><span class="badge badge-common">شائع</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">نقل commit واحد بالضبط، وترك الباقي</div>
+      <div class="strategy-text">يوجد commit على branch آخر تريده — وفقط هذا الواحد، ليس كل تاريخ الـ branch. الـ cherry-pick ينسخ تغييرات commit واحد إلى branch-ك الحالي كـ commit جديد تماماً.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">اختيار commit عبر الـ branches</div>
+        <div class="answer-box-text">
+<div class="code-block" dir="ltr"># ابحث عن hash الـ commit على الـ branch الآخر
+git log feature/device-model --oneline
+
+# بدّل إلى الـ branch الذي يجب أن يستقبله
+git switch hotfix/release-1.4
+
+# طبّق فقط هذا الـ commit هنا
+git cherry-pick a1b2c3d</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>حالة شائعة فعلية: إصلاح خطأ وصل إلى <code dir="ltr">main</code> لكنه يحتاج أيضاً للإصدار في branch إصدار أقدم لا يستطيع أخذ كل تاريخ <code dir="ltr">main</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>الـ cherry-pick يُنشئ commit جديداً بـ hash جديد — هو نسخة، لا نقل. الـ commit الأصلي يبقى موجوداً على branch-ه الأصلي أيضاً.</div>
+        <div class="key-point"><div class="key-point-dot"></div>قد تحدث تعارضات أثناء cherry-pick تماماً كالدمج — حلّ العلامات، ثم <code dir="ltr">git cherry-pick --continue</code> (أو <code dir="ltr">--abort</code> للإلغاء).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">ما الفرق الحقيقي بين <code dir="ltr">reset --soft</code> و<code dir="ltr">--mixed</code> و<code dir="ltr">--hard</code>؟</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 نصيحة</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">نفس الأمر، ثلاث دوائر تأثير مختلفة جداً</div>
+      <div class="strategy-text">الأنماط الثلاثة جميعها تُحرّك مؤشر branch-ك إلى commit مستهدف. الفرق يكمن في ما يحدث لمنطقة الـ staging وملفات مجلد عملك — وهذا الفرق يُحدد إن كانت تعديلاتك ستنجو.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الأنماط الثلاثة</div>
+        <div class="answer-box-text">
+          <strong>--soft</strong> — يُحرّك مؤشر الـ branch فقط. تغييرات الـ commit(s) المُتراجَع عنها تعود إلى منطقة الـ staging، جاهزة لإعادة الـ commit فوراً.<br><br>
+          <strong>--mixed (الافتراضي)</strong> — يُحرّك المؤشر ويُلغي تهيئة (unstage) التغييرات، لكنه يحتفظ بها في مجلد عملك كتعديلات. ستحتاج <code dir="ltr">git add</code> مرة أخرى قبل الـ commit.<br><br>
+          <strong>--hard</strong> — يُحرّك المؤشر ويتخلى عن التغييرات بالكامل، من منطقة الـ staging ومجلد العمل معاً. لا يبقى شيء — استخدمه فقط حين تكون متأكداً تماماً.<br><br>
+<div class="code-block" dir="ltr">git reset --soft HEAD~1    # الأكثر أماناً — يحتفظ بكل شيء مُهيّأً
+git reset HEAD~1           # mixed — يحتفظ بكل شيء، غير مُهيّأ
+git reset --hard HEAD~1    # الأكثر تدميراً — لا يحتفظ بشيء</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>اختصار للتذكر: <strong>soft</strong> يحتفظ بالأكثر، <strong>hard</strong> يحتفظ بالأقل، <strong>mixed</strong> في الوسط (وهو الافتراضي إن لم تحدد الخيار).</div>
+        <div class="key-point"><div class="key-point-dot"></div>عند الشك، استخدم <code dir="ltr">--soft</code> أو <code dir="ltr">reset</code> العادي — يمكنك دائماً التخلي عن التغييرات بعد ذلك، لكن لا يمكنك استعادتها بسهولة بعد <code dir="ltr">--hard</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🛠️</div>
+    <div>
+      <div class="section-title">التطبيق العملي</div>
+      <div class="section-subtitle">شغّل كل أداة تراجع مرة واحدة في مستودع تجريبي — عشر دقائق، بلا أي خطر</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>جرّب الأدوات الخمس كلها في مستودع تدريبي واحد</h2>
+    <p>قراءة عن <code dir="ltr">restore</code> و<code dir="ltr">reset</code> و<code dir="ltr">revert</code> و<code dir="ltr">stash</code> و<code dir="ltr">cherry-pick</code> لا تُعوّض كتابتها بنفسك. نفّذ هذا السكريبت في مجلد يمكن التخلص منه — يمر على كل أداة في هذا الموضوع بالترتيب، دون أي شيء حقيقي على المحك.</p>
+    <div class="code-block" dir="ltr"># 1. مستودع تدريبي جديد
+git init undo-practice && cd undo-practice
+echo "v1" > notes.txt
+git add . && git commit -m "Initial notes"
+
+# 2. تغيير غير مُهيّأ — التخلي عنه بـ restore
+echo "oops, bad edit" >> notes.txt
+git restore notes.txt
+cat notes.txt
+# → يعود إلى "v1" فقط
+
+# 3. نفّذ commit، ثم تراجع عن الـ commit مع الإبقاء على التغيير مُهيّأ
+echo "v2" >> notes.txt
+git commit -am "Add v2 line"
+git reset --soft HEAD~1
+git status
+# → سطر v2 مُهيّأ مرة أخرى، جاهز لإعادة الـ commit أو التخلي عنه
+
+# 4. احفظ تغييراً غير مكتمل بـ stash، بدّل وارجع، ثم pop
+echo "wip change" >> notes.txt
+git stash
+git status
+# → مجلد عمل نظيف
+git stash pop
+# → سطر "wip change" عاد
+
+# 5. نفّذ commit له، أنشئ branch جديداً، وطبّق نفس الـ commit عبر cherry-pick في مكان آخر
+git commit -am "Add wip line"
+git log --oneline -1
+git switch -c other-branch main
+git cherry-pick &lt;hash-من-السجل-أعلاه&gt;
+
+# 6. تراجع عن commit كما لو أنه دُفع بالفعل
+git switch main
+git log --oneline
+git revert HEAD
+git log --oneline
+# → commit جديد تماماً يتراجع الآن عن السابق — لم يُحذف شيء</div>
+    <p>بعد هذا، ستكون استخدمت بنفسك كل أمر في هذا الموضوع مرة واحدة على الأقل — وهذه الطريقة الوحيدة التي يترسخ بها الفرق بين "إعادة كتابة" التاريخ و"التراجع" عنه.</p>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> انتهيت من هذا الموضوع عندما...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع تحديد أي من السيناريوهات الثلاثة ينطبق عليك — غير مُهيّأ، أو تم commit له ولم يُدفع، أو دُفع — قبل استخدام أي أمر.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع التعافي من commit محلي سيء باستخدام <code dir="ltr">git reset --soft</code> أو <code dir="ltr">reset</code> العادي أو <code dir="ltr">--hard</code>، وتشرح بالضبط ما يتركه كل منها.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع التراجع بأمان عن commit دُفع بالفعل باستخدام <code dir="ltr">git revert</code>، وتشرح لماذا لا يكون <code dir="ltr">git reset</code> هو الحل أبداً في تلك الحالة.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>استخدمت <code dir="ltr">git stash</code> لتخزين عمل جانباً، و<code dir="ltr">git cherry-pick</code> لنقل commit واحد بين الـ branches، على الأقل مرة واحدة في مستودع تدريبي.</div>
+  </div>
+
+</div><!-- /tab-ar -->
+
+  </div><!-- /body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'lms_github_04_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+</body>
+</html>

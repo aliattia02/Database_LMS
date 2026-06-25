@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Index | Git &amp; GitHub Team Workflows</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── lesson_index-specific styles — see theme.css for everything else ── */
+
+.intro-text {
+  color: var(--slate);
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 680px;
+  margin-bottom: 26px;
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 14px;
+}
+
+.course-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 18px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: inherit;
+  width: 100%;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.course-card:hover  { border-color: var(--blue); transform: translateY(-2px); }
+.course-card:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.course-card-top { display: flex; align-items: center; gap: 10px; }
+.course-num {
+  width: 26px; height: 26px;
+  border-radius: 7px;
+  background: var(--blue-bg);
+  color: var(--blue);
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.course-title    { font-size: 14px; font-weight: 700; color: var(--navy); }
+.course-subtitle { font-size: 12.5px; color: var(--slate); line-height: 1.55; }
+.course-open {
+  margin-top: auto;
+  font-size: 11.5px; font-weight: 600;
+  color: var(--blue);
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* Orientation cards (General Overview + Mind Map) */
+.course-card.featured { border-color: var(--blue-border); background: var(--blue-bg); }
+.course-card.featured .course-num { background: var(--blue); color: #fff; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Git &amp; GitHub &mdash; Course Index</div>
+    <h1>Git &amp; GitHub Team Workflows</h1>
+    <p class="header-sub">Five focused modules covering branches, pull requests, merge conflicts, undo operations, and real team collaboration — everything you need before your first PR on a shared codebase.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+  <div class="body">
+
+    <!-- ═══════════════════════════════════════════════════
+         ENGLISH TAB
+    ════════════════════════════════════════════════════ -->
+    <div id="tab-en" class="tab-content active">
+      <p class="intro-text">
+        New here? Start with <strong>General Overview</strong> to understand what gaps this module closes,
+        then the <strong>Mind Map</strong> for an interactive picture of the full Git ecosystem.
+        After that, the five topic modules are self-contained — open them in order.
+      </p>
+      <div class="course-grid">
+
+        <button class="course-card featured" onclick="openLesson('lms/modules/github/general.html')">
+          <div class="course-card-top">
+            <span class="course-num">01</span>
+            <span class="course-title">General Overview</span>
+          </div>
+          <span class="course-subtitle">What you already know, what's new, why it matters — and the four success criteria for completing this module.</span>
+          <span class="course-open">Open lesson →</span>
+        </button>
+
+        <button class="course-card featured" onclick="openLesson('lms/modules/github/topic0-mindmap.html')">
+          <div class="course-card-top">
+            <span class="course-num">02</span>
+            <span class="course-title">Mind Map</span>
+          </div>
+          <span class="course-subtitle">An interactive map of the full Git &amp; GitHub ecosystem — tap any item to see why it matters and which module covers it.</span>
+          <span class="course-open">Open lesson →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/github/topic1-branches.html')">
+          <div class="course-card-top">
+            <span class="course-num">03</span>
+            <span class="course-title">Branches — Mental Model</span>
+          </div>
+          <span class="course-subtitle">Branches as parallel development lines — naming conventions, divergence, and switching between them.</span>
+          <span class="course-open">Open lesson →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/github/topic2-pull-requests.html')">
+          <div class="course-card-top">
+            <span class="course-num">04</span>
+            <span class="course-title">Pull Requests as Code Review</span>
+          </div>
+          <span class="course-subtitle">What a PR really is, how to write one that gets reviewed fast, and how to respond to reviewer comments professionally.</span>
+          <span class="course-open">Open lesson →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/github/topic3-merge-conflicts.html')">
+          <div class="course-card-top">
+            <span class="course-num">05</span>
+            <span class="course-title">Merge Conflicts</span>
+          </div>
+          <span class="course-subtitle">What causes conflicts, how to read the markers, and how to resolve them in VS Code or CLI without panic.</span>
+          <span class="course-open">Open lesson →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/github/topic4-undo.html')">
+          <div class="course-card-top">
+            <span class="course-num">06</span>
+            <span class="course-title">Undo Without Disaster</span>
+          </div>
+          <span class="course-subtitle">git reset, git revert, git stash, git cherry-pick — three scenarios, the right tool for each, zero accidental data loss.</span>
+          <span class="course-open">Open lesson →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/github/topic5-team-workflow.html')">
+          <div class="course-card-top">
+            <span class="course-num">07</span>
+            <span class="course-title">Practical Team Workflow</span>
+          </div>
+          <span class="course-subtitle">How a real research team uses Git — protected branches, the PR lifecycle, review culture, and the rules most new developers break on day one.</span>
+          <span class="course-open">Open lesson →</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+         GERMAN TAB
+    ════════════════════════════════════════════════════ -->
+    <div id="tab-de" class="tab-content">
+      <p class="intro-text">
+        Neu hier? Beginne mit dem <strong>Allgemeinen Überblick</strong>, um zu verstehen, welche Lücken dieses Modul schließt,
+        dann mit der <strong>Mindmap</strong> für eine interaktive Ansicht des gesamten Git-Ökosystems.
+        Danach sind die fünf Themenmodule in sich abgeschlossen — öffne sie der Reihe nach.
+      </p>
+      <div class="course-grid">
+
+        <button class="course-card featured" onclick="openLesson('lms/modules/github/general.html')">
+          <div class="course-card-top">
+            <span class="course-num">01</span>
+            <span class="course-title">Allgemeiner Überblick</span>
+          </div>
+          <span class="course-subtitle">Was du schon weißt, was neu ist, warum es wichtig ist — und die vier Erfolgskriterien für dieses Modul.</span>
+          <span class="course-open">Lektion öffnen →</span>
+        </button>
+
+        <button class="course-card featured" onclick="openLesson('lms/modules/github/topic0-mindmap.html')">
+          <div class="course-card-top">
+            <span class="course-num">02</span>
+            <span class="course-title">Mindmap</span>
+          </div>
+          <span class="course-subtitle">Eine interaktive Karte des gesamten Git- und GitHub-Ökosystems — tippe auf ein Element, um zu sehen, warum es wichtig ist.</span>
+          <span class="course-open">Lektion öffnen →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/github/topic1-branches.html')">
+          <div class="course-card-top">
+            <span class="course-num">03</span>
+            <span class="course-title">Branches — Das mentale Modell</span>
+          </div>
+          <span class="course-subtitle">Branches als parallele Entwicklungslinien — Namenskonventionen, Divergenz und Wechseln.</span>
+          <span class="course-open">Lektion öffnen →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/github/topic2-pull-requests.html')">
+          <div class="course-card-top">
+            <span class="course-num">04</span>
+            <span class="course-title">Pull Requests als Code-Review</span>
+          </div>
+          <span class="course-subtitle">Was ein PR wirklich ist, wie man ihn so schreibt, dass er schnell gereviewed wird, und wie man professionell auf Kommentare antwortet.</span>
+          <span class="course-open">Lektion öffnen →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/github/topic3-merge-conflicts.html')">
+          <div class="course-card-top">
+            <span class="course-num">05</span>
+            <span class="course-title">Merge-Konflikte</span>
+          </div>
+          <span class="course-subtitle">Was Konflikte verursacht, wie man die Marker liest und sie in VS Code oder CLI ruhig auflöst.</span>
+          <span class="course-open">Lektion öffnen →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/github/topic4-undo.html')">
+          <div class="course-card-top">
+            <span class="course-num">06</span>
+            <span class="course-title">Änderungen rückgängig machen</span>
+          </div>
+          <span class="course-subtitle">git reset, git revert, git stash, git cherry-pick — drei Szenarien, das richtige Werkzeug für jedes, null Datenverlust.</span>
+          <span class="course-open">Lektion öffnen →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/github/topic5-team-workflow.html')">
+          <div class="course-card-top">
+            <span class="course-num">07</span>
+            <span class="course-title">Praktischer Team-Workflow</span>
+          </div>
+          <span class="course-subtitle">Wie ein echtes Forschungsteam Git verwendet — geschützte Branches, PR-Lifecycle, Review-Kultur und die Regeln, die neue Entwickler am ersten Tag brechen.</span>
+          <span class="course-open">Lektion öffnen →</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+         ARABIC TAB
+    ════════════════════════════════════════════════════ -->
+    <div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+      <p class="intro-text">
+        هنا لأول مرة؟ ابدأ بـ<strong>النظرة العامة</strong> لفهم الفجوات التي يسدها هذا الوحدة،
+        ثم <strong>الخريطة الذهنية</strong> للحصول على صورة تفاعلية لنظام Git بأكمله.
+        بعد ذلك، وحدات الموضوعات الخمسة مكتفية بذاتها — افتحها بالترتيب.
+      </p>
+      <div class="course-grid">
+
+        <button class="course-card featured" onclick="openLesson('lms/modules/github/general.html')">
+          <div class="course-card-top">
+            <span class="course-num">01</span>
+            <span class="course-title">النظرة العامة</span>
+          </div>
+          <span class="course-subtitle">ما تعرفه بالفعل، ما هو جديد، لماذا هو مهم — ومعايير النجاح الأربعة لإتمام هذا الوحدة.</span>
+          <span class="course-open">فتح الدرس ←</span>
+        </button>
+
+        <button class="course-card featured" onclick="openLesson('lms/modules/github/topic0-mindmap.html')">
+          <div class="course-card-top">
+            <span class="course-num">02</span>
+            <span class="course-title">الخريطة الذهنية</span>
+          </div>
+          <span class="course-subtitle">خريطة تفاعلية لنظام Git وGitHub بأكمله — اضغط على أي عنصر لترى أهميته وأي وحدة يغطيه.</span>
+          <span class="course-open">فتح الدرس ←</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/github/topic1-branches.html')">
+          <div class="course-card-top">
+            <span class="course-num">03</span>
+            <span class="course-title">الـ Branches — النموذج الذهني</span>
+          </div>
+          <span class="course-subtitle">الـ branches كخطوط تطوير متوازية — اصطلاحات التسمية، التفرق، والتبديل بينها.</span>
+          <span class="course-open">فتح الدرس ←</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/github/topic2-pull-requests.html')">
+          <div class="course-card-top">
+            <span class="course-num">04</span>
+            <span class="course-title">Pull Requests كمراجعة كود</span>
+          </div>
+          <span class="course-subtitle">ما هو الـ PR فعلاً، كيف تكتب واحدًا يُراجَع بسرعة، وكيف ترد على تعليقات المراجعين باحترافية.</span>
+          <span class="course-open">فتح الدرس ←</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/github/topic3-merge-conflicts.html')">
+          <div class="course-card-top">
+            <span class="course-num">05</span>
+            <span class="course-title">تعارضات الدمج</span>
+          </div>
+          <span class="course-subtitle">ما الذي يسبب التعارضات، كيفية قراءة العلامات، وكيفية حلها في VS Code أو CLI بلا ذعر.</span>
+          <span class="course-open">فتح الدرس ←</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/github/topic4-undo.html')">
+          <div class="course-card-top">
+            <span class="course-num">06</span>
+            <span class="course-title">التراجع بلا كوارث</span>
+          </div>
+          <span class="course-subtitle">git reset وgit revert وgit stash وgit cherry-pick — ثلاثة سيناريوهات، الأداة المناسبة لكل منها، بلا فقدان بيانات.</span>
+          <span class="course-open">فتح الدرس ←</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/github/topic5-team-workflow.html')">
+          <div class="course-card-top">
+            <span class="course-num">07</span>
+            <span class="course-title">سير العمل الجماعي العملي</span>
+          </div>
+          <span class="course-subtitle">كيف يستخدم فريق بحثي حقيقي Git — الـ branches المحمية، دورة حياة الـ PR، ثقافة المراجعة، والقواعد التي يخترقها معظم المطورين الجدد في اليوم الأول.</span>
+          <span class="course-open">فتح الدرس ←</span>
+        </button>
+
+      </div>
+    </div>
+
+  </div><!-- end body -->
+</main>
+
+<script src="../shared/lesson-ui.js"></script>
+<script>
+/**
+ * Opens a lesson by its registry route.
+ *
+ * When this page is loaded inside the LMS shell iframe (the normal case),
+ * it hands off to the parent via the lms:openLesson bridge (see app.js)
+ * so the sidebar highlights the correct lesson and progress tracking stays
+ * accurate. Falls back to direct navigation when opened standalone.
+ *
+ * To adapt this file for a different module, update the module folder name
+ * in the route strings above AND in the replace() call below.
+ */
+function openLesson(route) {
+  if (window.parent !== window) {
+    try {
+      window.parent.postMessage({ type: 'lms:openLesson', route: route }, '*');
+      return;
+    } catch (_) { /* fall through to direct navigation */ }
+  }
+  location.href = route.replace('lms/modules/github/', './');
+}
+</script>
+</body>
+</html>

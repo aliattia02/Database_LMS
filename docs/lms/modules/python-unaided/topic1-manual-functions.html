@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 1 — Manual Function Writing | Python Unaided Coding</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── Topic page-specific styles — copy this block verbatim ── */
+.badge { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must   { background:#fef3c7; color:#92400e; }
+.badge-common { background:#dbeafe; color:#1e40af; }
+.badge-tip    { background:#f0fdf4; color:#166534; }
+
+.q-arrow { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel { padding:18px 20px 16px 52px; }
+
+.strategy-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text  { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+
+.answer-box       { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text  { font-size:13.5px; color:#14532d; line-height:1.7; }
+
+.warning-box      { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text { font-size:13px; color:var(--amber-text); line-height:1.55; }
+
+.key-points    { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point     { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; overflow-wrap:break-word; word-break:break-word; min-width:0; }
+.key-point-dot { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); overflow-wrap:break-word; word-break:break-all; }
+.code-block { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin:10px 0; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; max-width:100%; }
+
+.section    { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2 { font-size:18px; font-weight:700; margin-bottom:14px; }
+.section p  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+.must-block       { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; overflow:hidden; }
+.must-block-title { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item        { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; overflow-wrap:break-word; word-break:break-word; min-width:0; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet      { font-size:15px; flex-shrink:0; }
+
+/* Function card — visually separate each of the 4 practice functions */
+.func-card {
+  background:#f8fafc; border:1px solid var(--border); border-radius:8px;
+  padding:16px 18px; margin-bottom:14px;
+}
+.func-card-header {
+  display:flex; align-items:center; gap:10px; margin-bottom:10px;
+}
+.func-num {
+  width:26px; height:26px; border-radius:6px;
+  background:var(--blue-bg); color:var(--blue);
+  font-size:11px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.func-title  { font-size:14px; font-weight:700; color:var(--navy); flex:1; min-width:0; overflow-wrap:break-word; word-break:break-word; }
+.func-why    { font-size:12.5px; color:var(--slate); line-height:1.5; margin-bottom:10px; overflow-wrap:break-word; word-break:break-word; }
+
+/* RTL overrides */
+[dir="rtl"] .q-panel         { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point        { flex-direction:row-reverse; }
+[dir="rtl"] .must-item        { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title { flex-direction:row-reverse; }
+[dir="rtl"] .func-card-header { flex-direction:row-reverse; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .section .code-block,
+[dir="rtl"] .func-card .code-block { direction:ltr; text-align:left; }
+
+@media (max-width:600px) {
+  .q-panel { padding-left:20px; }
+  /* Arabic: the page-level [dir="rtl"] .q-panel rule overrides theme.css mobile fix,
+     so we must redeclare it here at the same breakpoint. */
+  [dir="rtl"] .q-panel { padding-right:20px; padding-left:20px; }
+  .q-badges { display:none; }
+  .section { padding:16px; }
+  .func-card { padding:12px 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">PYTHON UNAIDED CODING &mdash; Topic 1 of 5</div>
+    <h1><span>Manual</span> Function Writing</h1>
+    <p class="header-sub">Four small functions, typed from memory, no AI. This is where automaticity begins — the gap between recognising correct code and producing it.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🧠</div>
+    <div>
+      <div class="section-title">The Automaticity Gap</div>
+      <div class="section-subtitle">Why recognition is not the same as production — and why that matters</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>You can read it. Can you write it?</h2>
+    <p>
+      You've seen hundreds of Python functions. You can look at a function and immediately
+      know whether it's correct. That skill — <strong>recognition</strong> — is real, and
+      it's built from all the Flask, DiaTwin, and Morafek code you've worked with.
+    </p>
+    <p>
+      But recognition and <strong>production</strong> are different cognitive skills. Recognition
+      says "yes, that's right." Production starts with a blank file and a function signature
+      and generates correct code from nothing. In a live technical review, on a whiteboard,
+      or when debugging at 2am without an IDE, production is the skill that matters.
+    </p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Recognition:</strong> "I see this is wrong because the return type is a tuple, not a dict."</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Production:</strong> Opens PyCharm, blank file, types <code>def parse_icd10_code(code: str) -> dict:</code> from memory, writes the body correctly on the first attempt.</div>
+      <div class="key-point"><div class="key-point-dot"></div>This topic targets the second skill — not by reading about it, but by doing it, repeatedly, until it's automatic.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Why these four functions specifically?</h2>
+    <p>Each function is 3–10 lines, contains no I/O or external calls, and tests a specific logical pattern your real code already uses:</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Small enough to finish in 5 minutes</strong> — you get immediate feedback on whether you actually knew it or just thought you did.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Logic, not I/O</strong> — no file reading, no API calls, no mocking required. Pure input-in, output-out functions.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Directly useful</strong> — string validation, code parsing, dict merging, and duplicate detection are patterns in your own DiaTwin and Morafek code.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>They force edge-case thinking</strong> — what if the string is empty? What if the list has one element? What if all dicts are empty?</div>
+    </div>
+  </div>
+
+  <!-- The 4 functions -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">✏️</div>
+    <div>
+      <div class="section-title">The Four Functions</div>
+      <div class="section-subtitle">Write each one from scratch — open PyCharm, new file, no Copilot, no AI</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Write them in this order</h2>
+    <p>Do not copy these. Read each function's signature, purpose, and expected behaviour. Close this page. Write the function. Then come back and compare.</p>
+
+    <div class="func-card">
+      <div class="func-card-header">
+        <div class="func-num">01</div>
+        <div class="func-title">validate_email(email: str) → bool</div>
+      </div>
+      <div class="func-why">Returns <code>True</code> if the string looks like a valid email. No regex library — use <code>in</code>, <code>.split()</code>, and <code>len()</code> only.</div>
+      <div class="code-block">def validate_email(email: str) -> bool:
+    """Return True if email contains exactly one '@' and a '.' after it."""
+    if "@" not in email:
+        return False
+    parts = email.split("@")
+    if len(parts) != 2:
+        return False
+    local, domain = parts
+    return len(local) > 0 and "." in domain and len(domain) > 2</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Check <code>len(parts) != 2</code> — not just <code>len(parts) &lt; 2</code> — because <code>a@b@c</code> should also fail.</div>
+        <div class="key-point"><div class="key-point-dot"></div>This does <strong>not</strong> validate that the domain exists or that the TLD is real. That's fine — say so in your docstring.</div>
+      </div>
+    </div>
+
+    <div class="func-card">
+      <div class="func-card-header">
+        <div class="func-num">02</div>
+        <div class="func-title">parse_icd10_code(code: str) → dict</div>
+      </div>
+      <div class="func-why">Splits a code like <code>"I10"</code> or <code>"E11.9"</code> into its letter chapter and numeric block. Returns a dict, not a tuple — dict keys are self-documenting.</div>
+      <div class="code-block">def parse_icd10_code(code: str) -> dict:
+    """Split an ICD-10 code into its chapter letter and numeric block.
+
+    Args:
+        code: An ICD-10 code string, e.g. 'I10' or 'E11.9'.
+    Returns:
+        dict with keys 'chapter' (str) and 'block' (str).
+    Raises:
+        ValueError: if code is empty or has no leading letter.
+    """
+    if not code or not code[0].isalpha():
+        raise ValueError(f"Invalid ICD-10 code: {code!r}")
+    return {
+        "chapter": code[0].upper(),
+        "block": code[1:]
+    }</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>code[0].upper()</code> normalises lowercase input like <code>"i10"</code> without crashing.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Raising <code>ValueError</code> — not returning <code>None</code> — makes the caller handle bad input explicitly rather than silently propagating <code>None</code>.</div>
+      </div>
+    </div>
+
+    <div class="func-card">
+      <div class="func-card-header">
+        <div class="func-num">03</div>
+        <div class="func-title">merge_dicts(*dicts) → dict</div>
+      </div>
+      <div class="func-why">Combines any number of dicts into one. Later dicts override earlier ones on key conflicts. The <code>*dicts</code> signature is the key thing to type from memory.</div>
+      <div class="code-block">def merge_dicts(*dicts: dict) -> dict:
+    """Merge multiple dicts; later dicts override earlier ones on key conflicts.
+
+    Args:
+        *dicts: Any number of dict arguments.
+    Returns:
+        A new dict containing all keys. No input dict is mutated.
+    """
+    result = {}
+    for d in dicts:
+        result.update(d)
+    return result</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Returns a <strong>new</strong> dict — none of the inputs are mutated. This is why <code>result = {}</code> then <code>result.update(d)</code> rather than modifying <code>dicts[0]</code> directly.</div>
+        <div class="key-point"><div class="key-point-dot"></div>In Python 3.9+ you could write <code>result = {} | d1 | d2</code>, but the loop is more readable and handles an arbitrary number of inputs.</div>
+      </div>
+    </div>
+
+    <div class="func-card">
+      <div class="func-card-header">
+        <div class="func-num">04</div>
+        <div class="func-title">find_first_duplicate(items: list) → any</div>
+      </div>
+      <div class="func-why">Returns the first element that appears more than once. Returns <code>None</code> if there are no duplicates. The O(n) approach uses a <code>set</code> to track what has been seen.</div>
+      <div class="code-block">def find_first_duplicate(items: list):
+    """Return the first element that appears more than once, or None.
+
+    Args:
+        items: A list of hashable elements.
+    Returns:
+        The first duplicate element encountered, or None if none exist.
+    """
+    seen = set()
+    for item in items:
+        if item in seen:
+            return item
+        seen.add(item)
+    return None</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>if item in seen</code> is O(1) for a set, vs O(n) for a list — important when items list is large (e.g. CGM readings over a week).</div>
+        <div class="key-point"><div class="key-point-dot"></div>"First duplicate" means first element that we've <em>already seen</em>, not the first element that has a copy somewhere later.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q&A Accordion -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">Close the functions above before answering — the point is to produce, not read</div>
+    </div>
+  </div>
+
+  <!-- Q01 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Why practice writing functions from scratch if AI generates them faster and more accurately?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Think about the difference between a surgeon who can read an anatomy textbook and one who has performed 200 appendectomies. The textbook reader has recognition. The surgeon has automaticity.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          AI generates code faster, but that speed belongs to AI, not to you. Manual practice builds
+          the skill of <strong>producing</strong> correct Python independently — which matters in three
+          real situations: a whiteboard technical interview, a live review where you're expected to
+          type, and a 2am production incident where you need to patch something immediately without
+          waiting for an AI response. The goal isn't to compete with AI — it's to not be helpless
+          when AI isn't available.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>AI generates; you explain, debug, and own. Manual practice makes the ownership real.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Automaticity also makes you a better AI user — you spot wrong AI output immediately because you know what right looks like.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">What must validate_email() check, and what should it explicitly NOT promise?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">A function's docstring is a contract. Be precise about what you promise — because whatever you promise, callers will rely on.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <strong>Must check:</strong> exactly one <code>@</code> sign; a non-empty local part before
+          <code>@</code>; a domain after <code>@</code> that contains a dot and has length greater
+          than 2.<br><br>
+          <strong>Must NOT promise:</strong> that the domain exists, that the mailbox is reachable,
+          or that the TLD is valid. Those require a DNS lookup or SMTP connection — far beyond a
+          simple string check. Say this in the docstring: <em>"Returns True if the string is
+          structurally email-like. Does not verify deliverability."</em>
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Common mistake: checking <code>len(parts) &lt; 2</code> instead of <code>!= 2</code>. The string <code>a@b@c</code> produces 3 parts, passes the <code>&lt; 2</code> check, and gets incorrectly validated as True.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Precise scope in a docstring prevents callers from depending on behaviour you didn't implement.</div>
+        <div class="key-point"><div class="key-point-dot"></div>A small, honest function beats a large function that silently over-promises.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Why does parse_icd10_code() raise ValueError instead of returning None on bad input?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Commonly tested</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">None is silent. ValueError is loud. In a pipeline that processes 10,000 ICD-10 codes, you want loud failures on bad data, not silent propagation of None through 20 downstream functions.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Returning <code>None</code> on bad input makes the bug invisible: the caller gets <code>None</code>,
+          accesses <code>result["chapter"]</code>, and gets <code>TypeError: 'NoneType' object is not
+          subscriptable</code> — 5 function calls later. Raising <code>ValueError</code> immediately
+          names the problem at its source. The caller can then catch and handle it explicitly
+          (<code>except ValueError → logger.error → skip this record</code>) rather than hunting a
+          confusing downstream crash.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Raise where you know what went wrong. The caller can decide how to handle it.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Returning <code>None</code> is appropriate when "no result" is a valid, expected outcome — not when the input is broken.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">What's the subtle difference between merge_dicts() and just calling dict.update() directly?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Commonly tested</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">update() mutates in place. merge_dicts() creates something new. In medical code where a patient dict might be shared across threads or references, mutation-by-surprise is a real bug source.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <code>dict.update()</code> mutates the dict it's called on — the original is changed.
+          <code>merge_dicts()</code> starts with a fresh empty dict (<code>result = {}</code>) and
+          copies into it, so no input is modified. This matters because: (1) if the caller still
+          needs the original dict unchanged, mutation is a bug; (2) <code>*dicts</code> handles any
+          number of arguments, not just two; (3) the function's intent is explicit in its name and
+          signature rather than buried in a method call.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Functions that don't mutate their inputs are easier to test and reason about.</div>
+        <div class="key-point"><div class="key-point-dot"></div>In Python 3.9+ <code>d1 | d2</code> does the same thing for exactly two dicts — but the loop handles N dicts generically.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">What's the most common beginner mistake when implementing find_first_duplicate()?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Good to know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Most beginners conflate "find an element that has a copy" with "find an element that appears more than once after sorting." They produce a different result.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Two common mistakes: (1) sorting first and comparing adjacent elements —
+          this finds duplicates but not the <em>first</em> one in the original order; (2) using
+          <code>items.count(item) &gt; 1</code> inside the loop — this is O(n²) because
+          <code>count()</code> scans the whole list on every iteration. The correct approach is
+          a <code>seen = set()</code> and checking <code>if item in seen</code> before adding it —
+          O(n) total, and preserves original order.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>"First duplicate" means first element we encounter for the second time — original list order, not sorted order.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Set membership test is O(1). List membership test (<code>item in list</code>) is O(n). These compose differently inside a loop.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">What makes a function "testable", and how do all four of these functions meet that standard?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">A function is testable when you can call it with known inputs and check its output without setting up a database, server, or external service first.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          A testable function has three properties: it takes inputs as parameters (not from global
+          state), it returns its result (not by mutating a shared variable), and it has no hidden
+          dependencies (no database calls, no <code>datetime.now()</code> without injection, no
+          file reads). All four functions here are testable because they are pure input-in /
+          output-out: <code>assert validate_email("a@b.com") == True</code> works with zero setup.
+          This is the shape your DiaTwin utility functions should eventually have.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>If you need to spin up MongoDB to test a function, the function is doing too much.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Testable ≠ tested. These four are testable; adding assert statements makes them tested.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done with this topic when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You've written all four functions from memory in a blank PyCharm file — no AI, no Copilot, no copy-paste.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You tested each function with at least three inputs: a normal case, an edge case (empty string / empty list), and one that should fail or return <code>None</code>.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain why <code>parse_icd10_code()</code> raises <code>ValueError</code> rather than returning <code>None</code>.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain why <code>merge_dicts()</code> starts with <code>result = {}</code> rather than mutating the first argument directly.</div>
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🧠</div>
+    <div>
+      <div class="section-title">Die Automatisierungslücke</div>
+      <div class="section-subtitle">Warum Wiedererkennen nicht dasselbe ist wie Produzieren — und warum das wichtig ist</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Du kannst es lesen. Kannst du es schreiben?</h2>
+    <p>
+      Du hast Hunderte von Python-Funktionen gesehen. Du kannst eine Funktion ansehen und sofort
+      erkennen, ob sie korrekt ist. Diese Fähigkeit — <strong>Wiedererkennen</strong> — ist real
+      und wurde durch den gesamten Flask-, DiaTwin- und Morafek-Code aufgebaut, mit dem du gearbeitet hast.
+    </p>
+    <p>
+      Aber Wiedererkennen und <strong>Produzieren</strong> sind unterschiedliche kognitive Fähigkeiten.
+      Wiedererkennen sagt „ja, das ist richtig." Produzieren beginnt mit einer leeren Datei und einer
+      Funktionssignatur und generiert korrekten Code aus dem Nichts. In einem Live-Technical-Review,
+      an einem Whiteboard oder um 2 Uhr nachts ohne IDE ist Produzieren die Fähigkeit, die zählt.
+    </p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Wiedererkennen:</strong> „Ich sehe, das ist falsch, weil der Rückgabetyp ein Tupel ist, kein Dict."</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Produzieren:</strong> PyCharm öffnen, leere Datei, <code>def parse_icd10_code(code: str) -> dict:</code> aus dem Gedächtnis tippen, den Körper beim ersten Versuch korrekt schreiben.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Dieses Thema zielt auf die zweite Fähigkeit ab — nicht durch Lesen, sondern durch Tun, wiederholt, bis es automatisch ist.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Warum genau diese vier Funktionen?</h2>
+    <p>Jede Funktion ist 3–10 Zeilen, enthält kein I/O oder externe Aufrufe, und testet ein spezifisches logisches Muster, das dein echter Code bereits verwendet:</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Klein genug für 5 Minuten</strong> — du erhältst sofortiges Feedback, ob du es wirklich wusstest oder nur dachtest, es zu wissen.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Logik, kein I/O</strong> — kein Dateilesen, keine API-Aufrufe, kein Mocking erforderlich. Reine Eingabe-rein, Ausgabe-raus Funktionen.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Direkt nützlich</strong> — String-Validierung, Code-Parsing, Dict-Zusammenführung und Duplikat-Erkennung sind Muster in deinem eigenen DiaTwin- und Morafek-Code.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Sie erzwingen Edge-Case-Denken</strong> — was wenn der String leer ist? Was wenn die Liste ein Element hat? Was wenn alle Dicts leer sind?</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">✏️</div>
+    <div>
+      <div class="section-title">Die vier Funktionen</div>
+      <div class="section-subtitle">Schreibe jede von Grund auf — PyCharm öffnen, neue Datei, kein Copilot, kein KI</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Schreibe sie in dieser Reihenfolge</h2>
+    <p>Kopiere diese nicht. Lies die Signatur, den Zweck und das erwartete Verhalten jeder Funktion. Schließe diese Seite. Schreibe die Funktion. Dann komm zurück und vergleiche.</p>
+
+    <div class="func-card">
+      <div class="func-card-header">
+        <div class="func-num">01</div>
+        <div class="func-title">validate_email(email: str) → bool</div>
+      </div>
+      <div class="func-why">Gibt <code>True</code> zurück wenn der String wie eine gültige E-Mail aussieht. Keine Regex-Bibliothek — nur <code>in</code>, <code>.split()</code> und <code>len()</code>.</div>
+      <div class="code-block">def validate_email(email: str) -> bool:
+    """Gibt True zurück wenn email genau ein '@' und danach einen '.' enthält."""
+    if "@" not in email:
+        return False
+    parts = email.split("@")
+    if len(parts) != 2:
+        return False
+    local, domain = parts
+    return len(local) > 0 and "." in domain and len(domain) > 2</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Prüfe <code>len(parts) != 2</code> — nicht nur <code>len(parts) &lt; 2</code> — denn <code>a@b@c</code> soll ebenfalls fehlschlagen.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Das validiert <strong>nicht</strong> ob die Domain existiert oder die TLD real ist. Das ist korrekt so — sag es im Docstring.</div>
+      </div>
+    </div>
+
+    <div class="func-card">
+      <div class="func-card-header">
+        <div class="func-num">02</div>
+        <div class="func-title">parse_icd10_code(code: str) → dict</div>
+      </div>
+      <div class="func-why">Zerlegt einen Code wie <code>"I10"</code> oder <code>"E11.9"</code> in seinen Buchstaben-Kapitel und numerischen Block. Gibt ein Dict zurück, kein Tupel — Dict-Schlüssel sind selbstdokumentierend.</div>
+      <div class="code-block">def parse_icd10_code(code: str) -> dict:
+    """Zerlegt einen ICD-10-Code in seinen Kapitel-Buchstaben und numerischen Block.
+
+    Args:
+        code: Ein ICD-10-Code-String, z.B. 'I10' oder 'E11.9'.
+    Returns:
+        dict mit Schlüsseln 'chapter' (str) und 'block' (str).
+    Raises:
+        ValueError: wenn code leer ist oder keinen führenden Buchstaben hat.
+    """
+    if not code or not code[0].isalpha():
+        raise ValueError(f"Ungültiger ICD-10-Code: {code!r}")
+    return {
+        "chapter": code[0].upper(),
+        "block": code[1:]
+    }</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>code[0].upper()</code> normalisiert Kleinbuchstaben-Eingaben wie <code>"i10"</code> ohne Absturz.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>ValueError</code> zu raisen — nicht <code>None</code> zurückzugeben — zwingt den Aufrufer, fehlerhafte Eingaben explizit zu behandeln.</div>
+      </div>
+    </div>
+
+    <div class="func-card">
+      <div class="func-card-header">
+        <div class="func-num">03</div>
+        <div class="func-title">merge_dicts(*dicts) → dict</div>
+      </div>
+      <div class="func-why">Kombiniert beliebig viele Dicts zu einem. Spätere Dicts überschreiben frühere bei Schlüsselkonflikten. Die <code>*dicts</code> Signatur ist die wichtigste Sache, die man aus dem Gedächtnis tippen muss.</div>
+      <div class="code-block">def merge_dicts(*dicts: dict) -> dict:
+    """Zusammenführen mehrerer Dicts; spätere überschreiben frühere bei Konflikten.
+
+    Args:
+        *dicts: Beliebige Anzahl von Dict-Argumenten.
+    Returns:
+        Ein neues Dict mit allen Schlüsseln. Kein Eingabe-Dict wird verändert.
+    """
+    result = {}
+    for d in dicts:
+        result.update(d)
+    return result</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Gibt ein <strong>neues</strong> Dict zurück — keine der Eingaben wird verändert. Deshalb <code>result = {}</code> dann <code>result.update(d)</code> statt das erste Argument direkt zu modifizieren.</div>
+        <div class="key-point"><div class="key-point-dot"></div>In Python 3.9+ könnte man <code>result = {} | d1 | d2</code> schreiben, aber die Schleife ist lesbarer und verarbeitet N Dicts generisch.</div>
+      </div>
+    </div>
+
+    <div class="func-card">
+      <div class="func-card-header">
+        <div class="func-num">04</div>
+        <div class="func-title">find_first_duplicate(items: list) → any</div>
+      </div>
+      <div class="func-why">Gibt das erste Element zurück, das mehr als einmal vorkommt. Gibt <code>None</code> zurück, wenn keine Duplikate vorhanden sind. Der O(n)-Ansatz verwendet ein <code>set</code> zur Verfolgung bereits gesehener Elemente.</div>
+      <div class="code-block">def find_first_duplicate(items: list):
+    """Gibt das erste Element zurück, das mehr als einmal vorkommt, oder None.
+
+    Args:
+        items: Eine Liste von hashbaren Elementen.
+    Returns:
+        Das erste angetroffene doppelte Element, oder None wenn keins existiert.
+    """
+    seen = set()
+    for item in items:
+        if item in seen:
+            return item
+        seen.add(item)
+    return None</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>if item in seen</code> ist O(1) für ein Set, vs O(n) für eine Liste — wichtig wenn items-Liste groß ist.</div>
+        <div class="key-point"><div class="key-point-dot"></div>"Erstes Duplikat" bedeutet erstes Element, das wir ein <em>zweites Mal</em> antreffen — originale Listenreihenfolge, nicht sortierte Reihenfolge.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Schließe die Funktionen oben vor dem Antworten — es geht ums Produzieren, nicht ums Lesen</div>
+    </div>
+  </div>
+
+  <!-- Q01 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Warum Funktionen von Grund auf üben, wenn KI sie schneller und genauer generiert?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Stell dir den Unterschied vor zwischen einem Chirurgen, der ein Anatomie-Lehrbuch lesen kann, und einem, der 200 Blinddarmoperationen durchgeführt hat. Der Leser hat Wiedererkennen. Der Chirurg hat Automatisierung.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          KI generiert Code schneller, aber diese Geschwindigkeit gehört der KI, nicht dir. Manuelles
+          Üben baut die Fähigkeit auf, korrektes Python <strong>unabhängig zu produzieren</strong> —
+          was in drei realen Situationen wichtig ist: ein Whiteboard-Technical-Interview, ein
+          Live-Review wo du tippen musst, und ein 2-Uhr-nachts Produktionsvorfall ohne Wartezeit
+          auf eine KI-Antwort. Das Ziel ist nicht, mit KI zu konkurrieren — es ist, nicht hilflos
+          zu sein wenn KI nicht verfügbar ist.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>KI generiert; du erklärst, debuggst und besitzt es. Manuelles Üben macht diesen Besitz real.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Automatisierung macht dich auch zu einem besseren KI-Nutzer — du erkennst falsche KI-Ausgabe sofort, weil du weißt wie richtig aussieht.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Was muss validate_email() prüfen, und was soll es explizit NICHT versprechen?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Der Docstring einer Funktion ist ein Vertrag. Sei präzise darüber, was du versprichst — denn was auch immer du versprichst, Aufrufer werden sich darauf verlassen.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <strong>Muss prüfen:</strong> genau ein <code>@</code>-Zeichen; einen nicht-leeren lokalen
+          Teil vor <code>@</code>; eine Domain nach <code>@</code>, die einen Punkt enthält und
+          länger als 2 Zeichen ist.<br><br>
+          <strong>Darf nicht versprechen:</strong> dass die Domain existiert, dass das Postfach
+          erreichbar ist, oder dass die TLD gültig ist. Das erfordert einen DNS-Lookup oder
+          SMTP-Verbindung — weit über eine einfache String-Prüfung hinaus. Sage dies im Docstring:
+          <em>"Gibt True zurück wenn der String strukturell E-Mail-ähnlich ist. Überprüft nicht die Zustellbarkeit."</em>
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Häufiger Fehler: <code>len(parts) &lt; 2</code> statt <code>!= 2</code> prüfen. Der String <code>a@b@c</code> ergibt 3 Teile, besteht die <code>&lt; 2</code> Prüfung und wird fälschlicherweise als True validiert.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Präziser Umfang im Docstring verhindert, dass Aufrufer sich auf nicht implementiertes Verhalten verlassen.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Eine kleine, ehrliche Funktion schlägt eine große Funktion, die still über-verspricht.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Warum raised parse_icd10_code() ValueError statt None bei falscher Eingabe zurückzugeben?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Häufig getestet</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">None ist still. ValueError ist laut. In einer Pipeline, die 10.000 ICD-10-Codes verarbeitet, willst du laute Fehler bei schlechten Daten, keine stille None-Weitergabe durch 20 nachgelagerte Funktionen.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <code>None</code> bei fehlerhafter Eingabe zurückzugeben macht den Bug unsichtbar: Der
+          Aufrufer erhält <code>None</code>, greift auf <code>result["chapter"]</code> zu, und
+          erhält <code>TypeError: 'NoneType' object is not subscriptable</code> — 5 Funktionsaufrufe
+          später. <code>ValueError</code> zu raisen benennt das Problem sofort an seiner Quelle.
+          Der Aufrufer kann es dann explizit abfangen und behandeln (<code>except ValueError →
+          logger.error → Datensatz überspringen</code>) statt einen verwirrenden nachgelagerten
+          Absturz zu debuggen.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Raise wo du weißt was falsch gelaufen ist. Der Aufrufer entscheidet wie damit umzugehen ist.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>None</code> zurückgeben ist angemessen wenn "kein Ergebnis" ein gültiges, erwartetes Ergebnis ist — nicht wenn die Eingabe fehlerhaft ist.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Was macht merge_dicts() anders als direkt dict.update() aufzurufen?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Häufig getestet</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">update() mutiert an Ort und Stelle. merge_dicts() erstellt etwas Neues. In medizinischem Code wo ein Patienten-Dict über Threads oder Referenzen geteilt werden kann, ist unerwartete Mutation eine echte Bug-Quelle.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <code>dict.update()</code> mutiert das Dict auf dem es aufgerufen wird — das Original wird
+          geändert. <code>merge_dicts()</code> beginnt mit einem frischen leeren Dict (<code>result = {}</code>)
+          und kopiert hinein, sodass keine Eingabe verändert wird. Das ist wichtig weil: (1) wenn der
+          Aufrufer das originale Dict noch unverändert braucht, ist Mutation ein Bug; (2) <code>*dicts</code>
+          verarbeitet beliebig viele Argumente, nicht nur zwei; (3) die Funktion macht ihre Absicht
+          explizit in Name und Signatur statt in einem Methodenaufruf zu vergraben.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Funktionen die ihre Eingaben nicht mutieren sind einfacher zu testen und zu verstehen.</div>
+        <div class="key-point"><div class="key-point-dot"></div>In Python 3.9+ macht <code>d1 | d2</code> dasselbe für genau zwei Dicts — die Schleife verarbeitet N Dicts generisch.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Was ist der häufigste Anfänger-Fehler bei der Implementierung von find_first_duplicate()?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Gut zu wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Die meisten Anfänger verwechseln "ein Element finden, das eine Kopie hat" mit "ein Element finden, das nach dem Sortieren mehr als einmal vorkommt." Sie produzieren unterschiedliche Ergebnisse.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Zwei häufige Fehler: (1) Zuerst sortieren und angrenzende Elemente vergleichen —
+          das findet Duplikate, aber nicht das <em>erste</em> in der originalen Reihenfolge;
+          (2) <code>items.count(item) &gt; 1</code> in der Schleife verwenden — das ist O(n²)
+          weil <code>count()</code> bei jeder Iteration die ganze Liste scannt. Der korrekte
+          Ansatz ist ein <code>seen = set()</code> und Prüfen von <code>if item in seen</code>
+          vor dem Hinzufügen — O(n) gesamt und bewahrt die originale Reihenfolge.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>"Erstes Duplikat" bedeutet erstes Element das wir zum zweiten Mal begegnen — originale Listenreihenfolge, nicht sortierte.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Set-Mitgliedschaftstest ist O(1). Listen-Mitgliedschaftstest (<code>item in list</code>) ist O(n). Diese kombinieren sich unterschiedlich innerhalb einer Schleife.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Was macht eine Funktion "testbar", und wie erfüllen alle vier Funktionen diesen Standard?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Eine Funktion ist testbar wenn man sie mit bekannten Eingaben aufrufen und ihre Ausgabe prüfen kann, ohne zuerst eine Datenbank, einen Server oder einen externen Dienst einzurichten.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Eine testbare Funktion hat drei Eigenschaften: sie nimmt Eingaben als Parameter entgegen
+          (nicht aus globalem Zustand), sie gibt ihr Ergebnis zurück (nicht durch Mutation einer
+          gemeinsamen Variable), und sie hat keine versteckten Abhängigkeiten (keine Datenbankaufrufe,
+          kein <code>datetime.now()</code> ohne Injektion, kein Dateilesen). Alle vier Funktionen
+          hier sind testbar weil sie reines Eingabe-rein / Ausgabe-raus sind:
+          <code>assert validate_email("a@b.com") == True</code> funktioniert ohne Setup.
+          Das ist die Form, die deine DiaTwin-Hilfsfunktionen letztendlich haben sollten.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Wenn du MongoDB hochfahren musst um eine Funktion zu testen, macht die Funktion zu viel.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Testbar ≠ getestet. Diese vier sind testbar; assert-Anweisungen hinzufügen macht sie getestet.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit diesem Thema fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du alle vier Funktionen aus dem Gedächtnis in einer leeren PyCharm-Datei geschrieben hast — kein KI, kein Copilot, kein Kopieren.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du jede Funktion mit mindestens drei Eingaben getestet hast: ein Normalfall, ein Edge-Case (leerer String / leere Liste), und einen der fehlschlagen oder <code>None</code> zurückgeben soll.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du erklären kannst warum <code>parse_icd10_code()</code> <code>ValueError</code> raised statt <code>None</code> zurückzugeben.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du erklären kannst warum <code>merge_dicts()</code> mit <code>result = {}</code> beginnt statt das erste Argument direkt zu mutieren.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🧠</div>
+    <div>
+      <div class="section-title">فجوة الأتمتة</div>
+      <div class="section-subtitle">لماذا التعرف على الكود ليس نفس إنتاجه — ولماذا هذا مهم</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>تستطيع قراءته. هل تستطيع كتابته؟</h2>
+    <p>
+      رأيت مئات من دوال بايثون. تستطيع النظر إلى دالة وتعرف فوراً إن كانت صحيحة.
+      هذه المهارة — <strong>التعرف</strong> — حقيقية، وبُنيت من كل كود Flask وDiaTwin وMorafek
+      الذي عملت معه.
+    </p>
+    <p>
+      لكن التعرف و<strong>الإنتاج</strong> مهارتان معرفيتان مختلفتان. التعرف يقول "نعم، هذا
+      صحيح." الإنتاج يبدأ بملف فارغ وتوقيع دالة ويُنشئ كوداً صحيحاً من لا شيء. في مراجعة
+      تقنية مباشرة، على السبورة، أو في الساعة 2 صباحاً بدون IDE، الإنتاج هو المهارة المهمة.
+    </p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>التعرف:</strong> "أرى أن هذا خطأ لأن نوع الإرجاع tuple وليس dict."</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>الإنتاج:</strong> فتح PyCharm، ملف فارغ، كتابة <code dir="ltr">def parse_icd10_code(code: str) -> dict:</code> من الذاكرة، وكتابة الجسم بشكل صحيح من المحاولة الأولى.</div>
+      <div class="key-point"><div class="key-point-dot"></div>هذا الموضوع يستهدف المهارة الثانية — ليس بالقراءة عنها، بل بالممارسة الفعلية، بشكل متكرر، حتى تصبح تلقائية.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>لماذا هذه الدوال الأربع تحديداً؟</h2>
+    <p>كل دالة من 3 إلى 10 أسطر، لا تحتوي على I/O أو استدعاءات خارجية، وتختبر نمطاً منطقياً محدداً يستخدمه كودك الحقيقي بالفعل:</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>صغيرة كفاية لإنجازها في 5 دقائق</strong> — تحصل على تغذية راجعة فورية إن كنت تعرف ذلك فعلاً أم كنت تظن ذلك فحسب.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>منطق لا I/O</strong> — لا قراءة ملفات، لا استدعاءات API، لا محاكاة مطلوبة. دوال نقية مدخل-داخل، مخرج-خارج.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>مفيدة مباشرة</strong> — التحقق من السلاسل، تحليل الأكواد، دمج القواميس، واكتشاف التكرار هي أنماط في كودك DiaTwin وMorafek الخاص.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>تفرض التفكير في الحالات الحدية</strong> — ماذا لو كان النص فارغاً؟ ماذا لو كانت القائمة تحتوي عنصراً واحداً؟ ماذا لو كانت كل القواميس فارغة؟</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">✏️</div>
+    <div>
+      <div class="section-title">الدوال الأربع</div>
+      <div class="section-subtitle">اكتب كلاً منها من الصفر — افتح PyCharm، ملف جديد، بدون Copilot، بدون ذكاء اصطناعي</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>اكتبها بهذا الترتيب</h2>
+    <p>لا تنسخ هذه الدوال. اقرأ توقيع كل دالة وغرضها وسلوكها المتوقع. أغلق هذه الصفحة. اكتب الدالة. ثم عد وقارن.</p>
+
+    <div class="func-card">
+      <div class="func-card-header">
+        <div class="func-num">01</div>
+        <div class="func-title" dir="ltr">validate_email(email: str) → bool</div>
+      </div>
+      <div class="func-why">ترجع <code dir="ltr">True</code> إذا بدا النص كبريد إلكتروني صالح. لا مكتبة regex — استخدم <code dir="ltr">in</code> و<code dir="ltr">.split()</code> و<code dir="ltr">len()</code> فقط.</div>
+      <div class="code-block" dir="ltr">def validate_email(email: str) -> bool:
+    """Return True if email contains exactly one '@' and a '.' after it."""
+    if "@" not in email:
+        return False
+    parts = email.split("@")
+    if len(parts) != 2:
+        return False
+    local, domain = parts
+    return len(local) > 0 and "." in domain and len(domain) > 2</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>تحقق من <code dir="ltr">len(parts) != 2</code> — لا فقط <code dir="ltr">len(parts) &lt; 2</code> — لأن <code dir="ltr">a@b@c</code> يجب أن يفشل أيضاً.</div>
+        <div class="key-point"><div class="key-point-dot"></div>هذا <strong>لا</strong> يتحقق من أن النطاق موجود أو أن TLD حقيقي. هذا صحيح — اذكر ذلك في الـ docstring.</div>
+      </div>
+    </div>
+
+    <div class="func-card">
+      <div class="func-card-header">
+        <div class="func-num">02</div>
+        <div class="func-title" dir="ltr">parse_icd10_code(code: str) → dict</div>
+      </div>
+      <div class="func-why">يقسّم كوداً مثل <code dir="ltr">"I10"</code> أو <code dir="ltr">"E11.9"</code> إلى حرف الفصل والكتلة الرقمية. يرجع dict لا tuple — مفاتيح dict تشرح نفسها بنفسها.</div>
+      <div class="code-block" dir="ltr">def parse_icd10_code(code: str) -> dict:
+    """Split an ICD-10 code into its chapter letter and numeric block.
+
+    Args:
+        code: An ICD-10 code string, e.g. 'I10' or 'E11.9'.
+    Returns:
+        dict with keys 'chapter' (str) and 'block' (str).
+    Raises:
+        ValueError: if code is empty or has no leading letter.
+    """
+    if not code or not code[0].isalpha():
+        raise ValueError(f"Invalid ICD-10 code: {code!r}")
+    return {
+        "chapter": code[0].upper(),
+        "block": code[1:]
+    }</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">code[0].upper()</code> ينظّم المدخلات بحروف صغيرة مثل <code dir="ltr">"i10"</code> دون أخطاء.</div>
+        <div class="key-point"><div class="key-point-dot"></div>رفع <code dir="ltr">ValueError</code> — لا إرجاع <code dir="ltr">None</code> — يجبر المستدعي على معالجة المدخلات الخاطئة بشكل صريح.</div>
+      </div>
+    </div>
+
+    <div class="func-card">
+      <div class="func-card-header">
+        <div class="func-num">03</div>
+        <div class="func-title" dir="ltr">merge_dicts(*dicts) → dict</div>
+      </div>
+      <div class="func-why">يجمع أي عدد من القواميس في قاموس واحد. القواميس اللاحقة تستبدل القواميس السابقة عند تعارض المفاتيح. توقيع <code dir="ltr">*dicts</code> هو الشيء الأهم للكتابة من الذاكرة.</div>
+      <div class="code-block" dir="ltr">def merge_dicts(*dicts: dict) -> dict:
+    """Merge multiple dicts; later dicts override earlier ones on key conflicts.
+
+    Args:
+        *dicts: Any number of dict arguments.
+    Returns:
+        A new dict containing all keys. No input dict is mutated.
+    """
+    result = {}
+    for d in dicts:
+        result.update(d)
+    return result</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>يرجع dict <strong>جديداً</strong> — لا يُعدّل أي من المدخلات. لهذا السبب <code dir="ltr">result = {}</code> ثم <code dir="ltr">result.update(d)</code> بدلاً من تعديل الوسيطة الأولى مباشرة.</div>
+        <div class="key-point"><div class="key-point-dot"></div>في Python 3.9+ يمكن كتابة <code dir="ltr">result = {} | d1 | d2</code>، لكن الحلقة أوضح وتتعامل مع N قواميس بشكل عام.</div>
+      </div>
+    </div>
+
+    <div class="func-card">
+      <div class="func-card-header">
+        <div class="func-num">04</div>
+        <div class="func-title" dir="ltr">find_first_duplicate(items: list) → any</div>
+      </div>
+      <div class="func-why">يرجع أول عنصر يظهر أكثر من مرة. يرجع <code dir="ltr">None</code> إن لم تكن هناك تكرارات. النهج O(n) يستخدم <code dir="ltr">set</code> لتتبع ما تم رؤيته.</div>
+      <div class="code-block" dir="ltr">def find_first_duplicate(items: list):
+    """Return the first element that appears more than once, or None.
+
+    Args:
+        items: A list of hashable elements.
+    Returns:
+        The first duplicate element encountered, or None if none exist.
+    """
+    seen = set()
+    for item in items:
+        if item in seen:
+            return item
+        seen.add(item)
+    return None</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">if item in seen</code> بتعقيد O(1) للـ set، مقابل O(n) للـ list — مهم عندما تكون قائمة العناصر كبيرة.</div>
+        <div class="key-point"><div class="key-point-dot"></div>"أول تكرار" يعني أول عنصر نصادفه <em>للمرة الثانية</em> — ترتيب القائمة الأصلي لا الترتيب المرتب.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">أسئلة التدريب</div>
+      <div class="section-subtitle">أغلق الدوال أعلاه قبل الإجابة — الهدف هو الإنتاج لا القراءة</div>
+    </div>
+  </div>
+
+  <!-- Q01 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">لماذا نتدرب على كتابة الدوال من الصفر إذا كان الذكاء الاصطناعي يُنشئها أسرع وأدق؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">فكّر في الفرق بين جراح يستطيع قراءة كتاب تشريح وجراح أجرى 200 عملية استئصال زائدة. الأول لديه تعرف. الثاني لديه أتمتة.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          الذكاء الاصطناعي يُنشئ الكود بسرعة أكبر، لكن تلك السرعة تعود للذكاء الاصطناعي لا لك.
+          الممارسة اليدوية تبني مهارة <strong>إنتاج</strong> بايثون الصحيح بشكل مستقل — وهو ما يهم
+          في ثلاث مواقف حقيقية: مقابلة تقنية على السبورة، مراجعة مباشرة تُتوقع منك الكتابة فيها،
+          وحادثة إنتاج في الساعة 2 صباحاً تحتاج تصحيحاً فورياً دون انتظار رد الذكاء الاصطناعي.
+          الهدف ليس منافسة الذكاء الاصطناعي — بل عدم العجز حين لا يكون متاحاً.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>الذكاء الاصطناعي يُنشئ؛ أنت تشرح وتُصحح وتملك. الممارسة اليدوية تجعل هذا الملكية حقيقية.</div>
+        <div class="key-point"><div class="key-point-dot"></div>الأتمتة تجعلك أيضاً مستخدماً أفضل للذكاء الاصطناعي — تكتشف المخرجات الخاطئة فوراً لأنك تعرف كيف تبدو الصحيحة.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">ماذا يجب أن تتحقق validate_email() منه، وماذا يجب أن لا تعِد به صراحةً؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">docstring الدالة عقد. كن دقيقاً في ما تعِد به — لأن ما تعد به سيعتمد عليه المستدعون.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          <strong>يجب التحقق من:</strong> وجود <code dir="ltr">@</code> واحدة بالضبط؛ جزء محلي غير فارغ
+          قبل <code dir="ltr">@</code>؛ نطاق بعد <code dir="ltr">@</code> يحتوي نقطة وطوله أكبر من 2.<br><br>
+          <strong>لا يجب الوعد بـ:</strong> أن النطاق موجود، أن صندوق البريد يمكن الوصول إليه،
+          أو أن TLD صالح. هذا يتطلب DNS lookup أو اتصال SMTP — أبعد بكثير من فحص بسيط للنص.
+          اذكر ذلك في docstring: <em>"يرجع True إذا بدا النص هيكلياً كبريد إلكتروني. لا يتحقق من إمكانية التسليم."</em>
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ خطأ شائع: التحقق من <code dir="ltr">len(parts) &lt; 2</code> بدلاً من <code dir="ltr">!= 2</code>. النص <code dir="ltr">a@b@c</code> ينتج 3 أجزاء، يجتاز فحص <code dir="ltr">&lt; 2</code>، ويُتحقق منه خطأً على أنه True.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>النطاق الدقيق في docstring يمنع المستدعين من الاعتماد على سلوك لم تُنفّذه.</div>
+        <div class="key-point"><div class="key-point-dot"></div>دالة صغيرة صادقة أفضل من دالة كبيرة تعِد بصمت بأكثر مما تستطيع.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">لماذا ترفع parse_icd10_code() استثناء ValueError بدلاً من إرجاع None عند مدخل خاطئ؟</span>
+      <span class="q-badges"><span class="badge badge-common">★ يُختبر كثيراً</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">None صامت. ValueError صاخب. في خط معالجة يعالج 10,000 كود ICD-10، تريد فشلاً صاخباً على البيانات السيئة، لا نشراً صامتاً لـ None عبر 20 دالة لاحقة.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          إرجاع <code dir="ltr">None</code> عند مدخل خاطئ يجعل الخطأ غير مرئي: المستدعي يحصل على
+          <code dir="ltr">None</code>، يصل إلى <code dir="ltr">result["chapter"]</code>، ويحصل على
+          <code dir="ltr">TypeError: 'NoneType' object is not subscriptable</code> — بعد 5
+          استدعاءات دوال. رفع <code dir="ltr">ValueError</code> فوراً يُسمّي المشكلة في مصدرها.
+          المستدعي يمكنه حينها اعتراضه والتعامل معه بشكل صريح (<code dir="ltr">except ValueError → logger.error → تخطي هذا السجل</code>)
+          بدلاً من تتبع خطأ مُربك لاحقاً.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>ارفع الاستثناء حيث تعرف ما حدث. المستدعي يقرر كيف يتعامل معه.</div>
+        <div class="key-point"><div class="key-point-dot"></div>إرجاع <code dir="ltr">None</code> مناسب عندما "لا توجد نتيجة" هي نتيجة صالحة ومتوقعة — لا حين يكون المدخل معطوباً.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">ما الفرق الدقيق بين merge_dicts() وبين استدعاء dict.update() مباشرة؟</span>
+      <span class="q-badges"><span class="badge badge-common">★ يُختبر كثيراً</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">update() يعدّل في مكانه. merge_dicts() ينشئ شيئاً جديداً. في الكود الطبي حيث قد يُشارَك dict المريض عبر خيوط أو مراجع، التعديل المفاجئ مصدر حقيقي للأخطاء.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          <code dir="ltr">dict.update()</code> يعدّل الـ dict الذي يُستدعى عليه — الأصل يتغير.
+          <code dir="ltr">merge_dicts()</code> يبدأ بـ dict فارغ جديد (<code dir="ltr">result = {}</code>)
+          وينسخ إليه، لذا لا يُعدَّل أي مدخل. هذا مهم لأن: (1) إذا كان المستدعي لا يزال يحتاج
+          الـ dict الأصلي دون تغيير، فالتعديل خطأ؛ (2) <code dir="ltr">*dicts</code> يتعامل مع
+          أي عدد من الوسيطات لا اثنتين فقط؛ (3) القصد واضح في اسم الدالة وتوقيعها.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>الدوال التي لا تعدّل مدخلاتها أسهل في الاختبار والفهم.</div>
+        <div class="key-point"><div class="key-point-dot"></div>في Python 3.9+ <code dir="ltr">d1 | d2</code> يفعل نفس الشيء لاثنين بالضبط — لكن الحلقة تتعامل مع N قواميس بشكل عام.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">ما الخطأ الأكثر شيوعاً عند تنفيذ find_first_duplicate()؟</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 جيد أن تعرفه</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">معظم المبتدئين يخلطون بين "إيجاد عنصر له نسخة" و"إيجاد عنصر يظهر أكثر من مرة بعد الترتيب". هذان ينتجان نتائج مختلفة.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          خطآن شائعان: (1) الترتيب أولاً ومقارنة العناصر المتجاورة — هذا يجد التكرارات لكن ليس
+          <em>الأول</em> في الترتيب الأصلي؛ (2) استخدام <code dir="ltr">items.count(item) &gt; 1</code>
+          داخل الحلقة — هذا O(n²) لأن <code dir="ltr">count()</code> يمسح القائمة كلها في كل تكرار.
+          النهج الصحيح هو <code dir="ltr">seen = set()</code> والتحقق من
+          <code dir="ltr">if item in seen</code> قبل إضافته — O(n) إجمالاً ويحافظ على الترتيب الأصلي.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>"أول تكرار" يعني أول عنصر نصادفه <em>للمرة الثانية</em> — ترتيب القائمة الأصلي، لا الترتيب المرتب.</div>
+        <div class="key-point"><div class="key-point-dot"></div>اختبار عضوية الـ set هو O(1). اختبار عضوية الـ list هو O(n). هذان يتركبان بشكل مختلف داخل حلقة.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">ما الذي يجعل دالة "قابلة للاختبار"، وكيف تستوفي الدوال الأربع هذا المعيار؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">دالة قابلة للاختبار عندما يمكنك استدعاؤها بمدخلات معروفة والتحقق من مخرجاتها دون إعداد قاعدة بيانات أو خادم أو خدمة خارجية أولاً.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          الدالة القابلة للاختبار لها ثلاث خصائص: تأخذ المدخلات كمعاملات (لا من حالة عالمية)،
+          ترجع نتيجتها (لا بتعديل متغير مشترك)، وليس لها تبعيات خفية (لا استدعاءات قاعدة بيانات،
+          لا <code dir="ltr">datetime.now()</code> بدون حقن، لا قراءة ملفات). الدوال الأربع هنا
+          قابلة للاختبار لأنها نقية مدخل-داخل / مخرج-خارج:
+          <code dir="ltr">assert validate_email("a@b.com") == True</code> تعمل بدون أي إعداد.
+          هذا الشكل الذي يجب أن تكون عليه دوال الأدوات في DiaTwin في نهاية المطاف.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>إذا احتجت لتشغيل MongoDB لاختبار دالة، فالدالة تفعل أكثر مما يجب.</div>
+        <div class="key-point"><div class="key-point-dot"></div>قابلة للاختبار ≠ مُختبَرة. هذه الأربع قابلة للاختبار؛ إضافة جمل assert يجعلها مُختبَرة.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> انتهيت من هذا الموضوع عندما...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>كتبت الدوال الأربع من الذاكرة في ملف PyCharm فارغ — بدون ذكاء اصطناعي، بدون Copilot، بدون نسخ ولصق.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>اختبرت كل دالة بثلاثة مدخلات على الأقل: حالة طبيعية، وحالة حدية (نص فارغ / قائمة فارغة)، وحالة يجب أن تفشل أو ترجع <code dir="ltr">None</code>.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع شرح لماذا <code dir="ltr">parse_icd10_code()</code> ترفع <code dir="ltr">ValueError</code> بدلاً من إرجاع <code dir="ltr">None</code>.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع شرح لماذا <code dir="ltr">merge_dicts()</code> تبدأ بـ <code dir="ltr">result = {}</code> بدلاً من تعديل الوسيطة الأولى مباشرة.</div>
+  </div>
+
+</div><!-- end tab-ar -->
+
+</div><!-- end body -->
+</main>
+
+<!-- LMS progress bridge: tells lesson-ui.js which localStorage key to write to.
+     Must match the storageKey declared in registry.js for python-unaided-topic1. -->
+<script>window.LMS_STORAGE_KEY = 'lms_python_unaided_01_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+</body>
+</html>

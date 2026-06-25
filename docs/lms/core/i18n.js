@@ -1,6 +1,6 @@
 // lms/core/i18n.js
 
-const SUPPORTED_LANGS = ['en', 'ar'];
+const SUPPORTED_LANGS = ['en', 'ar', 'de'];
 const RTL_LANGS = ['ar'];
 
 export async function loadLanguage(lang) {

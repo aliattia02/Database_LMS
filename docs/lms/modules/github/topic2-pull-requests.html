@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Topic 2 — Pull Requests as Code Review | Git &amp; GitHub Team Workflows</title>
+  <link rel="stylesheet" href="../shared/theme.css"/>
+  <style>
+    /* ── Topic 2 page-specific styles ── */
+
+    .badge {
+      font-size: 10.5px; font-weight: 700;
+      padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+    }
+    .badge-must   { background: #fef3c7; color: #92400e; }
+    .badge-common { background: #dbeafe; color: #1e40af; }
+    .badge-tip    { background: #f0fdf4; color: #166534; }
+
+    .q-arrow {
+      font-size: 12px; color: var(--muted);
+      padding-top: 3px; flex-shrink: 0; transition: transform .2s;
+    }
+    .q-trigger.open .q-arrow { transform: rotate(180deg); }
+    .q-panel { padding: 18px 20px 16px 52px; }
+
+    .strategy-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    }
+    .strategy-text {
+      font-size: 13.5px; color: var(--navy2); line-height: 1.65; margin-bottom: 14px;
+    }
+
+    .answer-box {
+      background: var(--green-bg); border: 1px solid var(--green-border);
+      border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;
+    }
+    .answer-box-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--green-text); margin-bottom: 8px;
+    }
+    .answer-box-text { font-size: 13.5px; color: #14532d; line-height: 1.7; }
+
+    .warning-box {
+      background: var(--amber-bg); border: 1px solid #fde68a;
+      border-radius: 8px; padding: 12px 14px; margin-bottom: 12px;
+    }
+    .warning-box-text { font-size: 13px; color: var(--amber-text); line-height: 1.55; }
+
+    .key-points { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+    .key-point {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 13.5px; color: var(--navy2); line-height: 1.55;
+    }
+    .key-point-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #2563eb;
+      flex-shrink: 0; margin-top: 7px;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+      font-size: 12.5px; background: #f1f5f9;
+      padding: 1px 5px; border-radius: 3px; color: var(--navy);
+    }
+    .code-block {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+      font-size: 12px; background: #f8fafc;
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 10px 14px; margin: 10px 0;
+      color: var(--navy); line-height: 1.65;
+      white-space: pre; overflow-x: auto;
+    }
+
+    .section {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px 28px;
+      margin-bottom: 20px; box-shadow: var(--shadow);
+    }
+    .section h2 { font-size: 18px; font-weight: 700; margin-bottom: 14px; }
+    .section p  { font-size: 14px; color: #334155; line-height: 1.65; margin-bottom: 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .pr-template {
+      background: #f8fafc; border: 1px solid var(--border);
+      border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+      font-size: 13px; color: var(--navy); line-height: 1.75;
+      white-space: pre-wrap;
+    }
+
+    .must-block {
+      background: var(--amber-bg); border: 1.5px solid var(--amber-border);
+      border-radius: var(--radius); padding: 18px 20px; margin: 28px 0 0;
+    }
+    .must-block-title {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--amber-text); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .must-block .must-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      font-size: 13.5px; color: #78350f; line-height: 1.6;
+      padding: 9px 0; border-bottom: 1px solid #fde68a;
+    }
+    .must-block .must-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .must-block .must-bullet { font-size: 15px; flex-shrink: 0; }
+
+    /* RTL overrides */
+    [dir="rtl"] .q-panel      { padding: 18px 52px 16px 20px; }
+    [dir="rtl"] .key-point    { flex-direction: row-reverse; }
+    [dir="rtl"] .must-item    { flex-direction: row-reverse; }
+    [dir="rtl"] .must-block-title { flex-direction: row-reverse; }
+    [dir="rtl"] .answer-box-text .code-block,
+    [dir="rtl"] .section .code-block { direction: ltr; text-align: left; }
+
+    @media (max-width: 600px) {
+      .q-panel { padding-left: 20px; }
+      .q-badges { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Git &amp; GitHub &mdash; Topic 2 of 5</div>
+    <h1><span>Pull Requests</span> as Code Review</h1>
+    <p class="header-sub">A PR is not just a merge button — it is your team's primary tool for knowledge sharing, quality control, and catching mistakes before they hit production.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de', this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar', this)">العربية</button>
+  </div>
+</div>
+
+<main>
+  <div class="body">
+
+<!-- ═══════════════════════════════════════════════════
+     ENGLISH TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🔀</div>
+    <div>
+      <div class="section-title">What a PR Really Is</div>
+      <div class="section-subtitle">Concept first — before you touch the GitHub UI</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>A Pull Request is a conversation, not a file transfer</h2>
+    <p>The name is misleading. A PR does not "pull" anything — it is a <strong>request for review</strong> that says: "I have changes on my branch. Please look at them, discuss them, and merge them into the target branch if they're good."</p>
+    <p>The merge itself is the easy part. The review conversation — comments, requested changes, approvals — is the real value. It is how knowledge moves across the team, how bugs get caught before production, and how new developers learn the codebase's conventions and quality bar.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>What it contains:</strong> a diff (every line changed), a title and description you write, a discussion thread, a review status, and CI check results.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>What it is not:</strong> a ZIP file, an email attachment, or a finished product. It is a proposal, open for scrutiny.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Protected branches + PRs:</strong> on a real research team, <code>main</code> is protected — you literally cannot push directly to it. Every change goes through a PR. This is not bureaucracy; it is your safety net.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">✍️</div>
+    <div>
+      <div class="section-title">Writing a PR That Gets Reviewed Fast</div>
+      <div class="section-subtitle">Reviewers have limited time — make it easy for them to say yes</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>The PR description template</h2>
+    <p>A blank description is the single most common reason PRs sit unreviewed. Reviewers need context to do their job. Fill in this template every time — it takes 3 minutes and saves everyone an hour.</p>
+    <div class="pr-template">## What does this PR do?
+<!-- One or two sentences. If you can't describe it in two sentences,
+     the PR might be too large. -->
+
+## Why is this change needed?
+<!-- Link to the issue/ticket or explain the context. -->
+
+## How was it tested?
+<!-- "I ran it locally and it worked" is fine. Unit tests? Manual steps? -->
+
+## Screenshots / output (if UI or data change)
+<!-- Paste a terminal output, a screenshot, a before/after. -->
+
+## Checklist
+- [ ] I ran the full test suite locally
+- [ ] No debug logs / commented-out code left in
+- [ ] Branch is up to date with main</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Keep PRs small. A diff under 400 lines gets reviewed in minutes. 1,000 lines gets skimmed or deferred.</div>
+      <div class="key-point"><div class="key-point-dot"></div>One logical change per PR — not "I fixed the bug AND refactored the module AND updated the docs."</div>
+      <div class="key-point"><div class="key-point-dot"></div>Add reviewers deliberately. Assign the person most familiar with the code, not everyone on the team.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Draft PRs are valid. Open one early to share context, get early feedback, and signal "this is in progress" — mark it ready when it's actually ready.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#faf5ff;">💬</div>
+    <div>
+      <div class="section-title">Key Concepts — Open Every Card</div>
+      <div class="section-subtitle">The PR questions that trip up developers new to team workflows</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">What exactly happens when a PR is merged — which commit ends up on <code>main</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Three merge strategies — you will see all three in the wild</div>
+      <div class="strategy-text">GitHub offers three ways to merge a PR. Understanding them prevents surprise when you look at the git log and see something unexpected. Teams usually enforce one strategy via repo settings — ask which one your team uses on day one.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The three strategies</div>
+        <div class="answer-box-text">
+          <strong>Merge commit (default)</strong> — creates a new merge commit on main that ties both histories together. The full branch history is preserved. Best for feature work that benefits from a clear "this entire PR landed here" marker.<br><br>
+          <strong>Squash and merge</strong> — flattens all commits on your branch into a single commit, then adds it to main. Main stays clean and linear. Individual WIP commits disappear. Common in teams that care about a tidy log.<br><br>
+          <strong>Rebase and merge</strong> — replays each commit from your branch onto main as if they were written there directly, with new SHAs. No merge commit. Cleanest history, but loses the branch reference in the log.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>For research teams at UKM: squash merge is common — it keeps the main branch log readable at a glance.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Whatever the strategy, once merged, <strong>delete your feature branch immediately</strong>. It has served its purpose.</div>
+        <div class="key-point"><div class="key-point-dot"></div>After merging, <code>git switch main && git pull</code> to get the merged commit locally.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">A reviewer left comments. How do I respond and update my PR?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">The review response workflow</div>
+      <div class="strategy-text">Responding to review comments professionally is a core team skill. The goal is not to "win" the argument — it is to converge on the best code. Reviewers are doing you a favour.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Step by step</div>
+        <div class="answer-box-text">
+          1. Read all comments before making any changes — some may be related or one may invalidate another.<br><br>
+          2. For each comment: either <strong>fix it and reply "Done, updated in [SHA]"</strong>, or <strong>discuss it</strong> — "I kept this as-is because X, does that make sense?"<br><br>
+          3. Make your changes locally on the same branch and push:<br>
+          <div class="code-block">git add .
+git commit -m "Address review: refactor null check per feedback"
+git push</div>
+          The PR updates automatically — no need to close and reopen it.<br><br>
+          4. Mark each resolved comment as <strong>Resolved</strong> on GitHub once addressed.<br><br>
+          5. Re-request review from the reviewer when all feedback is addressed — don't leave them to guess you're ready.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Don't force-push to a PR branch after review has started — it rewrites history and loses the reviewer's inline comment anchors.</div>
+        <div class="key-point"><div class="key-point-dot"></div>A second push to the PR shows as a new set of changed files on GitHub — reviewers can see exactly what changed since their last review.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Tone: short, collaborative, non-defensive. "Good catch — fixed" is better than a paragraph of justification.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">My PR says "This branch is out of date with main." What do I do?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Keeping your branch in sync</div>
+      <div class="strategy-text">This happens constantly on active teams — someone else merged their PR to main while you were working. Your branch is now behind. Resolve it before asking for a merge.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The right fix</div>
+        <div class="answer-box-text">
+          <div class="code-block"># 1. Switch to main and pull the latest
+git switch main
+git pull
+
+# 2. Go back to your feature branch
+git switch feature/my-feature
+
+# 3. Merge main into your branch (brings your branch up to date)
+git merge main
+
+# 4. Resolve any conflicts that arise (see Topic 3), then push
+git push</div>
+          Your PR is now up to date. The "out of date" warning disappears and CI re-runs on the merged state.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ GitHub's "Update branch" button does the same thing via the UI. Use it when the merge is clean. If there are conflicts, you must resolve them locally — GitHub cannot auto-resolve code conflicts.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Use <code>git merge main</code>, not <code>git rebase main</code>, for a PR branch that others may already have pulled.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Get into the habit: <code>git pull</code> on main every morning before starting new work.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">What are CI checks and why is my PR blocked by them?</span>
+      <span class="q-badges"><span class="badge badge-common">Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Continuous Integration — your automated first reviewer</div>
+      <div class="strategy-text">CI runs automatically on every push to a PR. It is not optional and it is not personal. A failing CI check means the automated gate caught something before a human had to.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">What CI typically checks</div>
+        <div class="answer-box-text">
+          <strong>Build</strong> — does the code compile / does the app start without errors?<br><br>
+          <strong>Tests</strong> — do all unit and integration tests pass? A single failing test blocks the merge.<br><br>
+          <strong>Linting</strong> — does the code follow the style rules (PEP 8, ESLint, etc.)? Formatting errors fail CI.<br><br>
+          <strong>Type checks</strong> — for typed codebases (TypeScript, mypy), are there type errors?
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Click the failing check name on GitHub — it links directly to the CI log. The error is almost always in the last 20 lines.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Fix the issue locally, commit, and push — CI re-runs automatically. No manual trigger needed.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Never ask a teammate to "just merge it" past a failing CI check. That failure exists for a reason.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">How do I write a good commit message for changes in a PR?</span>
+      <span class="q-badges"><span class="badge badge-common">Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Commit messages are the first line of documentation</div>
+      <div class="strategy-text">On a team, git log is a shared changelog that everyone reads. "fix stuff" tells a teammate nothing. A well-written commit message explains what changed and why — in 72 characters.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The formula</div>
+        <div class="answer-box-text">
+          <strong>Format:</strong> <code>type(scope): short description in imperative mood</code><br><br>
+          <div class="code-block">feat(fhir): add LOINC code mapping for lab results
+fix(auth): resolve token refresh truncation on bcrypt hash
+docs(api): clarify pagination parameters in README
+chore(deps): upgrade FastAPI to 0.111.0
+refactor(models): extract device schema into separate module</div>
+          Rules: start with a verb ("add", "fix", "remove", "update"). Under 72 characters. No period at the end. The <em>what</em> in the subject, the <em>why</em> in the body if needed.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>The type prefix matches branch naming: <code>feat</code>, <code>fix</code>, <code>docs</code>, <code>chore</code>, <code>refactor</code>, <code>test</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>If squash merge is used, your individual commit messages collapse into one — the PR title becomes the commit on main. Make the PR title a good commit message too.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">I'm the reviewer — what should I actually look for?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Tip</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Code review is a skill, not just reading code</div>
+      <div class="strategy-text">New developers think code review is about catching bugs. It is that — but also about correctness, clarity, security, and mentoring. A good reviewer makes the author a better developer.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Reviewer checklist</div>
+        <div class="answer-box-text">
+          <strong>Correctness</strong> — does it do what the PR description says? Are edge cases handled?<br><br>
+          <strong>Clarity</strong> — can a new team member understand this in 6 months? Are names meaningful?<br><br>
+          <strong>Security</strong> — any hardcoded credentials, unvalidated input, or exposed endpoints?<br><br>
+          <strong>Tests</strong> — are there tests for the new behaviour? Do they actually test the right thing?<br><br>
+          <strong>Scope</strong> — is the PR doing only what it claims? Or is there hidden refactoring mixed in?
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Leave <strong>nitpick</strong> comments with a "nit:" prefix — "nit: rename `x` to `deviceId` for clarity". The author can ignore nits if they disagree; they don't block merge.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Approve when you're satisfied. "Looks good to me" (LGTM) with no comments is a valid review.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Respond within 24 hours. A PR sitting unreviewed for days is a team process failure, not a Git problem.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🛠️</div>
+    <div>
+      <div class="section-title">Hands-On Practice</div>
+      <div class="section-subtitle">Do this before moving to Topic 3 — real PR experience in a safe environment</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Open a PR, review it, and merge it</h2>
+    <p>From the curriculum: create a feature branch, make a small change, push it, open a PR on GitHub, self-review it, and merge it. Every step is deliberate — notice what GitHub shows you at each stage.</p>
+    <div class="code-block"># 1. Start from an up-to-date main
+git switch main && git pull
+
+# 2. Create a feature branch
+git switch -c feature/pr-practice
+
+# 3. Make a real change (anything — edit a README, add a comment)
+echo "# PR practice" >> NOTES.md
+git add NOTES.md
+git commit -m "docs: add PR practice note"
+
+# 4. Push the branch to GitHub
+git push -u origin feature/pr-practice
+
+# 5. Go to GitHub — it will show a banner "Compare & pull request"
+#    Click it. Fill in the description template. Open the PR.
+
+# 6. Review your own diff in the "Files changed" tab
+#    Leave at least one comment on your own code (seriously — practise the UI)
+
+# 7. Merge the PR via GitHub UI → "Squash and merge" → Confirm
+
+# 8. Clean up locally
+git switch main
+git pull
+git branch -d feature/pr-practice</div>
+    <p>After this you should be able to open a PR end-to-end without hesitation. The first PR you open on a real codebase will feel familiar, not foreign.</p>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You're done with this topic when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain what a PR is and what the three merge strategies (merge commit, squash, rebase) each produce on main.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can open a PR with a filled-in description, respond to review comments, push updates, and merge — all without looking anything up.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You know how to bring a PR branch up to date when main has moved ahead.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You've opened at least one real PR (even on a personal repo) and read its CI output.</div>
+  </div>
+
+</div><!-- /tab-en -->
+
+<!-- ═══════════════════════════════════════════════════
+     DEUTSCH TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🔀</div>
+    <div>
+      <div class="section-title">Was ein PR wirklich ist</div>
+      <div class="section-subtitle">Erst das Konzept — bevor du die GitHub-Oberfläche anfasst</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Ein Pull Request ist ein Gespräch, kein Dateitransfer</h2>
+    <p>Der Name ist irreführend. Ein PR „pullt" nichts — er ist eine <strong>Anfrage zur Überprüfung</strong>, die sagt: „Ich habe Änderungen auf meinem Branch. Bitte schau sie dir an, diskutiere sie, und merge sie in den Zielbranch, wenn sie gut sind."</p>
+    <p>Der Merge selbst ist der einfache Teil. Das Review-Gespräch — Kommentare, angeforderte Änderungen, Genehmigungen — ist der eigentliche Wert. So wandert Wissen im Team, so werden Bugs vor der Produktion gefunden, und so lernen neue Entwickler die Konventionen der Codebase kennen.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Was er enthält:</strong> ein Diff (jede geänderte Zeile), einen Titel und eine Beschreibung, einen Diskussions-Thread, einen Review-Status und CI-Ergebnisse.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Was er nicht ist:</strong> keine ZIP-Datei, kein E-Mail-Anhang, kein fertiges Produkt. Es ist ein Vorschlag, offen für Prüfung.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Protected Branches + PRs:</strong> in einem echten Forschungsteam ist <code>main</code> geschützt — du kannst nicht direkt darauf pushen. Jede Änderung läuft über einen PR. Das ist kein Bürokratismus; es ist dein Sicherheitsnetz.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">✍️</div>
+    <div>
+      <div class="section-title">Einen PR schreiben, der schnell gereviewed wird</div>
+      <div class="section-subtitle">Reviewer haben wenig Zeit — mach es ihnen leicht, Ja zu sagen</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Die PR-Beschreibungsvorlage</h2>
+    <p>Eine leere Beschreibung ist der häufigste Grund, warum PRs unreviewed liegen bleiben. Reviewer brauchen Kontext, um ihren Job zu machen. Fülle diese Vorlage jedes Mal aus — es dauert 3 Minuten und spart allen eine Stunde.</p>
+    <div class="pr-template">## Was macht dieser PR?
+<!-- Ein oder zwei Sätze. Falls du es nicht in zwei Sätzen beschreiben kannst,
+     ist der PR vielleicht zu groß. -->
+
+## Warum ist diese Änderung notwendig?
+<!-- Verlinke auf das Issue/Ticket oder erkläre den Kontext. -->
+
+## Wie wurde es getestet?
+<!-- "Ich habe es lokal ausgeführt und es hat funktioniert" ist in Ordnung. -->
+
+## Screenshots / Ausgabe (bei UI- oder Datenänderungen)
+<!-- Terminalausgabe, Screenshot, Vorher/Nachher. -->
+
+## Checkliste
+- [ ] Test-Suite lokal ausgeführt
+- [ ] Keine Debug-Logs / auskommentierter Code hinterlassen
+- [ ] Branch ist aktuell mit main</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Halte PRs klein. Ein Diff unter 400 Zeilen wird in Minuten gereviewed. 1.000 Zeilen werden überflogen oder aufgeschoben.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Eine logische Änderung pro PR — nicht „Ich habe den Bug gefixt UND das Modul refaktoriert UND die Docs aktualisiert."</div>
+      <div class="key-point"><div class="key-point-dot"></div>Draft-PRs sind valide. Öffne einen früh, um Kontext zu teilen und frühes Feedback zu erhalten — markiere ihn als bereit, wenn er es wirklich ist.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#faf5ff;">💬</div>
+    <div>
+      <div class="section-title">Schlüsselkonzepte — Öffne jede Karte</div>
+      <div class="section-subtitle">PR-Fragen, die neue Team-Entwickler überraschen</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Was passiert genau, wenn ein PR gemergt wird — welcher Commit landet auf <code>main</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Pflicht</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Drei Merge-Strategien — du wirst allen drei begegnen</div>
+      <div class="strategy-text">GitHub bietet drei Wege, einen PR zu mergen. Das Verständnis davon verhindert Überraschungen, wenn du im git log etwas Unerwartetes siehst. Teams erzwingen meist eine Strategie über die Repository-Einstellungen — frage am ersten Tag, welche dein Team verwendet.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die drei Strategien</div>
+        <div class="answer-box-text">
+          <strong>Merge-Commit (Standard)</strong> — erstellt einen neuen Merge-Commit auf main, der beide Historien verbindet. Die vollständige Branch-Historie bleibt erhalten. Gut für Feature-Arbeit, bei der ein klarer "dieser PR landete hier"-Marker nützlich ist.<br><br>
+          <strong>Squash und Merge</strong> — fasst alle Commits auf deinem Branch zu einem einzigen Commit zusammen und fügt ihn zu main hinzu. Main bleibt sauber und linear. Einzelne WIP-Commits verschwinden. Verbreitet in Teams, die auf einen aufgeräumten Log achten.<br><br>
+          <strong>Rebase und Merge</strong> — spielt jeden Commit deines Branches auf main ab, als wären sie dort direkt geschrieben worden, mit neuen SHAs. Kein Merge-Commit. Sauberste Historie, aber verliert den Branch-Verweis im Log.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Nach dem Merge: <strong>Feature-Branch sofort löschen</strong>. Er hat seinen Zweck erfüllt.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Nach dem Merge lokal: <code>git switch main && git pull</code>, um den gemergten Commit zu erhalten.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Ein Reviewer hat Kommentare hinterlassen. Wie reagiere ich und aktualisiere meinen PR?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Pflicht</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Der Review-Antwort-Workflow</div>
+      <div class="strategy-text">Professionell auf Review-Kommentare zu reagieren ist eine Kernkompetenz im Team. Das Ziel ist nicht, das Argument zu „gewinnen" — es geht darum, zum besten Code zu kommen. Reviewer tun dir einen Gefallen.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Schritt für Schritt</div>
+        <div class="answer-box-text">
+          1. Alle Kommentare lesen, bevor du Änderungen machst — einige hängen zusammen.<br><br>
+          2. Für jeden Kommentar: entweder <strong>beheben und antworten „Erledigt, aktualisiert in [SHA]"</strong>, oder <strong>diskutieren</strong> — „Ich habe das beibehalten, weil X — macht das Sinn?"<br><br>
+          3. Änderungen lokal auf demselben Branch vornehmen und pushen:<br>
+          <div class="code-block">git add .
+git commit -m "fix: null-check laut Review-Feedback anpassen"
+git push</div>
+          Der PR aktualisiert sich automatisch — kein Schließen und Wiedereröffnen nötig.<br><br>
+          4. Jeden erledigten Kommentar auf GitHub als <strong>Resolved</strong> markieren.<br><br>
+          5. Den Reviewer zur erneuten Überprüfung anfordern — lass ihn nicht raten, dass du bereit bist.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Kein Force-Push auf einen PR-Branch, nachdem das Review begonnen hat — das überschreibt die Kommentar-Anker des Reviewers.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Ton: kurz, kollaborativ, nicht defensiv. „Guter Hinweis — behoben" ist besser als ein Absatz voller Rechtfertigung.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Mein PR sagt „This branch is out of date with main." Was tue ich?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Pflicht</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Branch synchron halten</div>
+      <div class="strategy-text">Das passiert ständig in aktiven Teams — jemand anderes hat seinen PR in main gemergt, während du gearbeitet hast. Dein Branch ist jetzt hinter main. Behebe es, bevor du um einen Merge bittest.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die richtige Lösung</div>
+        <div class="answer-box-text">
+          <div class="code-block"># 1. Zu main wechseln und aktualisieren
+git switch main
+git pull
+
+# 2. Zurück zum Feature-Branch
+git switch feature/my-feature
+
+# 3. Main in deinen Branch mergen (holt deinen Branch auf den Stand von main)
+git merge main
+
+# 4. Etwaige Konflikte lösen (siehe Thema 3), dann pushen
+git push</div>
+          Dein PR ist jetzt aktuell. Die „out of date"-Warnung verschwindet und CI läuft neu.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Githubs „Update branch"-Schaltfläche macht dasselbe per UI. Nutze sie bei sauberem Merge. Bei Konflikten musst du sie lokal lösen — GitHub kann Code-Konflikte nicht automatisch auflösen.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Was sind CI-Checks und warum blockieren sie meinen PR?</span>
+      <span class="q-badges"><span class="badge badge-common">Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Continuous Integration — dein automatisierter erster Reviewer</div>
+      <div class="strategy-text">CI läuft automatisch bei jedem Push auf einen PR. Es ist nicht optional und nicht persönlich. Ein fehlgeschlagener CI-Check bedeutet, dass die automatisierte Hürde etwas gefunden hat, bevor ein Mensch es musste.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Was CI typischerweise prüft</div>
+        <div class="answer-box-text">
+          <strong>Build</strong> — lässt sich der Code kompilieren / startet die App fehlerfrei?<br><br>
+          <strong>Tests</strong> — bestehen alle Unit- und Integrationstests? Ein einziger fehlgeschlagener Test blockiert den Merge.<br><br>
+          <strong>Linting</strong> — hält der Code die Stilregeln ein (PEP 8, ESLint usw.)? Formatierungsfehler lassen CI scheitern.<br><br>
+          <strong>Typprüfungen</strong> — gibt es bei getypten Codebasen (TypeScript, mypy) Typfehler?
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Klicke auf den Namen des fehlgeschlagenen Checks auf GitHub — er verlinkt direkt zum CI-Log. Der Fehler steht fast immer in den letzten 20 Zeilen.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Niemals einen Teamkollegen bitten, „einfach zu mergen" trotz fehlgeschlagenem CI. Dieser Fehler hat einen Grund.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Wie schreibe ich gute Commit-Messages für Änderungen in einem PR?</span>
+      <span class="q-badges"><span class="badge badge-common">Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Commit-Messages sind die erste Zeile der Dokumentation</div>
+      <div class="strategy-text">Im Team ist git log ein gemeinsames Changelog, das alle lesen. „fix stuff" sagt einem Teamkollegen nichts. Eine gut geschriebene Commit-Message erklärt, was und warum — in 72 Zeichen.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Formel</div>
+        <div class="answer-box-text">
+          <strong>Format:</strong> <code>type(scope): kurze Beschreibung im Imperativ</code><br><br>
+          <div class="code-block">feat(fhir): LOINC-Code-Mapping für Laborbefunde hinzufügen
+fix(auth): Token-Refresh-Abschneidung bei bcrypt-Hash beheben
+docs(api): Paginierungsparameter in README klären
+chore(deps): FastAPI auf 0.111.0 aktualisieren
+refactor(models): Geräteschema in separates Modul auslagern</div>
+          Regeln: mit Verb beginnen ("add"/"hinzufügen", "fix"/"beheben"). Unter 72 Zeichen. Kein Punkt am Ende. Das <em>Was</em> im Betreff, das <em>Warum</em> im Body falls nötig.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Ich bin der Reviewer — worauf soll ich eigentlich achten?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Tipp</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Code Review ist eine Fähigkeit, nicht nur Code lesen</div>
+      <div class="strategy-text">Neue Entwickler denken, Code Review dient dem Bug-Finden. Das stimmt — aber es geht auch um Korrektheit, Klarheit, Sicherheit und Mentoring.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Reviewer-Checkliste</div>
+        <div class="answer-box-text">
+          <strong>Korrektheit</strong> — tut es, was die PR-Beschreibung sagt? Sind Randfälle abgedeckt?<br><br>
+          <strong>Klarheit</strong> — kann ein neues Teammitglied das in 6 Monaten noch verstehen?<br><br>
+          <strong>Sicherheit</strong> — hardcodierte Zugangsdaten, unvalidierte Eingaben, exponierte Endpoints?<br><br>
+          <strong>Tests</strong> — gibt es Tests für das neue Verhalten? Testen sie das Richtige?<br><br>
+          <strong>Umfang</strong> — macht der PR nur das, was er behauptet?
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Nitpick-Kommentare mit „nit:"-Präfix kennzeichnen — „nit: `x` in `deviceId` umbenennen für Klarheit". Der Autor kann Nits ignorieren; sie blockieren keinen Merge.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Innerhalb von 24 Stunden antworten. Ein PR, der tagelang unreviewed liegt, ist ein Teamprozess-Fehler, kein Git-Problem.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🛠️</div>
+    <div>
+      <div class="section-title">Praktische Übung</div>
+      <div class="section-subtitle">Mach das, bevor du zu Thema 3 gehst — echte PR-Erfahrung in sicherer Umgebung</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Einen PR öffnen, reviewen und mergen</h2>
+    <p>Aus dem Lehrplan: erstelle einen Feature-Branch, mach eine kleine Änderung, pushe ihn, öffne einen PR auf GitHub, reviewe ihn selbst und merge ihn. Jeder Schritt ist bewusst — beobachte, was GitHub dir in jeder Phase zeigt.</p>
+    <div class="code-block"># 1. Von einem aktuellen main starten
+git switch main && git pull
+
+# 2. Feature-Branch erstellen
+git switch -c feature/pr-practice
+
+# 3. Eine echte Änderung vornehmen
+echo "# PR-Übung" >> NOTES.md
+git add NOTES.md
+git commit -m "docs: PR-Übungsnotiz hinzufügen"
+
+# 4. Branch auf GitHub pushen
+git push -u origin feature/pr-practice
+
+# 5. Zu GitHub gehen — Banner "Compare & pull request" klicken
+#    Beschreibungsvorlage ausfüllen. PR öffnen.
+
+# 6. Im Tab "Files changed" das eigene Diff reviewen
+#    Mindestens einen Kommentar am eigenen Code hinterlassen — übe die UI
+
+# 7. PR über GitHub-UI mergen → "Squash and merge" → Bestätigen
+
+# 8. Lokal aufräumen
+git switch main
+git pull
+git branch -d feature/pr-practice</div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist fertig mit diesem Thema, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du erklären kannst, was ein PR ist und was die drei Merge-Strategien (Merge-Commit, Squash, Rebase) je auf main erzeugen.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du einen PR mit ausgefüllter Beschreibung öffnen, auf Review-Kommentare reagieren, Updates pushen und mergen kannst — ohne nachschlagen zu müssen.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du weißt, wie du einen PR-Branch aktualisierst, wenn main sich vorwärtsbewegt hat.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du mindestens einen echten PR geöffnet (auch in einem persönlichen Repo) und seine CI-Ausgabe gelesen hast.</div>
+  </div>
+
+</div><!-- /tab-de -->
+
+<!-- ═══════════════════════════════════════════════════
+     ARABIC TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🔀</div>
+    <div>
+      <div class="section-title">ما هو الـ Pull Request فعلاً</div>
+      <div class="section-subtitle">المفهوم أولاً — قبل أن تلمس واجهة GitHub</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>الـ Pull Request محادثة، لا نقل ملفات</h2>
+    <p>الاسم مضلل. الـ PR لا "يسحب" شيئاً — هو <strong>طلب مراجعة</strong> يقول: "لديّ تغييرات على branch الخاص بي. من فضلك ألقِ نظرة عليها، ناقشها، وادمجها في الـ branch المستهدف إذا كانت جيدة."</p>
+    <p>الدمج نفسه هو الجزء السهل. محادثة المراجعة — التعليقات، التغييرات المطلوبة، الموافقات — هي القيمة الحقيقية. هكذا تنتقل المعرفة في الفريق، وهكذا تُكتشف الأخطاء قبل الإنتاج، وهكذا يتعلم المطورون الجدد الكود.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>ما يحتويه:</strong> diff (كل سطر تغيّر)، عنوان ووصف تكتبهما، خيط نقاش، حالة مراجعة، ونتائج CI.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>ما ليس هو:</strong> ليس ملف ZIP، ولا مرفق بريد إلكتروني، ولا منتجاً نهائياً. هو اقتراح مفتوح للتدقيق.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Protected Branches + PRs:</strong> في فريق بحثي حقيقي، <code>main</code> محمي — لا يمكنك الـ push مباشرة إليه. كل تغيير يمر عبر PR. هذا ليس بيروقراطية؛ هو شبكة الأمان الخاصة بك.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">✍️</div>
+    <div>
+      <div class="section-title">كيف تكتب PR يُراجَع بسرعة</div>
+      <div class="section-subtitle">وقت المراجعين محدود — اجعل من السهل عليهم قول نعم</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>قالب وصف الـ PR</h2>
+    <p>الوصف الفارغ هو السبب الأكثر شيوعاً لبقاء الـ PRs دون مراجعة. المراجعون يحتاجون إلى سياق ليؤدوا عملهم. املأ هذا القالب في كل مرة — يستغرق 3 دقائق ويوفر على الجميع ساعة.</p>
+    <div class="pr-template" dir="ltr">## What does this PR do?
+<!-- One or two sentences. -->
+
+## Why is this change needed?
+<!-- Link to issue/ticket or explain the context. -->
+
+## How was it tested?
+<!-- "Ran it locally and it worked" is fine. -->
+
+## Screenshots / output (if UI or data change)
+
+## Checklist
+- [ ] Ran the full test suite locally
+- [ ] No debug logs / commented-out code left in
+- [ ] Branch is up to date with main</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>اجعل الـ PRs صغيرة. الـ diff الذي يقل عن 400 سطر يُراجَع في دقائق. 1000 سطر يُتصفَّح أو يُؤجَّل.</div>
+      <div class="key-point"><div class="key-point-dot"></div>تغيير منطقي واحد لكل PR — ليس "أصلحت الـ bug وأعدت الـ refactor وحدّثت الـ docs".</div>
+      <div class="key-point"><div class="key-point-dot"></div>Draft PRs صالحة. افتح واحداً مبكراً لمشاركة السياق والحصول على تغذية راجعة مبكرة — ضعه كجاهز عندما يكون كذلك فعلاً.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#faf5ff;">💬</div>
+    <div>
+      <div class="section-title">المفاهيم الأساسية — افتح كل بطاقة</div>
+      <div class="section-subtitle">أسئلة الـ PR التي تفاجئ المطورين الجدد في بيئات الفريق</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">ماذا يحدث بالضبط عند دمج PR — أي commit يصل إلى <code>main</code>؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">ثلاث استراتيجيات دمج — ستصادفها كلها</div>
+      <div class="strategy-text">يقدم GitHub ثلاث طرق لدمج PR. فهمها يمنع المفاجآت عند قراءة git log. الفرق عادةً يُجبر على استراتيجية واحدة — اسأل عنها في يومك الأول.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الاستراتيجيات الثلاث</div>
+        <div class="answer-box-text">
+          <strong>Merge commit (الافتراضي)</strong> — ينشئ commit دمج جديد على main يربط التاريخَين معاً. تاريخ الـ branch كاملاً محفوظ. مناسب للـ feature work التي تستفيد من علامة واضحة "وصل هذا الـ PR هنا".<br><br>
+          <strong>Squash and merge</strong> — يضغط كل commits الـ branch في commit واحد ثم يضيفه إلى main. Main يبقى نظيفاً وخطياً. Commits الـ WIP الفردية تختفي. شائع في الفرق التي تهتم بسجل مقروء.<br><br>
+          <strong>Rebase and merge</strong> — يُعيد تشغيل كل commit من branch-ك فوق main كأنه كُتب هناك مباشرةً مع SHAs جديدة. لا merge commit. أنظف تاريخ، لكن يفقد مرجع الـ branch في السجل.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>بعد الدمج: <strong>احذف الـ feature branch فوراً</strong>. قد أدّى غرضه.</div>
+        <div class="key-point"><div class="key-point-dot"></div>بعد الدمج محلياً: <code dir="ltr">git switch main && git pull</code> للحصول على الـ commit المدموج.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">المراجع ترك تعليقات. كيف أردّ وأحدّث الـ PR؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">سير عمل الرد على المراجعة</div>
+      <div class="strategy-text">الرد المهني على تعليقات المراجعة مهارة أساسية في الفريق. الهدف ليس "الفوز" بالنقاش — بل الوصول إلى أفضل كود. المراجعون يقدمون لك خدمة.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">خطوة بخطوة</div>
+        <div class="answer-box-text">
+          1. اقرأ جميع التعليقات قبل إجراء أي تغييرات — بعضها مترابط.<br><br>
+          2. لكل تعليق: إما <strong>أصلحه وردّ "تم، محدّث في [SHA]"</strong>، أو <strong>ناقشه</strong> — "أبقيت هذا كما هو لأن X، هل هذا منطقي؟"<br><br>
+          3. أجرِ تغييراتك محلياً على نفس الـ branch وادفعها:
+          <div class="code-block" dir="ltr">git add .
+git commit -m "fix: address null-check review feedback"
+git push</div>
+          الـ PR يتحدث تلقائياً — لا حاجة لإغلاقه وإعادة فتحه.<br><br>
+          4. علّم كل تعليق تم التعامل معه بـ <strong>Resolved</strong> على GitHub.<br><br>
+          5. اطلب المراجعة مرة أخرى من المراجع — لا تتركه يخمن أنك جاهز.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>لا تستخدم force-push على branch الـ PR بعد بدء المراجعة — يُعيد كتابة التاريخ ويفقد مراسي تعليقات المراجع.</div>
+        <div class="key-point"><div class="key-point-dot"></div>النبرة: مختصرة، تعاونية، غير دفاعية. "ملاحظة جيدة — تم الإصلاح" أفضل من فقرة مليئة بالتبريرات.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">الـ PR يقول "This branch is out of date with main". ماذا أفعل؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">إبقاء الـ branch متزامناً</div>
+      <div class="strategy-text">يحدث هذا باستمرار في الفرق النشطة — دمج أحدهم PR-ه في main بينما كنت تعمل. الـ branch الخاص بك الآن خلف main. حله قبل طلب الدمج.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الحل الصحيح</div>
+        <div class="answer-box-text">
+<div class="code-block" dir="ltr"># ١. الانتقال إلى main وسحب الأحدث
+git switch main
+git pull
+
+# ٢. العودة إلى feature branch
+git switch feature/my-feature
+
+# ٣. دمج main في branch-ك (يجلب branch-ك إلى مستوى main)
+git merge main
+
+# ٤. حل أي تعارضات تظهر (انظر الموضوع ٣)، ثم push
+git push</div>
+          الـ PR الآن محدّث. تختفي رسالة "out of date" ويُعاد تشغيل CI.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ زر "Update branch" في GitHub يفعل نفس الشيء عبر الواجهة. استخدمه عند الدمج النظيف. عند وجود تعارضات يجب حلها محلياً — GitHub لا يستطيع حل تعارضات الكود تلقائياً.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">ما هي فحوصات CI ولماذا تمنع الـ PR الخاص بي؟</span>
+      <span class="q-badges"><span class="badge badge-common">شائع</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Continuous Integration — المراجع الأول الآلي</div>
+      <div class="strategy-text">CI يعمل تلقائياً عند كل push على PR. ليس اختيارياً وليس شخصياً. فشل فحص CI يعني أن البوابة الآلية اكتشفت شيئاً قبل أن يضطر إنسان للقيام بذلك.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">ما يفحصه CI عادةً</div>
+        <div class="answer-box-text">
+          <strong>Build</strong> — هل يُترجَم الكود؟ هل تبدأ التطبيق بدون أخطاء؟<br><br>
+          <strong>Tests</strong> — هل تنجح جميع الاختبارات؟ اختبار واحد فاشل يمنع الدمج.<br><br>
+          <strong>Linting</strong> — هل يتبع الكود قواعد الأسلوب (PEP 8، ESLint...)؟ أخطاء التنسيق تُفشل CI.<br><br>
+          <strong>Type checks</strong> — في codebases المكتوبة (TypeScript، mypy)، هل هناك أخطاء نوع؟
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>انقر على اسم الفحص الفاشل على GitHub — يرتبط مباشرة بسجل CI. الخطأ في الغالب في الـ 20 سطراً الأخيرة.</div>
+        <div class="key-point"><div class="key-point-dot"></div>لا تطلب من زميل "الدمج فقط" رغم فشل CI. هذا الفشل له سبب.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">كيف أكتب commit messages جيدة للتغييرات في PR؟</span>
+      <span class="q-badges"><span class="badge badge-common">شائع</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">رسائل الـ Commit هي السطر الأول من التوثيق</div>
+      <div class="strategy-text">في الفريق، git log سجل تغييرات مشترك يقرؤه الجميع. "fix stuff" لا يخبر أي زميل بشيء. رسالة commit جيدة تشرح ماذا وسبب — في 72 حرفاً.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الصيغة</div>
+        <div class="answer-box-text">
+          <strong>الصياغة:</strong> <code dir="ltr">type(scope): وصف مختصر بصيغة الأمر</code><br><br>
+          <div class="code-block" dir="ltr">feat(fhir): add LOINC code mapping for lab results
+fix(auth): resolve token refresh truncation on bcrypt hash
+docs(api): clarify pagination parameters in README
+chore(deps): upgrade FastAPI to 0.111.0
+refactor(models): extract device schema into separate module</div>
+          القواعد: ابدأ بفعل أمر ("add"، "fix"، "remove"). أقل من 72 حرفاً. بدون نقطة في النهاية. الـ <em>ماذا</em> في الموضوع، الـ <em>لماذا</em> في الـ body عند الحاجة.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>بادئة النوع تطابق تسمية الـ branch: <code>feat</code>، <code>fix</code>، <code>docs</code>، <code>chore</code>، <code>refactor</code>، <code>test</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>عند squash merge، رسائل commits الفردية تتدمج في واحدة — عنوان الـ PR يصبح الـ commit على main. اجعل عنوان الـ PR رسالة commit جيدة أيضاً.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">أنا المراجع — على ماذا أبحث فعلاً؟</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 نصيحة</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">مراجعة الكود مهارة، لا مجرد قراءة كود</div>
+      <div class="strategy-text">المطورون الجدد يظنون أن مراجعة الكود تهدف لاكتشاف الـ bugs. صحيح — لكن أيضاً الصحة، الوضوح، الأمان، والتوجيه.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">قائمة فحص المراجع</div>
+        <div class="answer-box-text">
+          <strong>الصحة</strong> — هل يفعل ما تقوله الـ PR description؟ هل الحالات الطرفية مغطاة؟<br><br>
+          <strong>الوضوح</strong> — هل يستطيع عضو فريق جديد فهمه بعد 6 أشهر؟ هل الأسماء ذات معنى؟<br><br>
+          <strong>الأمان</strong> — بيانات اعتماد مكتوبة ثابتة، مدخلات غير محقَّقة، endpoints مكشوفة؟<br><br>
+          <strong>الاختبارات</strong> — هل هناك اختبارات للسلوك الجديد؟ هل تختبر الشيء الصحيح؟<br><br>
+          <strong>النطاق</strong> — هل يفعل الـ PR فقط ما يدّعيه؟
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>الملاحظات الثانوية بادئة "nit:" — "nit: أعد تسمية <code>x</code> إلى <code>deviceId</code> للوضوح". يمكن للمؤلف تجاهل الـ nits؛ لا تمنع الدمج.</div>
+        <div class="key-point"><div class="key-point-dot"></div>الرد خلال 24 ساعة. PR يبقى بدون مراجعة لأيام هو فشل في عملية الفريق، لا مشكلة Git.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🛠️</div>
+    <div>
+      <div class="section-title">التطبيق العملي</div>
+      <div class="section-subtitle">افعل هذا قبل الانتقال إلى الموضوع الثالث — تجربة PR حقيقية في بيئة آمنة</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>افتح PR وراجعه وادمجه</h2>
+    <p>من المنهج: أنشئ feature branch، أجرِ تغييراً صغيراً، ادفعه، افتح PR على GitHub، راجعه بنفسك، وادمجه. كل خطوة مقصودة — لاحظ ما يعرضه GitHub في كل مرحلة.</p>
+    <div class="code-block" dir="ltr"># ١. ابدأ من main محدّث
+git switch main && git pull
+
+# ٢. أنشئ feature branch
+git switch -c feature/pr-practice
+
+# ٣. أجرِ تغييراً حقيقياً
+echo "# PR practice" >> NOTES.md
+git add NOTES.md
+git commit -m "docs: add PR practice note"
+
+# ٤. ادفع الـ branch إلى GitHub
+git push -u origin feature/pr-practice
+
+# ٥. اذهب إلى GitHub — انقر "Compare & pull request"
+#    املأ قالب الوصف. افتح الـ PR.
+
+# ٦. في تبويب "Files changed" راجع diff-ك
+#    اترك تعليقاً واحداً على الأقل على كودك — مارس الواجهة
+
+# ٧. ادمج الـ PR عبر GitHub UI → "Squash and merge" → تأكيد
+
+# ٨. نظّف محلياً
+git switch main
+git pull
+git branch -d feature/pr-practice</div>
+    <p>بعد هذا يجب أن تتمكن من فتح PR من البداية للنهاية دون تردد. الـ PR الأول الذي تفتحه على codebase حقيقي سيكون مألوفاً، لا غريباً.</p>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> انتهيت من هذا الموضوع عندما...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع شرح ما هو الـ PR وما تنتجه كل من الاستراتيجيات الثلاث (merge commit، squash، rebase) على main.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع فتح PR بوصف مكتمل، والرد على تعليقات المراجعة، ودفع التحديثات، والدمج — كل ذلك دون البحث عن أي شيء.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تعرف كيف تحدّث branch الـ PR عندما يتقدم main.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>فتحت PR حقيقياً (حتى في repo شخصي) وقرأت مخرجات CI الخاصة به.</div>
+  </div>
+
+</div><!-- /tab-ar -->
+
+  </div><!-- /body -->
+</main>
+
+<!-- LMS progress bridge: tells lesson-ui.js which localStorage key to write to.
+     Must match the storageKey declared in registry.js for github-pull-requests. -->
+<script>window.LMS_STORAGE_KEY = 'lms_github_02_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+</body>
+</html>

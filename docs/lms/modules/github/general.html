@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>General Overview | Git &amp; GitHub Team Workflows</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── General-page-specific styles only — see theme.css for everything else ── */
+
+/* Badge labels (must / common / tip) */
+.badge {
+  font-size: 10.5px; font-weight: 700;
+  padding: 2px 8px; border-radius: 4px;
+  white-space: nowrap;
+}
+.badge-must   { background: #fef3c7; color: #92400e; }
+.badge-common { background: #dbeafe; color: #1e40af; }
+.badge-tip    { background: #f0fdf4; color: #166534; }
+
+/* Question card accordion */
+.q-arrow {
+  font-size: 12px; color: var(--muted);
+  padding-top: 3px; flex-shrink: 0;
+  transition: transform .2s;
+}
+.q-trigger.open .q-arrow { transform: rotate(180deg); }
+
+/* Answer panel — indented to align with question number */
+.q-panel { padding: 18px 20px 16px 52px; }
+
+.strategy-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+}
+.strategy-text {
+  font-size: 13.5px; color: var(--navy2);
+  line-height: 1.65; margin-bottom: 14px;
+}
+
+.answer-box {
+  background: var(--green-bg); border: 1px solid var(--green-border);
+  border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;
+}
+.answer-box-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--green-text); margin-bottom: 8px;
+}
+.answer-box-text { font-size: 13.5px; color: #14532d; line-height: 1.7; }
+
+.warning-box {
+  background: var(--amber-bg); border: 1px solid #fde68a;
+  border-radius: 8px; padding: 12px 14px; margin-bottom: 12px;
+}
+.warning-box-text { font-size: 13px; color: var(--amber-text); line-height: 1.55; }
+
+.key-points { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+.key-point {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 13.5px; color: var(--navy2); line-height: 1.55;
+}
+.key-point-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: #2563eb;
+  flex-shrink: 0; margin-top: 7px;
+}
+
+/* Inline and block code */
+code {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+  font-size: 12.5px; background: #f1f5f9;
+  padding: 1px 5px; border-radius: 3px; color: var(--navy);
+}
+.code-block {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+  font-size: 12px; background: #f8fafc;
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 10px 14px; margin: 10px 0;
+  color: var(--navy); line-height: 1.65;
+  white-space: pre; overflow-x: auto;
+}
+
+/* Resource cards */
+.ask-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 8px; padding: 13px 16px; margin-bottom: 8px;
+  box-shadow: var(--shadow); display: flex; gap: 10px; align-items: flex-start;
+}
+.ask-icon    { font-size: 15px; flex-shrink: 0; padding-top: 1px; }
+.ask-content { flex: 1; }
+.ask-q       { font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 3px; }
+.ask-why     { font-size: 12.5px; color: var(--slate); line-height: 1.5; }
+
+/* Success criteria block */
+.must-block {
+  background: var(--amber-bg); border: 1.5px solid var(--amber-border);
+  border-radius: var(--radius); padding: 18px 20px; margin: 28px 0 0;
+}
+.must-block-title {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--amber-text); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 7px;
+}
+.must-block .must-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  font-size: 13.5px; color: #78350f; line-height: 1.6;
+  padding: 9px 0; border-bottom: 1px solid #fde68a;
+}
+.must-block .must-item:last-child { border-bottom: none; padding-bottom: 0; }
+.must-block .must-bullet { font-size: 15px; flex-shrink: 0; }
+
+/* RTL overrides */
+[dir="rtl"] .q-panel         { padding: 18px 52px 16px 20px; }
+[dir="rtl"] .key-point       { flex-direction: row-reverse; }
+[dir="rtl"] .must-item       { flex-direction: row-reverse; }
+[dir="rtl"] .must-block-title { flex-direction: row-reverse; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .code-block      { direction: ltr; text-align: left; }
+
+@media (max-width: 600px) {
+  .q-panel { padding-left: 20px; }
+  .q-badges { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Git &amp; GitHub &mdash; General Overview</div>
+    <h1>Git &amp; GitHub Team Workflows</h1>
+    <p class="header-sub">What you already know, what this module adds, and the eight core concepts that unlock professional team collaboration with Git.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+  <div class="body">
+
+    <!-- ═══════════════════════════════════════════════════
+         ENGLISH TAB
+    ════════════════════════════════════════════════════ -->
+    <div id="tab-en" class="tab-content active">
+
+      <!-- Progress bar -->
+      <div class="progress-bar">
+        <span class="progress-label">Study progress</span>
+        <div class="progress-track"><div class="progress-fill" id="prog-en" style="width:0%"></div></div>
+        <span class="progress-count" id="prog-count-en">0 / 0 opened</span>
+      </div>
+
+      <!-- SECTION 1: Module structure -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#eff6ff;">📋</div>
+        <div>
+          <div class="section-title">What This Module Covers</div>
+          <div class="section-subtitle">Five topics, 4–5 days, priority: critical before your first team project</div>
+        </div>
+      </div>
+
+      <div class="key-points" style="margin-bottom:0;">
+        <div class="key-point"><div class="key-point-dot"></div><strong>Module 1.1 — Branches</strong> (1 day): Mental model of parallel development. Naming conventions. Hands-on: create three branches, observe divergence in <code>git log --all --graph</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>Module 1.2 — Pull Requests</strong> (1 day): PRs as the communication layer around a merge. How to write a clear title and description. Responding to reviewer comments.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>Module 1.3 — Merge Conflicts</strong> (1 day): What causes them, how to read the markers, how to resolve using VS Code or CLI. Deliberately creating one as practice.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>Module 1.4 — Undo Without Disaster</strong> (0.5 day): <code>git reset</code>, <code>git revert</code>, <code>git stash</code>, <code>git cherry-pick</code> — the right tool for each scenario.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>Module 1.5 — Team Workflow</strong> (0.5 day): How a real research team uses Git. Protected main branch. The rules most new developers break on day one.</div>
+      </div>
+
+      <!-- SECTION 2: What you already know -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#f0fdf4;">✅</div>
+        <div>
+          <div class="section-title">What You Already Know</div>
+          <div class="section-subtitle">Confirm these before opening Module 1.1 — skip anything you can already do without looking it up</div>
+        </div>
+      </div>
+
+      <div class="key-points" style="margin-bottom:0;">
+        <div class="key-point"><div class="key-point-dot"></div><code>git init</code>, <code>git add</code>, <code>git commit</code>, <code>git push</code> — the solo workflow used in your own projects (DiaTwin, Morafek).</div>
+        <div class="key-point"><div class="key-point-dot"></div>Basic awareness that branches exist and that <code>main</code> is the default branch.</div>
+        <div class="key-point"><div class="key-point-dot"></div>GitHub desktop or CLI basics — cloning a repo, pushing, pulling.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Working with your own repositories: committing changes, seeing history with <code>git log</code>.</div>
+      </div>
+
+      <!-- SECTION 3: Core concept questions -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#f5f3ff;">🧠</div>
+        <div>
+          <div class="section-title">Core Conceptual Questions</div>
+          <div class="section-subtitle">Open every card — these are the gaps this module closes</div>
+        </div>
+      </div>
+
+      <!-- Q01 -->
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">01</span>
+          <span class="q-text">What is the difference between <code>git commit</code> and <code>git push</code>?</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Why this matters</div>
+          <div class="strategy-text">This is the single most common confusion in the first week of team Git. Getting it wrong means teammates cannot see your work or accidentally think you've done nothing.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">The distinction</div>
+            <div class="answer-box-text">
+              A <strong>commit</strong> records a snapshot in your local <code>.git</code> history — only you can see it. Your local repo and the remote are independent copies.<br><br>
+              A <strong>push</strong> uploads your local commits to the remote (GitHub) so your team can access them. You can have ten commits before ever pushing — and they're invisible to everyone else until you do.<br><br>
+              Think of it as: <em>commit = save a draft to your hard drive; push = email it to the team.</em>
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div><code>git commit</code> saves ONLY to your local repository's history.</div>
+            <div class="key-point"><div class="key-point-dot"></div><code>git push</code> uploads those commits to the remote (GitHub).</div>
+            <div class="key-point"><div class="key-point-dot"></div>Commits you haven't pushed are invisible to your team.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Push unfinished work to your own feature branch — never to main.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q02 -->
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">02</span>
+          <span class="q-text">Why can't I just work on <code>main</code> and push directly?</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Why this matters</div>
+          <div class="strategy-text">Solo projects: fine. Team projects: always wrong. Main is the stable baseline everyone depends on. One bad push breaks the whole team's build — no warning, no discussion.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">The case for feature branches</div>
+            <div class="answer-box-text">
+              On a team, <strong>main is the stable source of truth</strong> — every deployment, every CI pipeline, every other developer's baseline. If you push broken code to main, you break everyone's build with no safety net.<br><br>
+              Feature branches let you work, experiment, and break things safely in isolation. They cost nothing to create (they're just pointers, not file copies). You merge back only when the work is ready and has been reviewed.<br><br>
+              On a professional codebase, main is <strong>protected</strong> — direct pushes are blocked by GitHub's branch protection settings. You cannot push to main even if you wanted to.
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>Main is protected on every professional team — direct push is blocked.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Feature branches are free — create one for every logical change.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Branches enable code review before anything changes shared code.</div>
+            <div class="key-point"><div class="key-point-dot"></div>If two people both worked on main, every push would cause conflicts.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q03 -->
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">03</span>
+          <span class="q-text">What is a Pull Request — how is it different from just running <code>git merge</code>?</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">The key distinction</div>
+          <div class="strategy-text">A merge is a Git operation. A PR is a process. One is a command; the other is the quality control workflow that wraps it.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">What a PR is</div>
+            <div class="answer-box-text">
+              <code>git merge</code> is the technical act of combining two branches' commit histories — one command, done locally.<br><br>
+              A <strong>Pull Request (PR)</strong> is the GitHub workflow that wraps that merge: it shows a diff of every changed line, opens a discussion thread where reviewers leave comments, runs automated CI/CD checks, and requires an approval before the merge happens.<br><br>
+              You can merge without a PR (<code>git merge</code> locally). On a team you almost never should — the PR is where quality control, documentation, and technical discussion all happen. After a PR merges, the feature branch is typically deleted.
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>PR = diff + discussion thread + CI checks + approval + merge.</div>
+            <div class="key-point"><div class="key-point-dot"></div><code>git merge</code> = just the technical combining step, no workflow.</div>
+            <div class="key-point"><div class="key-point-dot"></div>PRs are mandatory on protected branches — no approval means no merge.</div>
+            <div class="key-point"><div class="key-point-dot"></div>PRs create a permanent record of what changed, why, and who approved it.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q04 -->
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">04</span>
+          <span class="q-text">What actually happens during a merge conflict?</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Reframe before reading</div>
+          <div class="strategy-text">Conflicts are information, not errors. Git is saying: "two people changed the same lines — I need you to decide which version is correct." That's a reasonable request.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">What Git does</div>
+            <div class="answer-box-text">
+              When Git tries to merge two branches and finds the same lines edited differently in both, it cannot automatically choose. It inserts <strong>conflict markers</strong> into the file and pauses:
+              <div class="code-block">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+your current branch's version of the lines
+=======
+the incoming branch's version of the lines
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/wearable-data-sync</div>
+              You edit the file to produce the correct final result — which might be one side, the other, or a manual blend of both. Then you remove <em>all markers</em>, <code>git add</code> the file, and <code>git commit</code> to complete the merge.
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>Conflicts are normal — not a sign something went wrong.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Every conflict marker must be removed before you can commit.</div>
+            <div class="key-point"><div class="key-point-dot"></div>If unsure about someone else's code — ask them before resolving it yourself.</div>
+            <div class="key-point"><div class="key-point-dot"></div>VS Code shows conflicts with coloured one-click buttons (simpler for common cases).</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q05 -->
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">05</span>
+          <span class="q-text">When should I use <code>git reset</code> vs <code>git revert</code>?</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">The rule</div>
+          <div class="strategy-text">Reset is for LOCAL history. Revert is for SHARED branches. This distinction is the difference between a tidy undo and a Git disaster that forces teammates to re-pull.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">The two tools</div>
+            <div class="answer-box-text">
+              <strong><code>git reset --soft HEAD~1</code></strong> moves HEAD back one commit and unstages that commit's changes (the file modifications stay). It <em>rewrites history</em>. If others have already pulled your commits, their history and yours now diverge — causing chaos on the next pull.<br><br>
+              <strong><code>git revert HEAD</code></strong> creates a <em>new</em> commit that does the exact opposite of the previous one. The original commit stays in history. This is safe for shared branches because it adds to history rather than rewriting it.
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>Branch is local only and nobody has pulled it → use <code>git reset --soft</code>.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Branch is on GitHub and others may have pulled → use <code>git revert</code>.</div>
+            <div class="key-point"><div class="key-point-dot"></div><code>git reset --hard</code> discards file changes permanently — use only with full awareness.</div>
+          </div>
+          <div class="warning-box">
+            <div class="warning-box-text">⚠️ Never <code>git reset --hard</code> on a branch your teammates have pulled. This is one of the most common Git disasters on teams. The correct tool for shared branches is always <code>git revert</code>.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q06 -->
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">06</span>
+          <span class="q-text">What is <code>git stash</code> and when should I use it?</span>
+          <span class="q-badges"><span class="badge badge-common">Common</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Mental model</div>
+          <div class="strategy-text">Stash is a temporary side pocket for incomplete work. It lets you set aside half-finished changes, do something else, and come back — without committing code that isn't ready.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">How it works</div>
+            <div class="answer-box-text">
+              <code>git stash</code> saves your current uncommitted changes to a hidden stack and restores your working directory to the last committed state — instantly giving you a clean tree.<br><br>
+              <code>git stash pop</code> re-applies the most recently saved changes to your current branch.<br><br>
+              <strong>Classic scenario:</strong> you're mid-feature when someone asks you to urgently review a PR. You can't commit half-finished code. Stash it, switch branches, review, pop the stash when you're back.
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div><code>git stash</code> = save uncommitted work + clean working directory.</div>
+            <div class="key-point"><div class="key-point-dot"></div><code>git stash pop</code> = restore the last stash.</div>
+            <div class="key-point"><div class="key-point-dot"></div><code>git stash list</code> = see all stashed entries (you can stash multiple times).</div>
+            <div class="key-point"><div class="key-point-dot"></div>Don't use stash as long-term storage — commit your work to a branch instead.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q07 -->
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">07</span>
+          <span class="q-text">What branch naming convention should I use?</span>
+          <span class="q-badges"><span class="badge badge-common">Common</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">First rule</div>
+          <div class="strategy-text">Check your team's existing branch names and match that pattern. If none exists yet, propose the type-prefix system — it's the most widely adopted convention.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Type-prefix convention</div>
+            <div class="answer-box-text">
+              Format: <code>type/short-description-in-kebab-case</code><br><br>
+              <code>feature/wearable-data-sync</code> — new functionality<br>
+              <code>bugfix/fhir-mapping-null-id</code> — a specific bug fix<br>
+              <code>docs/api-integration-guide</code> — documentation only<br>
+              <code>chore/update-dependencies</code> — maintenance, no behaviour change<br>
+              <code>hotfix/critical-auth-crash</code> — urgent production fix
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>One branch = one logical change. Don't bundle unrelated fixes.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Keep the slug short and descriptive. Lowercase, hyphens, under 50 characters.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Delete branches after merging — don't let them pile up in the remote.</div>
+            <div class="key-point"><div class="key-point-dot"></div>The branch name shows up in every PR, CI log, and git log.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q08 -->
+      <div class="q-card" data-lang="en">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">08</span>
+          <span class="q-text">What makes a good PR title and description?</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Why it matters</div>
+          <div class="strategy-text">Your description is the context a reviewer needs before they look at a single line of code. A blank or vague description forces the reviewer to reverse-engineer your intent from the diff — slow, frustrating, and often inaccurate.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Good PR description structure</div>
+            <div class="answer-box-text">
+              <strong>Title format:</strong> <code>type: short description of what changed (#issue)</code><br>
+              Good: <code>feat: add null-check for FHIR encounter ID mapping (#87)</code><br>
+              Bad: <code>fix</code> / <code>update stuff</code> / blank<br><br>
+              <strong>Description should include:</strong><br>
+              1. What changed (the technical fact)<br>
+              2. Why it changed (the motivation — what problem does this solve?)<br>
+              3. How to test it<br>
+              4. Any caveats or design decisions worth discussing<br>
+              5. Closing reference: <code>Closes #87</code>
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>Write the description for the reviewer, not for yourself.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Atomic PRs (one logical change) are always easier to review than large multi-change PRs.</div>
+            <div class="key-point"><div class="key-point-dot"></div>If a PR takes more than two hours to review, it's probably too large — split it.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: Resources -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#fff7ed;">🔗</div>
+        <div>
+          <div class="section-title">Recommended Resources</div>
+          <div class="section-subtitle">Pick ONE per module — don't try to do all of them at once</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">🌿</div>
+        <div class="ask-content">
+          <div class="ask-q">learngitbranching.js.org — use for Module 1.1</div>
+          <div class="ask-why">Interactive visual playground for branches. You type real Git commands and see the branch graph animate in real time. The single best resource for building the mental model. If you do nothing else in Module 1.1, complete the first 8 levels here.</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">💥</div>
+        <div class="ask-content">
+          <div class="ask-q">ohshitgit.com — use for Module 1.4</div>
+          <div class="ask-why">Short, direct, slightly profane. Covers every common undo scenario in plain language: "I committed to the wrong branch", "I need to undo the last N commits", "I accidentally deleted a file". Bookmark it.</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">📄</div>
+        <div class="ask-content">
+          <div class="ask-q">Atlassian Git Tutorials (atlassian.com/git/tutorials) — use for Modules 1.2–1.3</div>
+          <div class="ask-why">Clear, real-world focused articles on PRs, merging, and resolving conflicts. The "Comparing Workflows" article is especially good for understanding how professional teams structure their Git usage.</div>
+        </div>
+      </div>
+
+      <!-- Success criteria block -->
+      <div class="must-block">
+        <div class="must-block-title"><span>✓</span> You're Done When...</div>
+        <div class="must-item"><span class="must-bullet">✓</span>You can create a branch, make changes, push, open a PR, resolve a reviewer comment, and merge — all without AI or Stack Overflow.</div>
+        <div class="must-item"><span class="must-bullet">✓</span>You've deliberately created a merge conflict in your own repo and resolved it — once using VS Code's UI, once using CLI + manual editing.</div>
+        <div class="must-item"><span class="must-bullet">✓</span>You can explain out loud why <code>git reset --soft</code> and <code>git revert</code> are different and when each is the right choice.</div>
+        <div class="must-item"><span class="must-bullet">✓</span>You've written a PR with a clear title and description — one that a real team member would understand without asking you follow-up questions.</div>
+      </div>
+
+    </div><!-- end tab-en -->
+
+    <!-- ═══════════════════════════════════════════════════
+         GERMAN TAB
+    ════════════════════════════════════════════════════ -->
+    <div id="tab-de" class="tab-content">
+
+      <!-- Progress bar -->
+      <div class="progress-bar">
+        <span class="progress-label">Lernfortschritt</span>
+        <div class="progress-track"><div class="progress-fill" id="prog-de" style="width:0%"></div></div>
+        <span class="progress-count" id="prog-count-de">0 / 0 geöffnet</span>
+      </div>
+
+      <!-- SECTION 1: Module structure -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#eff6ff;">📋</div>
+        <div>
+          <div class="section-title">Was dieses Modul abdeckt</div>
+          <div class="section-subtitle">Fünf Themen, 4–5 Tage, Priorität: kritisch vor dem ersten Teamprojekt</div>
+        </div>
+      </div>
+
+      <div class="key-points" style="margin-bottom:0;">
+        <div class="key-point"><div class="key-point-dot"></div><strong>Modul 1.1 — Branches</strong> (1 Tag): Mentales Modell paralleler Entwicklung. Namenskonventionen. Praxis: drei Branches erstellen, Divergenz in <code>git log --all --graph</code> beobachten.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>Modul 1.2 — Pull Requests</strong> (1 Tag): PRs als Kommunikationsschicht um einen Merge. Klaren Titel und Beschreibung schreiben. Auf Reviewer-Kommentare antworten.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>Modul 1.3 — Merge-Konflikte</strong> (1 Tag): Was sie verursacht, wie man die Marker liest, wie man sie in VS Code oder CLI löst. Einen Konflikt absichtlich erstellen als Übung.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>Modul 1.4 — Änderungen rückgängig machen</strong> (0,5 Tage): <code>git reset</code>, <code>git revert</code>, <code>git stash</code>, <code>git cherry-pick</code> — das richtige Werkzeug für jedes Szenario.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>Modul 1.5 — Team-Workflow</strong> (0,5 Tage): Wie ein echtes Forschungsteam Git verwendet. Geschützter Main-Branch. Die Regeln, die neue Entwickler am ersten Tag brechen.</div>
+      </div>
+
+      <!-- SECTION 2: What you already know -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#f0fdf4;">✅</div>
+        <div>
+          <div class="section-title">Was du schon weißt</div>
+          <div class="section-subtitle">Bestätige diese Punkte, bevor du Modul 1.1 öffnest — überspringe alles, was du schon ohne Nachschlagen kannst</div>
+        </div>
+      </div>
+
+      <div class="key-points" style="margin-bottom:0;">
+        <div class="key-point"><div class="key-point-dot"></div><code>git init</code>, <code>git add</code>, <code>git commit</code>, <code>git push</code> — der Solo-Workflow aus eigenen Projekten (DiaTwin, Morafek).</div>
+        <div class="key-point"><div class="key-point-dot"></div>Grundlegendes Wissen, dass Branches existieren und dass <code>main</code> der Standard-Branch ist.</div>
+        <div class="key-point"><div class="key-point-dot"></div>GitHub Desktop oder CLI-Grundlagen — Repository klonen, pushen, pullen.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Arbeit mit eigenen Repositories: Änderungen committen, Geschichte mit <code>git log</code> ansehen.</div>
+      </div>
+
+      <!-- SECTION 3: Core concept questions -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#f5f3ff;">🧠</div>
+        <div>
+          <div class="section-title">Zentrale Konzeptfragen</div>
+          <div class="section-subtitle">Öffne jede Karte — das sind die Lücken, die dieses Modul schließt</div>
+        </div>
+      </div>
+
+      <!-- Q01 DE -->
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">01</span>
+          <span class="q-text">Was ist der Unterschied zwischen <code>git commit</code> und <code>git push</code>?</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Muss</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Warum das wichtig ist</div>
+          <div class="strategy-text">Das ist die häufigste Verwechslung in der ersten Woche mit Team-Git. Wer das falsch versteht, denkt entweder, die Teammates sehen Änderungen sofort — oder umgekehrt, dass nichts passiert ist.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Der Unterschied</div>
+            <div class="answer-box-text">
+              Ein <strong>Commit</strong> speichert einen Snapshot in der lokalen <code>.git</code>-History — nur du kannst ihn sehen. Lokales Repository und Remote sind unabhängige Kopien.<br><br>
+              Ein <strong>Push</strong> lädt deine lokalen Commits auf das Remote (GitHub) hoch, sodass das Team darauf zugreifen kann. Du kannst zehn Commits machen, bevor du jemals pushst — für alle anderen sind sie bis dahin unsichtbar.<br><br>
+              Merkhilfe: <em>Commit = Entwurf auf die Festplatte speichern; Push = dem Team mailen.</em>
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div><code>git commit</code> speichert NUR in deiner lokalen Repository-History.</div>
+            <div class="key-point"><div class="key-point-dot"></div><code>git push</code> lädt diese Commits auf das Remote (GitHub) hoch.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Commits, die du nicht gepusht hast, sind für dein Team unsichtbar.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Unfertige Arbeit auf deinen eigenen Feature-Branch pushen — niemals auf main.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q02 DE -->
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">02</span>
+          <span class="q-text">Warum kann ich nicht einfach auf <code>main</code> arbeiten und direkt pushen?</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Muss</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Warum das wichtig ist</div>
+          <div class="strategy-text">Solo-Projekte: problemlos. Team-Projekte: immer falsch. Main ist die stabile Basis, von der alle abhängen. Ein schlecht gepushter Commit bricht den Build des gesamten Teams — ohne Warnung, ohne Diskussion.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Das Argument für Feature-Branches</div>
+            <div class="answer-box-text">
+              Im Team ist <strong>main die stabile Quelle der Wahrheit</strong> — jede Deployment-Pipeline, jedes CI-System, jede andere Entwicklerin oder jeder andere Entwickler basiert darauf. Wer defekten Code auf main pusht, bricht den Build aller — ohne Sicherheitsnetz.<br><br>
+              Feature-Branches erlauben isoliertes Arbeiten, Experimentieren und Fehler machen. Sie kosten nichts (sie sind nur Zeiger, keine Dateikopien). Gemergt wird erst, wenn die Arbeit fertig ist und gereviewed wurde.<br><br>
+              Auf einer professionellen Codebasis ist main <strong>geschützt</strong> — direkte Pushes werden durch GitHubs Branch-Protection-Einstellungen blockiert. Du kannst schlicht nicht auf main pushen, auch wenn du wolltest.
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>Main ist auf jedem professionellen Team geschützt — direkter Push blockiert.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Feature-Branches sind kostenlos — erstelle einen für jede logische Änderung.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Branches ermöglichen Code-Review, bevor geteilter Code geändert wird.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Wenn zwei Personen direkt auf main arbeiten, führt jeder Push zu Konflikten.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q03 DE -->
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">03</span>
+          <span class="q-text">Was ist ein Pull Request — wie unterscheidet er sich von einem <code>git merge</code>?</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Muss</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Der zentrale Unterschied</div>
+          <div class="strategy-text">Ein Merge ist eine Git-Operation. Ein PR ist ein Prozess. Das eine ist ein Befehl; das andere ist der Qualitätskontrollworkflow, der ihn umgibt.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Was ein PR ist</div>
+            <div class="answer-box-text">
+              <code>git merge</code> ist die technische Aktion, zwei Branch-Historien zusammenzuführen — ein Befehl, lokal ausgeführt.<br><br>
+              Ein <strong>Pull Request (PR)</strong> ist der GitHub-Workflow, der diesen Merge umhüllt: Er zeigt ein Diff jeder geänderten Zeile, öffnet einen Diskussions-Thread wo Reviewer Kommentare hinterlassen, führt automatisierte CI/CD-Checks aus und verlangt eine Genehmigung, bevor der Merge stattfindet.<br><br>
+              Mergen ohne PR ist möglich (<code>git merge</code> lokal). Im Team sollte man das fast nie tun — der PR ist der Ort, wo Qualitätskontrolle, Dokumentation und technische Diskussion stattfinden.
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>PR = Diff + Diskussions-Thread + CI-Checks + Genehmigung + Merge.</div>
+            <div class="key-point"><div class="key-point-dot"></div><code>git merge</code> = nur der technische Zusammenführungsschritt, kein Workflow.</div>
+            <div class="key-point"><div class="key-point-dot"></div>PRs sind auf geschützten Branches Pflicht — keine Genehmigung, kein Merge.</div>
+            <div class="key-point"><div class="key-point-dot"></div>PRs erstellen ein dauerhaftes Protokoll darüber, was sich geändert hat, warum und wer es genehmigt hat.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q04 DE -->
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">04</span>
+          <span class="q-text">Was passiert eigentlich bei einem Merge-Konflikt?</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Muss</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Zuerst umentscheiden</div>
+          <div class="strategy-text">Konflikte sind Informationen, keine Fehler. Git sagt: „Zwei Personen haben dieselben Zeilen geändert — ich brauche deine Entscheidung, welche Version korrekt ist." Das ist eine vernünftige Anfrage.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Was Git macht</div>
+            <div class="answer-box-text">
+              Wenn Git zwei Branches zusammenführen will und findet, dass dieselben Zeilen in beiden unterschiedlich bearbeitet wurden, kann es nicht automatisch wählen. Es fügt <strong>Konflikt-Marker</strong> in die Datei ein und hält an:
+              <div class="code-block">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+Version deines aktuellen Branches
+=======
+Version des eingehenden Branches
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/wearable-data-sync</div>
+              Du bearbeitest die Datei zum korrekten Endergebnis, entfernst <em>alle Marker</em>, führst <code>git add</code> für die Datei aus und dann <code>git commit</code>, um den Merge abzuschließen.
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>Konflikte sind normal — kein Zeichen, dass etwas schiefgelaufen ist.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Jeder Konflikt-Marker muss entfernt werden, bevor du committen kannst.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Bei fremdem Code: erst fragen, dann auflösen.</div>
+            <div class="key-point"><div class="key-point-dot"></div>VS Code zeigt Konflikte mit farbigen Ein-Klick-Buttons (einfacher für häufige Fälle).</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q05 DE -->
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">05</span>
+          <span class="q-text">Wann sollte ich <code>git reset</code> vs. <code>git revert</code> verwenden?</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Muss</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Die Regel</div>
+          <div class="strategy-text">Reset für LOKALE History. Revert für GETEILTE Branches. Dieser Unterschied trennt ein sauberes Rückgängigmachen von einem Git-Desaster, das Teammitglieder zum erneuten Pullen zwingt.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Die zwei Werkzeuge</div>
+            <div class="answer-box-text">
+              <strong><code>git reset --soft HEAD~1</code></strong> bewegt HEAD einen Commit zurück und hebt das Staging der Änderungen auf (die Dateimodifikationen bleiben erhalten). Es <em>schreibt History um</em>. Wenn andere deine Commits bereits gepullt haben, divergieren jetzt ihre History und deine — beim nächsten Pull gibt es Chaos.<br><br>
+              <strong><code>git revert HEAD</code></strong> erstellt einen <em>neuen</em> Commit, der das genaue Gegenteil des vorherigen tut. Der Original-Commit bleibt in der History. Sicher für geteilte Branches, da History nur hinzugefügt, nicht umgeschrieben wird.
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>Branch nur lokal, niemand hat gepullt → <code>git reset --soft</code>.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Branch auf GitHub, andere könnten gepullt haben → <code>git revert</code>.</div>
+            <div class="key-point"><div class="key-point-dot"></div><code>git reset --hard</code> verwirft Dateiänderungen dauerhaft — nur mit vollständigem Bewusstsein verwenden.</div>
+          </div>
+          <div class="warning-box">
+            <div class="warning-box-text">⚠️ Niemals <code>git reset --hard</code> auf einem Branch, den Teammitglieder gepullt haben. Das ist eines der häufigsten Git-Desaster im Team. Das richtige Werkzeug für geteilte Branches ist immer <code>git revert</code>.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q06 DE -->
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">06</span>
+          <span class="q-text">Was ist <code>git stash</code> und wann sollte ich es verwenden?</span>
+          <span class="q-badges"><span class="badge badge-common">Häufig</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Mentales Modell</div>
+          <div class="strategy-text">Stash ist eine temporäre Seitentasche für unfertige Arbeit. Er erlaubt dir, halbfertige Änderungen beiseite zu legen, etwas anderes zu tun, und zurückzukommen — ohne Code zu committen, der noch nicht fertig ist.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Wie es funktioniert</div>
+            <div class="answer-box-text">
+              <code>git stash</code> speichert deine aktuellen uncommitted Änderungen in einem versteckten Stack und stellt das Arbeitsverzeichnis auf den letzten committed Zustand zurück — sofort ein sauberes Working Directory.<br><br>
+              <code>git stash pop</code> wendet die zuletzt gespeicherten Änderungen auf deinen aktuellen Branch wieder an.<br><br>
+              <strong>Klassisches Szenario:</strong> Du bist mitten im Feature, als jemand dich bittet, dringend einen PR zu reviewen. Unfertige Code committen geht nicht. Stash it, Branch wechseln, reviewen, Stash zurückholen.
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div><code>git stash</code> = uncommitted Arbeit speichern + Working Directory bereinigen.</div>
+            <div class="key-point"><div class="key-point-dot"></div><code>git stash pop</code> = letzten Stash wiederherstellen.</div>
+            <div class="key-point"><div class="key-point-dot"></div><code>git stash list</code> = alle Stash-Einträge anzeigen (mehrfaches Stashen möglich).</div>
+            <div class="key-point"><div class="key-point-dot"></div>Stash nicht als Langzeitspeicher verwenden — Arbeit stattdessen auf einem Branch committen.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q07 DE -->
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">07</span>
+          <span class="q-text">Welche Branch-Namenskonvention sollte ich verwenden?</span>
+          <span class="q-badges"><span class="badge badge-common">Häufig</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Erste Regel</div>
+          <div class="strategy-text">Schau dir die bestehenden Branch-Namen deines Teams an und passe dein Muster daran an. Wenn noch keines existiert, schlage das Typ-Präfix-System vor — es ist die am weitesten verbreitete Konvention.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Typ-Präfix-Konvention</div>
+            <div class="answer-box-text">
+              Format: <code>typ/kurze-beschreibung-in-kebab-case</code><br><br>
+              <code>feature/wearable-data-sync</code> — neue Funktionalität<br>
+              <code>bugfix/fhir-mapping-null-id</code> — ein bestimmter Bug-Fix<br>
+              <code>docs/api-integration-guide</code> — nur Dokumentation<br>
+              <code>chore/update-dependencies</code> — Wartung, keine Verhaltensänderung<br>
+              <code>hotfix/critical-auth-crash</code> — dringender Produktions-Fix
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>Ein Branch = eine logische Änderung. Keine unzusammenhängenden Fixes bündeln.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Slug kurz und beschreibend halten. Kleinbuchstaben, Bindestriche, unter 50 Zeichen.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Branches nach dem Mergen löschen — nicht im Remote ansammeln lassen.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Der Branch-Name erscheint in jedem PR, CI-Log und git log.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q08 DE -->
+      <div class="q-card" data-lang="de">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">08</span>
+          <span class="q-text">Was macht einen guten PR-Titel und eine gute PR-Beschreibung aus?</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ Muss</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">Warum das wichtig ist</div>
+          <div class="strategy-text">Deine Beschreibung ist der Kontext, den ein Reviewer braucht, bevor er eine einzige Zeile Code liest. Eine leere oder vage Beschreibung zwingt den Reviewer, deine Absicht aus dem Diff zu rekonstruieren — langsam, frustrierend und oft ungenau.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">Struktur einer guten PR-Beschreibung</div>
+            <div class="answer-box-text">
+              <strong>Titel-Format:</strong> <code>typ: kurze Beschreibung was sich geändert hat (#Issue)</code><br>
+              Gut: <code>feat: null-check für FHIR Encounter-ID-Mapping hinzugefügt (#87)</code><br>
+              Schlecht: <code>fix</code> / <code>Sachen aktualisiert</code> / leer<br><br>
+              <strong>Beschreibung sollte enthalten:</strong><br>
+              1. Was sich geändert hat (die technische Tatsache)<br>
+              2. Warum es sich geändert hat (die Motivation — welches Problem löst das?)<br>
+              3. Wie man es testet<br>
+              4. Eventuelle Vorbehalte oder Designentscheidungen zur Diskussion<br>
+              5. Issue-Referenz: <code>Closes #87</code>
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>Beschreibung für den Reviewer schreiben, nicht für sich selbst.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Atomare PRs (eine logische Änderung) sind immer einfacher zu reviewen als große Multi-Änderungs-PRs.</div>
+            <div class="key-point"><div class="key-point-dot"></div>Wenn ein PR mehr als zwei Stunden zum Reviewen braucht, ist er wahrscheinlich zu groß — aufteilen.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: Resources -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#fff7ed;">🔗</div>
+        <div>
+          <div class="section-title">Empfohlene Ressourcen</div>
+          <div class="section-subtitle">Wähle EINE pro Modul — nicht alle auf einmal</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">🌿</div>
+        <div class="ask-content">
+          <div class="ask-q">learngitbranching.js.org — für Modul 1.1</div>
+          <div class="ask-why">Interaktiver visueller Spielplatz für Branches. Du tippst echte Git-Befehle und siehst den Branch-Graphen in Echtzeit animieren. Die beste Einzelressource für den Aufbau des mentalen Modells. Wenn du in Modul 1.1 sonst nichts tust, absolviere die ersten 8 Level hier.</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">💥</div>
+        <div class="ask-content">
+          <div class="ask-q">ohshitgit.com — für Modul 1.4</div>
+          <div class="ask-why">Kurz, direkt, leicht vulgär. Deckt jedes häufige Undo-Szenario in einfacher Sprache ab: „Ich habe auf den falschen Branch committed", „Ich muss die letzten N Commits rückgängig machen". Als Lesezeichen speichern.</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">📄</div>
+        <div class="ask-content">
+          <div class="ask-q">Atlassian Git Tutorials (atlassian.com/git/tutorials) — für Module 1.2–1.3</div>
+          <div class="ask-why">Klare, praxisorientierte Artikel zu PRs, Mergen und Konfliktlösung. Der Artikel „Comparing Workflows" ist besonders gut, um zu verstehen, wie professionelle Teams ihre Git-Nutzung strukturieren.</div>
+        </div>
+      </div>
+
+      <!-- Success criteria block -->
+      <div class="must-block">
+        <div class="must-block-title"><span>✓</span> Du bist fertig, wenn...</div>
+        <div class="must-item"><span class="must-bullet">✓</span>Du einen Branch erstellen, Änderungen machen, pushen, einen PR öffnen, einen Reviewer-Kommentar auflösen und mergen kannst — alles ohne KI oder Stack Overflow.</div>
+        <div class="must-item"><span class="must-bullet">✓</span>Du absichtlich einen Merge-Konflikt in deinem eigenen Repo erstellt und aufgelöst hast — einmal mit VS Codes UI, einmal mit CLI und manuellem Bearbeiten.</div>
+        <div class="must-item"><span class="must-bullet">✓</span>Du laut erklären kannst, warum <code>git reset --soft</code> und <code>git revert</code> verschieden sind und wann welches die richtige Wahl ist.</div>
+        <div class="must-item"><span class="must-bullet">✓</span>Du einen PR mit einem klaren Titel und einer Beschreibung geschrieben hast — einen, den ein echtes Teammitglied ohne Rückfragen verstehen würde.</div>
+      </div>
+
+    </div><!-- end tab-de -->
+
+    <!-- ═══════════════════════════════════════════════════
+         ARABIC TAB
+    ════════════════════════════════════════════════════ -->
+    <div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+      <!-- Progress bar -->
+      <div class="progress-bar">
+        <span class="progress-label">تقدم الدراسة</span>
+        <div class="progress-track"><div class="progress-fill" id="prog-ar" style="width:0%"></div></div>
+        <span class="progress-count" id="prog-count-ar">0 / 0 مفتوح</span>
+      </div>
+
+      <!-- SECTION 1: Module structure -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#eff6ff;">📋</div>
+        <div>
+          <div class="section-title">ما يغطيه هذا الوحدة</div>
+          <div class="section-subtitle">خمسة مواضيع، 4–5 أيام، الأولوية: ضرورية قبل أول مشروع جماعي</div>
+        </div>
+      </div>
+
+      <div class="key-points" style="margin-bottom:0;">
+        <div class="key-point"><div class="key-point-dot"></div><strong>الوحدة 1.1 — الـ Branches</strong> (يوم واحد): النموذج الذهني للتطوير المتوازي. اصطلاحات التسمية. تطبيق: إنشاء ثلاثة branches، مراقبة التفرق في <code dir="ltr">git log --all --graph</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>الوحدة 1.2 — Pull Requests</strong> (يوم واحد): الـ PRs كطبقة تواصل حول الـ merge. كيفية كتابة عنوان ووصف واضحين. الرد على تعليقات المراجعين.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>الوحدة 1.3 — تعارضات الدمج</strong> (يوم واحد): ما الذي يسببها، كيفية قراءة العلامات، كيفية حلها في VS Code أو CLI. إنشاء تعارض عمدًا كتدريب.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>الوحدة 1.4 — التراجع بلا كوارث</strong> (نصف يوم): <code dir="ltr">git reset</code> و<code dir="ltr">git revert</code> و<code dir="ltr">git stash</code> و<code dir="ltr">git cherry-pick</code> — الأداة المناسبة لكل سيناريو.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>الوحدة 1.5 — سير العمل الجماعي</strong> (نصف يوم): كيف يستخدم فريق بحثي حقيقي Git. الـ main branch المحمي. القواعد التي يخترقها المطورون الجدد في اليوم الأول.</div>
+      </div>
+
+      <!-- SECTION 2: What you already know -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#f0fdf4;">✅</div>
+        <div>
+          <div class="section-title">ما تعرفه بالفعل</div>
+          <div class="section-subtitle">تأكد من هذه النقاط قبل فتح الوحدة 1.1 — تخطَّ ما تستطيع فعله دون بحث</div>
+        </div>
+      </div>
+
+      <div class="key-points" style="margin-bottom:0;">
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git init</code> و<code dir="ltr">git add</code> و<code dir="ltr">git commit</code> و<code dir="ltr">git push</code> — سير العمل الفردي المستخدم في مشاريعك الخاصة (DiaTwin، Morafek).</div>
+        <div class="key-point"><div class="key-point-dot"></div>وعي أساسي بوجود الـ branches وأن <code>main</code> هو الـ branch الافتراضي.</div>
+        <div class="key-point"><div class="key-point-dot"></div>أساسيات GitHub Desktop أو CLI — استنساخ repo، push، pull.</div>
+        <div class="key-point"><div class="key-point-dot"></div>العمل على مستودعاتك الخاصة: عمل commits، رؤية السجل بـ <code dir="ltr">git log</code>.</div>
+      </div>
+
+      <!-- SECTION 3: Core concept questions -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#f5f3ff;">🧠</div>
+        <div>
+          <div class="section-title">أسئلة المفاهيم الأساسية</div>
+          <div class="section-subtitle">افتح كل بطاقة — هذه هي الفجوات التي تسدها هذه الوحدة</div>
+        </div>
+      </div>
+
+      <!-- Q01 AR -->
+      <div class="q-card" data-lang="ar">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">01</span>
+          <span class="q-text">ما الفرق بين <code dir="ltr">git commit</code> و<code dir="ltr">git push</code>؟</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">لماذا هذا مهم</div>
+          <div class="strategy-text">هذا هو الخلط الأكثر شيوعًا في الأسبوع الأول من استخدام Git في الفريق. الفهم الخاطئ يعني أن زملاءك لا يرون عملك، أو أنك تظن أن شيئًا لم يحدث.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">الفرق</div>
+            <div class="answer-box-text">
+              الـ <strong>commit</strong> يسجّل لقطة في سجل <code dir="ltr">.git</code> المحلي — أنت وحدك من يراها. المستودع المحلي والـ remote نسختان مستقلتان.<br><br>
+              الـ <strong>push</strong> يرفع commits المحلية إلى الـ remote (GitHub) لكي يتمكن فريقك من الوصول إليها. يمكنك عمل عشرة commits قبل أي push — وتبقى غير مرئية للجميع حتى تقوم بالـ push.<br><br>
+              فكّر بالأمر هكذا: <em>commit = حفظ مسودة على القرص الصلب؛ push = إرسالها بالبريد الإلكتروني للفريق.</em>
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git commit</code> يحفظ فقط في سجل مستودعك المحلي.</div>
+            <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git push</code> يرفع تلك الـ commits إلى الـ remote (GitHub).</div>
+            <div class="key-point"><div class="key-point-dot"></div>الـ commits التي لم تقم بـ push بعد غير مرئية لفريقك.</div>
+            <div class="key-point"><div class="key-point-dot"></div>ارفع العمل غير المكتمل إلى feature branch الخاص بك — ليس إلى main أبدًا.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q02 AR -->
+      <div class="q-card" data-lang="ar">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">02</span>
+          <span class="q-text">لماذا لا أستطيع العمل على <code>main</code> مباشرةً والـ push مباشرة؟</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">لماذا هذا مهم</div>
+          <div class="strategy-text">في المشاريع الفردية: لا مشكلة. في مشاريع الفريق: خطأ دائمًا. الـ main هو الأساس المستقر الذي يعتمد عليه الجميع. push واحد سيء يكسر build الفريق بأكمله — بلا إنذار، بلا نقاش.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">حجة الـ Feature Branches</div>
+            <div class="answer-box-text">
+              في الفريق، <strong>main هو مصدر الحقيقة المستقر</strong> — كل pipeline نشر، كل CI، كل مطور آخر يعتمد عليه. من يدفع كودًا معطوبًا إلى main يكسر build الجميع بلا شبكة أمان.<br><br>
+              الـ Feature branches تتيح العمل والتجريب والأخطاء في عزلة. تكلفتها صفر (مجرد مؤشرات، لا نسخ ملفات). الدمج يحدث فقط عندما يكون العمل جاهزًا وتمت مراجعته.<br><br>
+              على أي codebase احترافية، main <strong>محمي</strong> — الـ push المباشر محظور بواسطة إعدادات branch protection في GitHub. لا يمكنك Push إلى main حتى لو أردت.
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>Main محمي في كل فريق احترافي — الـ push المباشر محظور.</div>
+            <div class="key-point"><div class="key-point-dot"></div>الـ Feature branches مجانية — أنشئ واحدًا لكل تغيير منطقي.</div>
+            <div class="key-point"><div class="key-point-dot"></div>الـ Branches تتيح مراجعة الكود قبل تغيير أي كود مشترك.</div>
+            <div class="key-point"><div class="key-point-dot"></div>إذا عمل شخصان على main مباشرة، كل push يسبب تعارضات.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q03 AR -->
+      <div class="q-card" data-lang="ar">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">03</span>
+          <span class="q-text">ما هو الـ Pull Request — كيف يختلف عن تشغيل <code dir="ltr">git merge</code> فقط؟</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">الفرق الجوهري</div>
+          <div class="strategy-text">الـ merge عملية Git. الـ PR عملية. الأول أمر؛ الثاني هو سير عمل ضبط الجودة الذي يلف ذلك الأمر.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">ما هو الـ PR</div>
+            <div class="answer-box-text">
+              <code dir="ltr">git merge</code> هو الفعل التقني لدمج سجلَي commit لـ branch-ين — أمر واحد ينفَّذ محليًا.<br><br>
+              الـ <strong>Pull Request (PR)</strong> هو سير عمل GitHub الذي يلف ذلك الدمج: يعرض diff لكل سطر متغير، يفتح thread نقاش حيث يترك المراجعون تعليقاتهم، ينفذ فحوصات CI/CD الآلية، ويستلزم موافقة قبل إتمام الدمج.<br><br>
+              يمكنك الدمج بلا PR (محليًا بـ <code dir="ltr">git merge</code>). في الفريق يجب ألا تفعل ذلك تقريبًا — الـ PR هو المكان الذي تتم فيه مراقبة الجودة والتوثيق والنقاش التقني.
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>PR = diff + thread نقاش + فحوصات CI + موافقة + دمج.</div>
+            <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git merge</code> = خطوة الدمج التقنية فقط، بلا سير عمل.</div>
+            <div class="key-point"><div class="key-point-dot"></div>الـ PRs إلزامية على الـ branches المحمية — لا موافقة يعني لا دمج.</div>
+            <div class="key-point"><div class="key-point-dot"></div>تنشئ الـ PRs سجلًا دائمًا بما تغيّر ولماذا ومن وافق.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q04 AR -->
+      <div class="q-card" data-lang="ar">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">04</span>
+          <span class="q-text">ماذا يحدث فعلاً أثناء تعارض الدمج؟</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">إعادة التأطير أولاً</div>
+          <div class="strategy-text">التعارضات معلومات لا أخطاء. Git يقول: "شخصان عدّلا نفس الأسطر — أحتاج قرارك أيّ نسخة صحيحة." هذا طلب معقول تمامًا.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">ما يفعله Git</div>
+            <div class="answer-box-text">
+              عندما يحاول Git دمج branch-ين ويجد أن نفس الأسطر عُدِّلت بشكل مختلف في كليهما، لا يستطيع الاختيار تلقائيًا. يُدرج <strong>علامات التعارض</strong> في الملف ويتوقف:
+              <div class="code-block" dir="ltr">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+نسخة الـ branch الحالي من الأسطر
+=======
+نسخة الـ branch الوارد من الأسطر
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/wearable-data-sync</div>
+              تحرر الملف للوصول إلى النتيجة النهائية الصحيحة، تحذف <em>جميع العلامات</em>، تنفذ <code dir="ltr">git add</code> على الملف ثم <code dir="ltr">git commit</code> لإتمام الدمج.
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>التعارضات طبيعية — ليست علامة على وجود خطأ.</div>
+            <div class="key-point"><div class="key-point-dot"></div>يجب إزالة كل علامة تعارض قبل إمكانية الـ commit.</div>
+            <div class="key-point"><div class="key-point-dot"></div>إذا كنت غير متأكد من كود شخص آخر — اسأله قبل الحل.</div>
+            <div class="key-point"><div class="key-point-dot"></div>VS Code يعرض التعارضات مع أزرار ملونة بنقرة واحدة (أسهل للحالات الشائعة).</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q05 AR -->
+      <div class="q-card" data-lang="ar">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">05</span>
+          <span class="q-text">متى أستخدم <code dir="ltr">git reset</code> مقابل <code dir="ltr">git revert</code>؟</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">القاعدة</div>
+          <div class="strategy-text">Reset للسجل المحلي. Revert للـ branches المشتركة. هذا الفرق هو ما يفصل التراجع النظيف عن كارثة Git تجبر الزملاء على إعادة الـ pull.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">الأداتان</div>
+            <div class="answer-box-text">
+              <strong><code dir="ltr">git reset --soft HEAD~1</code></strong> يحرك HEAD خطوة للخلف ويلغي staging التغييرات (تبقى تعديلات الملفات). إنه <em>يعيد كتابة السجل</em>. إذا سحب آخرون commits-ك مسبقًا، سجلهم وسجلك سيتباعدان — مما يسبب فوضى في الـ pull التالي.<br><br>
+              <strong><code dir="ltr">git revert HEAD</code></strong> ينشئ <em>commit جديدًا</em> يفعل عكس الـ commit السابق بالضبط. الـ commit الأصلي يبقى في السجل. آمن للـ branches المشتركة لأنه يضيف إلى السجل بدلاً من إعادة كتابته.
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>الـ branch محلي فقط ولم يسحبه أحد → استخدم <code dir="ltr">git reset --soft</code>.</div>
+            <div class="key-point"><div class="key-point-dot"></div>الـ branch على GitHub وقد يكون آخرون سحبوه → استخدم <code dir="ltr">git revert</code>.</div>
+            <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git reset --hard</code> يحذف تغييرات الملفات نهائيًا — استخدمه بوعي تام فقط.</div>
+          </div>
+          <div class="warning-box">
+            <div class="warning-box-text">⚠️ لا تستخدم أبدًا <code dir="ltr">git reset --hard</code> على branch سحبه زملاؤك. هذه إحدى أكثر كوارث Git شيوعًا في الفرق. الأداة الصحيحة للـ branches المشتركة دائمًا هي <code dir="ltr">git revert</code>.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q06 AR -->
+      <div class="q-card" data-lang="ar">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">06</span>
+          <span class="q-text">ما هو <code dir="ltr">git stash</code> ومتى يجب استخدامه؟</span>
+          <span class="q-badges"><span class="badge badge-common">شائع</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">النموذج الذهني</div>
+          <div class="strategy-text">الـ stash جيب جانبي مؤقت للعمل غير المكتمل. يتيح لك تنحية التغييرات نصف المنجزة، فعل شيء آخر، ثم العودة — بدون commit لكود غير جاهز.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">كيف يعمل</div>
+            <div class="answer-box-text">
+              <code dir="ltr">git stash</code> يحفظ التغييرات غير المُنجَزة الحالية في stack مخفي ويعيد مجلد العمل إلى آخر حالة مُنجَزة — مما يمنحك مجلد عمل نظيفًا فورًا.<br><br>
+              <code dir="ltr">git stash pop</code> يعيد تطبيق آخر التغييرات المحفوظة على branch-ك الحالي.<br><br>
+              <strong>السيناريو الكلاسيكي:</strong> أنت في منتصف ميزة جديدة وطُلب منك مراجعة PR بشكل عاجل. لا يمكنك commit كود نصف منجز. احفظه بـ stash، بدّل الـ branch، راجع، ثم استعد الـ stash عند عودتك.
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git stash</code> = حفظ العمل غير المُنجَز + تنظيف مجلد العمل.</div>
+            <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git stash pop</code> = استعادة آخر stash.</div>
+            <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git stash list</code> = عرض جميع الـ stash entries (يمكن عمل stash أكثر من مرة).</div>
+            <div class="key-point"><div class="key-point-dot"></div>لا تستخدم الـ stash للتخزين طويل المدى — بدلاً من ذلك اعمل commit لعملك على branch.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q07 AR -->
+      <div class="q-card" data-lang="ar">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">07</span>
+          <span class="q-text">ما اصطلاح تسمية الـ branch الذي يجب أن أستخدمه؟</span>
+          <span class="q-badges"><span class="badge badge-common">شائع</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">القاعدة الأولى</div>
+          <div class="strategy-text">راجع أسماء الـ branches الموجودة في فريقك واتبع نفس النمط. إذا لم يكن هناك نمط بعد، اقترح نظام type-prefix — إنه الاصطلاح الأكثر انتشارًا.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">اصطلاح البادئة النوعية</div>
+            <div class="answer-box-text">
+              الصيغة: <code dir="ltr">type/short-description-in-kebab-case</code><br><br>
+              <code dir="ltr">feature/wearable-data-sync</code> — وظيفة جديدة<br>
+              <code dir="ltr">bugfix/fhir-mapping-null-id</code> — إصلاح bug محدد<br>
+              <code dir="ltr">docs/api-integration-guide</code> — توثيق فقط<br>
+              <code dir="ltr">chore/update-dependencies</code> — صيانة، بلا تغيير في السلوك<br>
+              <code dir="ltr">hotfix/critical-auth-crash</code> — إصلاح عاجل للإنتاج
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>Branch واحد = تغيير منطقي واحد. لا تجمع إصلاحات غير مترابطة.</div>
+            <div class="key-point"><div class="key-point-dot"></div>اجعل الاسم قصيرًا ووصفيًا. حروف صغيرة، شرطات، أقل من 50 حرفًا.</div>
+            <div class="key-point"><div class="key-point-dot"></div>احذف الـ branches بعد الدمج — لا تتركها تتراكم في الـ remote.</div>
+            <div class="key-point"><div class="key-point-dot"></div>اسم الـ branch يظهر في كل PR وسجل CI وgit log.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q08 AR -->
+      <div class="q-card" data-lang="ar">
+        <button class="q-trigger" onclick="toggle(this)">
+          <span class="q-num">08</span>
+          <span class="q-text">ما الذي يجعل عنوان ووصف الـ PR جيدين؟</span>
+          <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+          <span class="q-arrow">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="strategy-label">لماذا هذا مهم</div>
+          <div class="strategy-text">الوصف هو السياق الذي يحتاجه المراجع قبل النظر في سطر واحد من الكود. الوصف الفارغ أو الغامض يجبر المراجع على استنتاج نيتك من الـ diff — بطيء ومُحبِط وغالبًا غير دقيق.</div>
+          <div class="answer-box">
+            <div class="answer-box-label">هيكل وصف PR جيد</div>
+            <div class="answer-box-text">
+              <strong>صيغة العنوان:</strong> <code dir="ltr">type: short description of what changed (#issue)</code><br>
+              جيد: <code dir="ltr">feat: add null-check for FHIR encounter ID mapping (#87)</code><br>
+              سيئ: <code dir="ltr">fix</code> / <code dir="ltr">update stuff</code> / فارغ<br><br>
+              <strong>يجب أن يتضمن الوصف:</strong><br>
+              ١. ما الذي تغيّر (الحقيقة التقنية)<br>
+              ٢. لماذا تغيّر (الدافع — ما المشكلة التي يحلها؟)<br>
+              ٣. كيفية اختباره<br>
+              ٤. أي تحفظات أو قرارات تصميمية تستحق النقاش<br>
+              ٥. مرجع الإغلاق: <code dir="ltr">Closes #87</code>
+            </div>
+          </div>
+          <div class="key-points">
+            <div class="key-point"><div class="key-point-dot"></div>اكتب الوصف للمراجع، لا لنفسك.</div>
+            <div class="key-point"><div class="key-point-dot"></div>الـ PRs الذرية (تغيير منطقي واحد) دائمًا أسهل في المراجعة من الـ PRs الكبيرة متعددة التغييرات.</div>
+            <div class="key-point"><div class="key-point-dot"></div>إذا استغرق مراجعة PR أكثر من ساعتين، فهو على الأرجح كبير جدًا — قسّمه.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: Resources -->
+      <div class="section-header">
+        <div class="section-icon" style="background:#fff7ed;">🔗</div>
+        <div>
+          <div class="section-title">المصادر الموصى بها</div>
+          <div class="section-subtitle">اختر مصدرًا واحدًا لكل وحدة — لا تحاول الجميع دفعة واحدة</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">🌿</div>
+        <div class="ask-content">
+          <div class="ask-q">learngitbranching.js.org — للوحدة 1.1</div>
+          <div class="ask-why">ملعب تفاعلي مرئي للـ branches. تكتب أوامر Git حقيقية وتشاهد مخطط الـ branches يتحرك في الوقت الفعلي. أفضل مصدر منفرد لبناء النموذج الذهني. إذا لم تفعل شيئًا آخر في الوحدة 1.1، أكمل المستويات الثمانية الأولى هنا.</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">💥</div>
+        <div class="ask-content">
+          <div class="ask-q">ohshitgit.com — للوحدة 1.4</div>
+          <div class="ask-why">قصير، مباشر، غير رسمي بعض الشيء. يغطي كل سيناريو تراجع شائع بلغة بسيطة: "commit-ت على الـ branch الخطأ"، "أحتاج لإلغاء آخر N commits". احفظه في المفضلة.</div>
+        </div>
+      </div>
+
+      <div class="ask-card">
+        <div class="ask-icon">📄</div>
+        <div class="ask-content">
+          <div class="ask-q">Atlassian Git Tutorials ‏(atlassian.com/git/tutorials) — للوحدات 1.2–1.3</div>
+          <div class="ask-why">مقالات واضحة وعملية عن الـ PRs والدمج وحل التعارضات. مقال "Comparing Workflows" ممتاز بشكل خاص لفهم كيفية هيكلة الفرق الاحترافية لاستخدام Git.</div>
+        </div>
+      </div>
+
+      <!-- Success criteria block -->
+      <div class="must-block">
+        <div class="must-block-title"><span>✓</span> انتهيت عندما...</div>
+        <div class="must-item"><span class="must-bullet">✓</span>تستطيع إنشاء branch، عمل تغييرات، push، فتح PR، حل تعليق مراجع، والدمج — كل ذلك بلا AI أو Stack Overflow.</div>
+        <div class="must-item"><span class="must-bullet">✓</span>قمت عمدًا بإنشاء تعارض دمج في repo خاص بك وحللته — مرة باستخدام واجهة VS Code، ومرة باستخدام CLI والتحرير اليدوي.</div>
+        <div class="must-item"><span class="must-bullet">✓</span>تستطيع شرح سبب اختلاف <code dir="ltr">git reset --soft</code> و<code dir="ltr">git revert</code> ومتى يكون كل منهما الخيار الصحيح.</div>
+        <div class="must-item"><span class="must-bullet">✓</span>كتبت PR بعنوان ووصف واضحين — بحيث يفهمه عضو فريق حقيقي بلا أسئلة متابعة.</div>
+      </div>
+
+    </div><!-- end tab-ar -->
+
+  </div><!-- end body -->
+</main>
+
+<script src="../shared/lesson-ui.js"></script>
+<script>
+// Initialise progress bar on first load
+updateProgress();
+</script>
+</body>
+</html>

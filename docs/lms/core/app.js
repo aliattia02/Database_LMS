@@ -47,8 +47,17 @@ const frame                 = document.getElementById('lesson-frame');
 const resetButton           = document.getElementById('reset-progress');
 const fieldsLanding         = document.getElementById('fields-landing');
 const fieldsGrid            = document.getElementById('fields-grid');
+const fieldsFooter          = document.getElementById('fields-footer');
 const appShell              = document.getElementById('app-shell');
 const backToFieldsButton    = document.getElementById('btn-back-fields');
+// Field overview (module picker sub-page) — sits between fields-landing and
+// app-shell. See enterField()/renderFieldOverview() below.
+const fieldOverview          = document.getElementById('field-overview');
+const fieldOverviewIcon      = document.getElementById('field-overview-icon');
+const fieldOverviewTitle     = document.getElementById('field-overview-title');
+const fieldOverviewSubtitle  = document.getElementById('field-overview-subtitle');
+const moduleOverviewGrid     = document.getElementById('module-overview-grid');
+const backToFieldsFromOverviewButton = document.getElementById('btn-back-to-fields');
 const personalizedPanel     = document.getElementById('personalized-panel');
 // Auth panel elements
 const authSignedOut         = document.getElementById('auth-signed-out');
@@ -58,6 +67,17 @@ const authDisplayName       = document.getElementById('auth-display-name');
 const authTierBadge         = document.getElementById('auth-tier-badge');
 const authError             = document.getElementById('auth-error');
 
+// Floating account widget — fields-landing / field-overview pages (mirrors
+// the sidebar auth panel above; see showSignedIn()/showSignedOut() below,
+// which update both in lock-step). Shown/hidden by render().
+const landingAccount        = document.getElementById('landing-account');
+const landingSignedOut      = document.getElementById('landing-auth-signed-out');
+const landingSignedIn       = document.getElementById('landing-auth-signed-in');
+const landingAvatar         = document.getElementById('landing-auth-avatar');
+const landingDisplayName    = document.getElementById('landing-auth-display-name');
+const landingTierBadge      = document.getElementById('landing-auth-tier-badge');
+const landingAuthError      = document.getElementById('landing-auth-error');
+
 // ── CONSTANTS ──────────────────────────────────────────────────────────────
 const IFRAME_RELOAD_DELAY    = 50;
 const PROGRESS_UPDATE_DELAY  = 150;
@@ -65,6 +85,11 @@ const PROGRESS_POLL_INTERVAL = 3000;
 
 // ── STATE ──────────────────────────────────────────────────────────────────
 let activeFieldId  = null;   // null → show fields landing (when LMS_CONFIG.fields is non-empty)
+// Seeded from the first static module for the no-fields backward-compat case
+// (renderShell() on boot). When fields ARE configured, render() doesn't just
+// check this for truthiness — it checks field membership (see
+// moduleIsValidForField) — so this seed value harmlessly routes a fresh
+// field entry to the field-overview module picker instead of a stale shell.
 let activeModuleId = LMS_CONFIG.modules[0]?.id ?? null;
 let activeLessonId = null;
 
@@ -311,6 +336,12 @@ function getActiveFieldModules() {
   return getFieldModules(activeFieldId);
 }
 
+/**
+ * Enters a field from the fields landing page. Lands on the field-overview
+ * module picker (activeModuleId stays null) rather than jumping straight
+ * into the module shell — see renderFieldOverview() / render() dispatch.
+ * Call enterModule() afterwards to actually open a module's shell.
+ */
 function enterField(fieldId) {
   activeFieldId  = fieldId;
   activeModuleId = null;
@@ -331,6 +362,18 @@ function enterField(fieldId) {
   }
 }
 
+/**
+ * Commits to a specific module within the active field, taking the person
+ * from the field-overview module picker into the full module shell
+ * (sidebar + lesson nav + iframe). Mirrors enterField() one level down.
+ */
+function enterModule(moduleId) {
+  activeModuleId = moduleId;
+  activeLessonId = null;
+  updateURL(true);  // pushState — picking a module is a real navigation step
+  render();
+}
+
 function exitToFields() {
   activeFieldId  = null;
   activeModuleId = null;
@@ -339,6 +382,27 @@ function exitToFields() {
   frame.src = '';
   frame.classList.remove('visible');
   updateURL(true);  // pushState so forward goes back into the field
+  render();
+}
+
+/**
+ * Returns from the module shell to the field-overview module picker — one
+ * level up from the shell, one level down from exitToFields(). Called by:
+ *   • The "← Modules" back button inside the app shell sidebar.
+ *   • Clicking the active module card in renderModuleNav().
+ * Not used for the 'personalized' field (which has no module picker).
+ */
+function exitToFieldOverview() {
+  if (activeFieldId === 'personalized' || !activeFieldId) {
+    exitToFields();
+    return;
+  }
+  activeModuleId = null;
+  activeLessonId = null;
+  frame.src = '';
+  frame.classList.remove('visible');
+  welcomePanel?.classList.remove('hidden');
+  updateURL(true);
   render();
 }
 
@@ -367,20 +431,20 @@ function updateTheme(mod) {
 // ── RENDER HELPERS ─────────────────────────────────────────────────────────
 function renderModuleNav() {
   moduleNav.innerHTML = '';
-  getActiveFieldModules().forEach(mod => {
-    const p   = computeModuleProgress(mod);
-    const btn = document.createElement('button');
-    btn.type      = 'button';
-    btn.className = `nav-btn ${mod.id === activeModuleId ? 'active' : ''}`;
-    btn.innerHTML = `<strong>${mod.title}</strong><small>${mod.subtitle}</small><small>${p.pct}% ${t('field.complete', 'complete')}</small>`;
-    btn.addEventListener('click', () => {
-      activeModuleId = mod.id;
-      activeLessonId = null;
-      updateURL();   // replaceState — module switches don't need history entries
-      render();
-    });
-    moduleNav.appendChild(btn);
-  });
+  // Show only the currently active module in the sidebar — switching modules
+  // happens one level up, on the field-overview module picker.
+  const mod = getActiveFieldModules().find(m => m.id === activeModuleId);
+  if (!mod) return;
+
+  const p   = computeModuleProgress(mod);
+  const btn = document.createElement('button');
+  btn.type      = 'button';
+  btn.className = 'nav-btn active';
+  btn.innerHTML = `<strong>${t(`module.${mod.id}.title`, mod.title)}</strong><small>${t(`module.${mod.id}.subtitle`, mod.subtitle)}</small><small>${p.pct}% ${t('field.complete', 'complete')}</small>`;
+  // Clicking the module card returns to the field-overview module picker
+  // (same as clicking "← Modules") so the user can switch to another module.
+  btn.addEventListener('click', () => exitToFieldOverview());
+  moduleNav.appendChild(btn);
 }
 
 // ── LESSON ACCESS GATING (Phase 5) ──────────────────────────────────────────
@@ -449,13 +513,13 @@ function showLessonGatePrompt(access) {
     cta.addEventListener('click', () => {
       const emailField = document.getElementById('auth-email');
       const authPanel  = document.getElementById('auth-panel');
-      const accountBar = document.getElementById('account-bar');
-      // account-bar is a collapsed <details> disclosure (Phase 0 fix) — open
-      // it first, or the email field below would be hidden and unfocusable.
-      if (accountBar) accountBar.open = true;
+      const trigger    = document.getElementById('sidebar-account-trigger');
+      // Open the sidebar account panel if it isn't already open
+      if (authPanel && authPanel.hidden) {
+        authPanel.hidden = false;
+        if (trigger) trigger.setAttribute('aria-expanded', 'true');
+      }
       authPanel?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      // Small delay so the scroll completes before focus triggers any
-      // scroll-into-view from the browser's focus handling.
       setTimeout(() => emailField?.focus(), 300);
     });
     welcomePanel.appendChild(cta);
@@ -567,8 +631,8 @@ function renderLessonNav() {
           : t('lesson.referenceLabel', 'Reference');
 
     btn.innerHTML = `
-      <strong>${lesson.title}</strong>
-      <small>${lesson.subtitle}</small>
+      <strong>${t(`lesson.${lesson.id}.title`, lesson.title)}</strong>
+      <small>${t(`lesson.${lesson.id}.subtitle`, lesson.subtitle)}</small>
       <small>${progressLabel}</small>
     `;
 
@@ -643,6 +707,7 @@ async function resetAllProgress() {
 function renderFieldsLanding() {
   fieldsLanding.hidden = false;
   appShell.hidden      = true;
+  fieldOverview.hidden = true;
 
   fieldsGrid.innerHTML = '';
 
@@ -666,8 +731,8 @@ function renderFieldsLanding() {
     card.innerHTML = `
       <div class="field-card-icon">${field.icon ?? '📚'}</div>
       <div class="field-card-body">
-        <strong class="field-card-title">${field.title}</strong>
-        <p    class="field-card-sub">${field.subtitle}</p>
+        <strong class="field-card-title">${t(`field.${field.id}.title`, field.title)}</strong>
+        <p    class="field-card-sub">${t(`field.${field.id}.subtitle`, field.subtitle)}</p>
         <div  class="field-card-meta">
           <span>${fieldModules.length} ${t('field.modules', 'modules')}</span>
           <span class="field-card-pct">${pct}% ${t('field.complete', 'complete')}</span>
@@ -683,45 +748,114 @@ function renderFieldsLanding() {
     fieldsGrid.appendChild(card);
   });
 
-  // Personalized Lessons card — always appended last. Not part of
-  // LMS_CONFIG.fields (see state comment above), so it's built and inserted
-  // here rather than coming from the .forEach() above.
-  fieldsGrid.appendChild(renderPersonalizedFieldCard());
+  // Personalized Lessons entry — rendered ABOVE the field-card grid as a
+  // prominent top-of-page banner. Moved from #fields-footer (below the grid)
+  // to #fields-footer which is now rendered before the grid in the HTML flow,
+  // and given larger sizing via .pl-entry-btn--featured so it stands out.
+  if (fieldsFooter) {
+    fieldsFooter.innerHTML = '';
+    const plCard = renderPersonalizedFieldCard();
+    plCard.classList.add('pl-entry-btn--featured');
+    fieldsFooter.appendChild(plCard);
+  }
 }
 
 /**
- * Builds the Personalized Lessons field card for the landing grid.
- * Locked (🔒, non-clickable) for anonymous visitors, since every request is
- * tied to a uid. Shows a "N lessons ready" count instead of a % bar, since
- * this field has no fixed module count to measure progress against.
+ * Builds the Personalized Lessons entry button for #fields-footer.
+ * Rendered as a full-width horizontal banner — visually distinct from the
+ * field-card grid above — because this is per-user Firestore content, not a
+ * shared static field. Locked (🔒, non-clickable) for anonymous visitors.
  */
 function renderPersonalizedFieldCard() {
   const isLocked = !currentUser;
 
-  const card = document.createElement('button');
-  card.type      = 'button';
-  card.className = `field-card pl-field-card${isLocked ? ' locked' : ''}`;
+  const btn = document.createElement('button');
+  btn.type      = 'button';
+  btn.className = `pl-entry-btn${isLocked ? ' locked' : ''}`;
 
-  card.innerHTML = `
-    <div class="field-card-icon">✨</div>
-    <div class="field-card-body">
-      <strong class="field-card-title">${t('pl.fieldTitle', 'Personalized Lessons')}</strong>
-      <p    class="field-card-sub">${t('pl.fieldSubtitle', 'Lessons built just for you')}</p>
-      <div  class="field-card-meta">
-        <span>${isLocked
-          ? t('pl.signInRequired', 'Sign in required')
-          : `${personalizedLessons.length} ${t('pl.lessonsReady', 'lessons ready')}`}</span>
-      </div>
-    </div>
-    ${isLocked ? `<div class="field-locked-badge" title="${t('pl.signInTooltip', 'Sign in to request personalized lessons')}">🔒</div>` : ''}
+  const statusText = isLocked
+    ? t('pl.signInRequired', 'Sign in required')
+    : `${personalizedLessons.length} ${t('pl.lessonsReady', 'lessons ready')}`;
+
+  btn.innerHTML = `
+    <span class="pl-entry-icon">✨</span>
+    <span class="pl-entry-body">
+      <strong class="pl-entry-title">${t('pl.fieldTitle', 'Personalized Lessons')}</strong>
+      <span  class="pl-entry-sub">${t('pl.fieldSubtitle', 'Lessons built just for you')} · <em>${statusText}</em></span>
+    </span>
+    <span class="pl-entry-cta" aria-hidden="true">
+      ${isLocked ? '🔒' : '→'}
+    </span>
   `;
 
-  if (!isLocked) card.addEventListener('click', () => enterField('personalized'));
-  return card;
+  if (!isLocked) btn.addEventListener('click', () => enterField('personalized'));
+  return btn;
+}
+
+/**
+ * Renders the module-picker sub-page for the currently active field —
+ * shown after enterField() but before a specific module has been chosen
+ * (activeFieldId set, activeModuleId still null). Mirrors
+ * renderFieldsLanding() one level down: instead of field cards that call
+ * enterField(), these are module cards that call enterModule().
+ *
+ * Not used for the 'personalized' field — that one has no module list of
+ * its own, so it goes straight to renderPersonalizedShell() (see render()).
+ */
+function renderFieldOverview() {
+  fieldsLanding.hidden = true;
+  appShell.hidden      = true;
+  fieldOverview.hidden = false;
+
+  const field      = LMS_CONFIG.fields?.find(f => f.id === activeFieldId);
+  const accent     = field?.theme?.accent     ?? 'var(--accent)';
+  const accentSoft = field?.theme?.accentSoft ?? 'var(--accent-soft)';
+
+  // Scope the --field-accent/--field-soft custom props to this page so the
+  // icon badge and any module cards that don't set their own pick up the
+  // field's colour, exactly like the field cards do on the landing page.
+  fieldOverview.style.setProperty('--field-accent', accent);
+  fieldOverview.style.setProperty('--field-soft',   accentSoft);
+
+  fieldOverviewIcon.textContent     = field?.icon ?? '📚';
+  fieldOverviewTitle.textContent    = field ? t(`field.${field.id}.title`,    field.title)    : '';
+  fieldOverviewSubtitle.textContent = field ? t(`field.${field.id}.subtitle`, field.subtitle) : '';
+
+  moduleOverviewGrid.innerHTML = '';
+
+  getActiveFieldModules().forEach(mod => {
+    const p = computeModuleProgress(mod);
+
+    const card = document.createElement('button');
+    card.type      = 'button';
+    card.className = 'field-card';
+    card.style.setProperty('--field-accent', accent);
+    card.style.setProperty('--field-soft',   accentSoft);
+
+    card.innerHTML = `
+      <div class="field-card-icon">${mod.icon ?? '📘'}</div>
+      <div class="field-card-body">
+        <strong class="field-card-title">${t(`module.${mod.id}.title`,    mod.title)}</strong>
+        <p    class="field-card-sub">${t(`module.${mod.id}.subtitle`, mod.subtitle)}</p>
+        <div  class="field-card-meta">
+          <span>${mod.lessons?.length ?? 0} ${t('field.lessons', 'lessons')}</span>
+          <span class="field-card-pct">${p.pct}% ${t('field.complete', 'complete')}</span>
+        </div>
+        <div class="field-card-bar">
+          <div class="field-card-fill" style="width:${p.pct}%"></div>
+        </div>
+      </div>
+    `;
+
+    card.addEventListener('click', () => enterModule(mod.id));
+    moduleOverviewGrid.appendChild(card);
+  });
 }
 
 function renderBrandSubtitle() {
-  brandSubtitle.textContent = getActiveFieldModules().map(mod => mod.title).join(' · ');
+  // Show only the active module's title in the subtitle, not every field module.
+  const mod = getActiveFieldModules().find(m => m.id === activeModuleId);
+  brandSubtitle.textContent = mod ? t(`module.${mod.id}.title`, mod.title) : '';
 }
 
 function renderWelcomePanel() {
@@ -731,15 +865,71 @@ function renderWelcomePanel() {
   if (cfg.body)    welcomeBody.textContent    = t('welcome.body',    cfg.body);
 }
 
+/**
+ * Decides what fills the main content area once a module is selected but
+ * no specific lesson has been opened yet:
+ *
+ *   • mod.indexRoute set   → load it into the lesson iframe, exactly like a
+ *     lesson route (same cache-busting, same #welcome-panel/#lesson-frame
+ *     toggle). This is how a module gets its own course-overview / table
+ *     of contents page instead of the generic welcome text.
+ *   • mod.indexRoute unset → fall back to the plain #welcome-panel (the
+ *     original, unchanged behaviour) so every module without one keeps
+ *     working exactly as before.
+ *
+ * Called from the end of renderShell() so every path that can land here —
+ * entering a field, clicking a module in the sidebar, browser back/forward,
+ * switching language — stays in sync without each of those call sites
+ * needing its own copy of this branch. Does nothing if a lesson is already
+ * open (activeLessonId set); that state is owned by openLesson().
+ */
+function renderModuleLanding() {
+  if (activeLessonId) return;
+
+  const mod = getActiveFieldModules().find(m => m.id === activeModuleId);
+
+  if (mod?.indexRoute) {
+    // Same cache-busting rule as openLesson(): bypass the browser cache on
+    // localhost during development, leave normal HTTP caching everywhere else.
+    const cacheBust = (location.hostname === 'localhost' || location.hostname === '::1')
+      ? `?_cb=${Date.now()}` : '';
+    // Avoid redundantly reassigning frame.src (and therefore reloading the
+    // index page, losing its scroll position) on every re-render — e.g. a
+    // language switch shouldn't reset a page the user is already looking at.
+    const resolvedRoute = new URL(mod.indexRoute, location.href).href;
+    if (!frame.src.startsWith(resolvedRoute)) {
+      frame.src = mod.indexRoute + cacheBust;
+    }
+    frame.classList.add('visible');
+    welcomePanel.classList.add('hidden');
+  } else {
+    frame.src = '';
+    frame.classList.remove('visible');
+    welcomePanel.classList.remove('hidden');
+  }
+}
+
 function renderShell() {
   fieldsLanding.hidden = true;
   appShell.hidden      = false;
+  fieldOverview.hidden = true;
 
   // Undo anything Personalized Lessons mode hid/repurposed, in case the user
   // is arriving here straight from that field (e.g. via "← Fields" then into
   // a normal field, or a popstate jump).
   document.getElementById('lesson-nav-block').hidden = false;
   personalizedPanel.hidden = true;
+
+  // Update back button label: inside a normal field → "Modules" (goes to the
+  // module picker). Inside Personalized Lessons or no-field mode → "Fields".
+  const backLabel = document.getElementById('back-fields-label');
+  if (backLabel) {
+    if (activeFieldId && activeFieldId !== 'personalized') {
+      backLabel.textContent = t('shell.backToModules', 'Modules');
+    } else {
+      backLabel.textContent = t('shell.backToFields', 'Fields');
+    }
+  }
 
   const field = LMS_CONFIG.fields?.find(f => f.id === activeFieldId);
   if (field?.theme) updateTheme(field);
@@ -749,6 +939,7 @@ function renderShell() {
   renderProgressBars();
   renderBrandSubtitle();
   renderWelcomePanel();
+  renderModuleLanding();
 
   const mod = getActiveFieldModules().find(m => m.id === activeModuleId);
   if (mod?.theme) updateTheme(mod);
@@ -790,9 +981,14 @@ async function refreshPersonalizedData() {
 function renderPersonalizedShell() {
   fieldsLanding.hidden = true;
   appShell.hidden      = false;
+  fieldOverview.hidden = true;
 
   document.getElementById('lesson-nav-block').hidden = true;
   brandSubtitle.textContent = t('pl.fieldSubtitle', 'Lessons built just for you');
+
+  // Back button in personalized mode always exits all the way to Fields.
+  const backLabel = document.getElementById('back-fields-label');
+  if (backLabel) backLabel.textContent = t('shell.backToFields', 'Fields');
 
   if (!currentUser) {
     renderPersonalizedSignedOutPrompt();
@@ -926,16 +1122,24 @@ function renderPersonalizedList() {
   personalizedPanel.innerHTML = `
     <div class="pl-header">
       <h2>${t('pl.fieldTitle', 'Personalized Lessons')}</h2>
-      <button type="button" class="pl-cta-btn" id="pl-cta-new">${t('pl.requestCta', '+ Request a lesson')}</button>
     </div>
     ${isEmpty ? `
       <div class="pl-empty-state">
         <div class="pl-empty-icon">✨</div>
         <h3>${t('pl.emptyHeading', 'No personalized lessons yet')}</h3>
         <p>${t('pl.emptyBody', 'Tell us what you want to learn and an instructor will build a lesson just for you.')}</p>
-        <button type="button" class="pl-cta-btn" id="pl-cta-empty">${t('pl.requestCta', '+ Request a lesson')}</button>
+        <button type="button" class="pl-cta-btn pl-cta-btn--featured" id="pl-cta-empty">
+          ✨ ${t('pl.requestCta', 'Request a Personalized Lesson')}
+        </button>
       </div>
-    ` : `<div class="pl-cards-grid">${cardsHtml}</div>`}
+    ` : `
+      <div class="pl-cta-center-wrap">
+        <button type="button" class="pl-cta-btn pl-cta-btn--featured" id="pl-cta-new">
+          ✨ ${t('pl.requestCta', 'Request a Personalized Lesson')}
+        </button>
+      </div>
+      <div class="pl-cards-grid">${cardsHtml}</div>
+    `}
   `;
 
   document.getElementById('pl-cta-new')?.addEventListener('click', () => showPersonalizedForm());
@@ -1300,13 +1504,29 @@ function formatTimestamp(ts) {
 
 function render() {
   const hasFields = (LMS_CONFIG.fields?.length ?? 0) > 0;
+  // Checks actual membership, not just truthiness — a stale activeModuleId
+  // left over from a different field (or the very first synchronous render,
+  // which seeds activeModuleId from LMS_CONFIG.modules[0] for the no-fields
+  // backward-compat case) should land on the module picker too, not silently
+  // fall through to an empty/mismatched shell.
+  const moduleIsValidForField = Boolean(activeModuleId) && getActiveFieldModules().some(m => m.id === activeModuleId);
   if (activeFieldId === 'personalized') {
     renderPersonalizedShell();
   } else if (hasFields && activeFieldId === null) {
     renderFieldsLanding();
+  } else if (hasFields && activeFieldId !== null && !moduleIsValidForField) {
+    // A field has been entered but no (valid) module picked yet — show the
+    // module-picker sub-page instead of jumping straight into the shell.
+    renderFieldOverview();
   } else {
     renderShell();
   }
+
+  // The floating account widget (landing-account) only makes sense on the
+  // two pages that sit outside #app-shell — once the app-shell is showing,
+  // its own sidebar account section takes over, so hide the floating one to
+  // avoid showing two sign-in entry points at once.
+  if (landingAccount) landingAccount.hidden = !appShell.hidden;
 }
 
 // ── AUTH UI HELPERS ────────────────────────────────────────────────────────
@@ -1321,25 +1541,72 @@ function render() {
  *   if the document hasn't been written yet (edge case on very first sign-up).
  */
 function showSignedIn(user, profile) {
-  // Hide sign-out view, reveal signed-in view
+  // Hide sign-out trigger row content, reveal signed-in trigger row content
   authSignedOut.hidden = true;
   authSignedIn.hidden  = false;
 
-  // Avatar — fall back to a blank placeholder if Google didn't provide one
+  // Avatar
   authAvatar.src = user.photoURL || '';
   authAvatar.alt = user.displayName || user.email || 'User';
 
-  // Display name — prefer displayName (Google), fall back to email prefix
+  // Display name
   authDisplayName.textContent =
     user.displayName || user.email?.split('@')[0] || 'User';
 
-  // Tier badge — reads from Firestore profile ('free' | 'pro')
+  // Tier badge
   const tier = profile?.tier || 'free';
   authTierBadge.textContent = tier;
   authTierBadge.className   = `tier-badge${tier === 'pro' ? ' pro' : ''}`;
 
-  // Clear any leftover error from a previous failed attempt
+  // In the expanded panel: show sign-out button, hide sign-in inputs
+  const signoutBtn = document.getElementById('btn-signout');
+  const googleBtn  = document.getElementById('btn-google-signin');
+  const emailInput = document.getElementById('auth-email');
+  const pwInput    = document.getElementById('auth-password');
+  const divider    = document.querySelector('#auth-panel .auth-divider');
+  const authActions = document.querySelector('#auth-panel .auth-actions');
+  if (googleBtn)   googleBtn.hidden   = true;
+  if (emailInput)  emailInput.hidden  = true;
+  if (pwInput)     pwInput.hidden     = true;
+  if (divider)     divider.hidden     = true;
+  if (authActions) authActions.hidden = true;
+
+  // Update the sidebar trigger aria label
+  const trigger = document.getElementById('sidebar-account-trigger');
+  if (trigger) trigger.setAttribute('aria-label', user.displayName || 'Account');
+
   hideAuthError();
+
+  // ── Mirror the same state onto the floating landing/field-overview widget ──
+  if (landingSignedOut) {
+    landingSignedOut.hidden = true;
+    landingSignedIn.hidden  = false;
+
+    landingAvatar.src = user.photoURL || '';
+    landingAvatar.alt = user.displayName || user.email || 'User';
+
+    landingDisplayName.textContent =
+      user.displayName || user.email?.split('@')[0] || 'User';
+
+    landingTierBadge.textContent = tier;
+    landingTierBadge.className   = `tier-badge${tier === 'pro' ? ' pro' : ''}`;
+
+    const lSignoutBtn  = document.getElementById('landing-btn-signout');
+    const lGoogleBtn   = document.getElementById('landing-btn-google-signin');
+    const lEmailInput  = document.getElementById('landing-auth-email');
+    const lPwInput     = document.getElementById('landing-auth-password');
+    const lDivider     = document.querySelector('#landing-account-panel .auth-divider');
+    const lAuthActions = document.querySelector('#landing-account-panel .auth-actions');
+    if (lSignoutBtn)  lSignoutBtn.hidden  = false;
+    if (lGoogleBtn)   lGoogleBtn.hidden   = true;
+    if (lEmailInput)  lEmailInput.hidden  = true;
+    if (lPwInput)     lPwInput.hidden     = true;
+    if (lDivider)     lDivider.hidden     = true;
+    if (lAuthActions) lAuthActions.hidden = true;
+
+    const lTrigger = document.getElementById('landing-account-trigger');
+    if (lTrigger) lTrigger.setAttribute('aria-label', user.displayName || 'Account');
+  }
 }
 
 /**
@@ -1350,14 +1617,59 @@ function showSignedOut() {
   authSignedIn.hidden  = true;
   authSignedOut.hidden = false;
 
-  // Clear personal data so it isn't visible when re-opening the panel
+  // Clear personal data
   authAvatar.src              = '';
   authAvatar.alt              = '';
   authDisplayName.textContent = '';
   authTierBadge.textContent   = '';
   authTierBadge.className     = 'tier-badge';
 
+  // Show sign-in form inputs, hide sign-out button
+  const signoutBtn = document.getElementById('btn-signout');
+  const googleBtn  = document.getElementById('btn-google-signin');
+  const emailInput = document.getElementById('auth-email');
+  const pwInput    = document.getElementById('auth-password');
+  const divider    = document.querySelector('#auth-panel .auth-divider');
+  const authActions = document.querySelector('#auth-panel .auth-actions');
+  if (signoutBtn)  signoutBtn.hidden  = true;
+  if (googleBtn)   googleBtn.hidden   = false;
+  if (emailInput)  emailInput.hidden  = false;
+  if (pwInput)     pwInput.hidden     = false;
+  if (divider)     divider.hidden     = false;
+  if (authActions) authActions.hidden = false;
+
+  const trigger = document.getElementById('sidebar-account-trigger');
+  if (trigger) trigger.setAttribute('aria-label', 'Sign in');
+
   hideAuthError();
+
+  // ── Mirror the same reset onto the floating landing/field-overview widget ──
+  if (landingSignedOut) {
+    landingSignedIn.hidden  = true;
+    landingSignedOut.hidden = false;
+
+    landingAvatar.src              = '';
+    landingAvatar.alt              = '';
+    landingDisplayName.textContent = '';
+    landingTierBadge.textContent   = '';
+    landingTierBadge.className     = 'tier-badge';
+
+    const lSignoutBtn  = document.getElementById('landing-btn-signout');
+    const lGoogleBtn   = document.getElementById('landing-btn-google-signin');
+    const lEmailInput  = document.getElementById('landing-auth-email');
+    const lPwInput     = document.getElementById('landing-auth-password');
+    const lDivider     = document.querySelector('#landing-account-panel .auth-divider');
+    const lAuthActions = document.querySelector('#landing-account-panel .auth-actions');
+    if (lSignoutBtn)  lSignoutBtn.hidden  = true;
+    if (lGoogleBtn)   lGoogleBtn.hidden   = false;
+    if (lEmailInput)  lEmailInput.hidden  = false;
+    if (lPwInput)     lPwInput.hidden     = false;
+    if (lDivider)     lDivider.hidden     = false;
+    if (lAuthActions) lAuthActions.hidden = false;
+
+    const lTrigger = document.getElementById('landing-account-trigger');
+    if (lTrigger) lTrigger.setAttribute('aria-label', 'Sign in');
+  }
 }
 
 /**
@@ -1369,12 +1681,20 @@ function showSignedOut() {
 function showAuthError(message) {
   authError.textContent = message;
   authError.hidden      = false;
+  if (landingAuthError) {
+    landingAuthError.textContent = message;
+    landingAuthError.hidden      = false;
+  }
 }
 
 /** Hide the inline auth error — called on successful auth and on sign-out. */
 function hideAuthError() {
   authError.textContent = '';
   authError.hidden      = true;
+  if (landingAuthError) {
+    landingAuthError.textContent = '';
+    landingAuthError.hidden      = true;
+  }
 }
 
 // ── AUTH STATE OBSERVER ────────────────────────────────────────────────────
@@ -1464,6 +1784,8 @@ onAuthChange(async (user) => {
   // chaining — the element may not exist on every shell variant.
   const adminLink = document.getElementById('btn-admin-panel');
   if (adminLink) adminLink.hidden = !isAdmin(userProfile);
+  const landingAdminLink = document.getElementById('landing-btn-admin-panel');
+  if (landingAdminLink) landingAdminLink.hidden = !isAdmin(userProfile);
 
   render();
 
@@ -1494,6 +1816,11 @@ async function switchLanguage(lang) {
 
   applyTranslations();
   render();
+
+  // Touch point ②: notify the open lesson iframe to switch its tab live.
+  if (frame.classList.contains('visible') && frame.contentWindow) {
+    try { frame.contentWindow.postMessage({ type: 'lms:setLang', lang }, '*'); } catch (_) {}
+  }
 }
 
 document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -1578,11 +1905,18 @@ applyTranslations();
 
 // ── EVENT WIRING ───────────────────────────────────────────────────────────
 // Shell
-frame.addEventListener('load', () =>
-  setTimeout(renderProgressBars, PROGRESS_UPDATE_DELAY)
-);
+frame.addEventListener('load', () => {
+  setTimeout(renderProgressBars, PROGRESS_UPDATE_DELAY);
+  // Touch point ②: tell the freshly loaded lesson which language to show.
+  const lang = localStorage.getItem(LANG_KEY) || 'en';
+  try { frame.contentWindow?.postMessage({ type: 'lms:setLang', lang }, '*'); } catch (_) {}
+});
 resetButton.addEventListener('click', resetAllProgress);
-backToFieldsButton.addEventListener('click', exitToFields);
+// Shell back button: goes to the field-overview module picker (not all the
+// way back to the fields landing). For 'personalized' or no-field mode,
+// exitToFieldOverview() falls back to exitToFields() automatically.
+backToFieldsButton.addEventListener('click', exitToFieldOverview);
+backToFieldsFromOverviewButton.addEventListener('click', exitToFields);
 
 // Auth buttons
 document.getElementById('btn-google-signin').addEventListener('click', () =>
@@ -1603,6 +1937,144 @@ document.getElementById('btn-email-signup').addEventListener('click', () => {
 
 document.getElementById('btn-signout').addEventListener('click', signOutUser);
 
+// Floating widget's auth buttons (fields-landing / field-overview pages) —
+// same handlers as the sidebar's, just reading from the landing-* inputs.
+document.getElementById('landing-btn-google-signin').addEventListener('click', () =>
+  signInWithGoogle().catch(err => showAuthError(err.message))
+);
+
+document.getElementById('landing-btn-email-signin').addEventListener('click', () => {
+  const email = document.getElementById('landing-auth-email').value.trim();
+  const pw    = document.getElementById('landing-auth-password').value;
+  signInWithEmail(email, pw).catch(err => showAuthError(err.message));
+});
+
+document.getElementById('landing-btn-email-signup').addEventListener('click', () => {
+  const email = document.getElementById('landing-auth-email').value.trim();
+  const pw    = document.getElementById('landing-auth-password').value;
+  signUpWithEmail(email, pw).catch(err => showAuthError(err.message));
+});
+
+document.getElementById('landing-btn-signout').addEventListener('click', signOutUser);
+
+// ── FLOATING ACCOUNT WIDGET TOGGLE ──────────────────────────────────────────
+// Same open/close-on-outside-click pattern as wireSidebarAccount() below,
+// for the floating pill shown on the landing and field-overview pages.
+(function wireLandingAccount() {
+  const trigger = document.getElementById('landing-account-trigger');
+  const panel   = document.getElementById('landing-account-panel');
+  if (!trigger || !panel) return;
+
+  trigger.addEventListener('click', () => {
+    const isOpen = !panel.hidden;
+    panel.hidden = isOpen;
+    trigger.setAttribute('aria-expanded', String(!isOpen));
+    trigger.classList.toggle('open', !isOpen);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('landing-account')?.contains(e.target)) {
+      panel.hidden = true;
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.classList.remove('open');
+    }
+  });
+})();
+
+// ── SIDEBAR ACCOUNT TOGGLE ─────────────────────────────────────────────────
+// Clicking the sidebar account trigger row opens/closes the auth panel
+// inline, and rotates the chevron arrow. Works for both signed-in and
+// signed-out states — the panel content changes via showSignedIn/showSignedOut.
+(function wireSidebarAccount() {
+  const trigger = document.getElementById('sidebar-account-trigger');
+  const panel   = document.getElementById('auth-panel');
+  if (!trigger || !panel) return;
+
+  trigger.addEventListener('click', () => {
+    const isOpen = !panel.hidden;
+    panel.hidden = isOpen;
+    trigger.setAttribute('aria-expanded', String(!isOpen));
+    trigger.classList.toggle('open', !isOpen);
+  });
+
+  // Close the panel when the user clicks anywhere outside the sidebar account
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('sidebar-account')?.contains(e.target)) {
+      panel.hidden = true;
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.classList.remove('open');
+    }
+  });
+})();
+
+// ── MOBILE SIDEBAR DRAWER ──────────────────────────────────────────────────
+// Injects a slim topbar (hamburger + brand) into #app-shell on mobile.
+// The sidebar becomes a fixed off-canvas drawer toggled by this button.
+// Works for both LTR and RTL layouts (see CSS: :dir(rtl) .sidebar rules).
+(function wireMobileSidebar() {
+  const shell   = document.getElementById('app-shell');
+  const sidebar = shell?.querySelector('.sidebar');
+  if (!shell || !sidebar) return;
+
+  // ── Mobile topbar ──────────────────────────────────────────────────────
+  const topbar = document.createElement('div');
+  topbar.className   = 'mob-topbar';
+  topbar.setAttribute('role', 'banner');
+  topbar.innerHTML = `
+    <button class="mob-menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="mob-topbar-brand" aria-hidden="true">SkillMap<span>·LMS</span></div>
+  `;
+  // Insert as first child so it sits above .sidebar (fixed) and .main
+  shell.insertBefore(topbar, shell.firstChild);
+
+  // ── Backdrop ───────────────────────────────────────────────────────────
+  const backdrop = document.createElement('div');
+  backdrop.className = 'mob-backdrop';
+  backdrop.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(backdrop);
+
+  const menuBtn = topbar.querySelector('.mob-menu-btn');
+
+  function openDrawer() {
+    sidebar.classList.add('mob-open');
+    backdrop.classList.add('visible');
+    menuBtn.classList.add('open');
+    menuBtn.setAttribute('aria-expanded', 'true');
+    menuBtn.setAttribute('aria-label', 'Close navigation');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    sidebar.classList.remove('mob-open');
+    backdrop.classList.remove('visible');
+    menuBtn.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+    menuBtn.setAttribute('aria-label', 'Open navigation');
+    document.body.style.overflow = '';
+  }
+
+  menuBtn.addEventListener('click', () =>
+    sidebar.classList.contains('mob-open') ? closeDrawer() : openDrawer()
+  );
+
+  // Tap backdrop to dismiss
+  backdrop.addEventListener('click', closeDrawer);
+
+  // Auto-close when a lesson or back-button is tapped inside the drawer
+  sidebar.addEventListener('click', (e) => {
+    if (window.innerWidth <= 900 && e.target.closest('.nav-btn, .back-btn')) {
+      setTimeout(closeDrawer, 110); // slight delay so active state flashes
+    }
+  });
+
+  // Close if user resizes back to desktop width
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 900) closeDrawer();
+  }, { passive: true });
+})();
+
 // ── PROGRESS IPC (Issue 3 fix) ─────────────────────────────────────────────
 // Lesson iframes can only communicate progress changes via two mechanisms:
 //
@@ -1622,6 +2094,18 @@ document.getElementById('btn-signout').addEventListener('click', signOutUser);
 //      sibling lessons post a message instead of navigating the iframe directly.
 //      Ported from module-shell.js so that file can be deleted (Issue 1 cleanup).
 //      Message shape: { type: 'lms:openLesson', route: 'lms/modules/.../file.html' }
+//
+//   4. postMessage (lms:progressChanged) — lesson-ui.js posts this whenever a
+//      q-card is opened. Triggers an immediate renderProgressBars() +
+//      renderLessonNav() + syncProgressToFirestore() instead of waiting up to
+//      3 s for the poll. Message shape: { type: 'lms:progressChanged', storageKey }
+//
+//   5. postMessage (lms:requestProgress) — lesson-ui.js posts this on
+//      DOMContentLoaded so the shell can send back the Firestore-authoritative
+//      progress object for that lesson. The iframe uses it to restore q-card
+//      open states seen on other devices.
+//      Message shape: { type: 'lms:requestProgress', storageKey }
+//      Shell reply:   { type: 'lms:progressData', storageKey, data }
 
 // ① Instant update on cross-tab localStorage writes
 window.addEventListener('storage', (e) => {
@@ -1645,7 +2129,78 @@ setInterval(async () => {
 //     progress is tracked correctly.
 //   • Unregistered route (deep-dive / reference file not in the registry) →
 //     load directly into the iframe; sidebar keeps its current state.
+//   • lms:langChanged → lesson tab click keeps the shell lang switcher in sync.
 window.addEventListener('message', (e) => {
+  // Touch point ③: lesson tab clicked → sync shell language.
+  if (e.data?.type === 'lms:langChanged') {
+    const lang = e.data.lang;
+    // Guard: only act if the lang genuinely changed — prevents the
+    // switchLanguage → lms:setLang → switchTab → lms:langChanged loop.
+    if (lang && ['en', 'de', 'ar'].includes(lang) &&
+        lang !== (localStorage.getItem(LANG_KEY) || 'en')) {
+      switchLanguage(lang);
+    }
+    return;
+  }
+
+  // ④ Progress bridge — lesson iframe opened a q-card.
+  //    Re-render sidebar bars immediately (instead of waiting for the 3 s poll)
+  //    and trigger an out-of-band Firestore sync for signed-in users.
+  if (e.data?.type === 'lms:progressChanged') {
+    renderProgressBars();
+    renderLessonNav();
+    syncProgressToFirestore().catch(err =>
+      console.warn('[LMS] lms:progressChanged: Firestore sync failed', err)
+    );
+    return;
+  }
+
+  // ⑤ Progress bridge — lesson iframe requested its stored progress on load.
+  //    Read localStorage (already hydrated from Firestore by
+  //    migrateLocalStorageToFirestore on sign-in) and post it back so the
+  //    iframe can open any q-cards the user completed on another device.
+  if (e.data?.type === 'lms:requestProgress') {
+    const sk = e.data.storageKey;
+    if (sk && typeof sk === 'string') {
+      const data = safeReadStorage(sk);
+      try {
+        frame.contentWindow?.postMessage(
+          { type: 'lms:progressData', storageKey: sk, data },
+          '*'
+        );
+      } catch (_) {}
+    }
+    return;
+  }
+
+  // ⑥ Nav info bridge — lesson iframe requested prev/next lesson info on load.
+  //    Finds the lesson by its route and sends adjacent lesson data back so the
+  //    iframe can enable its Prev / Next buttons (injected by lesson-ui.js).
+  //    Message shape in:  { type: 'lms:requestNavInfo', route: 'lms/modules/…/file.html' }
+  //    Message shape out: { type: 'lms:navInfo', prev: {title,route}|null, next: {title,route}|null }
+  if (e.data?.type === 'lms:requestNavInfo') {
+    const navRoute = e.data.route;
+    if (!navRoute || typeof navRoute !== 'string') return;
+
+    const navMod = getActiveFieldModules().find(m => m.id === activeModuleId);
+    if (!navMod) return;
+
+    const navIdx = navMod.lessons.findIndex(l => l.route === navRoute);
+    if (navIdx === -1) return;
+
+    const prevLesson = navIdx > 0                          ? navMod.lessons[navIdx - 1] : null;
+    const nextLesson = navIdx < navMod.lessons.length - 1  ? navMod.lessons[navIdx + 1] : null;
+
+    try {
+      frame.contentWindow?.postMessage({
+        type: 'lms:navInfo',
+        prev: prevLesson ? { title: prevLesson.title, route: prevLesson.route } : null,
+        next: nextLesson ? { title: nextLesson.title, route: nextLesson.route } : null
+      }, '*');
+    } catch (_) {}
+    return;
+  }
+
   if (e.data?.type !== 'lms:openLesson') return;
   const route = e.data.route;
   if (!route || typeof route !== 'string') return;

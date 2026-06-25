@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Topic 1 — Branches — Mental Model | Git &amp; GitHub Team Workflows</title>
+  <link rel="stylesheet" href="../shared/theme.css"/>
+  <style>
+    /* ── Topic 1 page-specific styles ── */
+
+    .badge {
+      font-size: 10.5px; font-weight: 700;
+      padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+    }
+    .badge-must   { background: #fef3c7; color: #92400e; }
+    .badge-common { background: #dbeafe; color: #1e40af; }
+    .badge-tip    { background: #f0fdf4; color: #166534; }
+
+    .q-arrow {
+      font-size: 12px; color: var(--muted);
+      padding-top: 3px; flex-shrink: 0; transition: transform .2s;
+    }
+    .q-trigger.open .q-arrow { transform: rotate(180deg); }
+    .q-panel { padding: 18px 20px 16px 52px; }
+
+    .strategy-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    }
+    .strategy-text {
+      font-size: 13.5px; color: var(--navy2); line-height: 1.65; margin-bottom: 14px;
+    }
+
+    .answer-box {
+      background: var(--green-bg); border: 1px solid var(--green-border);
+      border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;
+    }
+    .answer-box-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--green-text); margin-bottom: 8px;
+    }
+    .answer-box-text { font-size: 13.5px; color: #14532d; line-height: 1.7; }
+
+    .warning-box {
+      background: var(--amber-bg); border: 1px solid #fde68a;
+      border-radius: 8px; padding: 12px 14px; margin-bottom: 12px;
+    }
+    .warning-box-text { font-size: 13px; color: var(--amber-text); line-height: 1.55; }
+
+    .key-points { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+    .key-point {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 13.5px; color: var(--navy2); line-height: 1.55;
+    }
+    .key-point-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #2563eb;
+      flex-shrink: 0; margin-top: 7px;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+      font-size: 12.5px; background: #f1f5f9;
+      padding: 1px 5px; border-radius: 3px; color: var(--navy);
+    }
+    .code-block {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+      font-size: 12px; background: #f8fafc;
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 10px 14px; margin: 10px 0;
+      color: var(--navy); line-height: 1.65;
+      white-space: pre; overflow-x: auto;
+    }
+
+    .section {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px 28px;
+      margin-bottom: 20px; box-shadow: var(--shadow);
+    }
+    .section h2 { font-size: 18px; font-weight: 700; margin-bottom: 14px; }
+    .section p  { font-size: 14px; color: #334155; line-height: 1.65; margin-bottom: 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .must-block {
+      background: var(--amber-bg); border: 1.5px solid var(--amber-border);
+      border-radius: var(--radius); padding: 18px 20px; margin: 28px 0 0;
+    }
+    .must-block-title {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--amber-text); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .must-block .must-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      font-size: 13.5px; color: #78350f; line-height: 1.6;
+      padding: 9px 0; border-bottom: 1px solid #fde68a;
+    }
+    .must-block .must-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .must-block .must-bullet { font-size: 15px; flex-shrink: 0; }
+
+    /* RTL overrides */
+    [dir="rtl"] .q-panel      { padding: 18px 52px 16px 20px; }
+    [dir="rtl"] .key-point    { flex-direction: row-reverse; }
+    [dir="rtl"] .must-item    { flex-direction: row-reverse; }
+    [dir="rtl"] .must-block-title { flex-direction: row-reverse; }
+    [dir="rtl"] .answer-box-text .code-block,
+    [dir="rtl"] .section .code-block { direction: ltr; text-align: left; }
+
+    @media (max-width: 600px) {
+      .q-panel { padding-left: 20px; }
+      .q-badges { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Git &amp; GitHub &mdash; Topic 1 of 5</div>
+    <h1><span>Branches</span> — Mental Model</h1>
+    <p class="header-sub">Branches are parallel development lines, not copies of your code — master this picture and everything else in Git becomes logical.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de', this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar', this)">العربية</button>
+  </div>
+</div>
+
+<main>
+  <div class="body">
+
+<!-- ═══════════════════════════════════════════════════
+     ENGLISH TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🌿</div>
+    <div>
+      <div class="section-title">The Mental Model</div>
+      <div class="section-subtitle">Concept first — the picture that makes every Git command make sense</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>A branch is a pointer, not a copy</h2>
+    <p>The most important thing to understand: <strong>Git does not copy your files when you create a branch.</strong> A branch is a lightweight label — a moveable pointer — that points to a specific commit in your repository's history. Creating one writes 41 bytes to disk. That's it.</p>
+    <p>When you commit on a branch, that pointer moves forward to the new commit. Your other branches stay exactly where they were. That's how parallel work happens: multiple pointers referencing different commits in the same history graph.</p>
+    <div class="code-block">main:      A ── B ── C
+                        \
+feature/                 D ── E ── F
+wearable-data-sync
+
+HEAD → whichever branch you are currently working on</div>
+    <p>When you run <code>git switch feature/wearable-data-sync</code>, Git moves HEAD to that branch and updates your working directory to match. Your files change — but nothing is copied or lost. Switch back to main and your files return to state C.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>main</strong> is the stable source-of-truth. Every teammate depends on it. It must always be in a working, deployable state.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Feature branches</strong> are isolated experiments. You break things freely here — main never sees the mess unless you merge and review first.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>One branch = one logical change.</strong> Not "everything I worked on this week." One feature, one fix, one purpose.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">⌨️</div>
+    <div>
+      <div class="section-title">Core Branch Commands</div>
+      <div class="section-subtitle">The seven commands you will use every day</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Daily branch workflow</h2>
+    <div class="code-block"># See all local branches (* marks the current one)
+git branch
+
+# Create a new branch AND switch to it in one step
+git switch -c feature/wearable-data-sync
+
+# Switch to an existing branch
+git switch main
+
+# See the full commit graph across all branches
+git log --all --oneline --graph
+
+# Merge your feature branch INTO your current branch
+git switch main
+git merge feature/wearable-data-sync
+
+# Push your branch to GitHub for the first time
+git push -u origin feature/wearable-data-sync
+
+# Delete a branch after merging (clean up the remote)
+git branch -d feature/wearable-data-sync</div>
+    <p><strong>Note on <code>git checkout</code>:</strong> You'll see <code>git checkout -b branch-name</code> everywhere online — that's the older syntax. <code>git switch</code> (Git 2.23+) was created specifically for branch operations and is clearer. Both work; prefer <code>switch</code> for new work.</p>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#faf5ff;">🏷️</div>
+    <div>
+      <div class="section-title">Naming Conventions</div>
+      <div class="section-subtitle">Your branch name appears in every PR, CI log, and git log — make it readable</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Type-prefix convention</h2>
+    <p>Format: <code>type/short-description-in-kebab-case</code></p>
+    <div class="code-block">feature/wearable-data-sync      ← new functionality
+bugfix/fhir-mapping-null-id     ← a specific bug fix
+docs/api-integration-guide      ← documentation only
+chore/update-dependencies       ← maintenance, no behaviour change
+hotfix/critical-auth-crash      ← urgent production fix</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>First rule: check your team's existing branch names and match the pattern before inventing your own.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Slugs: lowercase, hyphens, under 50 characters. No spaces, no capital letters.</div>
+      <div class="key-point"><div class="key-point-dot"></div>One branch = one logical change. Don't bundle "fix the bug AND add the feature" into one branch.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Delete branches after merging — a tidy remote is a professional habit.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">🧠</div>
+    <div>
+      <div class="section-title">Key Concepts — Open Every Card</div>
+      <div class="section-subtitle">The questions that trip up developers new to team Git</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">What actually happens when I run <code>git switch -c feature/my-feature</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Understand this one command deeply and the rest of Git becomes logical rather than magical. Every other operation — merge, conflict, reset — is just moving or reading these same pointers.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Step by step</div>
+        <div class="answer-box-text">
+          1. Git creates a new branch pointer at exactly the same commit HEAD currently points to.<br><br>
+          2. Git moves HEAD to point at the new branch instead of the old one.<br><br>
+          3. Git updates your working directory — but since the new branch starts at the same commit, <strong>your files don't change at all</strong>.<br><br>
+          From here, every new commit you make advances only the <em>new branch pointer</em>, while <code>main</code> stays exactly where it was. That divergence is what makes parallel work possible.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Creating a branch is instantaneous — Git writes just 41 bytes to disk.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Your files don't change at creation — you're still at the same commit.</div>
+        <div class="key-point"><div class="key-point-dot"></div>HEAD = "where am I right now?" — it follows you as you switch branches.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Every commit only advances the branch HEAD is currently pointing to.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">What is HEAD and why does it matter?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Think of HEAD as a cursor</div>
+      <div class="strategy-text">HEAD is Git's "you are here" marker. Every operation — git log, git diff, git reset — uses HEAD as its reference point. Understanding HEAD turns cryptic git output into readable information.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">What HEAD is</div>
+        <div class="answer-box-text">
+          HEAD is a special pointer that points to the branch you're currently on. When you commit, HEAD moves forward with the branch. When you switch branches, HEAD moves to the new branch and your working directory updates to match.<br><br>
+          <strong>Detached HEAD:</strong> if you check out a specific commit SHA or tag directly (not a branch name), HEAD points straight at the commit. You can explore, but any commits you make here "float" without a branch. Run <code>git switch -c recovery-branch</code> to attach them to a new branch before switching away.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Normal state: HEAD → branch → commit.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Detached HEAD: HEAD → commit directly (no branch tracking it).</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>git log</code> starts from HEAD and walks backwards through history.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>HEAD~1</code> = one commit before HEAD — used constantly in <code>git reset</code> and <code>git revert</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">What is the difference between <code>origin/main</code> and local <code>main</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Remote-tracking branches</div>
+      <div class="strategy-text">The most common source of "why don't I see my teammate's changes?" confusion. Your local branch and the remote branch are separate — they only sync when you explicitly fetch, push, or pull.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Two separate pointers</div>
+        <div class="answer-box-text">
+          <code>main</code> = your local branch. You commit to it, reset it, move it freely.<br><br>
+          <code>origin/main</code> = a <em>remote-tracking branch</em> — a local snapshot of what GitHub looked like the last time you communicated with it. Git updates it automatically on fetch/pull/push. You cannot commit to it directly.<br><br>
+          <code>git pull</code> does two things: <code>git fetch</code> (updates <code>origin/main</code> from GitHub) then <code>git merge origin/main</code> into your local <code>main</code>. Always pull before starting new work.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>origin</code> is the default name for the remote. You can have multiple remotes.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>git fetch</code> updates remote-tracking branches without touching your local branches.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>git status</code> compares local vs <code>origin/branch</code> and reports "ahead / behind."</div>
+        <div class="key-point"><div class="key-point-dot"></div>Pull before you branch. If you branch off a stale <code>main</code>, your PR will arrive with unnecessary merge conflicts.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">When do I merge and when do I rebase?</span>
+      <span class="q-badges"><span class="badge badge-common">Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Practical rule for new team members</div>
+      <div class="strategy-text">Default to merge, always. Rebase rewrites commit history and causes serious problems when used on shared branches. Once you understand Git deeply you can decide when rebase makes sense — but not yet.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The difference</div>
+        <div class="answer-box-text">
+          <strong>Merge</strong> creates a new "merge commit" that ties two branch histories together. The original commits stay unchanged. Safe everywhere — even on shared branches.<br><br>
+          <strong>Rebase</strong> replays your branch's commits on top of the target branch, rewriting each commit's SHA. History looks linear and clean, but it's dangerous if others have already pulled your branch — their local copy and yours now have diverged histories and the next pull creates chaos.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Never rebase a branch that other people have already pulled. This is the rule. Rebase is only safe for your own local branch before anyone else has touched it.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Default: merge. Safe, explicit, preserves history accurately.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Many teams configure GitHub to enforce merge commits on PRs — they're protecting shared history.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Ask your UKM team's preference before using rebase.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">I committed to the wrong branch. What do I do?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Tip</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Common accident — easy fix if caught early</div>
+      <div class="strategy-text">You meant to commit to your feature branch but accidentally committed to main before branch protection blocked it. The earlier you catch this, the simpler the rescue.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The fix — before you push</div>
+        <div class="answer-box-text">
+          <strong>Scenario:</strong> you committed to <code>main</code>, meant to commit to <code>feature/my-feature</code>, and have NOT pushed yet.<br><br>
+<div class="code-block"># Step 1 — create the right branch at current HEAD (includes your commit)
+git switch -c feature/my-feature
+
+# Step 2 — go back to main
+git switch main
+
+# Step 3 — undo the commit on main (file changes are kept, un-staged)
+git reset --soft HEAD~1</div>
+          Your commit now lives only on <code>feature/my-feature</code>. Main is back where it belongs.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ If you already pushed to main and others have pulled — do NOT use <code>git reset</code>. That rewrites shared history. Use <code>git revert HEAD</code> instead (creates a new undo commit), then <code>git cherry-pick</code> your original commit SHA onto the correct branch.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">How do I visualise the branch graph to understand what's going on?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Tip</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Your most important learning tool</div>
+      <div class="strategy-text">Most branch confusion is invisible because people can't see the commit graph. One command makes the whole picture visible. Run it constantly while you're learning — watch how it changes after every branch, commit, and merge.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The command and its output</div>
+        <div class="answer-box-text">
+<div class="code-block">git log --all --oneline --graph</div>
+Sample output:
+<div class="code-block">* f3e8a2c (HEAD → feature/wearable-data-sync) Add sync endpoint
+* 4b1c9d7 Refactor device model
+| * 8e2a31f (main) Merge PR: fix null check in FHIR mapping
+| * 7d9c012 Fix null ID in FHIR mapping
+|/
+* 3a5e891 Initial commit</div>
+          You can see where branches diverge, where HEAD is, and what has been merged — all at a glance.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Run this after every branch/commit/merge while you're learning — let the graph cement the mental model.</div>
+        <div class="key-point"><div class="key-point-dot"></div>VS Code's GitLens extension shows this graph visually in the sidebar.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>learngitbranching.js.org</strong> animates this graph in real time as you type real Git commands — the best 20 minutes you'll spend on this topic.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🛠️</div>
+    <div>
+      <div class="section-title">Hands-On Practice</div>
+      <div class="section-subtitle">Do this before moving to Topic 2 — builds the mental model in 20 minutes</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Three branches, one repo, full graph</h2>
+    <p>From the curriculum: create three named branches off main, commit to each one, observe the divergence in <code>git log --all --graph</code>, and switch between them. No pushing yet — just feel how branches isolate work.</p>
+    <div class="code-block"># 1. Set up a fresh practice repo
+git init branch-practice && cd branch-practice
+echo "v1" > notes.txt && git add . && git commit -m "Initial commit"
+
+# 2. Create and populate three branches
+git switch -c feature/alpha
+echo "alpha work" >> notes.txt && git commit -am "Alpha: add sync endpoint"
+
+git switch main
+git switch -c feature/beta
+echo "beta work" >> notes.txt && git commit -am "Beta: add device model"
+
+git switch main
+git switch -c bugfix/null-check
+echo "bugfix" >> notes.txt && git commit -am "Fix: null check on FHIR ID"
+
+# 3. See all three branches diverging from main
+git log --all --oneline --graph
+
+# 4. Merge one back and watch the graph update
+git switch main
+git merge feature/alpha
+git log --all --oneline --graph</div>
+    <p>After this you should see three lines diverging from the same starting point, then one of them merging back into main. That picture is the entire foundation of what follows in this module.</p>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0f9ff;">🔗</div>
+    <div>
+      <div class="section-title">Recommended Resource</div>
+      <div class="section-subtitle">Pick ONE — don't open all of them</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>learngitbranching.js.org</h2>
+    <p>Interactive visual playground. You type real Git commands and watch the branch graph animate in real time. Nothing else comes close for building the mental model. If you do one thing for this topic, complete the first 8 levels here. Takes 20 minutes.</p>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You're done with this topic when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain in one sentence what a branch actually is — a pointer, not a copy — and what HEAD is.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can create a feature branch, make commits, push it, and delete it after merging — all without looking anything up.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You know the type-prefix naming convention and apply it automatically when creating a new branch.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You've run <code>git log --all --oneline --graph</code> and read the commit graph across at least three different branch states.</div>
+  </div>
+
+</div><!-- /tab-en -->
+
+<!-- ═══════════════════════════════════════════════════
+     DEUTSCH TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🌿</div>
+    <div>
+      <div class="section-title">Das mentale Modell</div>
+      <div class="section-subtitle">Erst das Konzept — das Bild, das jeden Git-Befehl verständlich macht</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Ein Branch ist ein Zeiger, keine Kopie</h2>
+    <p>Das Wichtigste zuerst: <strong>Git kopiert keine Dateien, wenn du einen Branch erstellst.</strong> Ein Branch ist ein leichtgewichtiges Label — ein beweglicher Zeiger — der auf einen bestimmten Commit in der Repository-History zeigt. Einen Branch zu erstellen schreibt 41 Bytes auf die Festplatte. Das war's.</p>
+    <p>Wenn du auf einem Branch committest, bewegt sich dieser Zeiger zum neuen Commit vorwärts. Deine anderen Branches bleiben exakt dort, wo sie waren. So entsteht paralleles Arbeiten: mehrere Zeiger referenzieren verschiedene Commits im selben History-Graph.</p>
+    <div class="code-block">main:      A ── B ── C
+                        \
+feature/                 D ── E ── F
+wearable-data-sync
+
+HEAD → der Branch, auf dem du gerade arbeitest</div>
+    <p>Wenn du <code>git switch feature/wearable-data-sync</code> ausführst, bewegt Git HEAD zu diesem Branch und aktualisiert dein Arbeitsverzeichnis. Deine Dateien ändern sich — aber nichts wird kopiert oder verloren. Zurück zu main, und deine Dateien kehren zu Zustand C zurück.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>main</strong> ist die stabile Wahrheitsquelle. Jedes Teammitglied verlässt sich darauf. Er muss immer in einem lauffähigen Zustand sein.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Feature-Branches</strong> sind isolierte Experimente. Hier kannst du frei Fehler machen — main sieht den Chaos nicht, bis du mergst und reviewst.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Ein Branch = eine logische Änderung.</strong> Nicht "alles, woran ich diese Woche gearbeitet habe." Ein Feature, ein Fix, ein Zweck.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">⌨️</div>
+    <div>
+      <div class="section-title">Grundlegende Branch-Befehle</div>
+      <div class="section-subtitle">Die sieben Befehle, die du täglich verwenden wirst</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Täglicher Branch-Workflow</h2>
+    <div class="code-block"># Alle lokalen Branches anzeigen (* = aktueller)
+git branch
+
+# Neuen Branch erstellen UND dorthin wechseln (beides auf einmal)
+git switch -c feature/wearable-data-sync
+
+# Zu einem bestehenden Branch wechseln
+git switch main
+
+# Vollständigen Commit-Graphen aller Branches anzeigen
+git log --all --oneline --graph
+
+# Feature-Branch in den aktuellen Branch mergen
+git switch main
+git merge feature/wearable-data-sync
+
+# Branch zum ersten Mal auf GitHub pushen
+git push -u origin feature/wearable-data-sync
+
+# Branch nach dem Mergen löschen (aufräumen)
+git branch -d feature/wearable-data-sync</div>
+    <p><strong>Hinweis zu <code>git checkout</code>:</strong> Du wirst <code>git checkout -b branch-name</code> überall online sehen — das ist die ältere Syntax. <code>git switch</code> (Git 2.23+) wurde speziell für Branch-Operationen erstellt und ist klarer. Beide funktionieren; verwende <code>switch</code> für neue Arbeit.</p>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#faf5ff;">🏷️</div>
+    <div>
+      <div class="section-title">Namenskonventionen</div>
+      <div class="section-subtitle">Dein Branch-Name erscheint in jedem PR, CI-Log und git log — mach ihn lesbar</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Typ-Präfix-Konvention</h2>
+    <p>Format: <code>typ/kurze-beschreibung-in-kebab-case</code></p>
+    <div class="code-block">feature/wearable-data-sync      ← neue Funktionalität
+bugfix/fhir-mapping-null-id     ← ein bestimmter Bug-Fix
+docs/api-integration-guide      ← nur Dokumentation
+chore/update-dependencies       ← Wartung, keine Verhaltensänderung
+hotfix/critical-auth-crash      ← dringender Produktions-Fix</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Erste Regel: Schau dir bestehende Branch-Namen deines Teams an und folge dem Muster.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Slugs: Kleinbuchstaben, Bindestriche, unter 50 Zeichen. Keine Leerzeichen, keine Großbuchstaben.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Ein Branch = eine logische Änderung. Nicht mehrere unzusammenhängende Dinge bündeln.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Branches nach dem Mergen löschen — ein aufgeräumtes Remote ist eine professionelle Gewohnheit.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">🧠</div>
+    <div>
+      <div class="section-title">Schlüsselkonzepte — Jede Karte öffnen</div>
+      <div class="section-subtitle">Die Fragen, an denen neue Team-Entwickler scheitern</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Was passiert eigentlich, wenn ich <code>git switch -c feature/mein-feature</code> ausführe?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Verstehe diesen einen Befehl tief, und der Rest von Git wird logisch statt magisch. Jede andere Operation — Merge, Konflikt, Reset — bewegt nur diese Zeiger oder liest sie.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Schritt für Schritt</div>
+        <div class="answer-box-text">
+          1. Git erstellt einen neuen Branch-Zeiger genau beim selben Commit, auf den HEAD aktuell zeigt.<br><br>
+          2. Git bewegt HEAD auf den neuen Branch statt auf den alten.<br><br>
+          3. Git aktualisiert dein Arbeitsverzeichnis — da der neue Branch beim selben Commit startet, <strong>ändern sich deine Dateien überhaupt nicht</strong>.<br><br>
+          Von hier an bewegt jeder neue Commit nur den <em>neuen Branch-Zeiger</em>, während <code>main</code> exakt dort bleibt, wo es war.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Einen Branch erstellen dauert weniger als eine Millisekunde — Git schreibt nur 41 Bytes auf die Festplatte.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Deine Dateien ändern sich beim Erstellen nicht — du bist noch beim selben Commit.</div>
+        <div class="key-point"><div class="key-point-dot"></div>HEAD = "Wo bin ich gerade?" — es folgt dir, wenn du Branches wechselst.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Jeder Commit bewegt nur den Branch, auf den HEAD gerade zeigt.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Was ist HEAD und warum ist es wichtig?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Stell dir HEAD als Cursor vor</div>
+      <div class="strategy-text">HEAD ist Gits "Du bist hier"-Markierung. Jede Operation — git log, git diff, git reset — verwendet HEAD als Ausgangspunkt. HEAD zu verstehen macht Git-Ausgaben von kryptisch zu lesbar.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Was HEAD ist</div>
+        <div class="answer-box-text">
+          HEAD ist ein spezieller Zeiger, der auf den Branch zeigt, auf dem du gerade arbeitest. Wenn du committest, bewegt sich HEAD mit dem Branch vorwärts. Beim Branch-Wechsel bewegt sich HEAD auf den neuen Branch und dein Arbeitsverzeichnis wird aktualisiert.<br><br>
+          <strong>Detached HEAD:</strong> Wenn du direkt einen Commit-SHA oder Tag auscheckst (keinen Branch-Namen), zeigt HEAD direkt auf den Commit. Du kannst dich umsehen, aber Commits hier "schweben" ohne Branch. Führe <code>git switch -c recovery-branch</code> aus, um sie an einen neuen Branch zu knüpfen.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Normalzustand: HEAD → Branch → Commit.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Detached HEAD: HEAD → Commit direkt (kein Branch, der ihn trackt).</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>HEAD~1</code> = ein Commit vor HEAD — wird ständig in <code>git reset</code> und <code>git revert</code> verwendet.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Was ist der Unterschied zwischen <code>origin/main</code> und lokalem <code>main</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Remote-Tracking-Branches</div>
+      <div class="strategy-text">Die häufigste Quelle von "Warum sehe ich die Änderungen meines Teamkollegen nicht?"-Verwirrung. Dein lokaler Branch und der Remote-Branch sind separate Dinge — sie synchronisieren sich nur, wenn du explizit fetch, push oder pull ausführst.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Zwei separate Zeiger</div>
+        <div class="answer-box-text">
+          <code>main</code> = dein lokaler Branch. Du committest darauf, resettest ihn, bewegst ihn frei.<br><br>
+          <code>origin/main</code> = ein <em>Remote-Tracking-Branch</em> — ein lokaler Schnappschuss, wie GitHub beim letzten Kontakt aussah. Git aktualisiert ihn automatisch beim fetch/pull/push. Du kannst nicht direkt darauf committen.<br><br>
+          <code>git pull</code> macht zwei Dinge: <code>git fetch</code> (aktualisiert <code>origin/main</code> von GitHub) dann <code>git merge origin/main</code> in dein lokales <code>main</code>. Immer pullen, bevor du neue Arbeit anfängst.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>origin</code> ist nur der Standardname für das Remote. Du kannst mehrere Remotes haben.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>git fetch</code> aktualisiert Remote-Tracking-Branches, ohne deine lokalen Branches anzutasten.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Vor dem Branchen pullen. Wenn du von einem veralteten <code>main</code> abzweigst, hat dein PR unnötige Merge-Konflikte.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Wann merge ich und wann rebase ich?</span>
+      <span class="q-badges"><span class="badge badge-common">Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Praktische Regel für neue Teammitglieder</div>
+      <div class="strategy-text">Standardmäßig immer mergen. Rebase schreibt die Commit-History um und verursacht ernsthafte Probleme auf geteilten Branches. Sobald du Git tief verstehst, kannst du entscheiden — aber noch nicht.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Der Unterschied</div>
+        <div class="answer-box-text">
+          <strong>Merge</strong> erstellt einen neuen "Merge-Commit", der zwei Branch-Historien verbindet. Die Original-Commits bleiben unverändert. Überall sicher — auch auf geteilten Branches.<br><br>
+          <strong>Rebase</strong> spielt die Commits deines Branches oben auf dem Zielbranch nach und schreibt dabei die SHA jedes Commits um. Die History sieht linearer aus, ist aber gefährlich, wenn andere deinen Branch schon gepullt haben — ihre lokale Kopie und deine haben jetzt abweichende Historien.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Niemals einen Branch rebasen, den andere bereits gepullt haben. Das ist die Regel. Rebase ist nur sicher für deinen eigenen lokalen Branch, bevor ihn jemand anderes angefasst hat.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Ich habe auf den falschen Branch committed. Was mache ich?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Tipp</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Häufiges Versehen — einfache Lösung, wenn früh erkannt</div>
+      <div class="strategy-text">Du wolltest auf deinem Feature-Branch committen, hast aber versehentlich auf main committed, bevor der Schutz das verhindert hat. Je früher du es bemerkst, desto einfacher die Lösung.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Lösung — vor dem Push</div>
+        <div class="answer-box-text">
+          <strong>Szenario:</strong> Du hast auf <code>main</code> committed, wolltest aber auf <code>feature/mein-feature</code> — und hast noch NICHT gepusht.<br><br>
+<div class="code-block"># Schritt 1 — richtigen Branch beim aktuellen HEAD erstellen (enthält deinen Commit)
+git switch -c feature/mein-feature
+
+# Schritt 2 — zurück zu main wechseln
+git switch main
+
+# Schritt 3 — Commit auf main rückgängig machen (Dateiänderungen bleiben als unstaged)
+git reset --soft HEAD~1</div>
+          Dein Commit lebt jetzt nur noch auf <code>feature/mein-feature</code>. Main ist zurück wo es sein soll.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Wenn du schon auf main gepusht hast und andere gepullt haben — kein <code>git reset</code>. Das schreibt geteilte History um. Verwende stattdessen <code>git revert HEAD</code> (erstellt einen neuen Undo-Commit), dann <code>git cherry-pick</code> deinen ursprünglichen Commit auf den richtigen Branch.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Wie visualisiere ich den Branch-Graphen, um zu verstehen, was passiert?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Tipp</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Dein wichtigstes Lernwerkzeug</div>
+      <div class="strategy-text">Die meisten Branch-Probleme sind unsichtbar. Ein Befehl macht das gesamte Bild sichtbar — führe ihn ständig aus, während du Git lernst.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Der Befehl und seine Ausgabe</div>
+        <div class="answer-box-text">
+<div class="code-block">git log --all --oneline --graph</div>
+Beispielausgabe:
+<div class="code-block">* f3e8a2c (HEAD → feature/wearable-data-sync) Sync-Endpoint hinzugefügt
+* 4b1c9d7 Gerätemodell refaktoriert
+| * 8e2a31f (main) Merge PR: Null-Check in FHIR-Mapping gefixt
+| * 7d9c012 Null-ID in FHIR-Mapping gefixt
+|/
+* 3a5e891 Initialer Commit</div>
+          Du siehst genau, wo Branches divergieren, wo HEAD ist, und was gemergt wurde — auf einen Blick. <strong>learngitbranching.js.org</strong> animiert diesen Graphen in Echtzeit — die beste 20-Minuten-Investition für dieses Thema.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🛠️</div>
+    <div>
+      <div class="section-title">Praktische Übung</div>
+      <div class="section-subtitle">Mach das, bevor du zu Thema 2 weitergehst</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Drei Branches, ein Repo, voller Graph</h2>
+    <p>Aus dem Curriculum: Erstelle drei benannte Branches von main, committe auf jeden einzelnen, beobachte die Divergenz mit <code>git log --all --graph</code>, und wechsle zwischen ihnen. Noch nicht pushen — nur spüren, wie Branches Arbeit isolieren.</p>
+    <div class="code-block"># 1. Frisches Übungs-Repo erstellen
+git init branch-practice && cd branch-practice
+echo "v1" > notes.txt && git add . && git commit -m "Initialer Commit"
+
+# 2. Drei Branches erstellen und befüllen
+git switch -c feature/alpha
+echo "alpha arbeit" >> notes.txt && git commit -am "Alpha: Sync-Endpoint hinzugefügt"
+
+git switch main
+git switch -c feature/beta
+echo "beta arbeit" >> notes.txt && git commit -am "Beta: Gerätemodell hinzugefügt"
+
+git switch main
+git switch -c bugfix/null-check
+echo "bugfix" >> notes.txt && git commit -am "Fix: Null-Check für FHIR-ID"
+
+# 3. Alle drei Branches beim Divergieren beobachten
+git log --all --oneline --graph
+
+# 4. Einen zurückmergen und den Graphen beobachten
+git switch main
+git merge feature/alpha
+git log --all --oneline --graph</div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit diesem Thema fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du in einem Satz erklären kannst, was ein Branch wirklich ist — ein Zeiger, keine Kopie — und was HEAD ist.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du einen Feature-Branch erstellen, Commits machen, pushen und nach dem Mergen löschen kannst — alles ohne Nachschlagen.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du die Typ-Präfix-Namenskonvention kennst und sie sofort anwendest, wenn du einen neuen Branch erstellst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du <code>git log --all --oneline --graph</code> ausgeführt und den Commit-Graphen in mindestens drei verschiedenen Branch-Zuständen gelesen hast.</div>
+  </div>
+
+</div><!-- /tab-de -->
+
+<!-- ═══════════════════════════════════════════════════
+     ARABIC TAB
+════════════════════════════════════════════════════ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🌿</div>
+    <div>
+      <div class="section-title">النموذج الذهني</div>
+      <div class="section-subtitle">المفهوم أولاً — الصورة التي تجعل كل أمر في Git منطقيًا</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>الـ Branch مؤشرٌ لا نسخة</h2>
+    <p>أهم ما يجب فهمه: <strong>Git لا ينسخ ملفاتك عند إنشاء branch.</strong> الـ branch مجرد ملصق خفيف الوزن — مؤشر متحرك — يشير إلى commit محدد في سجل المستودع. إنشاء branch يكتب 41 بايت فقط على القرص. هذا كل شيء.</p>
+    <p>عندما تعمل commit على branch، يتقدم هذا المؤشر للأمام نحو الـ commit الجديد. بقية الـ branches تبقى في مكانها بالضبط. هكذا يتحقق العمل المتوازي: مؤشرات متعددة تشير إلى commits مختلفة في نفس مخطط السجل.</p>
+    <div class="code-block" dir="ltr">main:      A ── B ── C
+                        \
+feature/                 D ── E ── F
+wearable-data-sync
+
+HEAD → الـ branch الذي تعمل عليه حاليًا</div>
+    <p>عندما تنفذ <code dir="ltr">git switch feature/wearable-data-sync</code>، يحرك Git الـ HEAD إلى ذلك الـ branch ويحدّث مجلد العمل ليتطابق معه. ملفاتك تتغير — لكن لا شيء ينسخ أو يُفقد. العودة إلى main وملفاتك ترجع إلى حالة C.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>main</strong> هو مصدر الحقيقة المستقر. كل زميل في الفريق يعتمد عليه. يجب أن يكون دائمًا في حالة عمل وقابلية نشر.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Feature branches</strong> هي تجارب معزولة. يمكنك ارتكاب الأخطاء هنا بحرية — main لن يرى الفوضى إلا بعد المراجعة والـ merge.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Branch واحد = تغيير منطقي واحد.</strong> ليس "كل ما عملت عليه هذا الأسبوع." ميزة واحدة، إصلاح واحد، هدف واحد.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">⌨️</div>
+    <div>
+      <div class="section-title">أوامر الـ Branch الأساسية</div>
+      <div class="section-subtitle">الأوامر السبعة التي ستستخدمها كل يوم</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>سير العمل اليومي مع الـ Branches</h2>
+    <div class="code-block" dir="ltr"># عرض جميع الـ branches المحلية (* = الحالي)
+git branch
+
+# إنشاء branch جديد والتبديل إليه في خطوة واحدة
+git switch -c feature/wearable-data-sync
+
+# التبديل إلى branch موجود
+git switch main
+
+# عرض مخطط الـ commits الكامل لجميع الـ branches
+git log --all --oneline --graph
+
+# دمج feature branch في الـ branch الحالي
+git switch main
+git merge feature/wearable-data-sync
+
+# رفع الـ branch إلى GitHub لأول مرة
+git push -u origin feature/wearable-data-sync
+
+# حذف الـ branch بعد الدمج (تنظيف)
+git branch -d feature/wearable-data-sync</div>
+    <p><strong>ملاحظة حول <code dir="ltr">git checkout</code>:</strong> ستجد <code dir="ltr">git checkout -b branch-name</code> في كل مكان على الإنترنت — هذا هو الأسلوب القديم. <code dir="ltr">git switch</code> (الإصدار Git 2.23+) صُمِّم خصيصًا لعمليات الـ branches وهو أوضح. كلاهما يعمل؛ استخدم <code dir="ltr">switch</code> في العمل الجديد.</p>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#faf5ff;">🏷️</div>
+    <div>
+      <div class="section-title">اصطلاحات التسمية</div>
+      <div class="section-subtitle">اسم الـ branch يظهر في كل PR وسجل CI وgit log — اجعله مقروءًا</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>اصطلاح البادئة النوعية</h2>
+    <p>الصيغة: <code dir="ltr">type/short-description-in-kebab-case</code></p>
+    <div class="code-block" dir="ltr">feature/wearable-data-sync      ← وظيفة جديدة
+bugfix/fhir-mapping-null-id     ← إصلاح خطأ محدد
+docs/api-integration-guide      ← توثيق فقط
+chore/update-dependencies       ← صيانة، بلا تغيير في السلوك
+hotfix/critical-auth-crash      ← إصلاح عاجل للإنتاج</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>القاعدة الأولى: راجع أسماء الـ branches الموجودة في فريقك واتبع نفس النمط قبل اختراع نمط جديد.</div>
+      <div class="key-point"><div class="key-point-dot"></div>الأسماء: حروف صغيرة، شرطات، أقل من 50 حرفًا. لا مسافات، لا حروف كبيرة.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Branch واحد = تغيير منطقي واحد. لا تجمع أمورًا غير مترابطة في branch واحد.</div>
+      <div class="key-point"><div class="key-point-dot"></div>احذف الـ branches بعد الدمج — الـ remote المرتب عادة مهنية.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">🧠</div>
+    <div>
+      <div class="section-title">المفاهيم الأساسية — افتح كل بطاقة</div>
+      <div class="section-subtitle">الأسئلة التي يتعثر عندها المطورون الجدد في العمل الجماعي</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">ماذا يحدث فعلاً عندما أنفذ <code dir="ltr">git switch -c feature/my-feature</code>؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">افهم هذا الأمر بعمق وسيصبح باقي Git منطقيًا لا سحريًا. كل عملية أخرى — merge وconflict وreset — مجرد تحريك هذه المؤشرات أو قراءتها.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">خطوة بخطوة</div>
+        <div class="answer-box-text">
+          ١. ينشئ Git مؤشر branch جديد عند نفس الـ commit الذي يشير إليه HEAD حاليًا.<br><br>
+          ٢. يحرك Git الـ HEAD ليشير إلى الـ branch الجديد بدلاً من القديم.<br><br>
+          ٣. يحدّث Git مجلد العمل — لكن لأن الـ branch الجديد يبدأ عند نفس الـ commit، <strong>ملفاتك لا تتغير إطلاقًا</strong>.<br><br>
+          من هنا فصاعدًا، كل commit جديد يحرك فقط <em>مؤشر الـ branch الجديد</em>، بينما يبقى <code>main</code> بالضبط حيث كان.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>إنشاء branch فوري — Git يكتب 41 بايتًا فقط على القرص.</div>
+        <div class="key-point"><div class="key-point-dot"></div>ملفاتك لا تتغير عند الإنشاء — لا تزال عند نفس الـ commit.</div>
+        <div class="key-point"><div class="key-point-dot"></div>HEAD = "أين أنا الآن؟" — يتبعك عند التنقل بين الـ branches.</div>
+        <div class="key-point"><div class="key-point-dot"></div>كل commit يحرك فقط الـ branch الذي يشير إليه HEAD حاليًا.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">ما هو HEAD ولماذا هو مهم؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">فكّر في HEAD كـ cursor</div>
+      <div class="strategy-text">HEAD هو علامة "أنت هنا" في Git. كل عملية — git log وgit diff وgit reset — تستخدم HEAD كنقطة انطلاق. فهم HEAD يحول مخرجات Git من رموز مبهمة إلى معلومات مقروءة.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">ما هو HEAD</div>
+        <div class="answer-box-text">
+          HEAD مؤشر خاص يشير إلى الـ branch الذي تعمل عليه حاليًا. عند الـ commit، يتقدم HEAD مع الـ branch. عند تغيير الـ branch، ينتقل HEAD إلى الـ branch الجديد ويتحدث مجلد العمل.<br><br>
+          <strong>Detached HEAD:</strong> إذا checkout-t مباشرة على SHA commit أو tag (وليس اسم branch)، يشير HEAD إلى الـ commit مباشرة. يمكنك الاستكشاف، لكن أي commit تعمله هنا "يطفو" بلا branch يحتضنه. نفذ <code dir="ltr">git switch -c recovery-branch</code> لإلحاقها ببranch جديد.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>الحالة الطبيعية: HEAD ← Branch ← Commit.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Detached HEAD: HEAD يشير إلى Commit مباشرة (بلا branch يتتبعه).</div>
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">HEAD~1</code> = commit واحد قبل HEAD — يُستخدم كثيرًا في <code dir="ltr">git reset</code> و<code dir="ltr">git revert</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">ما الفرق بين <code>origin/main</code> و<code>main</code> المحلي؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Remote-tracking branches</div>
+      <div class="strategy-text">أكثر مصادر الارتباك شيوعًا: "لماذا لا أرى تغييرات زميلي؟" الـ branch المحلي والـ branch البعيد شيئان منفصلان — يتزامنان فقط عند تنفيذ fetch أو push أو pull صراحةً.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">مؤشران منفصلان</div>
+        <div class="answer-box-text">
+          <code>main</code> = الـ branch المحلي. تعمل عليه commits وتعيد ضبطه وتحركه بحرية.<br><br>
+          <code>origin/main</code> = <em>remote-tracking branch</em> — نسخة محلية تعكس حالة GitHub في آخر تواصل معه. Git يحدثه تلقائيًا عند fetch/pull/push. لا يمكنك الـ commit عليه مباشرة.<br><br>
+          <code dir="ltr">git pull</code> يقوم بعمليتين: <code dir="ltr">git fetch</code> (يحدّث <code>origin/main</code> من GitHub) ثم <code dir="ltr">git merge origin/main</code> في <code>main</code> المحلي. دائمًا pull قبل بدء عمل جديد.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>origin</code> مجرد الاسم الافتراضي للـ remote. يمكنك امتلاك remotes متعددة.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git fetch</code> يحدّث الـ remote-tracking branches دون المساس بالـ branches المحلية.</div>
+        <div class="key-point"><div class="key-point-dot"></div>قم بالـ pull قبل الـ branch. إذا تفرعت من <code>main</code> قديم، سيصل الـ PR محملاً بتعارضات غير ضرورية.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">متى أستخدم merge ومتى أستخدم rebase؟</span>
+      <span class="q-badges"><span class="badge badge-common">شائع</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">القاعدة العملية للأعضاء الجدد في الفريق</div>
+      <div class="strategy-text">استخدم merge دائمًا كخيار افتراضي. الـ rebase يعيد كتابة تاريخ الـ commits ويسبب مشاكل خطيرة على الـ branches المشتركة. بمجرد فهمك العميق لـ Git يمكنك تقرير متى يكون مناسبًا — لكن ليس الآن.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الفرق</div>
+        <div class="answer-box-text">
+          <strong>Merge</strong> ينشئ "merge commit" جديدًا يربط تاريخَي branch معًا. الـ commits الأصلية تبقى دون تغيير. آمن في كل مكان — حتى على الـ branches المشتركة.<br><br>
+          <strong>Rebase</strong> يعيد تشغيل commits الـ branch فوق الـ branch المستهدف، مع إعادة كتابة SHA لكل commit. السجل يبدو خطيًا ونظيفًا، لكنه خطير إذا سحب آخرون الـ branch بالفعل — نسختهم المحلية ونسختك الآن لهما تاريخان متباينان.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ لا تعمل rebase أبدًا على branch سحبه أشخاص آخرون. هذه هي القاعدة. الـ rebase آمن فقط على الـ branch المحلي الخاص بك قبل أن يلمسه أحد.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">قمت بالـ commit على الـ branch الخطأ. ماذا أفعل؟</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 نصيحة</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">خطأ شائع — حل سهل إذا اكتُشف مبكرًا</div>
+      <div class="strategy-text">أردت الـ commit على feature branch لكنك وضعته على main عن طريق الخطأ قبل أن يمنعه الحماية. كلما اكتشفت ذلك مبكرًا، كان الحل أبسط.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الحل — قبل الـ push</div>
+        <div class="answer-box-text">
+          <strong>السيناريو:</strong> وضعت commit على <code>main</code>، أردته على <code>feature/my-feature</code>، ولم تقم بالـ push بعد.<br><br>
+<div class="code-block" dir="ltr"># الخطوة ١ — أنشئ الـ branch الصحيح عند HEAD الحالي (يتضمن commit-ك)
+git switch -c feature/my-feature
+
+# الخطوة ٢ — عد إلى main
+git switch main
+
+# الخطوة ٣ — تراجع عن الـ commit على main (التغييرات تبقى unstaged)
+git reset --soft HEAD~1</div>
+          الـ commit الآن موجود فقط على <code>feature/my-feature</code>. main عاد لمكانه الصحيح.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ إذا push-ت بالفعل إلى main وسحب آخرون — لا تستخدم <code>git reset</code>. ذلك يعيد كتابة السجل المشترك. استخدم <code dir="ltr">git revert HEAD</code> بدلاً منه (ينشئ commit تراجع جديد)، ثم <code dir="ltr">git cherry-pick</code> تغييرك الأصلي إلى الـ branch الصحيح.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">كيف أتصور مخطط الـ branches لأفهم ما يجري؟</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 نصيحة</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">أهم أداة تعليمية لديك</div>
+      <div class="strategy-text">معظم مشاكل الـ branches غير مرئية. أمر واحد يجعل الصورة كاملة واضحة — نفّذه باستمرار أثناء تعلمك لـ Git وراقب كيف يتغير بعد كل branch وcommit وmerge.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الأمر ومخرجاته</div>
+        <div class="answer-box-text">
+<div class="code-block" dir="ltr">git log --all --oneline --graph</div>
+مثال على المخرجات:
+<div class="code-block" dir="ltr">* f3e8a2c (HEAD → feature/wearable-data-sync) Add sync endpoint
+* 4b1c9d7 Refactor device model
+| * 8e2a31f (main) Merge PR: fix null check in FHIR mapping
+| * 7d9c012 Fix null ID in FHIR mapping
+|/
+* 3a5e891 Initial commit</div>
+          ترى بوضوح أين تتفرع الـ branches، وأين يقع HEAD، وما الذي دُمج — دفعة واحدة. موقع <strong>learngitbranching.js.org</strong> يحرّك هذا المخطط لحظيًا بينما تكتب أوامر Git الحقيقية — أفضل 20 دقيقة ستستثمرها في هذا الموضوع.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🛠️</div>
+    <div>
+      <div class="section-title">التطبيق العملي</div>
+      <div class="section-subtitle">افعل هذا قبل الانتقال إلى الموضوع الثاني — يبني النموذج الذهني في 20 دقيقة</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>ثلاثة branches، مستودع واحد، مخطط كامل</h2>
+    <p>من المنهج: أنشئ ثلاثة branches مسماة من main، اعمل commit على كل منها، راقب التفرق بـ <code dir="ltr">git log --all --graph</code>، ثم بدّل بينها. لا push بعد — فقط اشعر كيف تعزل الـ branches العمل.</p>
+    <div class="code-block" dir="ltr"># ١. إنشاء مستودع تدريبي
+git init branch-practice && cd branch-practice
+echo "v1" > notes.txt && git add . && git commit -m "Initial commit"
+
+# ٢. إنشاء وتعبئة ثلاثة branches
+git switch -c feature/alpha
+echo "alpha work" >> notes.txt && git commit -am "Alpha: add sync endpoint"
+
+git switch main
+git switch -c feature/beta
+echo "beta work" >> notes.txt && git commit -am "Beta: add device model"
+
+git switch main
+git switch -c bugfix/null-check
+echo "bugfix" >> notes.txt && git commit -am "Fix: null check for FHIR ID"
+
+# ٣. مشاهدة تفرق الثلاثة branches
+git log --all --oneline --graph
+
+# ٤. دمج أحدها ومراقبة تغيير المخطط
+git switch main
+git merge feature/alpha
+git log --all --oneline --graph</div>
+    <p>بعد هذا التمرين يجب أن ترى ثلاثة خطوط تتفرع من نفس نقطة البداية، ثم أحدها يعود ليندمج في main. هذه الصورة هي الأساس الكامل لما يلي في هذا المقرر.</p>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> انتهيت من هذا الموضوع عندما...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع شرح ما هو الـ branch فعلاً في جملة واحدة — مؤشر لا نسخة — وما هو HEAD.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع إنشاء feature branch وعمل commits ورفعه إلى GitHub وحذفه بعد الدمج — كل ذلك دون البحث عن أي شيء.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تعرف اصطلاح تسمية الـ type-prefix وتطبقه فورًا عند إنشاء branch جديد.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>نفذت <code dir="ltr">git log --all --oneline --graph</code> وقرأت مخطط الـ commits في ثلاثة حالات مختلفة على الأقل.</div>
+  </div>
+
+</div><!-- /tab-ar -->
+
+  </div><!-- /body -->
+</main>
+
+<!-- LMS progress bridge: tells lesson-ui.js which localStorage key to write to.
+     Must match the storageKey declared in registry.js for github-branches. -->
+<script>window.LMS_STORAGE_KEY = 'lms_github_01_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+</body>
+</html>

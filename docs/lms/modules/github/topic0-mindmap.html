@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mind Map — Git &amp; GitHub Ecosystem | Team Workflows</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Git &amp; GitHub &mdash; Mind Map</div>
+    <h1><span>Git &amp; GitHub</span> Ecosystem</h1>
+    <p class="header-sub">An interactive map of everything this module covers. Tap any concept to see what it is, why it matters, and which topic covers it in depth.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+  <div class="body">
+    <div id="tab-en" class="tab-content active">
+      <div id="agrid-en"></div>
+      <div id="alegend-en"></div>
+    </div>
+    <div id="tab-de" class="tab-content">
+      <div id="agrid-de"></div>
+      <div id="alegend-de"></div>
+    </div>
+    <div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+      <div id="agrid-ar"></div>
+      <div id="alegend-ar"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+var DATA = {
+  en: {
+    legendTitle: "Concept index",
+    legendMust:  "⚑ Core concept — must understand",
+    whyLabel:    "Why it matters",
+    studyLabel:  "Covered in",
+    mustLabel:   "Core concept",
+    branches: [
+      { color:"#2563eb", bg:"#eff6ff", border:"#bfdbfe", title:"Core Git Concepts", children:[
+        { label:"Commits", mk:true,
+          info:"A commit is a snapshot of your entire project at a point in time — not a diff. Git stores the full state as a content-addressed object. Your history is a linked list of these snapshots.",
+          why:"Understanding commits as snapshots (not diffs) changes how you think about branching, reverting, and stashing. Every other Git operation either creates, moves, or reads commits.",
+          topic:"General Overview" },
+        { label:"The Staging Area", mk:false,
+          info:"The staging area (also called the index) is a preparation zone between your working directory and the repository. git add moves changes into it; git commit records everything that's staged.",
+          why:"You'll use git add -p to stage only parts of a changed file — a key skill for making clean, atomic commits that reviewers can follow.",
+          topic:"General Overview" },
+        { label:"HEAD", mk:true,
+          info:"HEAD is a pointer to your current position in the commit graph — usually the tip of the current branch. 'Detached HEAD' means HEAD points directly to a commit rather than a branch.",
+          why:"Understanding HEAD makes git switch, git reset, and HEAD~1 all click immediately. Every undo and navigation command operates relative to HEAD.",
+          topic:"Topic 1 — Branches" },
+        { label:"git log & graph", mk:false,
+          info:"git log --all --graph --oneline --decorate shows the full commit history as an ASCII art graph with all branches labeled. It's the most important diagnostic command for understanding branch structure.",
+          why:"Run this whenever something seems wrong with your branches. The graph doesn't lie — it shows exactly where HEAD is, where branches diverged, and what's unmerged.",
+          topic:"Topic 1 — Branches" }
+      ]},
+      { color:"#0891b2", bg:"#ecfeff", border:"#a5f3fc", title:"Branches", children:[
+        { label:"What a Branch Is", mk:true,
+          info:"A branch is a lightweight, movable pointer to a commit. Creating one is instant and costs essentially nothing on disk — it's a 41-byte file containing a commit hash.",
+          why:"The cheapness of branches is why professional teams create one for every feature, bug fix, and experiment — never directly committing to main.",
+          topic:"Topic 1 — Branches" },
+        { label:"git switch & checkout", mk:true,
+          info:"git switch -c new-branch creates and switches in one step (modern syntax, Git 2.23+). git checkout -b does the same thing and is still widely used. git switch branch-name switches to an existing branch.",
+          why:"You'll use branch creation dozens of times per week. The modern git switch is clearer than the overloaded git checkout, which also restores files.",
+          topic:"Topic 1 — Branches" },
+        { label:"Naming Conventions", mk:true,
+          info:"Format: type/short-description-in-kebab-case. Types: feature/, bugfix/, docs/, chore/, hotfix/. One branch = one logical change.",
+          why:"Branch names appear in every PR, CI log, and git log. Clear names make code review faster and history easier to audit — especially important in regulated research environments.",
+          topic:"Topic 1 — Branches" },
+        { label:"Branch Divergence", mk:false,
+          info:"Two branches diverge when each receives commits the other doesn't have. Visible with git log --all --graph. Divergence is normal — it enables parallel development. The risk grows the longer branches stay separate.",
+          why:"Recognising divergence in the graph helps you predict whether a merge will be clean or conflicted. Short-lived branches (1–3 days) merge more cleanly than week-long ones.",
+          topic:"Topic 1 — Branches" }
+      ]},
+      { color:"#7c3aed", bg:"#f5f3ff", border:"#ddd6fe", title:"Pull Requests", children:[
+        { label:"What a PR Is", mk:true,
+          info:"A pull request is a formal request to merge your branch into main, with a dedicated discussion thread attached to the exact diff. Before merging, the whole team can review, comment, and approve.",
+          why:"PRs are the central coordination mechanism of every professional team. Writing a clear, reviewable PR is one of the most visible job skills — it directly determines how fast your work lands.",
+          topic:"Topic 2 — Pull Requests" },
+        { label:"PR Title & Description", mk:true,
+          info:"Title format: type: what changed (#issue). Description covers: what changed, why it changed, how to test, any caveats, and issue reference (Closes #87). Write for the reviewer — not for yourself.",
+          why:"A reviewer reads your description before touching the diff. A clear description means faster reviews, fewer questions, and a permanent record of intent for anyone who reads the history later.",
+          topic:"Topic 2 — Pull Requests" },
+        { label:"Code Review", mk:true,
+          info:"Reviewers check: correctness, edge cases, readability, consistency with team patterns, test coverage, and security concerns. Comments are about the code, not the author.",
+          why:"Participating in code review — both as author and reviewer — is the fastest way to learn a codebase. A PR with many review comments is quality control, not personal criticism.",
+          topic:"Topic 2 — Pull Requests" },
+        { label:"Responding to Comments", mk:false,
+          info:"Push new commits to address reviewer feedback. Never force-push to a PR branch under active review — it rewrites history and invalidates previous reviewer approvals. Reply to every comment.",
+          why:"Mishandling review responses is one of the most common first-PR mistakes. Knowing the rules (push new commits, never force-push under review) keeps the process smooth and trust intact.",
+          topic:"Topic 2 — Pull Requests" }
+      ]},
+      { color:"#dc2626", bg:"#fef2f2", border:"#fecaca", title:"Merge & Conflicts", children:[
+        { label:"git merge", mk:true,
+          info:"git merge branch-name combines the history of two branches. A fast-forward merge moves the pointer; a 3-way merge creates a new merge commit with two parents.",
+          why:"Merge is the most common way to integrate work. Understanding fast-forward vs. 3-way merge explains your git log shape and why some merges create an extra commit.",
+          topic:"Topic 3 — Merge Conflicts" },
+        { label:"Conflict Markers", mk:true,
+          info:"When Git can't auto-merge two branches, it inserts markers: <<<<<<< HEAD (your change), ======= (separator), >>>>>>> branch-name (incoming change). You resolve by editing the file to the correct final state.",
+          why:"You'll encounter merge conflicts regularly in team work. Staying calm and reading the markers is all you need. It looks scary the first time; it's just a diff by another name.",
+          topic:"Topic 3 — Merge Conflicts" },
+        { label:"VS Code Merge UI", mk:false,
+          info:"VS Code highlights conflicted files and shows Accept Current Change, Accept Incoming Change, Accept Both, and Compare buttons for each conflict block. Visual and less error-prone than raw CLI editing.",
+          why:"VS Code's merge UI is the recommended starting point — it removes the risk of accidentally leaving a <<<< marker in your code. Switch to CLI-only once you're comfortable.",
+          topic:"Topic 3 — Merge Conflicts" },
+        { label:"Minimising Conflicts", mk:false,
+          info:"Keep branches short-lived, PRs small and atomic, pull from main frequently, and coordinate with teammates when working in the same file area. Most conflicts are preventable.",
+          why:"Conflict prevention is better than conflict resolution. A team that merges frequently and keeps PRs small spends dramatically less time in conflict-resolution mode.",
+          topic:"Topic 3 — Merge Conflicts" }
+      ]},
+      { color:"#d97706", bg:"#fffbeb", border:"#fde68a", title:"Undo Operations", children:[
+        { label:"git reset", mk:true,
+          info:"git reset moves HEAD (and optionally modifies staging/working tree). --soft: moves HEAD only, keeps changes staged. --mixed (default): unstages changes. --hard: destroys all changes. Never use --hard on a shared branch.",
+          why:"git reset --soft HEAD~1 is the safest 'undo last commit' command — you keep your work and can re-commit differently. Understanding the three modes prevents accidental data loss.",
+          topic:"Topic 4 — Undo" },
+        { label:"git revert", mk:true,
+          info:"git revert creates a new commit that undoes a previous one. History is preserved — no rewriting. This is the safe undo for commits that have already been pushed to a shared branch.",
+          why:"Using git reset on a pushed commit causes problems for everyone else on the team. git revert is always safe for shared branches — it adds a commit rather than removing one.",
+          topic:"Topic 4 — Undo" },
+        { label:"git stash", mk:false,
+          info:"git stash saves your uncommitted work (staged and unstaged) to a temporary stack and restores a clean working directory. git stash pop retrieves the most recent stash.",
+          why:"Classic scenario: you're mid-feature when an urgent review arrives. Stash your work, switch branches, review, pop the stash and continue. No half-baked commits required.",
+          topic:"Topic 4 — Undo" },
+        { label:"git cherry-pick", mk:false,
+          info:"git cherry-pick <hash> applies a single commit from any branch onto your current branch, creating a new commit with the same changes but a different hash.",
+          why:"Useful when you want one specific fix from another branch without merging the whole branch. Use carefully — cherry-pick can make history harder to follow if overused.",
+          topic:"Topic 4 — Undo" }
+      ]},
+      { color:"#059669", bg:"#f0fdf4", border:"#a7f3d0", title:"Team Workflow", children:[
+        { label:"Protected Branches", mk:true,
+          info:"On professional repos, main is protected: direct pushes are blocked, and merging requires at least one approved PR. Only the GitHub merge button — after approval — can bypass direct-push protection.",
+          why:"Branch protection enforces the review process. Without it, any developer could push unreviewed code to the shared codebase. Understanding protection explains why your push to main will be rejected.",
+          topic:"Topic 5 — Team Workflow" },
+        { label:"PR Lifecycle", mk:true,
+          info:"Full cycle: branch off main → commit → push → open PR → request review → respond to comments → get approval → merge via GitHub UI → delete branch. Each step has a specific purpose.",
+          why:"Knowing the full lifecycle means you're never confused about 'what step comes next.' Missing any step (like forgetting to delete the branch) creates noise for the whole team.",
+          topic:"Topic 5 — Team Workflow" },
+        { label:"Review Culture", mk:false,
+          info:"Code review comments are about the code, not the person. 'This function is hard to follow' is constructive. 'You did this wrong' is not. Respond to all comments before requesting re-review.",
+          why:"Review culture is invisible until it's broken. Teams that give kind, specific feedback ship faster because authors trust the process and don't get defensive.",
+          topic:"Topic 5 — Team Workflow" },
+        { label:"Branch Hygiene", mk:false,
+          info:"Delete merged branches — both on GitHub (use the 'Delete branch' button) and locally (git branch -d). Run git fetch --prune to remove stale remote-tracking refs. A clean branch list shows work-in-progress at a glance.",
+          why:"Stale branches clutter the repo, confuse new contributors, and can accidentally become the base for new branches. Regular cleanup takes 30 seconds and saves hours of confusion.",
+          topic:"Topic 5 — Team Workflow" }
+      ]}
+    ]
+  },
+  de: {
+    legendTitle: "Konzept-Index",
+    legendMust:  "⚑ Kernkonzept — muss verstanden werden",
+    whyLabel:    "Warum es wichtig ist",
+    studyLabel:  "Behandelt in",
+    mustLabel:   "Kernkonzept",
+    branches: [
+      { color:"#2563eb", bg:"#eff6ff", border:"#bfdbfe", title:"Kern-Git-Konzepte", children:[
+        { label:"Commits", mk:true,
+          info:"Ein Commit ist ein Schnappschuss deines gesamten Projekts zu einem bestimmten Zeitpunkt — kein Diff. Git speichert den vollständigen Zustand als inhaltsadressierbares Objekt. Deine Historie ist eine verkettete Liste dieser Schnappschüsse.",
+          why:"Commits als Schnappschüsse (nicht als Diffs) zu verstehen verändert, wie du über Branching, Revert und Stash nachdenken. Jede andere Git-Operation erstellt, bewegt oder liest Commits.",
+          topic:"Allgemeiner Überblick" },
+        { label:"Staging-Bereich", mk:false,
+          info:"Der Staging-Bereich (auch Index genannt) ist eine Vorbereitungszone zwischen deinem Arbeitsverzeichnis und dem Repository. git add verschiebt Änderungen hinein; git commit zeichnet alles auf, was gestagt ist.",
+          why:"Du wirst git add -p verwenden, um nur Teile einer geänderten Datei zu stagen — eine Schlüsselkompetenz für saubere, atomare Commits, denen Reviewer folgen können.",
+          topic:"Allgemeiner Überblick" },
+        { label:"HEAD", mk:true,
+          info:"HEAD ist ein Zeiger auf deine aktuelle Position im Commit-Graphen — normalerweise die Spitze des aktuellen Branches. 'Detached HEAD' bedeutet, dass HEAD direkt auf einen Commit zeigt, nicht auf einen Branch.",
+          why:"HEAD zu verstehen lässt git switch, git reset und HEAD~1 sofort einrasten. Jeder Undo- und Navigationsbefehl operiert relativ zu HEAD.",
+          topic:"Thema 1 — Branches" },
+        { label:"git log & Graph", mk:false,
+          info:"git log --all --graph --oneline --decorate zeigt die vollständige Commit-Historie als ASCII-Art-Graph mit allen Branches beschriftet. Es ist der wichtigste Diagnosebefehl für das Verständnis der Branch-Struktur.",
+          why:"Führe das aus, wenn etwas mit deinen Branches nicht stimmt. Der Graph lügt nicht — er zeigt genau, wo HEAD ist, wo Branches divergierten und was ungemergt ist.",
+          topic:"Thema 1 — Branches" }
+      ]},
+      { color:"#0891b2", bg:"#ecfeff", border:"#a5f3fc", title:"Branches", children:[
+        { label:"Was ein Branch ist", mk:true,
+          info:"Ein Branch ist ein leichtgewichtiger, beweglicher Zeiger auf einen Commit. Einen zu erstellen ist sofort und kostet praktisch nichts — es ist eine 41-Byte-Datei mit einem Commit-Hash.",
+          why:"Die Kostengünstigkeit von Branches erklärt, warum professionelle Teams einen für jedes Feature, jeden Bug-Fix und jedes Experiment erstellen — nie direkt auf main committen.",
+          topic:"Thema 1 — Branches" },
+        { label:"git switch & checkout", mk:true,
+          info:"git switch -c neuer-branch erstellt und wechselt in einem Schritt (moderne Syntax, Git 2.23+). git checkout -b macht dasselbe und wird noch oft verwendet. git switch branch-name wechselt zu einem existierenden Branch.",
+          why:"Du wirst die Branch-Erstellung Dutzende Male pro Woche verwenden. Das moderne git switch ist klarer als das überladene git checkout, das auch Dateien wiederherstellt.",
+          topic:"Thema 1 — Branches" },
+        { label:"Namenskonventionen", mk:true,
+          info:"Format: typ/kurze-beschreibung-in-kebab-case. Typen: feature/, bugfix/, docs/, chore/, hotfix/. Ein Branch = eine logische Änderung.",
+          why:"Branch-Namen erscheinen in jedem PR, CI-Log und git log. Klare Namen machen Code-Reviews schneller und die Historie leichter auditierbar — besonders wichtig in regulierten Forschungsumgebungen.",
+          topic:"Thema 1 — Branches" },
+        { label:"Branch-Divergenz", mk:false,
+          info:"Zwei Branches divergieren, wenn jeder Commits erhält, die der andere nicht hat. Sichtbar mit git log --all --graph. Divergenz ist normal — sie ermöglicht parallele Entwicklung. Das Risiko wächst, je länger Branches getrennt bleiben.",
+          why:"Divergenz im Graphen zu erkennen hilft dir vorherzusagen, ob ein Merge sauber oder konfliktreich sein wird. Kurzlebige Branches (1–3 Tage) mergen sauberer als wochenlange.",
+          topic:"Thema 1 — Branches" }
+      ]},
+      { color:"#7c3aed", bg:"#f5f3ff", border:"#ddd6fe", title:"Pull Requests", children:[
+        { label:"Was ein PR ist", mk:true,
+          info:"Ein Pull Request ist eine formale Anfrage, deinen Branch in main zu mergen, mit einem dedizierten Diskussions-Thread am exakten Diff. Vor dem Merge kann das gesamte Team reviewen, kommentieren und genehmigen.",
+          why:"PRs sind der zentrale Koordinationsmechanismus jedes professionellen Teams. Einen klaren, überprüfbaren PR zu schreiben ist eine der sichtbarsten Job-Fähigkeiten.",
+          topic:"Thema 2 — Pull Requests" },
+        { label:"PR-Titel & -Beschreibung", mk:true,
+          info:"Titel-Format: typ: was sich geändert hat (#Issue). Beschreibung: was sich änderte, warum, wie man es testet, Vorbehalte und Issue-Referenz (Closes #87). Für den Reviewer schreiben — nicht für sich selbst.",
+          why:"Ein Reviewer liest die Beschreibung, bevor er den Diff anfasst. Eine klare Beschreibung bedeutet schnellere Reviews, weniger Fragen und ein dauerhaftes Protokoll der Absicht für jeden, der später die Historie liest.",
+          topic:"Thema 2 — Pull Requests" },
+        { label:"Code-Review", mk:true,
+          info:"Reviewer prüfen: Korrektheit, Edge Cases, Lesbarkeit, Konsistenz mit Team-Mustern, Testabdeckung und Sicherheitsbedenken. Kommentare betreffen den Code, nicht den Autor.",
+          why:"An Code-Reviews teilzunehmen — sowohl als Autor als auch als Reviewer — ist der schnellste Weg, eine Codebase zu lernen. Ein PR mit vielen Review-Kommentaren ist Qualitätskontrolle, keine persönliche Kritik.",
+          topic:"Thema 2 — Pull Requests" },
+        { label:"Auf Kommentare antworten", mk:false,
+          info:"Neue Commits pushen, um Reviewer-Feedback zu adressieren. Niemals force-pushen auf einen PR-Branch unter aktivem Review — das schreibt die Historie um und macht frühere Reviewer-Genehmigungen ungültig.",
+          why:"Mit Review-Antworten falsch umzugehen ist einer der häufigsten ersten-PR-Fehler. Die Regeln zu kennen (neue Commits pushen, niemals force-pushen unter Review) hält den Prozess reibungslos.",
+          topic:"Thema 2 — Pull Requests" }
+      ]},
+      { color:"#dc2626", bg:"#fef2f2", border:"#fecaca", title:"Merge & Konflikte", children:[
+        { label:"git merge", mk:true,
+          info:"git merge branch-name kombiniert die Historie zweier Branches. Ein Fast-Forward-Merge bewegt den Zeiger; ein 3-Wege-Merge erstellt einen neuen Merge-Commit mit zwei Eltern.",
+          why:"Merge ist der häufigste Weg, Arbeit zu integrieren. Fast-Forward vs. 3-Wege-Merge zu verstehen erklärt die Form deines git log und warum manche Merges einen zusätzlichen Commit erstellen.",
+          topic:"Thema 3 — Merge-Konflikte" },
+        { label:"Konflikt-Marker", mk:true,
+          info:"Wenn Git zwei Branches nicht automatisch mergen kann, fügt es Marker ein: <<<<<<< HEAD (deine Änderung), ======= (Trenner), >>>>>>> branch-name (eingehende Änderung). Du löst auf, indem du die Datei in den richtigen Endzustand bearbeitest.",
+          why:"Du wirst Merge-Konflikte regelmäßig in Team-Arbeit erleben. Ruhig bleiben und die Marker lesen ist alles, was du brauchst. Es sieht beim ersten Mal erschreckend aus; es ist nur ein Diff mit anderem Namen.",
+          topic:"Thema 3 — Merge-Konflikte" },
+        { label:"VS Code Merge-UI", mk:false,
+          info:"VS Code hebt konfliktierte Dateien hervor und zeigt Schaltflächen für Aktuelle Änderung übernehmen, Eingehende Änderung übernehmen, Beide übernehmen und Vergleichen für jeden Konfliktblock.",
+          why:"VS Codes Merge-UI ist der empfohlene Ausgangspunkt — sie vermeidet das Risiko, versehentlich einen <<<< Marker im Code zu lassen. Wechsle zu reinem CLI, sobald du dich wohl fühlst.",
+          topic:"Thema 3 — Merge-Konflikte" },
+        { label:"Konflikte minimieren", mk:false,
+          info:"Branches kurzlebig halten, PRs klein und atomar, häufig von main pullen und mit Teammitgliedern koordinieren, wenn im selben Dateibereich gearbeitet wird. Die meisten Konflikte sind vermeidbar.",
+          why:"Konfliktvermeidung ist besser als Konfliktlösung. Ein Team, das häufig merged und PRs klein hält, verbringt deutlich weniger Zeit im Konfliktlösungsmodus.",
+          topic:"Thema 3 — Merge-Konflikte" }
+      ]},
+      { color:"#d97706", bg:"#fffbeb", border:"#fde68a", title:"Undo-Operationen", children:[
+        { label:"git reset", mk:true,
+          info:"git reset bewegt HEAD (und ändert optional Staging/Arbeitsverzeichnis). --soft: nur HEAD bewegen, Änderungen gestagt lassen. --mixed (Standard): Änderungen unstagen. --hard: alle Änderungen verwerfen. Niemals --hard auf einem geteilten Branch.",
+          why:"git reset --soft HEAD~1 ist der sicherste 'letzten Commit rückgängig machen'-Befehl — du behältst deine Arbeit und kannst anders re-committen. Die drei Modi zu verstehen verhindert versehentlichen Datenverlust.",
+          topic:"Thema 4 — Undo" },
+        { label:"git revert", mk:true,
+          info:"git revert erstellt einen neuen Commit, der einen vorherigen rückgängig macht. Die Historie wird bewahrt — kein Umschreiben. Das ist das sichere Undo für Commits, die bereits auf einen geteilten Branch gepusht wurden.",
+          why:"git reset auf einem gepushten Commit zu verwenden verursacht Probleme für alle anderen im Team. git revert ist immer sicher für geteilte Branches — es fügt einen Commit hinzu, anstatt einen zu entfernen.",
+          topic:"Thema 4 — Undo" },
+        { label:"git stash", mk:false,
+          info:"git stash speichert deine uncommitted Arbeit (gestagt und ungestagt) in einem temporären Stack und stellt ein sauberes Arbeitsverzeichnis wieder her. git stash pop holt den neuesten Stash zurück.",
+          why:"Klassisches Szenario: Du bist mitten in einem Feature, als ein dringendes Review eintrifft. Arbeit stashen, Branch wechseln, reviewen, Stash zurückholen und weitermachen. Keine halbgaren Commits erforderlich.",
+          topic:"Thema 4 — Undo" },
+        { label:"git cherry-pick", mk:false,
+          info:"git cherry-pick <hash> wendet einen einzelnen Commit von einem beliebigen Branch auf deinen aktuellen Branch an und erstellt einen neuen Commit mit denselben Änderungen, aber einem anderen Hash.",
+          why:"Nützlich, wenn du einen bestimmten Fix von einem anderen Branch möchtest, ohne den gesamten Branch zu mergen. Mit Bedacht verwenden — cherry-pick kann die Historie schwerer nachvollziehbar machen, wenn es übermäßig eingesetzt wird.",
+          topic:"Thema 4 — Undo" }
+      ]},
+      { color:"#059669", bg:"#f0fdf4", border:"#a7f3d0", title:"Team-Workflow", children:[
+        { label:"Geschützte Branches", mk:true,
+          info:"Auf professionellen Repos ist main geschützt: direkte Pushes sind gesperrt, und das Mergen erfordert mindestens einen genehmigten PR. Nur der GitHub-Merge-Button — nach Genehmigung — kann den Direktpush-Schutz umgehen.",
+          why:"Branch-Schutz erzwingt den Review-Prozess. Ohne ihn könnte jeder Entwickler ungeprüften Code in die geteilte Codebase pushen. Das Verstehen des Schutzes erklärt, warum dein Push auf main abgelehnt wird.",
+          topic:"Thema 5 — Team-Workflow" },
+        { label:"PR-Lebenszyklus", mk:true,
+          info:"Vollständiger Zyklus: von main branchen → committen → pushen → PR öffnen → Review anfordern → auf Kommentare antworten → Genehmigung erhalten → via GitHub-UI mergen → Branch löschen.",
+          why:"Den vollständigen Lebenszyklus zu kennen bedeutet, nie verwirrt zu sein, welcher Schritt als nächstes kommt. Einen Schritt auszulassen (wie das Vergessen, den Branch zu löschen) erzeugt Lärm für das gesamte Team.",
+          topic:"Thema 5 — Team-Workflow" },
+        { label:"Review-Kultur", mk:false,
+          info:"Code-Review-Kommentare betreffen den Code, nicht die Person. 'Diese Funktion ist schwer zu verstehen' ist konstruktiv. 'Du hast das falsch gemacht' ist es nicht. Alle Kommentare beantworten, bevor ein Re-Review angefordert wird.",
+          why:"Review-Kultur ist unsichtbar, bis sie gebrochen ist. Teams, die freundliches, spezifisches Feedback geben, liefern schneller, weil Autoren dem Prozess vertrauen und nicht defensiv werden.",
+          topic:"Thema 5 — Team-Workflow" },
+        { label:"Branch-Hygiene", mk:false,
+          info:"Gemergte Branches löschen — auf GitHub ('Delete branch'-Button) und lokal (git branch -d). git fetch --prune ausführen, um veraltete Remote-Tracking-Refs zu entfernen. Eine saubere Branch-Liste zeigt laufende Arbeit auf einen Blick.",
+          why:"Veraltete Branches übersäen das Repo, verwirren neue Mitglieder und können versehentlich als Basis für neue Branches dienen. Regelmäßige Bereinigung dauert 30 Sekunden und spart Stunden der Verwirrung.",
+          topic:"Thema 5 — Team-Workflow" }
+      ]}
+    ]
+  },
+  ar: {
+    legendTitle: "فهرس المفاهيم",
+    legendMust:  "⚑ مفهوم أساسي — يجب فهمه",
+    whyLabel:    "لماذا هذا مهم",
+    studyLabel:  "مُغطَّى في",
+    mustLabel:   "مفهوم أساسي",
+    branches: [
+      { color:"#2563eb", bg:"#eff6ff", border:"#bfdbfe", title:"مفاهيم Git الأساسية", children:[
+        { label:"الـ Commits", mk:true,
+          info:"الـ commit لقطة لمشروعك بأكمله في لحظة محددة — وليس diff. يخزّن Git الحالة الكاملة كـ content-addressed object. سجلك قائمة مرتبطة من هذه اللقطات.",
+          why:"فهم الـ commits كلقطات (وليس diffs) يغيّر تفكيرك في الـ branching والـ reverting والـ stashing. كل عملية Git أخرى إما تنشئ أو تحرك أو تقرأ الـ commits.",
+          topic:"النظرة العامة" },
+        { label:"منطقة الـ Staging", mk:false,
+          info:"منطقة الـ staging (تُسمى أيضًا الـ index) منطقة تحضير بين مجلد العمل والمستودع. git add ينقل التغييرات إليها؛ git commit يسجل كل ما هو في الـ staging.",
+          why:"ستستخدم git add -p لـ stage أجزاء من ملف متغير فقط — مهارة أساسية لعمل commits نظيفة وذرية يمكن للمراجعين تتبعها.",
+          topic:"النظرة العامة" },
+        { label:"HEAD", mk:true,
+          info:"HEAD مؤشر لموضعك الحالي في مخطط الـ commits — عادةً طرف الـ branch الحالي. 'Detached HEAD' يعني أن HEAD يشير مباشرة إلى commit لا إلى branch.",
+          why:"فهم HEAD يجعل git switch وgit reset وHEAD~1 منطقية فورًا. كل أمر تراجع وتنقل يعمل بالنسبة لـ HEAD.",
+          topic:"الموضوع 1 — الـ Branches" },
+        { label:"git log والمخطط", mk:false,
+          info:"git log --all --graph --oneline --decorate يعرض السجل الكامل كمخطط ASCII مع labels لجميع الـ branches. أهم أمر تشخيصي لفهم بنية الـ branches.",
+          why:"نفّذه عندما يبدو أن شيئًا خاطئًا في الـ branches. المخطط لا يكذب — يُظهر أين HEAD وأين تفرقت الـ branches وما لم يُدمج بعد.",
+          topic:"الموضوع 1 — الـ Branches" }
+      ]},
+      { color:"#0891b2", bg:"#ecfeff", border:"#a5f3fc", title:"الـ Branches", children:[
+        { label:"ما هو الـ Branch", mk:true,
+          info:"الـ branch مؤشر خفيف متحرك يشير إلى commit. إنشاؤه فوري ولا يكلف تقريبًا شيئًا — مجرد ملف 41 بايت يحتوي على commit hash.",
+          why:"رخص الـ branches هو سبب إنشاء الفرق الاحترافية واحدًا لكل ميزة وإصلاح bug وتجربة — ولا تعمل commit مباشرةً على main أبدًا.",
+          topic:"الموضوع 1 — الـ Branches" },
+        { label:"git switch و checkout", mk:true,
+          info:"git switch -c new-branch ينشئ ويبدّل في خطوة واحدة (الصيغة الحديثة، Git 2.23+). git checkout -b يفعل نفس الشيء ولا يزال شائعًا. git switch branch-name يبدّل إلى branch موجود.",
+          why:"ستستخدم إنشاء الـ branch عشرات المرات أسبوعيًا. git switch الحديث أوضح من git checkout المحمّل بأدوار متعددة.",
+          topic:"الموضوع 1 — الـ Branches" },
+        { label:"اصطلاحات التسمية", mk:true,
+          info:"الصيغة: type/short-description-in-kebab-case. الأنواع: feature/ وbugfix/ ودocs/ وchore/ وhotfix/. Branch واحد = تغيير منطقي واحد.",
+          why:"أسماء الـ branches تظهر في كل PR وسجل CI وgit log. الأسماء الواضحة تجعل مراجعة الكود أسرع والسجل أسهل في التدقيق — مهم بشكل خاص في بيئات البحث المنظمة.",
+          topic:"الموضوع 1 — الـ Branches" },
+        { label:"تفرق الـ Branch", mk:false,
+          info:"يتفرق branch-ان عندما يتلقى كل منهما commits لا يملكها الآخر. مرئي بـ git log --all --graph. التفرق طبيعي — يتيح التطوير المتوازي. الخطر يزداد كلما بقيت الـ branches منفصلة أطول.",
+          why:"التعرف على التفرق في المخطط يساعدك على التنبؤ بما إذا كان الدمج سيكون نظيفًا أو متعارضًا. الـ branches قصيرة العمر (1-3 أيام) تندمج بشكل أنظف.",
+          topic:"الموضوع 1 — الـ Branches" }
+      ]},
+      { color:"#7c3aed", bg:"#f5f3ff", border:"#ddd6fe", title:"Pull Requests", children:[
+        { label:"ما هو الـ PR", mk:true,
+          info:"الـ pull request طلب رسمي لدمج branch-ك في main، مع thread نقاش مخصص مرتبط بالـ diff بالضبط. قبل الدمج، يمكن للفريق بأكمله المراجعة والتعليق والموافقة.",
+          why:"الـ PRs هي الآلية المركزية للتنسيق في كل فريق احترافي. كتابة PR واضح وقابل للمراجعة من أبرز المهارات المهنية.",
+          topic:"الموضوع 2 — Pull Requests" },
+        { label:"عنوان ووصف الـ PR", mk:true,
+          info:"صيغة العنوان: type: ما الذي تغيّر (#issue). الوصف يغطي: ما الذي تغيّر، ولماذا، وكيفية الاختبار، وأي تحفظات، ومرجع الإغلاق (Closes #87). اكتب للمراجع — لا لنفسك.",
+          why:"المراجع يقرأ الوصف قبل لمس الـ diff. الوصف الواضح يعني مراجعات أسرع وأسئلة أقل وسجلًا دائمًا للنية لمن يقرأ السجل لاحقًا.",
+          topic:"الموضوع 2 — Pull Requests" },
+        { label:"مراجعة الكود", mk:true,
+          info:"المراجعون يفحصون: الصحة، والحالات الحدية، والقابلية للقراءة، والاتساق مع أنماط الفريق، وتغطية الاختبار، والمخاوف الأمنية. التعليقات تخص الكود لا الكاتب.",
+          why:"المشاركة في مراجعة الكود — كمؤلف ومراجع — أسرع طريقة لتعلم codebase. PR مع تعليقات مراجعة كثيرة ضبط جودة، ليس نقدًا شخصيًا.",
+          topic:"الموضوع 2 — Pull Requests" },
+        { label:"الرد على التعليقات", mk:false,
+          info:"ادفع commits جديدة لمعالجة ملاحظات المراجعين. لا تقم بـ force-push على PR branch تحت مراجعة نشطة — إنه يعيد كتابة السجل ويُلغي موافقات المراجعين السابقة.",
+          why:"التعامل الخاطئ مع ردود المراجعة من أكثر أخطاء الـ PR الأولى شيوعًا. معرفة القواعد (ادفع commits جديدة، لا force-push تحت مراجعة) يحافظ على سلاسة العملية.",
+          topic:"الموضوع 2 — Pull Requests" }
+      ]},
+      { color:"#dc2626", bg:"#fef2f2", border:"#fecaca", title:"الدمج والتعارضات", children:[
+        { label:"git merge", mk:true,
+          info:"git merge branch-name يدمج سجل branch-ين. الـ fast-forward merge يحرك المؤشر؛ الـ 3-way merge ينشئ merge commit جديدًا بوالدَين.",
+          why:"الدمج أكثر طرق دمج العمل شيوعًا. فهم fast-forward مقابل 3-way merge يشرح شكل git log ولماذا تنشئ بعض عمليات الدمج commit إضافيًا.",
+          topic:"الموضوع 3 — تعارضات الدمج" },
+        { label:"علامات التعارض", mk:true,
+          info:"عندما لا يستطيع Git دمج branch-ين تلقائيًا، يُدرج علامات: <<<<<<< HEAD (تغييرك)، ======= (فاصل)، >>>>>>> branch-name (التغيير الوارد). تحل بتحرير الملف للحالة النهائية الصحيحة.",
+          why:"ستواجه تعارضات دمج بانتظام في العمل الجماعي. التهدئة وقراءة العلامات كل ما تحتاجه. تبدو مخيفة أول مرة؛ لكنها مجرد diff باسم آخر.",
+          topic:"الموضوع 3 — تعارضات الدمج" },
+        { label:"واجهة دمج VS Code", mk:false,
+          info:"VS Code يبرز الملفات المتعارضة ويعرض أزرار: Accept Current Change وAccept Incoming Change وAccept Both وCompare لكل block تعارض.",
+          why:"واجهة دمج VS Code هي نقطة البداية الموصى بها — تزيل خطر ترك علامة <<<< في الكود بالخطأ. انتقل لـ CLI فقط بمجرد أن تشعر بالراحة.",
+          topic:"الموضوع 3 — تعارضات الدمج" },
+        { label:"تقليل التعارضات", mk:false,
+          info:"اجعل الـ branches قصيرة العمر، والـ PRs صغيرة وذرية، واسحب من main بشكل متكرر، وتنسّق مع الزملاء عند العمل في نفس منطقة الملف. معظم التعارضات قابلة للوقاية.",
+          why:"الوقاية من التعارضات أفضل من حلها. الفريق الذي يدمج بشكل متكرر ويحافظ على PRs صغيرة يقضي وقتًا أقل بكثير في وضع حل التعارضات.",
+          topic:"الموضوع 3 — تعارضات الدمج" }
+      ]},
+      { color:"#d97706", bg:"#fffbeb", border:"#fde68a", title:"عمليات التراجع", children:[
+        { label:"git reset", mk:true,
+          info:"git reset يحرك HEAD (ويعدّل اختياريًا الـ staging/working tree). --soft: يحرك HEAD فقط ويبقي التغييرات في الـ staging. --mixed (الافتراضي): يلغي الـ staging. --hard: يتلف جميع التغييرات. لا تستخدم --hard أبدًا على branch مشترك.",
+          why:"git reset --soft HEAD~1 هو أأمن أمر لـ 'إلغاء آخر commit' — تحتفظ بعملك ويمكنك إعادة الـ commit بشكل مختلف. فهم الأوضاع الثلاثة يمنع فقدان البيانات غير المقصود.",
+          topic:"الموضوع 4 — التراجع" },
+        { label:"git revert", mk:true,
+          info:"git revert ينشئ commit جديدًا يتراجع عن commit سابق. السجل يُحفظ — لا إعادة كتابة. هذا هو التراجع الآمن للـ commits التي رُفعت بالفعل إلى branch مشترك.",
+          why:"استخدام git reset على commit مدفوع يسبب مشاكل للجميع في الفريق. git revert آمن دائمًا للـ branches المشتركة — يضيف commit بدلاً من إزالة واحد.",
+          topic:"الموضوع 4 — التراجع" },
+        { label:"git stash", mk:false,
+          info:"git stash يحفظ عملك غير المُنجَز (في الـ staging وخارجه) في stack مؤقت ويعيد مجلد عمل نظيفًا. git stash pop يسترجع آخر stash.",
+          why:"السيناريو الكلاسيكي: أنت في منتصف ميزة حين تصل مراجعة عاجلة. احفظ عملك بـ stash، بدّل الـ branch، راجع، استعد الـ stash وتابع. لا commits نصف منجزة.",
+          topic:"الموضوع 4 — التراجع" },
+        { label:"git cherry-pick", mk:false,
+          info:"git cherry-pick <hash> يطبق commit واحدًا من أي branch على branch-ك الحالي، منشئًا commit جديدًا بنفس التغييرات لكن بـ hash مختلف.",
+          why:"مفيد عندما تريد إصلاحًا محددًا من branch آخر دون دمج الـ branch بأكمله. استخدمه بحرص — يمكن أن يجعل السجل أصعب للتتبع إذا أُفرط في استخدامه.",
+          topic:"الموضوع 4 — التراجع" }
+      ]},
+      { color:"#059669", bg:"#f0fdf4", border:"#a7f3d0", title:"سير العمل الجماعي", children:[
+        { label:"الـ Branches المحمية", mk:true,
+          info:"على repos الاحترافية، main محمي: الـ push المباشر محظور، والدمج يستلزم PR معتمدًا على الأقل. فقط زر دمج GitHub — بعد الاعتماد — يمكنه تجاوز حماية الـ push المباشر.",
+          why:"حماية الـ branch تُلزم بعملية المراجعة. بدونها، أي مطور يمكنه دفع كود غير مراجع للـ codebase المشترك. فهم الحماية يشرح لماذا سيُرفض push-ك إلى main.",
+          topic:"الموضوع 5 — سير العمل الجماعي" },
+        { label:"دورة حياة الـ PR", mk:true,
+          info:"الدورة الكاملة: التفرع من main → commit → push → فتح PR → طلب مراجعة → الرد على التعليقات → الحصول على موافقة → الدمج عبر GitHub UI → حذف الـ branch.",
+          why:"معرفة الدورة الكاملة تعني أنك لن تتساءل أبدًا 'ما الخطوة التالية؟'. تخطي أي خطوة (كنسيان حذف الـ branch) يخلق ضوضاء للفريق بأكمله.",
+          topic:"الموضوع 5 — سير العمل الجماعي" },
+        { label:"ثقافة المراجعة", mk:false,
+          info:"تعليقات مراجعة الكود تخص الكود لا الشخص. 'هذه الدالة يصعب متابعتها' بنّاء. 'أخطأت في هذا' ليس كذلك. رد على جميع التعليقات قبل طلب إعادة المراجعة.",
+          why:"ثقافة المراجعة غير مرئية حتى تنكسر. الفرق التي تقدم ملاحظات لطيفة ومحددة تُنجز أسرع لأن المؤلفين يثقون بالعملية ولا يصبحون دفاعيين.",
+          topic:"الموضوع 5 — سير العمل الجماعي" },
+        { label:"نظافة الـ Branch", mk:false,
+          info:"احذف الـ branches بعد الدمج — على GitHub (زر 'Delete branch') ومحليًا (git branch -d). نفّذ git fetch --prune لإزالة remote-tracking refs القديمة.",
+          why:"الـ branches القديمة تُفوضر الـ repo وتُربك المساهمين الجدد ويمكن أن تصبح عن طريق الخطأ أساسًا لـ branches جديدة. التنظيف الدوري يأخذ 30 ثانية ويوفر ساعات من الارتباك.",
+          topic:"الموضوع 5 — سير العمل الجماعي" }
+      ]}
+    ]
+  }
+};
+</script>
+<script src="../shared/lesson-ui.js"></script>
+<script>
+initMindmapAdvanced(DATA);
+</script>
+</body>
+</html>

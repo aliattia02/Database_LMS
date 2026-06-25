@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 4 — Exception Handling | Python Unaided Coding</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── Topic page-specific styles ── */
+.badge { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must   { background:#fef3c7; color:#92400e; }
+.badge-common { background:#dbeafe; color:#1e40af; }
+.badge-tip    { background:#f0fdf4; color:#166534; }
+
+.q-arrow { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel { padding:18px 20px 16px 52px; }
+
+.strategy-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text  { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+
+.answer-box       { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text  { font-size:13.5px; color:#14532d; line-height:1.7; }
+
+.warning-box      { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text { font-size:13px; color:var(--amber-text); line-height:1.55; }
+
+.key-points    { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point     { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin:10px 0; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; }
+
+.section    { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2 { font-size:18px; font-weight:700; margin-bottom:14px; }
+.section p  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+.must-block       { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item        { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet      { font-size:15px; flex-shrink:0; }
+
+/* Pattern card for numbered exception patterns */
+.pattern-card {
+  background:#f8fafc; border:1px solid var(--border); border-radius:8px;
+  padding:16px 18px; margin-bottom:14px;
+}
+.pattern-card-header {
+  display:flex; align-items:center; gap:10px; margin-bottom:10px;
+}
+.pattern-num {
+  width:26px; height:26px; border-radius:6px;
+  background:#eff6ff; color:#2563eb;
+  font-size:11px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.pattern-title { font-size:14px; font-weight:700; color:var(--navy); }
+.pattern-when  { font-size:12.5px; color:var(--slate); line-height:1.5; margin-bottom:10px; }
+
+/* Danger box for anti-patterns */
+.danger-box      { background:#fff1f2; border:1px solid #fecdd3; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.danger-box-text { font-size:13px; color:#be123c; line-height:1.55; }
+
+/* RTL overrides */
+[dir="rtl"] .q-panel          { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point         { flex-direction:row-reverse; }
+[dir="rtl"] .must-item         { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title  { flex-direction:row-reverse; }
+[dir="rtl"] .pattern-card-header { flex-direction:row-reverse; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .section .code-block,
+[dir="rtl"] .pattern-card .code-block { direction:ltr; text-align:left; }
+
+@media (max-width:600px) {
+  .q-panel { padding-left:20px; }
+  .q-badges { display:none; }
+}
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">PYTHON UNAIDED CODING &mdash; Topic 4 of 5</div>
+    <h1><span>Exception Handling</span></h1>
+    <p class="header-sub">Real code fails. Network timeouts, missing fields, malformed payloads. This topic gives you three production patterns for handling failure gracefully — so your code logs and recovers instead of crashing hard.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff1f2;">🛡️</div>
+    <div>
+      <div class="section-title">Why Code Must Fail Gracefully</div>
+      <div class="section-subtitle">A crash in a hospital integration is not just a bug — it is a missing result for a real patient</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>The cost of crashing hard</h2>
+    <p>
+      Code that raises an unhandled exception and terminates is useless in production. In DiaTwin,
+      a CGM reading pipeline that crashes on one malformed sensor payload will stop processing
+      all subsequent readings for every patient on the same batch. The one bad record poisons
+      the entire run.
+    </p>
+    <p>
+      Exception handling is not about suppressing errors — it is about deciding what should
+      happen when something you did not control goes wrong. You have three choices: log and
+      continue, retry, or fall back to a safe default. Picking the right one depends on whether
+      the failure is transient, permanent, or recoverable.
+    </p>
+    <div class="warning-box">
+      <div class="warning-box-text"><strong>The worst anti-pattern:</strong> <code>except Exception: pass</code>. This silently swallows every error, including bugs in your own code. You will never know the pipeline is broken until a patient report is wrong.</div>
+    </div>
+  </div>
+
+  <!-- Three patterns -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">⚙️</div>
+    <div>
+      <div class="section-title">Three Production Patterns</div>
+      <div class="section-subtitle">Each serves a different failure mode — choose deliberately</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Patterns you will use in every backend project</h2>
+    <p>These are not academic — all three appear in DiaTwin's data pipeline and Morafek's FHIR integration layer.</p>
+
+    <!-- Pattern 1 -->
+    <div class="pattern-card">
+      <div class="pattern-card-header">
+        <div class="pattern-num">01</div>
+        <div class="pattern-title">Catch, Log, and Continue</div>
+      </div>
+      <div class="pattern-when">Use when: one bad item should not stop processing the rest. Permanent failure — retrying won't help.</div>
+      <div class="code-block">import logging
+logger = logging.getLogger(__name__)
+
+def process_cgm_reading(raw_value: str) -> float | None:
+    try:
+        return float(raw_value)
+    except ValueError:
+        logger.error(f"Invalid CGM reading — could not convert to float: {raw_value!r}")
+        return None
+
+# Caller skips None results and continues the batch
+readings = [process_cgm_reading(v) for v in raw_sensor_batch]
+valid = [r for r in readings if r is not None]</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Return <code>None</code> (or a sentinel value) to signal that this item failed without raising. The caller decides what to do with it.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Use <code>logger.error()</code>, not <code>print()</code>. Logs persist; prints disappear when the terminal closes.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Include the bad value in the message (<code>{raw_value!r}</code>) so you can reproduce the failure without digging through raw data.</div>
+      </div>
+    </div>
+
+    <!-- Pattern 2 -->
+    <div class="pattern-card">
+      <div class="pattern-card-header">
+        <div class="pattern-num">02</div>
+        <div class="pattern-title">Catch and Retry</div>
+      </div>
+      <div class="pattern-when">Use when: the failure is transient — a network blip, a temporarily overloaded service. Retrying with a short delay will likely succeed.</div>
+      <div class="code-block">import time
+
+def fetch_fhir_patient(patient_id: str, retries: int = 3) -> dict:
+    last_error = None
+    for attempt in range(retries):
+        try:
+            response = requests.get(f"{FHIR_BASE}/Patient/{patient_id}", timeout=5)
+            response.raise_for_status()
+            return response.json()
+        except (requests.ConnectionError, requests.Timeout) as e:
+            last_error = e
+            if attempt < retries - 1:
+                time.sleep(2 ** attempt)   # exponential back-off: 1s, 2s, 4s
+    raise last_error   # re-raise after all retries exhausted</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><strong>Exponential back-off</strong> (<code>2 ** attempt</code>) respects the server — it does not hammer a service that is already struggling.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Re-raise after the last attempt. The caller needs to know the operation finally failed — do not silently return <code>None</code> for a network error, because the caller cannot distinguish "not found" from "unreachable".</div>
+        <div class="key-point"><div class="key-point-dot"></div>Only retry on <em>transient</em> exceptions. A <code>404 Not Found</code> will not become a <code>200 OK</code> after three retries.</div>
+      </div>
+    </div>
+
+    <!-- Pattern 3 -->
+    <div class="pattern-card">
+      <div class="pattern-card-header">
+        <div class="pattern-num">03</div>
+        <div class="pattern-title">Catch and Fall Back to a Safe Default</div>
+      </div>
+      <div class="pattern-when">Use when: the system can function with a degraded but safe value. Missing personalised data → use a conservative population baseline.</div>
+      <div class="code-block">from datetime import datetime
+
+def get_insulin_sensitivity(patient_id: str) -> float:
+    try:
+        profile = load_patient_profile(patient_id)
+        return profile["isf"]    # insulin sensitivity factor (mmol/L per unit)
+    except (KeyError, PatientNotFoundError):
+        logger.warning(
+            f"No ISF profile for {patient_id} — using population default 2.0"
+        )
+        return 2.0   # conservative population default
+
+def get_baseline_bg(patient_id: str) -> float:
+    try:
+        return dynamic_baseline_from_cgm(patient_id)
+    except InsufficientDataError:
+        hour = datetime.now().hour
+        return preset_baseline_for_hour(hour)</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>In safety-critical code, the fallback must be <em>conservative</em>, not optimistic. A high ISF default underestimates required insulin; a low one overestimates it. Know the clinical implication of your default.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Log at <code>WARNING</code> not <code>ERROR</code> — the system is degraded, but it did not fail.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Return the fallback explicitly from the function. Don't let the caller silently use a <code>None</code> — that leads to <code>TypeError: unsupported operand type(s) for *: 'NoneType' and 'float'</code> three call levels later.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- try / except / else / finally -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">📐</div>
+    <div>
+      <div class="section-title">The Full try / except / else / finally Structure</div>
+      <div class="section-subtitle">Most code uses two clauses — knowing all four makes you precise</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>When to use else and finally</h2>
+    <p>The <code>else</code> clause runs only if no exception was raised — useful for code that should only execute on success. The <code>finally</code> clause always runs — used for cleanup that must happen regardless of success or failure.</p>
+    <div class="code-block">def write_cgm_to_db(session, reading: dict) -> bool:
+    try:
+        session.add(CGMReading(**reading))
+        session.commit()
+    except IntegrityError as e:
+        session.rollback()
+        logger.error(f"Duplicate CGM record — skipping: {e}")
+        return False
+    else:
+        logger.info(f"CGM reading committed: {reading['patient_id']}")
+        return True
+    finally:
+        session.close()    # always runs — session is always released</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong><code>else</code>:</strong> put success-path logic here instead of in the <code>try</code> block. This makes it clear that this code only runs when nothing went wrong — not just that it hasn't raised yet.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong><code>finally</code>:</strong> file handles, database sessions, network connections. Anything that must be released regardless of what happened. This is the correct place — not after the try/except block, because an unhandled exception would skip code after the block.</div>
+      <div class="key-point"><div class="key-point-dot"></div>For file I/O and database sessions, prefer <code>with</code> statements over <code>finally</code> — they do the same thing with less code and can't be forgotten.</div>
+    </div>
+  </div>
+
+  <!-- Q&A -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">These test judgement, not just syntax recall</div>
+    </div>
+  </div>
+
+  <!-- Q01 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">What is the difference between catching <code>Exception</code> and catching <code>ValueError</code>? Why does it matter?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Catching <code>Exception</code> is like saying "I know how to handle literally anything that can go wrong." You almost certainly do not.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <code>ValueError</code> means "this specific kind of conversion or validation failed — I
+          expected a number, I got a string." <code>Exception</code> catches everything: network errors,
+          memory errors, your own typos (<code>NameError</code>, <code>AttributeError</code>). When
+          you catch <code>Exception</code>, bugs in your own code are silently eaten — you will see
+          wrong output without knowing why. Always catch the most specific exception that covers
+          the failure you anticipate. If you need to catch multiple specific types, list them:
+          <code>except (ValueError, TypeError)</code>.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>except Exception: pass</code> is a smell. It means "I don't know what can go wrong but I'm going to hide it." Use it only at the very top of a program as a last-resort logger, never inside a function.</div>
+        <div class="key-point"><div class="key-point-dot"></div>In DiaTwin: <code>except ValueError</code> for CGM parsing, <code>except requests.Timeout</code> for FHIR calls, <code>except KeyError</code> for missing patient profile fields. Each one signals a different root cause and a different response.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">When should you re-raise an exception after catching it, versus returning <code>None</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Returning <code>None</code> silently passes the problem to the caller. Re-raising loudly tells the caller: "this operation failed, and you need to decide what to do about it."</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Return <code>None</code> (or a sentinel) when the failure is local and recoverable — one
+          bad item in a batch that the caller can skip. Re-raise when the failure means the whole
+          operation cannot succeed — a database that won't connect, a required config file that
+          doesn't exist. A function that returns <code>None</code> for an unrecoverable failure
+          forces its caller to check for <code>None</code> on every call, and if it forgets, the error
+          surfaces three levels away as a <code>TypeError</code> with no useful context.
+          Use <code>raise</code> (bare re-raise) to preserve the original traceback, or
+          <code>raise NewError("message") from original_error</code> to add context while chaining.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Rule of thumb: if the caller has a meaningful way to recover (skip this item, use a default), return a sentinel. If the caller cannot continue without this result, re-raise.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>raise</code> inside an <code>except</code> block re-raises the current exception unchanged, including its original traceback. Never do <code>raise e</code> — it resets the traceback to this line.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">What does <code>finally</code> guarantee, and why is it safer than putting cleanup code after the try/except block?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Code after a try/except block is not guaranteed to run if an unhandled exception escapes. <code>finally</code> runs even then — it is a contract with the runtime, not with your own control flow.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <code>finally</code> executes regardless of whether the <code>try</code> block succeeded,
+          raised a caught exception, raised an uncaught exception, or hit a <code>return</code>
+          statement. Code placed after the try/except block only runs if no exception escaped.
+          If your database session is not in a <code>finally</code> and an unexpected error
+          is raised, the session is left open — holding a transaction lock until the connection
+          times out. In a web server handling many concurrent requests, this exhausts the
+          connection pool. Use <code>with</code> statements (context managers) for the same
+          guarantee with less code.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>with open("file.txt") as f:</code> is equivalent to try/finally with <code>f.close()</code> — the file is closed even if an exception is raised inside the <code>with</code> block.</div>
+        <div class="key-point"><div class="key-point-dot"></div>SQLAlchemy sessions, file handles, socket connections, and locks all need cleanup. Prefer <code>with</code>; use <code>finally</code> for cases where a context manager isn't available.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">You have a function that calls three different external APIs. Should it catch exceptions internally, or let them bubble up to the caller?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Commonly tested</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">The right level to catch an exception is the level that has enough context to respond meaningfully. A low-level HTTP fetch doesn't know whether a retry is safe. The orchestrating caller does.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          It depends on whether the three calls are independent. If one API failing should not
+          stop the others, catch internally per-call and return partial results. If all three
+          must succeed for the result to be valid, let exceptions bubble up — the caller decides
+          whether to retry the whole operation, return a degraded result, or fail the request.
+          A useful heuristic: catch exceptions at the boundary between layers (HTTP client
+          → service layer, service layer → route handler). Do not catch at every function —
+          that produces deeply nested try/except trees that are hard to read and harder to test.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>In DiaTwin's HL7 pipeline: the per-message parse can fail silently (log + skip); the database write must succeed (retry + eventually fail loudly); the audit log must always run (finally).</div>
+        <div class="key-point"><div class="key-point-dot"></div>Exception handling architecture is part of the system design. Think about it at the same time as the happy path, not as an afterthought.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">How do you write a custom exception class in Python, and when is it worth doing?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Commonly tested</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Built-in exceptions are generic. <code>ValueError</code> from a CGM parser and <code>ValueError</code> from a JSON deserialiser look identical to the caller. Custom exceptions make the failure type part of the public API.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Subclass <code>Exception</code> (or a more specific built-in):
+        </div>
+      </div>
+      <div class="code-block">class InsufficientCGMDataError(ValueError):
+    """Raised when fewer CGM readings exist than the algorithm requires."""
+    pass
+
+class PatientNotFoundError(LookupError):
+    """Raised when a patient ID does not exist in the database."""
+    def __init__(self, patient_id: str):
+        super().__init__(f"Patient '{patient_id}' not found")
+        self.patient_id = patient_id</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Worth it when: callers need to distinguish this failure from other <code>ValueError</code>s; when the exception carries domain-specific data (<code>patient_id</code>); when you want to document the failure mode as part of the function signature.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Subclass an appropriate built-in so callers that catch the broader type still work: <code>except LookupError</code> will catch <code>PatientNotFoundError</code> without modification.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Keep custom exception classes small — they are signal types, not business logic containers.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">What is exception chaining (<code>raise X from Y</code>), and why does it matter for debugging?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Good to know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">You caught a low-level exception and want to raise a higher-level one. Without chaining, the original cause disappears from the traceback.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <code>raise HighLevelError("context message") from original_exception</code> links the
+          two exceptions. Python prints both in the traceback: the original cause and the new
+          error, connected with "The above exception was the direct cause of...". Without chaining
+          (<code>raise HighLevelError("...") from None</code>), you explicitly suppress the original
+          — useful when the low-level error leaks implementation details you don't want in a public API.
+        </div>
+      </div>
+      <div class="code-block">try:
+    row = db.query(Patient).filter_by(id=patient_id).one()
+except NoResultFound as e:
+    raise PatientNotFoundError(patient_id) from e
+# Traceback shows both — you see the SQLAlchemy cause AND the domain error</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>In DiaTwin, wrapping SQLAlchemy exceptions in domain exceptions (<code>PatientNotFoundError</code>) keeps the service layer independent of the ORM. The caller sees domain errors, not database internals.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done with this topic when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You have written a function that catches a specific exception, logs the error with the bad value included, and returns a sensible fallback — without using <code>except Exception</code>.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain the difference between returning <code>None</code> on failure versus re-raising — and pick the right one given a scenario.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You know what <code>finally</code> guarantees and can give one real example of when it is necessary.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You have implemented the catch-and-retry pattern with exponential back-off for a simulated network call.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You have written at least one custom exception class and used it in a function that wraps a lower-level error.</div>
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff1f2;">🛡️</div>
+    <div>
+      <div class="section-title">Warum Code sicher scheitern muss</div>
+      <div class="section-subtitle">Ein Absturz in einer Krankenhausintegration ist nicht nur ein Bug — es ist ein fehlendes Ergebnis für einen echten Patienten</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Die Kosten eines harten Absturzes</h2>
+    <p>
+      Code, der eine unbehandelte Exception auslöst und terminiert, ist im Produktionsbetrieb
+      wertlos. In DiaTwin würde eine CGM-Lesepipeline, die bei einem fehlerhaften Sensor-Payload
+      abstürzt, die Verarbeitung aller nachfolgenden Readings für jeden Patienten im selben Batch
+      stoppen. Ein schlechter Datensatz vergiftet den gesamten Durchlauf.
+    </p>
+    <p>
+      Exception-Handling bedeutet nicht, Fehler zu unterdrücken — es geht darum zu entscheiden,
+      was passieren soll, wenn etwas außerhalb deiner Kontrolle schiefgeht. Du hast drei Optionen:
+      loggen und weitermachen, wiederholen, oder auf einen sicheren Standardwert zurückfallen.
+      Die richtige Wahl hängt davon ab, ob der Fehler vorübergehend, dauerhaft oder behebbar ist.
+    </p>
+    <div class="warning-box">
+      <div class="warning-box-text"><strong>Das schlimmste Anti-Pattern:</strong> <code>except Exception: pass</code>. Das verschluckt jeden Fehler stillschweigend — auch Bugs in deinem eigenen Code. Du wirst nie wissen, dass die Pipeline kaputt ist, bis ein Patientenbericht falsch ist.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">⚙️</div>
+    <div>
+      <div class="section-title">Drei Produktionsmuster</div>
+      <div class="section-subtitle">Jedes dient einem anderen Fehlermodus — wähle bewusst</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Muster, die du in jedem Backend-Projekt verwenden wirst</h2>
+    <p>Diese sind nicht akademisch — alle drei kommen in DiaTwins Datenpipeline und Morafeks FHIR-Integrationsschicht vor.</p>
+
+    <div class="pattern-card">
+      <div class="pattern-card-header">
+        <div class="pattern-num">01</div>
+        <div class="pattern-title">Fangen, Loggen und Weitermachen</div>
+      </div>
+      <div class="pattern-when">Verwenden wenn: ein schlechtes Element den Rest der Verarbeitung nicht aufhalten soll. Dauerhafter Fehler — Wiederholen hilft nicht.</div>
+      <div class="code-block">import logging
+logger = logging.getLogger(__name__)
+
+def process_cgm_reading(raw_value: str) -> float | None:
+    try:
+        return float(raw_value)
+    except ValueError:
+        logger.error(f"Ungültiger CGM-Wert — Konvertierung fehlgeschlagen: {raw_value!r}")
+        return None
+
+readings = [process_cgm_reading(v) for v in raw_sensor_batch]
+valid = [r for r in readings if r is not None]</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Gib <code>None</code> zurück um zu signalisieren, dass dieses Element fehlgeschlagen ist, ohne eine Exception auszulösen. Der Aufrufer entscheidet, was damit zu tun ist.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Verwende <code>logger.error()</code>, nicht <code>print()</code>. Logs bleiben erhalten; Prints verschwinden wenn das Terminal geschlossen wird.</div>
+      </div>
+    </div>
+
+    <div class="pattern-card">
+      <div class="pattern-card-header">
+        <div class="pattern-num">02</div>
+        <div class="pattern-title">Fangen und Wiederholen</div>
+      </div>
+      <div class="pattern-when">Verwenden wenn: der Fehler vorübergehend ist — ein Netzwerkausfall, ein zeitweise überlasteter Dienst. Wiederholen mit kurzer Verzögerung wird wahrscheinlich erfolgreich sein.</div>
+      <div class="code-block">import time
+
+def fetch_fhir_patient(patient_id: str, retries: int = 3) -> dict:
+    last_error = None
+    for attempt in range(retries):
+        try:
+            response = requests.get(f"{FHIR_BASE}/Patient/{patient_id}", timeout=5)
+            response.raise_for_status()
+            return response.json()
+        except (requests.ConnectionError, requests.Timeout) as e:
+            last_error = e
+            if attempt < retries - 1:
+                time.sleep(2 ** attempt)   # exponentielles Backoff: 1s, 2s, 4s
+    raise last_error</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><strong>Exponentielles Backoff</strong> (<code>2 ** attempt</code>) respektiert den Server — er bombardiert keinen Dienst, der bereits kämpft.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Nur bei <em>vorübergehenden</em> Exceptions wiederholen. Ein <code>404 Not Found</code> wird nach drei Versuchen kein <code>200 OK</code>.</div>
+      </div>
+    </div>
+
+    <div class="pattern-card">
+      <div class="pattern-card-header">
+        <div class="pattern-num">03</div>
+        <div class="pattern-title">Fangen und auf einen sicheren Standardwert zurückfallen</div>
+      </div>
+      <div class="pattern-when">Verwenden wenn: das System mit einem degravierten aber sicheren Wert funktionieren kann. Fehlende personalisierte Daten → konservativen Populationsstandard verwenden.</div>
+      <div class="code-block">def get_insulin_sensitivity(patient_id: str) -> float:
+    try:
+        profile = load_patient_profile(patient_id)
+        return profile["isf"]
+    except (KeyError, PatientNotFoundError):
+        logger.warning(
+            f"Kein ISF-Profil für {patient_id} — Populationsstandard 2.0 verwendet"
+        )
+        return 2.0</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>In sicherheitskritischem Code muss der Fallback <em>konservativ</em> sein, nicht optimistisch. Kenne die klinische Implikation deines Standards.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Logge mit <code>WARNING</code>, nicht <code>ERROR</code> — das System ist degradiert, aber es hat nicht versagt.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Diese testen Urteilsvermögen, nicht nur Syntaxkenntnisse</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Was ist der Unterschied zwischen dem Fangen von <code>Exception</code> und <code>ValueError</code>? Warum ist das wichtig?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss ich kennen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text"><code>Exception</code> zu fangen bedeutet zu sagen: "Ich weiß, wie ich mit buchstäblich allem umgehen soll, was schiefgehen kann." Das tue ich mit Sicherheit nicht.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <code>ValueError</code> bedeutet "diese spezifische Konvertierung oder Validierung ist
+          fehlgeschlagen." <code>Exception</code> fängt alles: Netzwerkfehler, Speicherfehler,
+          eigene Tippfehler (<code>NameError</code>, <code>AttributeError</code>). Wenn du
+          <code>Exception</code> fängst, werden Bugs in deinem eigenen Code stillschweigend
+          verschluckt — du siehst falsche Ausgaben ohne zu wissen warum. Fange immer die
+          spezifischste Exception, die den zu erwartenden Fehler abdeckt.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>except Exception: pass</code> ist ein Code-Smell. Verwende es nur ganz oben in einem Programm als letzten Rettungsanker-Logger, niemals innerhalb einer Funktion.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Wann solltest du eine Exception nach dem Fangen neu auslösen, anstatt <code>None</code> zurückzugeben?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss ich kennen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text"><code>None</code> zurückgeben gibt das Problem stillschweigend an den Aufrufer weiter. Neu auslösen sagt dem Aufrufer laut: "Diese Operation ist fehlgeschlagen."</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Gib <code>None</code> zurück, wenn der Fehler lokal und behebbar ist — ein schlechtes
+          Element in einem Batch, das der Aufrufer überspringen kann. Löse neu aus, wenn der
+          Fehler bedeutet, dass die gesamte Operation nicht erfolgreich sein kann — eine Datenbank
+          die sich nicht verbindet, eine erforderliche Konfigurationsdatei die nicht existiert.
+          Verwende <code>raise</code> (nacktes Neu-Auslösen) um den ursprünglichen Traceback zu
+          erhalten, oder <code>raise NeuerFehler("Nachricht") from ursprünglicher_fehler</code>
+          um Kontext hinzuzufügen.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Faustregel: Wenn der Aufrufer einen sinnvollen Weg hat sich zu erholen (Element überspringen, Standard verwenden), Sentinel zurückgeben. Wenn der Aufrufer ohne dieses Ergebnis nicht weitermachen kann, neu auslösen.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Was garantiert <code>finally</code>, und warum ist es sicherer als Aufräumcode nach dem try/except-Block zu platzieren?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss ich kennen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Code nach einem try/except-Block läuft nicht garantiert, wenn eine unbehandelte Exception entkommt. <code>finally</code> läuft selbst dann — es ist ein Vertrag mit der Laufzeit.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <code>finally</code> wird unabhängig davon ausgeführt, ob der <code>try</code>-Block
+          erfolgreich war, eine gefangene Exception auslöste, eine ungefangene Exception auslöste,
+          oder ein <code>return</code>-Statement erreichte. Wenn deine Datenbanksitzung nicht in
+          einem <code>finally</code> ist und ein unerwarteter Fehler ausgelöst wird, bleibt die
+          Sitzung offen — hält eine Transaktionssperre bis die Verbindung abbricht. Verwende
+          <code>with</code>-Statements (Kontextmanager) für dieselbe Garantie mit weniger Code.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>with open("file.txt") as f:</code> ist äquivalent zu try/finally mit <code>f.close()</code> — die Datei wird geschlossen, auch wenn eine Exception im <code>with</code>-Block ausgelöst wird.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Du hast eine Funktion, die drei externe APIs aufruft. Soll sie Exceptions intern fangen oder zum Aufrufer hochblubbern lassen?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Häufig gefragt</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Die richtige Ebene zum Fangen einer Exception ist die Ebene, die genug Kontext hat, um sinnvoll zu reagieren.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Es hängt davon ab, ob die drei Aufrufe unabhängig sind. Wenn ein API-Fehler die anderen
+          nicht stoppen soll, intern pro Aufruf fangen und Teilergebnisse zurückgeben. Wenn alle
+          drei für ein gültiges Ergebnis erfolgreich sein müssen, Exceptions hochblubbern lassen —
+          der Aufrufer entscheidet ob er die gesamte Operation wiederholt, ein degradiertes Ergebnis
+          zurückgibt oder die Anfrage fehlschlägt. Nützliche Heuristik: Exceptions an Schichtgrenzen
+          fangen, nicht in jeder Funktion.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Exception-Handling-Architektur ist Teil des Systemdesigns. Denke daran gleichzeitig mit dem Happy Path, nicht nachträglich.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Wie schreibt man eine eigene Exception-Klasse in Python, und wann lohnt sich das?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Häufig gefragt</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Eingebaute Exceptions sind generisch. <code>ValueError</code> aus einem CGM-Parser und <code>ValueError</code> aus einem JSON-Deserialisierer sehen für den Aufrufer identisch aus.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Von <code>Exception</code> oder einer spezifischeren eingebauten Klasse ableiten:
+        </div>
+      </div>
+      <div class="code-block">class InsufficientCGMDataError(ValueError):
+    """Wird ausgelöst wenn weniger CGM-Readings vorhanden sind als der Algorithmus braucht."""
+    pass
+
+class PatientNotFoundError(LookupError):
+    def __init__(self, patient_id: str):
+        super().__init__(f"Patient '{patient_id}' nicht gefunden")
+        self.patient_id = patient_id</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Lohnt sich wenn: Aufrufer diese Fehlerart von anderen <code>ValueError</code>s unterscheiden müssen; wenn die Exception domänenspezifische Daten trägt; wenn du den Fehlermodus als Teil der Funktionssignatur dokumentieren möchtest.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Was ist Exception-Chaining (<code>raise X from Y</code>), und warum ist es beim Debuggen wichtig?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Gut zu wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Du hast eine Ausnahme auf niedriger Ebene gefangen und möchtest eine Ausnahme auf höherer Ebene auslösen. Ohne Chaining verschwindet die ursprüngliche Ursache aus dem Traceback.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <code>raise HochstufigeFehler("Kontext") from ursprüngliche_exception</code> verknüpft die
+          beiden Exceptions. Python druckt beide im Traceback aus. Ohne Chaining siehst du nur den
+          neuen Fehler — du verlierst die SQLAlchemy-Ursache und weißt nicht warum der Datenbankaufruf
+          wirklich gescheitert ist. Verwende <code>from None</code> um die ursprüngliche Exception explizit
+          zu unterdrücken, wenn sie Implementierungsdetails enthüllen würde.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>In DiaTwin: SQLAlchemy-Exceptions in Domain-Exceptions einwickeln hält die Service-Schicht unabhängig vom ORM. Der Aufrufer sieht Domain-Fehler, keine Datenbankinternas.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit diesem Thema fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eine Funktion geschrieben hast, die eine spezifische Exception fängt, den Fehler mit dem schlechten Wert im Log aufzeichnet und einen sinnvollen Fallback zurückgibt — ohne <code>except Exception</code>.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du den Unterschied zwischen <code>None</code> zurückgeben bei einem Fehler und Neu-Auslösen erklären kannst — und die richtige Wahl für ein gegebenes Szenario treffen kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du weißt was <code>finally</code> garantiert und ein echtes Beispiel nennen kannst, wann es notwendig ist.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du das Catch-and-Retry-Muster mit exponentiellem Backoff für einen simulierten Netzwerkaufruf implementiert hast.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du mindestens eine eigene Exception-Klasse geschrieben und in einer Funktion verwendet hast, die einen Fehler auf niedrigerer Ebene einwickelt.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff1f2;">🛡️</div>
+    <div>
+      <div class="section-title">لماذا يجب أن يفشل الكود بأمان</div>
+      <div class="section-subtitle">الانهيار في تكامل مستشفى ليس مجرد خطأ برمجي — بل نتيجة مفقودة لمريض حقيقي</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>تكلفة الانهيار القاسي</h2>
+    <p>
+      الكود الذي يطلق استثناءً غير معالَج وينهي تنفيذه لا قيمة له في الإنتاج. في DiaTwin، خط
+      أنابيب قراءات CGM الذي ينهار عند مواجهة بيانات مستشعر تالفة سيوقف معالجة جميع القراءات
+      اللاحقة لكل المرضى في نفس الدفعة. سجل واحد سيء يفسد التشغيل بأكمله.
+    </p>
+    <p>
+      معالجة الاستثناءات لا تعني قمع الأخطاء — بل تعني تحديد ما يجب حدوثه حين يسوء شيء خارج
+      سيطرتك. لديك ثلاثة خيارات: تسجيل والاستمرار، إعادة المحاولة، أو العودة إلى قيمة افتراضية آمنة.
+    </p>
+    <div class="warning-box">
+      <div class="warning-box-text"><strong>أسوأ نمط مضاد:</strong> <code dir="ltr">except Exception: pass</code>. هذا يبتلع كل خطأ بصمت — بما في ذلك الأخطاء في كودك الخاص. لن تعرف أبداً أن الأنبوب معطوب حتى يكون تقرير المريض خاطئاً.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">⚙️</div>
+    <div>
+      <div class="section-title">ثلاثة أنماط إنتاجية</div>
+      <div class="section-subtitle">كل نمط يخدم نوعاً مختلفاً من الفشل — اختر بوعي</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>أنماط ستستخدمها في كل مشروع خلفي</h2>
+    <p>هذه ليست أكاديمية — الثلاثة تظهر في خط بيانات DiaTwin وطبقة تكامل FHIR في Morafek.</p>
+
+    <div class="pattern-card">
+      <div class="pattern-card-header">
+        <div class="pattern-num">01</div>
+        <div class="pattern-title">الإمساك والتسجيل والاستمرار</div>
+      </div>
+      <div class="pattern-when">استخدم حين: عنصر واحد سيء لا يجب أن يوقف معالجة الباقي. فشل دائم — إعادة المحاولة لن تساعد.</div>
+      <div class="code-block" dir="ltr">def process_cgm_reading(raw_value: str) -> float | None:
+    try:
+        return float(raw_value)
+    except ValueError:
+        logger.error(f"قراءة CGM غير صالحة: {raw_value!r}")
+        return None</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>أعد <code dir="ltr">None</code> للإشارة إلى فشل هذا العنصر دون إطلاق استثناء. المستدعي يقرر ماذا يفعل به.</div>
+        <div class="key-point"><div class="key-point-dot"></div>استخدم <code dir="ltr">logger.error()</code> وليس <code dir="ltr">print()</code>. السجلات تبقى؛ الطباعة تختفي حين يُغلق الطرفية.</div>
+      </div>
+    </div>
+
+    <div class="pattern-card">
+      <div class="pattern-card-header">
+        <div class="pattern-num">02</div>
+        <div class="pattern-title">الإمساك وإعادة المحاولة</div>
+      </div>
+      <div class="pattern-when">استخدم حين: الفشل مؤقت — انقطاع الشبكة، خدمة مثقلة مؤقتاً. إعادة المحاولة مع تأخير قصير ستنجح على الأرجح.</div>
+      <div class="code-block" dir="ltr">def fetch_fhir_patient(patient_id: str, retries: int = 3) -> dict:
+    last_error = None
+    for attempt in range(retries):
+        try:
+            response = requests.get(f"{FHIR_BASE}/Patient/{patient_id}", timeout=5)
+            response.raise_for_status()
+            return response.json()
+        except (requests.ConnectionError, requests.Timeout) as e:
+            last_error = e
+            if attempt < retries - 1:
+                time.sleep(2 ** attempt)   # تراجع أسي: 1s, 2s, 4s
+    raise last_error</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><strong>التراجع الأسي</strong> (<code dir="ltr">2 ** attempt</code>) يحترم الخادم — لا يقصف خدمة تعاني بالفعل.</div>
+        <div class="key-point"><div class="key-point-dot"></div>أعد المحاولة فقط للاستثناءات <em>المؤقتة</em>. خطأ <code dir="ltr">404 Not Found</code> لن يصبح <code dir="ltr">200 OK</code> بعد ثلاث محاولات.</div>
+      </div>
+    </div>
+
+    <div class="pattern-card">
+      <div class="pattern-card-header">
+        <div class="pattern-num">03</div>
+        <div class="pattern-title">الإمساك والعودة إلى قيمة افتراضية آمنة</div>
+      </div>
+      <div class="pattern-when">استخدم حين: يمكن للنظام العمل بقيمة منخفضة لكن آمنة. بيانات شخصية مفقودة → استخدم خطاً أساسياً محافظاً للسكان.</div>
+      <div class="code-block" dir="ltr">def get_insulin_sensitivity(patient_id: str) -> float:
+    try:
+        profile = load_patient_profile(patient_id)
+        return profile["isf"]
+    except (KeyError, PatientNotFoundError):
+        logger.warning(f"لا يوجد ملف ISF لـ {patient_id} — استخدام الافتراضي 2.0")
+        return 2.0</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>في الكود الحرج أمنياً، يجب أن يكون الاحتياطي <em>محافظاً</em>، وليس متفائلاً. اعرف الآثار السريرية للقيمة الافتراضية.</div>
+        <div class="key-point"><div class="key-point-dot"></div>سجّل بمستوى <code dir="ltr">WARNING</code> وليس <code dir="ltr">ERROR</code> — النظام متدهور لكنه لم يفشل.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">❓</div>
+    <div>
+      <div class="section-title">أسئلة تدريبية</div>
+      <div class="section-subtitle">تختبر الحكم وليس مجرد استذكار الصياغة</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">ما الفرق بين إمساك <code dir="ltr">Exception</code> و<code dir="ltr">ValueError</code>؟ ولماذا يهم ذلك؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">إمساك <code dir="ltr">Exception</code> يعني القول: "أعرف كيف أتعامل مع حرفياً كل ما يمكن أن يسوء." على الأرجح لا تعرف.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          <code dir="ltr">ValueError</code> يعني "هذا التحويل أو التحقق المحدد فشل." أما <code dir="ltr">Exception</code>
+          فيمسك كل شيء: أخطاء الشبكة، أخطاء الذاكرة، أخطاءك الإملائية. حين تمسك <code dir="ltr">Exception</code>،
+          تُبتلع الأخطاء في كودك الخاص بصمت — سترى نتائج خاطئة دون معرفة السبب. امسك دائماً
+          الاستثناء الأكثر تحديداً الذي يغطي الفشل المتوقع.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">except Exception: pass</code> رائحة كود. استخدمه فقط في أعلى البرنامج كمسجل ملاذ أخير، ليس داخل دالة أبداً.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">متى يجب إعادة إطلاق استثناء بعد إمساكه مقابل إعادة <code dir="ltr">None</code>؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">إعادة <code dir="ltr">None</code> تمرر المشكلة بصمت للمستدعي. إعادة الإطلاق تخبر المستدعي بصوت عالٍ: "هذه العملية فشلت."</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          أعد <code dir="ltr">None</code> حين يكون الفشل محلياً وقابلاً للإصلاح — عنصر واحد سيء
+          في دفعة يمكن للمستدعي تخطيه. أعد الإطلاق حين يعني الفشل أن العملية بأكملها لا يمكن
+          أن تنجح — قاعدة بيانات لا تتصل، ملف إعداد مطلوب غير موجود. استخدم <code dir="ltr">raise</code>
+          للحفاظ على الـ traceback الأصلي، أو <code dir="ltr">raise خطأ_جديد from خطأ_أصلي</code>
+          لإضافة سياق.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>قاعدة عامة: إذا كان للمستدعي طريقة ذات معنى للتعافي، أعد sentinel. إذا لم يكن بإمكانه الاستمرار بدون هذه النتيجة، أعد الإطلاق.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">ماذا يضمن <code dir="ltr">finally</code>، ولماذا هو أأمن من وضع كود التنظيف بعد كتلة try/except؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">الكود بعد كتلة try/except غير مضمون التنفيذ إذا هرب استثناء غير معالَج. <code dir="ltr">finally</code> يعمل حتى عندها — إنه عقد مع وقت التشغيل.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          يُنفَّذ <code dir="ltr">finally</code> بصرف النظر عما إذا كانت كتلة <code dir="ltr">try</code>
+          نجحت، أو أطلقت استثناءً ممسوكاً، أو استثناءً غير ممسوك، أو وصلت لـ <code dir="ltr">return</code>.
+          إذا لم تكن جلسة قاعدة البيانات في <code dir="ltr">finally</code> وأُطلق خطأ غير متوقع،
+          تبقى الجلسة مفتوحة — محتجزةً قفل معاملة حتى انتهاء مهلة الاتصال. استخدم جمل
+          <code dir="ltr">with</code> (مديري السياق) لنفس الضمان بكود أقل.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">with open("file.txt") as f:</code> يعادل try/finally مع <code dir="ltr">f.close()</code> — الملف يُغلق حتى لو أُطلق استثناء داخل كتلة <code dir="ltr">with</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">لديك دالة تستدعي ثلاثة APIs خارجية. هل يجب أن تمسك الاستثناءات داخلياً أم تتركها تتصاعد للمستدعي؟</span>
+      <span class="q-badges"><span class="badge badge-common">★ يُختبر كثيراً</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">المستوى الصحيح لإمساك استثناء هو المستوى الذي لديه سياق كافٍ للاستجابة بشكل هادف.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          يعتمد على ما إذا كانت الاستدعاءات الثلاثة مستقلة. إذا كان فشل API واحد لا يجب أن
+          يوقف الآخرين، امسك داخلياً لكل استدعاء وأعد نتائج جزئية. إذا كان يجب أن تنجح الثلاثة
+          لتكون النتيجة صالحة، دع الاستثناءات تتصاعد — المستدعي يقرر إعادة المحاولة أو إعادة
+          نتيجة منخفضة أو إخفاق الطلب. امسك الاستثناءات عند حدود الطبقات، وليس في كل دالة.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>معمارية معالجة الاستثناءات جزء من تصميم النظام. فكر فيها في نفس وقت المسار السعيد، وليس لاحقاً.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">كيف تكتب فئة استثناء مخصصة في Python، ومتى يستحق الأمر ذلك؟</span>
+      <span class="q-badges"><span class="badge badge-common">★ يُختبر كثيراً</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">الاستثناءات المدمجة عامة. <code dir="ltr">ValueError</code> من محلل CGM و<code dir="ltr">ValueError</code> من مُفرز JSON يبدوان متطابقين للمستدعي.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          اشتق من <code dir="ltr">Exception</code> أو من مدمج أكثر تحديداً:
+        </div>
+      </div>
+      <div class="code-block" dir="ltr">class InsufficientCGMDataError(ValueError):
+    """يُطلق حين تكون قراءات CGM أقل مما يحتاجه الخوارزمية."""
+    pass
+
+class PatientNotFoundError(LookupError):
+    def __init__(self, patient_id: str):
+        super().__init__(f"المريض '{patient_id}' غير موجود")
+        self.patient_id = patient_id</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>يستحق حين: يحتاج المستدعون للتمييز بين هذا الفشل وغيره من <code dir="ltr">ValueError</code>؛ حين يحمل الاستثناء بيانات خاصة بالنطاق؛ حين تريد توثيق نمط الفشل.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">ما ربط الاستثناءات (<code dir="ltr">raise X from Y</code>)، ولماذا يهم للتصحيح؟</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 جيد أن تعرفه</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">أمسكت استثناءً منخفض المستوى وتريد إطلاق آخر عالي المستوى. بدون الربط تختفي السبب الأصلي من الـ traceback.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          <code dir="ltr">raise خطأ_عالي("سياق") from استثناء_أصلي</code> يربط الاستثناءين.
+          Python يطبع كليهما في الـ traceback مع "السبب المباشر لما سبق هو..." بدون الربط
+          تفقد سبب SQLAlchemy ولا تعرف لماذا فشل استدعاء قاعدة البيانات فعلاً. استخدم
+          <code dir="ltr">from None</code> لإخفاء الاستثناء الأصلي صراحةً حين يكشف تفاصيل تنفيذ.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>في DiaTwin: لف استثناءات SQLAlchemy في استثناءات النطاق يبقي طبقة الخدمة مستقلة عن الـ ORM. المستدعي يرى أخطاء النطاق، وليس داخليات قاعدة البيانات.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> انتهيت من هذا الموضوع عندما...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>كتبت دالة تمسك استثناءً محدداً، تسجل الخطأ مع القيمة السيئة، وتعيد قيمة احتياطية مناسبة — بدون <code dir="ltr">except Exception</code>.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع شرح الفرق بين إعادة <code dir="ltr">None</code> عند الفشل مقابل إعادة الإطلاق — واختيار الصحيح لسيناريو معطى.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تعرف ما يضمنه <code dir="ltr">finally</code> ويمكنك ذكر مثال حقيقي متى يكون ضرورياً.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>نفّذت نمط الإمساك وإعادة المحاولة مع التراجع الأسي لاستدعاء شبكي محاكى.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>كتبت فئة استثناء مخصصة واحدة على الأقل واستخدمتها في دالة تلف خطأ على مستوى أدنى.</div>
+  </div>
+
+</div><!-- end tab-ar -->
+
+</div><!-- end body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'lms_python_unaided_04_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+</body>
+</html>

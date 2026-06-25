@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 5 — Refactor a Real Module | Python Unaided Coding</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── Topic page-specific styles ── */
+.badge { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must   { background:#fef3c7; color:#92400e; }
+.badge-common { background:#dbeafe; color:#1e40af; }
+.badge-tip    { background:#f0fdf4; color:#166534; }
+
+.q-arrow { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel { padding:18px 20px 16px 52px; }
+
+.strategy-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text  { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+
+.answer-box       { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text  { font-size:13.5px; color:#14532d; line-height:1.7; }
+
+.warning-box      { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text { font-size:13px; color:var(--amber-text); line-height:1.55; }
+
+.key-points    { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point     { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin:10px 0; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; }
+
+.section    { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2 { font-size:18px; font-weight:700; margin-bottom:14px; }
+.section p  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+.must-block       { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item        { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet      { font-size:15px; flex-shrink:0; }
+
+/* Refactor step cards */
+.step-card {
+  background:#f8fafc; border:1px solid var(--border); border-radius:8px;
+  padding:16px 18px; margin-bottom:14px;
+}
+.step-card-header {
+  display:flex; align-items:center; gap:10px; margin-bottom:10px;
+}
+.step-num {
+  width:26px; height:26px; border-radius:6px;
+  background:#f0fdf4; color:#059669;
+  font-size:11px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.step-title { font-size:14px; font-weight:700; color:var(--navy); }
+.step-body  { font-size:13.5px; color:#334155; line-height:1.65; }
+
+/* Before/after comparison */
+.compare-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:12px 0; }
+.compare-col-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
+.compare-col-label.before { color:#dc2626; }
+.compare-col-label.after  { color:#059669; }
+
+/* RTL overrides */
+[dir="rtl"] .q-panel          { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point         { flex-direction:row-reverse; }
+[dir="rtl"] .must-item         { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title  { flex-direction:row-reverse; }
+[dir="rtl"] .step-card-header  { flex-direction:row-reverse; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .section .code-block,
+[dir="rtl"] .step-card .code-block { direction:ltr; text-align:left; }
+[dir="rtl"] .compare-grid { direction:ltr; }
+
+@media (max-width:600px) {
+  .q-panel { padding-left:20px; }
+  .q-badges { display:none; }
+  .compare-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">PYTHON UNAIDED CODING &mdash; Topic 5 of 5</div>
+    <h1>Refactor <span>a Real Module</span></h1>
+    <p class="header-sub">You designed the insulin dose pipeline. You understand the logic. Now express it in clean, unaided Python — type hints, docstrings, single-responsibility functions, and proper error handling. This is the proof.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🔧</div>
+    <div>
+      <div class="section-title">What Refactoring Actually Means</div>
+      <div class="section-subtitle">Same behaviour, better structure — not rewriting, not adding features</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Refactoring is not rewriting</h2>
+    <p>
+      Refactoring means changing the internal structure of code without changing its external
+      behaviour. The tests pass before and after. The function returns the same result. What
+      changes is how the code is organised — how easy it is to read, to test, and to extend.
+    </p>
+    <p>
+      The target for this topic is your own insulin calculation pipeline from DiaTwin.
+      You know this code: you designed the logic, you understand the edge cases, and you
+      know what the inputs and outputs mean. That domain knowledge makes it the perfect
+      subject for an unaided refactor. You are not guessing at intent — you are expressing
+      something you already understand in better Python.
+    </p>
+    <div class="warning-box">
+      <div class="warning-box-text"><strong>The goal is not elegance for its own sake.</strong> Every change you make must answer the question: "Is this easier to read, test, or extend?" If you can't answer yes, revert it.</div>
+    </div>
+  </div>
+
+  <!-- The five moves -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📋</div>
+    <div>
+      <div class="section-title">Five Refactoring Moves</div>
+      <div class="section-subtitle">Apply these in order to a real function from your codebase</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Work through them on the actual code</h2>
+    <p>Take <code>insulinCalculationService</code> (or a Python equivalent from DiaTwin) and apply each move. Write the before and after side-by-side in a comment.</p>
+
+    <!-- Move 1 -->
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">01</div>
+        <div class="step-title">Add type hints to every function signature</div>
+      </div>
+      <div class="step-body">Type hints do not change runtime behaviour, but they make the function's contract explicit. They also let PyCharm warn you when you pass the wrong type.</div>
+      <div class="compare-grid">
+        <div>
+          <div class="compare-col-label before">Before</div>
+          <div class="code-block">def calculate_meal_dose(carbs, icr, bg, target):
+    correction = (bg - target) / isf
+    return carbs / icr + correction</div>
+        </div>
+        <div>
+          <div class="compare-col-label after">After</div>
+          <div class="code-block">def calculate_meal_dose(
+    carbs: float,       # grams
+    icr: float,         # g/unit
+    bg: float,          # mmol/L
+    target: float,      # mmol/L
+    isf: float,         # mmol/L per unit
+) -> float:             # units
+    correction = (bg - target) / isf
+    return carbs / icr + correction</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Include units in the comment next to each parameter — <code>mmol/L</code> vs <code>mg/dL</code> is a safety-critical distinction.</div>
+        <div class="key-point"><div class="key-point-dot"></div>The return type annotation tells the caller what to expect — and forces you to think about what the function actually guarantees.</div>
+      </div>
+    </div>
+
+    <!-- Move 2 -->
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">02</div>
+        <div class="step-title">Write a docstring: one sentence, parameters, return, raises</div>
+      </div>
+      <div class="step-body">The docstring is the contract between the function and its callers. Write it before you refactor the body — it forces you to articulate what the function is supposed to do.</div>
+      <div class="code-block">def calculate_meal_dose(
+    carbs: float, icr: float, bg: float, target: float, isf: float
+) -> float:
+    """
+    Calculate total insulin dose for a meal, including a blood glucose correction.
+
+    Parameters
+    ----------
+    carbs  : grams of carbohydrate in the meal
+    icr    : insulin-to-carb ratio (grams of carb covered by 1 unit of insulin)
+    bg     : current blood glucose (mmol/L)
+    target : target blood glucose (mmol/L)
+    isf    : insulin sensitivity factor (mmol/L drop per 1 unit of insulin)
+
+    Returns
+    -------
+    float
+        Total insulin dose in units. May be negative if bg is well below target
+        (caller must clamp to 0 before delivery).
+
+    Raises
+    ------
+    ValueError
+        If icr or isf are zero or negative (would cause division by zero or
+        clinically nonsensical correction direction).
+    """
+    ...</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>The "Raises" section is the most important part — it makes the exception handling contract explicit, so callers know what they must handle.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Notice the note about negative return values: documenting edge-case behaviour prevents the caller from silently delivering a negative insulin dose.</div>
+      </div>
+    </div>
+
+    <!-- Move 3 -->
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">03</div>
+        <div class="step-title">Split: one function, one concept</div>
+      </div>
+      <div class="step-body">If a function does two things, split it. The test for "one thing": can you name it with a single verb and noun, without using "and"?</div>
+      <div class="compare-grid">
+        <div>
+          <div class="compare-col-label before">Before — two concepts in one</div>
+          <div class="code-block">def get_dose(patient_id, meal_carbs):
+    profile = db.get_patient_profile(patient_id)
+    bg = cgm.get_latest_reading(patient_id)
+    correction = (bg - profile["target"]) / profile["isf"]
+    meal = meal_carbs / profile["icr"]
+    total = correction + meal
+    return max(0, total)</div>
+        </div>
+        <div>
+          <div class="compare-col-label after">After — three pure functions</div>
+          <div class="code-block">def correction_dose(bg: float, target: float, isf: float) -> float:
+    return (bg - target) / isf
+
+def meal_dose(carbs: float, icr: float) -> float:
+    return carbs / icr
+
+def total_dose(carbs: float, profile: dict, bg: float) -> float:
+    raw = (meal_dose(carbs, profile["icr"])
+           + correction_dose(bg, profile["target"], profile["isf"]))
+    return max(0.0, raw)</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>correction_dose</code> and <code>meal_dose</code> are now pure functions (no side effects, no database calls). You can test them with a single <code>assert</code> statement — no mocking needed.</div>
+        <div class="key-point"><div class="key-point-dot"></div>The clamping (<code>max(0.0, raw)</code>) is a business rule. By putting it in <code>total_dose</code>, you document that negative doses are possible mathematically but impossible to deliver.</div>
+      </div>
+    </div>
+
+    <!-- Move 4 -->
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">04</div>
+        <div class="step-title">Add guard clauses for invalid inputs</div>
+      </div>
+      <div class="step-body">Fail loudly at the entry point, not silently in the middle of a calculation. A negative ICR would give a negative dose; a zero ISF causes a division-by-zero crash. Catch these before any arithmetic runs.</div>
+      <div class="code-block">def calculate_meal_dose(
+    carbs: float, icr: float, bg: float, target: float, isf: float
+) -> float:
+    """..."""
+    if icr <= 0:
+        raise ValueError(f"ICR must be positive, got {icr}")
+    if isf <= 0:
+        raise ValueError(f"ISF must be positive, got {isf}")
+    if carbs < 0:
+        raise ValueError(f"Carbs cannot be negative, got {carbs}")
+
+    correction = (bg - target) / isf
+    return carbs / icr + correction</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Guard clauses at the top read as a specification: "this function requires these preconditions." They are documentation that executes.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Raise <code>ValueError</code> for caller errors (wrong input type/value), not <code>RuntimeError</code>. The caller passed something invalid — that is a value problem.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Include the actual value in the message (<code>got {icr}</code>). When a test fails at 3 AM you will thank yourself.</div>
+      </div>
+    </div>
+
+    <!-- Move 5 -->
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">05</div>
+        <div class="step-title">Write assert-based tests for each function</div>
+      </div>
+      <div class="step-body">Not pytest yet — just <code>assert</code> statements at the bottom of the file. The point is to verify your refactored functions produce the same output as the original for known inputs.</div>
+      <div class="code-block">if __name__ == "__main__":
+    # Correction only: bg=9.0, target=5.5, isf=2.0 → (9-5.5)/2 = 1.75 units
+    assert correction_dose(bg=9.0, target=5.5, isf=2.0) == 1.75
+
+    # Meal only: 60g carbs, ICR=10 g/unit → 6 units
+    assert meal_dose(carbs=60.0, icr=10.0) == 6.0
+
+    # Total: 60g meal + bg=9, target=5.5, isf=2, icr=10 → 7.75 units
+    profile = {"icr": 10.0, "isf": 2.0, "target": 5.5}
+    result = total_dose(carbs=60.0, profile=profile, bg=9.0)
+    assert abs(result - 7.75) < 1e-9, f"Expected 7.75, got {result}"
+
+    # Clamp: negative raw dose → 0.0
+    assert total_dose(carbs=0.0, profile=profile, bg=4.0) == 0.0
+
+    # Guard: invalid ICR
+    try:
+        meal_dose(carbs=60.0, icr=0.0)
+        assert False, "Should have raised ValueError"
+    except ValueError:
+        pass
+
+    print("All assertions passed.")</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>The floating-point test uses <code>abs(result - expected) &lt; 1e-9</code> instead of <code>==</code> because floating-point arithmetic is not exact. Never use <code>==</code> for float comparisons in tests.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Test the guard clauses too — confirm that passing invalid inputs raises the exception you documented. If the test doesn't verify the guard, the guard isn't tested.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Once these pass, you have verified that refactoring preserved the original behaviour. You can now extract these to pytest without writing new test logic.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q&A -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">These test your understanding of why clean code is worth writing</div>
+    </div>
+  </div>
+
+  <!-- Q01 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">What makes a function "testable"? Why is global state the enemy of testability?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">A testable function takes inputs and returns outputs. Given the same inputs, it always returns the same output. A function that depends on global state or calls a database might return different results each time — and you cannot test it without setting up the entire system.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          A function is testable when its output depends only on its inputs — no database reads,
+          no global variables, no <code>datetime.now()</code>, no <code>random()</code>.
+          This is called a <strong>pure function</strong>. You can test it with one line:
+          <code>assert f(x) == expected</code>. Global state breaks this because the function's
+          output changes depending on what happened before it was called — the test environment
+          must replicate that state, or the test is unreliable. In practice: separate the
+          data-fetching from the calculation. <code>get_dose(patient_id)</code> cannot be tested
+          without a database. <code>calculate_meal_dose(carbs, icr, bg, target, isf)</code> can
+          be tested anywhere.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>The refactoring move in this topic (splitting database calls from calculations) is not just aesthetics — it is what makes the calculation independently testable.</div>
+        <div class="key-point"><div class="key-point-dot"></div>In DiaTwin: functions that compute doses, check thresholds, or format messages should all be pure. Functions that read from MongoDB or call FHIR endpoints are the thin I/O boundary — test those with mocks.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">What is the Single Responsibility Principle, and how do you apply it to a function (not a class)?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">A function should do one thing. If you can name it with a verb and a noun without using "and", it probably does one thing. "Calculate and validate and log" is three things.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          SRP at the function level means: one function, one reason to change. <code>get_dose()</code>
+          that fetches patient data, calculates the dose, and logs the result will change for three
+          independent reasons — if the database schema changes, if the calculation logic changes,
+          or if the logging format changes. Split it into <code>fetch_patient_profile()</code>,
+          <code>calculate_meal_dose()</code>, and <code>log_dose_event()</code>. Now each function
+          has exactly one reason to change — and each can be tested independently.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>The "one reason to change" test is more useful than "does one thing" — it ties the principle to real maintenance costs, not just aesthetics.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Long functions are often a sign of multiple responsibilities, but length alone is not the test. A 40-line pure calculation function is fine. A 10-line function that fetches, calculates, and logs is not.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Why do type hints help even in a dynamically-typed language like Python?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Python's dynamic typing means bugs surface at runtime, often in production, not at write time. Type hints move those errors earlier — to the moment you write the call.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Type hints serve three purposes. First, they are documentation that executes — when you
+          read <code>def f(bg: float) -&gt; float</code> you know exactly what the function expects
+          and returns, without reading the body. Second, PyCharm's static analysis uses them to
+          flag mismatches before you run the code — passing a <code>str</code> where a <code>float</code>
+          is expected becomes a warning, not a runtime error. Third, they make refactoring safer —
+          if you change a parameter type, PyCharm shows every call site that would break.
+          In a medical system where passing mg/dL to a function expecting mmol/L causes incorrect
+          dosing, type hints are not optional aesthetics.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Use <code>from __future__ import annotations</code> in Python &lt;3.10 to use newer type syntax (<code>float | None</code>) in older versions.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>Optional[float]</code> (pre-3.10) and <code>float | None</code> (3.10+) are equivalent. Both mean the function might return a value or nothing — the caller must check.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">What is the difference between a guard clause and defensive programming?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Commonly tested</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">A guard clause rejects bad input at the entry. Defensive programming wraps every operation in checks "just in case" — it produces code that is harder to read and hides bugs by silently correcting inputs the caller should have validated.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          A guard clause (<code>if icr &lt;= 0: raise ValueError(...)</code>) is explicit: it
+          states the precondition, fails immediately with a clear message, and keeps the happy
+          path unindented. Defensive programming tries to handle every possible bad input with
+          silent corrections — clamping negatives to zero, converting strings to floats, using
+          default values when keys are missing — resulting in code that never clearly fails and
+          makes it hard to know whether your inputs were even correct. The right approach:
+          validate at boundaries (API endpoints, database reads) and then trust the data inside
+          the system. Guard clauses are the boundary check, not internal paranoia.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Guard clauses at the top keep the function body readable — the main logic is not buried in nested if/else.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Defensive programming that silently corrects inputs is harder to debug: the function succeeds, but with wrong data, and you find the error three steps later with no useful context.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">You refactored a function and all your assert tests still pass. Is the refactor correct?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Commonly tested</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Tests can only tell you what they test. A passing test suite is evidence of correctness for the cases it covers — not proof for all cases.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          The refactor is correct for the cases your tests cover. Whether it is correct in
+          general depends on how complete your tests are. If your tests only cover the happy path
+          (valid inputs, expected outputs), the refactored function might silently change behaviour
+          for edge cases — zero carbs, a very high blood glucose, a patient with no profile.
+          Good refactoring practice: write tests for edge cases <em>before</em> refactoring, so
+          you have a safety net. If you didn't, add them now and confirm they pass on the original
+          too. The point of tests is not to show the code works — it is to tell you when it stops
+          working.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Edge cases to always test for calculations: zero inputs, negative inputs, boundary values (exactly at target BG), very large inputs (100+ units).</div>
+        <div class="key-point"><div class="key-point-dot"></div>The refactor added guard clauses. If the original didn't raise on invalid input and the refactored version does, the behaviour changed — that is a breaking change, not a refactor. Document the decision.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">What is a docstring's job, and what should it never contain?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Good to know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">A docstring is the function's public contract. It describes what the function does, what it needs, and what it promises. It never describes how — that is what the code is for.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          A docstring should answer: what does this function do, what are the inputs (types and
+          units), what does it return, and what exceptions can it raise. It should <em>not</em>
+          contain implementation details — "divides carbs by ICR and adds correction" is narrating
+          the code. A reader can read the code; the docstring should give them the context they
+          need to use the function correctly without reading the body. Docstrings that describe
+          implementation rot when the code changes but the docstring doesn't — they become active
+          misinformation.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>"May return negative if BG is below target (caller must clamp)" is valuable docstring content — it is a contract detail the caller must act on, not visible from the type signature.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Use NumPy-style or Google-style docstrings consistently within a project. PyCharm renders them in the Quick Documentation panel (hover + <kbd>⌃J</kbd> or <kbd>Ctrl+Q</kbd>).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done with this topic — and this course — when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You have taken a real function from DiaTwin or Morafek and applied all five moves: type hints, docstring, split into single-responsibility functions, guard clauses, and assert tests.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>The assert tests pass on the refactored code, including at least two edge cases (zero input, invalid input that triggers a guard clause).</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain why the refactored version is easier to test than the original — specifically naming which part of the original made isolated testing impossible.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You have written a docstring that describes the contract (inputs, outputs, exceptions) without describing the implementation.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can type all of this from scratch — type hints, docstring, guard clauses, assert tests — without looking at the reference material. That is the proof of automaticity.</div>
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🔧</div>
+    <div>
+      <div class="section-title">Was Refactoring wirklich bedeutet</div>
+      <div class="section-subtitle">Gleiches Verhalten, bessere Struktur — kein Neuschreiben, keine neuen Features</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Refactoring ist kein Neuschreiben</h2>
+    <p>
+      Refactoring bedeutet, die interne Struktur von Code zu ändern, ohne sein externes
+      Verhalten zu ändern. Die Tests bestehen vor und nach dem Refactoring. Die Funktion gibt
+      dasselbe Ergebnis zurück. Was sich ändert, ist die Organisation — wie leicht der Code
+      zu lesen, zu testen und zu erweitern ist.
+    </p>
+    <p>
+      Das Ziel für dieses Thema ist deine eigene Insulin-Berechnungspipeline aus DiaTwin.
+      Du kennst diesen Code: du hast die Logik entworfen, du verstehst die Randfälle, und du
+      weißt, was die Eingaben und Ausgaben bedeuten. Dieses Domänenwissen macht es zum
+      perfekten Gegenstand für ein unbegleitetes Refactoring.
+    </p>
+    <div class="warning-box">
+      <div class="warning-box-text"><strong>Das Ziel ist nicht Eleganz um ihrer selbst willen.</strong> Jede Änderung muss die Frage beantworten: "Ist das leichter zu lesen, zu testen oder zu erweitern?" Wenn du nicht Ja sagen kannst, mache sie rückgängig.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📋</div>
+    <div>
+      <div class="section-title">Fünf Refactoring-Schritte</div>
+      <div class="section-subtitle">Wende diese in dieser Reihenfolge auf eine echte Funktion aus deiner Codebasis an</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Arbeite sie mit echtem Code durch</h2>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">01</div>
+        <div class="step-title">Type-Hints zu jeder Funktionssignatur hinzufügen</div>
+      </div>
+      <div class="step-body">Type-Hints ändern das Laufzeitverhalten nicht, aber sie machen den Vertrag der Funktion explizit und erlauben PyCharm, falsche Typen zu warnen.</div>
+      <div class="code-block">def calculate_meal_dose(
+    carbs: float,       # Gramm Kohlenhydrate
+    icr: float,         # g/Einheit
+    bg: float,          # mmol/L
+    target: float,      # mmol/L
+    isf: float,         # mmol/L pro Einheit
+) -> float:             # Insulineinheiten
+    ...</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Einheiten im Kommentar neben jedem Parameter angeben — <code>mmol/L</code> vs <code>mg/dL</code> ist ein sicherheitskritischer Unterschied.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">02</div>
+        <div class="step-title">Docstring schreiben: ein Satz, Parameter, Rückgabe, Raises</div>
+      </div>
+      <div class="step-body">Der Docstring ist der Vertrag zwischen der Funktion und ihren Aufrufern. Schreibe ihn, bevor du den Rumpf refaktorierst — er zwingt dich, zu artikulieren, was die Funktion tun soll.</div>
+      <div class="code-block">def calculate_meal_dose(...) -> float:
+    """
+    Berechnet die gesamte Insulindosis für eine Mahlzeit,
+    einschließlich einer Blutzuckerkorrektur.
+
+    Parameters
+    ----------
+    carbs  : Gramm Kohlenhydrate in der Mahlzeit
+    icr    : Insulin-Kohlenhydrat-Verhältnis (g Kohlenhydrate pro Insulineinheit)
+    ...
+
+    Raises
+    ------
+    ValueError
+        Wenn icr oder isf null oder negativ sind.
+    """</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Der "Raises"-Abschnitt ist der wichtigste Teil — er macht den Exception-Vertrag explizit, damit Aufrufer wissen, was sie behandeln müssen.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">03</div>
+        <div class="step-title">Aufteilen: eine Funktion, ein Konzept</div>
+      </div>
+      <div class="step-body">Wenn eine Funktion zwei Dinge tut, teile sie auf. Der Test für "eine Sache": kannst du sie mit einem Verb und einem Substantiv benennen, ohne "und" zu verwenden?</div>
+      <div class="code-block">def correction_dose(bg: float, target: float, isf: float) -> float:
+    return (bg - target) / isf
+
+def meal_dose(carbs: float, icr: float) -> float:
+    return carbs / icr
+
+def total_dose(carbs: float, profile: dict, bg: float) -> float:
+    raw = meal_dose(carbs, profile["icr"]) + correction_dose(
+        bg, profile["target"], profile["isf"])
+    return max(0.0, raw)</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>correction_dose</code> und <code>meal_dose</code> sind jetzt reine Funktionen. Du kannst sie mit einer einzigen <code>assert</code>-Anweisung testen — kein Mocking nötig.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">04</div>
+        <div class="step-title">Guard-Klauseln für ungültige Eingaben hinzufügen</div>
+      </div>
+      <div class="step-body">Fail laut am Eintrittspunkt, nicht still in der Mitte einer Berechnung. Fange diese Fehler ab, bevor eine Arithmetik ausgeführt wird.</div>
+      <div class="code-block">def calculate_meal_dose(...) -> float:
+    if icr <= 0:
+        raise ValueError(f"ICR muss positiv sein, erhalten: {icr}")
+    if isf <= 0:
+        raise ValueError(f"ISF muss positiv sein, erhalten: {isf}")
+    if carbs < 0:
+        raise ValueError(f"Kohlenhydrate können nicht negativ sein, erhalten: {carbs}")
+    ...</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Guard-Klauseln am Anfang lesen sich wie eine Spezifikation: "Diese Funktion setzt diese Vorbedingungen voraus."</div>
+        <div class="key-point"><div class="key-point-dot"></div>Tatsächlichen Wert in der Nachricht angeben (<code>erhalten: {icr}</code>). Wenn ein Test um 3 Uhr nachts fehlschlägt, wirst du dir selbst dankbar sein.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">05</div>
+        <div class="step-title">Assert-basierte Tests für jede Funktion schreiben</div>
+      </div>
+      <div class="step-body">Noch kein pytest — nur <code>assert</code>-Anweisungen am Ende der Datei. Der Punkt ist, zu verifizieren, dass deine refaktorierten Funktionen dieselbe Ausgabe wie das Original für bekannte Eingaben produzieren.</div>
+      <div class="code-block">if __name__ == "__main__":
+    assert correction_dose(bg=9.0, target=5.5, isf=2.0) == 1.75
+    assert meal_dose(carbs=60.0, icr=10.0) == 6.0
+    profile = {"icr": 10.0, "isf": 2.0, "target": 5.5}
+    result = total_dose(carbs=60.0, profile=profile, bg=9.0)
+    assert abs(result - 7.75) < 1e-9, f"Erwartet 7.75, erhalten {result}"
+    print("Alle Assertions bestanden.")</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Verwende <code>abs(result - expected) &lt; 1e-9</code> anstatt <code>==</code> für Float-Vergleiche — Fließkomma-Arithmetik ist nicht exakt.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Testen dein Verständnis, warum sauberer Code es wert ist ihn zu schreiben</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Was macht eine Funktion "testbar"? Warum ist globaler Zustand der Feind der Testbarkeit?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss ich kennen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Eine testbare Funktion nimmt Eingaben und gibt Ausgaben zurück. Bei denselben Eingaben gibt sie immer dasselbe Ergebnis zurück.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Eine Funktion ist testbar, wenn ihre Ausgabe nur von ihren Eingaben abhängt — keine
+          Datenbanklesevorgänge, keine globalen Variablen, kein <code>datetime.now()</code>.
+          Dies nennt sich <strong>reine Funktion</strong>. Du kannst sie mit einer Zeile testen:
+          <code>assert f(x) == erwartet</code>. Globaler Zustand bricht das, weil die Ausgabe
+          der Funktion sich je nach vorherigen Ereignissen ändert — die Testumgebung muss diesen
+          Zustand replizieren. In der Praxis: trenne die Datenbeschaffung von der Berechnung.
+          <code>get_dose(patient_id)</code> kann ohne Datenbank nicht getestet werden.
+          <code>calculate_meal_dose(carbs, icr, bg, target, isf)</code> kann überall getestet werden.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Die Refactoring-Schritte in diesem Thema (Trennung von Datenbankaufrufen und Berechnungen) sind nicht nur Ästhetik — sie machen die Berechnung unabhängig testbar.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Was ist das Single Responsibility Principle, und wie wendet man es auf eine Funktion an?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss ich kennen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Eine Funktion sollte eine Sache tun. Wenn du sie mit einem Verb und einem Substantiv benennen kannst, ohne "und" zu verwenden, tut sie wahrscheinlich eine Sache.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          SRP auf Funktionsebene bedeutet: eine Funktion, ein Grund zum Ändern. Eine <code>get_dose()</code>
+          die Patientendaten abruft, die Dosis berechnet und das Ergebnis loggt, wird sich aus drei
+          unabhängigen Gründen ändern — wenn sich das Datenbankschema ändert, wenn sich die
+          Berechnungslogik ändert, oder wenn sich das Log-Format ändert. Teile sie in
+          <code>fetch_patient_profile()</code>, <code>calculate_meal_dose()</code> und
+          <code>log_dose_event()</code> auf. Jetzt hat jede Funktion genau einen Grund zum Ändern
+          — und jede kann unabhängig getestet werden.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Der "ein Grund zum Ändern"-Test ist nützlicher als "eine Sache tun" — er verknüpft das Prinzip mit echten Wartungskosten.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Warum helfen Type-Hints auch in einer dynamisch getypten Sprache wie Python?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss ich kennen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Pythons dynamische Typisierung bedeutet, dass Fehler zur Laufzeit auftauchen, oft in der Produktion. Type-Hints verschieben diese Fehler früher — zum Zeitpunkt des Schreibens.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Type-Hints erfüllen drei Zwecke. Erstens sind sie Dokumentation die ausgeführt wird —
+          <code>def f(bg: float) -&gt; float</code> teilt sofort mit, was die Funktion erwartet
+          und zurückgibt. Zweitens verwendet PyCharms statische Analyse sie, um Fehler vor der
+          Codeausführung zu markieren. Drittens machen sie Refactoring sicherer — wenn du einen
+          Parametertyp änderst, zeigt PyCharm jede Aufrufstelle, die kaputt gehen würde.
+          In einem medizinischen System, wo mg/dL statt mmol/L zu falschem Dosieren führt,
+          sind Type-Hints keine optionale Ästhetik.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>Optional[float]</code> und <code>float | None</code> (3.10+) sind äquivalent. Beide bedeuten, dass die Funktion möglicherweise nichts zurückgibt — der Aufrufer muss das prüfen.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Was ist der Unterschied zwischen einer Guard-Klausel und defensiver Programmierung?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Häufig gefragt</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Eine Guard-Klausel weist schlechte Eingaben am Eintrittspunkt zurück. Defensive Programmierung wickelt jede Operation in Prüfungen ein "für alle Fälle" — sie versteckt Fehler durch stilles Korrigieren.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Eine Guard-Klausel (<code>if icr &lt;= 0: raise ValueError(...)</code>) ist explizit:
+          sie benennt die Vorbedingung, schlägt sofort mit einer klaren Nachricht fehl, und hält
+          den Happy Path uneingerückt. Defensive Programmierung versucht jeden möglichen schlechten
+          Input mit stillen Korrekturen zu behandeln — Negative auf Null klemmen, Strings in
+          Floats umwandeln — was Code produziert, der nie klar scheitert und es schwer macht zu
+          wissen, ob die Eingaben überhaupt korrekt waren. Validiere an Grenzen; vertraue den
+          Daten danach.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Guard-Klauseln oben halten den Funktionskörper lesbar — die Hauptlogik ist nicht in verschachtelten if/else vergraben.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Du hast eine Funktion refaktoriert und alle Assert-Tests bestehen. Ist das Refactoring korrekt?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Häufig gefragt</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Tests können dir nur sagen, was sie testen. Eine bestandene Testsuite ist Beweis für die Korrektheit der abgedeckten Fälle — kein Beweis für alle Fälle.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Das Refactoring ist für die von deinen Tests abgedeckten Fälle korrekt. Ob es generell
+          korrekt ist, hängt von der Vollständigkeit deiner Tests ab. Wenn deine Tests nur den
+          Happy Path abdecken, könnte die refaktorierte Funktion bei Randfällen still das Verhalten
+          ändern — null Kohlenhydrate, sehr hoher Blutzucker, ein Patient ohne Profil. Gute
+          Refactoring-Praxis: schreibe Tests für Randfälle <em>bevor</em> du refaktorierst, damit
+          du ein Sicherheitsnetz hast. Der Zweck von Tests ist nicht zu zeigen, dass Code
+          funktioniert — sondern zu merken, wenn er aufhört zu funktionieren.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Randfälle für Berechnungen immer testen: null Eingaben, negative Eingaben, Grenzwerte, sehr große Eingaben.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Was ist die Aufgabe eines Docstrings, und was sollte er nie enthalten?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Gut zu wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Ein Docstring ist der öffentliche Vertrag der Funktion. Er beschreibt was sie tut, was sie benötigt und was sie verspricht. Er beschreibt nie wie — das ist Sache des Codes.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Ein Docstring sollte antworten: was tut diese Funktion, was sind die Eingaben (Typen
+          und Einheiten), was gibt sie zurück, und welche Exceptions kann sie auslösen. Er sollte
+          <em>keine</em> Implementierungsdetails enthalten — "teilt Kohlenhydrate durch ICR und
+          addiert Korrektur" erzählt den Code nach. Docstrings die Implementierung beschreiben
+          werden falsch, wenn sich der Code ändert aber der Docstring nicht — sie werden aktive
+          Fehlinformationen.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>"Kann negativ sein wenn BG unter Zielwert (Aufrufer muss auf 0 klemmen)" ist wertvoller Docstring-Inhalt — es ist ein Vertragsdetail, das nicht aus der Typsignatur ersichtlich ist.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit diesem Thema — und diesem Kurs — fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eine echte Funktion aus DiaTwin oder Morafek genommen und alle fünf Schritte angewendet hast: Type-Hints, Docstring, Aufteilung, Guard-Klauseln und Assert-Tests.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Die Assert-Tests auf dem refaktorierten Code bestehen, einschließlich mindestens zwei Randfälle (null Eingabe, ungültige Eingabe die eine Guard-Klausel auslöst).</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du erklären kannst, warum die refaktorierte Version leichter zu testen ist — speziell was am Original isoliertes Testen unmöglich machte.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du einen Docstring geschrieben hast, der den Vertrag beschreibt (Eingaben, Ausgaben, Exceptions) ohne die Implementierung zu beschreiben.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du all das aus dem Gedächtnis tippen kannst — Type-Hints, Docstring, Guard-Klauseln, Assert-Tests — ohne Referenzmaterial. Das ist der Beweis der Automatizität.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🔧</div>
+    <div>
+      <div class="section-title">ماذا يعني إعادة الهيكلة حقاً</div>
+      <div class="section-subtitle">نفس السلوك، هيكل أفضل — ليس إعادة كتابة، وليس إضافة ميزات</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>إعادة الهيكلة ليست إعادة كتابة</h2>
+    <p>
+      إعادة الهيكلة تعني تغيير البنية الداخلية للكود دون تغيير سلوكه الخارجي. الاختبارات
+      تنجح قبل وبعد. الدالة تعيد نفس النتيجة. ما يتغير هو كيفية تنظيم الكود — كيف يسهل
+      قراءته واختباره وتوسيعه.
+    </p>
+    <p>
+      الهدف لهذا الموضوع هو خط أنابيب حساب الإنسولين الخاص بك من DiaTwin. أنت تعرف هذا الكود:
+      صممت المنطق، تفهم الحالات الحدية، وتعرف ما تعنيه المدخلات والمخرجات. هذه المعرفة
+      بالنطاق تجعله الموضوع المثالي لإعادة هيكلة مستقلة.
+    </p>
+    <div class="warning-box">
+      <div class="warning-box-text"><strong>الهدف ليس الأناقة لذاتها.</strong> كل تغيير يجب أن يجيب على السؤال: "هل هذا أسهل للقراءة أو الاختبار أو التوسيع؟" إذا لم تستطع الإجابة بنعم، تراجع عنه.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📋</div>
+    <div>
+      <div class="section-title">خمس خطوات لإعادة الهيكلة</div>
+      <div class="section-subtitle">طبّق هذه بالترتيب على دالة حقيقية من قاعدة كودك</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>اعمل عليها مع الكود الفعلي</h2>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">01</div>
+        <div class="step-title">أضف تلميحات النوع لكل توقيع دالة</div>
+      </div>
+      <div class="step-body">تلميحات النوع لا تغير سلوك وقت التشغيل، لكنها تجعل عقد الدالة صريحاً وتتيح لـ PyCharm تحذيرك عند تمرير نوع خاطئ.</div>
+      <div class="code-block" dir="ltr">def calculate_meal_dose(
+    carbs: float,       # غرام كربوهيدرات
+    icr: float,         # غ/وحدة
+    bg: float,          # mmol/L
+    target: float,      # mmol/L
+    isf: float,         # mmol/L لكل وحدة
+) -> float:             # وحدات إنسولين
+    ...</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>أدرج الوحدات في التعليق بجانب كل معامل — <code dir="ltr">mmol/L</code> مقابل <code dir="ltr">mg/dL</code> تمييز حرج للسلامة.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">02</div>
+        <div class="step-title">اكتب docstring: جملة واحدة، المعاملات، الإرجاع، الاستثناءات</div>
+      </div>
+      <div class="step-body">الـ docstring هو العقد بين الدالة ومستدعيها. اكتبه قبل إعادة هيكلة الجسم — يجبرك على التعبير عما تفترض أن تفعله الدالة.</div>
+      <div class="code-block" dir="ltr">def calculate_meal_dose(...) -> float:
+    """
+    احسب إجمالي جرعة الإنسولين لوجبة، مع تصحيح السكر في الدم.
+
+    Raises
+    ------
+    ValueError
+        إذا كان icr أو isf صفراً أو سالباً.
+    """</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>قسم "Raises" هو الأهم — يجعل عقد معالجة الاستثناءات صريحاً حتى يعرف المستدعون ما يجب عليهم معالجته.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">03</div>
+        <div class="step-title">قسّم: دالة واحدة، مفهوم واحد</div>
+      </div>
+      <div class="step-body">إذا كانت الدالة تفعل شيئين، قسّمها. اختبار "شيء واحد": هل يمكنك تسميتها بفعل واسم واحد دون استخدام "و"؟</div>
+      <div class="code-block" dir="ltr">def correction_dose(bg: float, target: float, isf: float) -> float:
+    return (bg - target) / isf
+
+def meal_dose(carbs: float, icr: float) -> float:
+    return carbs / icr
+
+def total_dose(carbs: float, profile: dict, bg: float) -> float:
+    raw = meal_dose(carbs, profile["icr"]) + correction_dose(
+        bg, profile["target"], profile["isf"])
+    return max(0.0, raw)</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">correction_dose</code> و<code dir="ltr">meal_dose</code> الآن دوال خالصة. يمكنك اختبارهما بجملة <code dir="ltr">assert</code> واحدة — لا حاجة لـ mocking.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">04</div>
+        <div class="step-title">أضف guard clauses للمدخلات غير الصالحة</div>
+      </div>
+      <div class="step-body">افشل بصوت عالٍ عند نقطة الدخول، وليس بصمت في منتصف حساب. التقط هذه الأخطاء قبل تشغيل أي عمليات حسابية.</div>
+      <div class="code-block" dir="ltr">def calculate_meal_dose(...) -> float:
+    if icr <= 0:
+        raise ValueError(f"ICR يجب أن يكون موجباً، حصلنا على: {icr}")
+    if isf <= 0:
+        raise ValueError(f"ISF يجب أن يكون موجباً، حصلنا على: {isf}")
+    if carbs < 0:
+        raise ValueError(f"الكربوهيدرات لا يمكن أن تكون سالبة، حصلنا على: {carbs}")
+    ...</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Guard clauses في الأعلى تُقرأ كمواصفات: "هذه الدالة تتطلب هذه الشروط المسبقة."</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">05</div>
+        <div class="step-title">اكتب اختبارات assert لكل دالة</div>
+      </div>
+      <div class="step-body">ليس pytest بعد — فقط جمل <code dir="ltr">assert</code> في نهاية الملف. الهدف هو التحقق من أن دوالك المُعاد هيكلتها تنتج نفس المخرجات كالأصل للمدخلات المعروفة.</div>
+      <div class="code-block" dir="ltr">if __name__ == "__main__":
+    assert correction_dose(bg=9.0, target=5.5, isf=2.0) == 1.75
+    assert meal_dose(carbs=60.0, icr=10.0) == 6.0
+    profile = {"icr": 10.0, "isf": 2.0, "target": 5.5}
+    result = total_dose(carbs=60.0, profile=profile, bg=9.0)
+    assert abs(result - 7.75) < 1e-9, f"متوقع 7.75، حصلنا على {result}"
+    print("نجحت جميع الاختبارات.")</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>استخدم <code dir="ltr">abs(result - expected) &lt; 1e-9</code> بدلاً من <code dir="ltr">==</code> لمقارنات الـ float — الحساب الحاسوبي للأعداد العشرية ليس دقيقاً تماماً.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">❓</div>
+    <div>
+      <div class="section-title">أسئلة تدريبية</div>
+      <div class="section-subtitle">تختبر فهمك لماذا الكود النظيف يستحق الكتابة</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">ما الذي يجعل الدالة "قابلة للاختبار"؟ لماذا الحالة العامة هي عدو قابلية الاختبار؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">الدالة القابلة للاختبار تأخذ مدخلات وتعيد مخرجات. بنفس المدخلات، تعيد دائماً نفس النتيجة.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          الدالة قابلة للاختبار حين تعتمد مخرجاتها فقط على مدخلاتها — لا قراءات قاعدة بيانات،
+          لا متغيرات عامة، لا <code dir="ltr">datetime.now()</code>. هذا يُسمى <strong>دالة خالصة</strong>.
+          يمكنك اختبارها بسطر واحد: <code dir="ltr">assert f(x) == متوقع</code>. الحالة العامة
+          تكسر هذا لأن مخرجات الدالة تتغير حسب ما حدث قبل استدعائها. عملياً: افصل جلب
+          البيانات عن الحساب. <code dir="ltr">get_dose(patient_id)</code> لا يمكن اختباره
+          بدون قاعدة بيانات. <code dir="ltr">calculate_meal_dose(carbs, icr, bg, target, isf)</code>
+          يمكن اختباره في أي مكان.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>خطوات إعادة الهيكلة في هذا الموضوع (فصل استدعاءات قاعدة البيانات عن الحسابات) ليست مجرد جماليات — هذا ما يجعل الحساب قابلاً للاختبار بشكل مستقل.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">ما مبدأ المسؤولية الواحدة، وكيف يُطبَّق على دالة؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">يجب أن تفعل الدالة شيئاً واحداً. إذا كان بإمكانك تسميتها بفعل واسم واحد دون استخدام "و"، فعلى الأرجح تفعل شيئاً واحداً.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          SRP على مستوى الدالة يعني: دالة واحدة، سبب واحد للتغيير. دالة <code dir="ltr">get_dose()</code>
+          تجلب بيانات المريض وتحسب الجرعة وتسجل النتيجة ستتغير لثلاثة أسباب مستقلة. قسّمها إلى
+          <code dir="ltr">fetch_patient_profile()</code> و<code dir="ltr">calculate_meal_dose()</code>
+          و<code dir="ltr">log_dose_event()</code>. الآن لكل دالة سبب واحد بالضبط للتغيير — وكل
+          منها يمكن اختبارها بشكل مستقل.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>اختبار "سبب واحد للتغيير" أكثر فائدة من "شيء واحد" — يربط المبدأ بتكاليف الصيانة الحقيقية.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">لماذا تساعد تلميحات النوع حتى في لغة مكتوبة ديناميكياً مثل Python؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">الكتابة الديناميكية في Python تعني ظهور الأخطاء في وقت التشغيل، غالباً في الإنتاج. تلميحات النوع تنقل هذه الأخطاء في وقت أبكر — لحظة كتابة الاستدعاء.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          تلميحات النوع تخدم ثلاثة أغراض. أولاً، هي توثيق قابل للتنفيذ — <code dir="ltr">def f(bg: float) -> float</code>
+          يخبرك بالضبط بما تتوقعه الدالة وتعيده. ثانياً، التحليل الساكن في PyCharm يستخدمها
+          للإشارة إلى التناقضات قبل تشغيل الكود. ثالثاً، تجعل إعادة الهيكلة أأمن — إذا غيرت
+          نوع معامل، يُظهر PyCharm كل موقع استدعاء سيتكسر. في نظام طبي حيث تمرير mg/dL
+          لدالة تتوقع mmol/L يسبب جرعة خاطئة، تلميحات النوع ليست جماليات اختيارية.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">Optional[float]</code> و<code dir="ltr">float | None</code> (3.10+) متكافئان. كلاهما يعني أن الدالة قد لا تعيد شيئاً — المستدعي يجب أن يتحقق.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">ما الفرق بين guard clause والبرمجة الدفاعية؟</span>
+      <span class="q-badges"><span class="badge badge-common">★ يُختبر كثيراً</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">guard clause يرفض المدخلات السيئة عند نقطة الدخول. البرمجة الدفاعية تلف كل عملية في فحوصات "على كل حال" — تخفي الأخطاء بتصحيح المدخلات بصمت.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          guard clause (<code dir="ltr">if icr &lt;= 0: raise ValueError(...)</code>) صريح:
+          يذكر الشرط المسبق، يفشل فوراً برسالة واضحة، ويبقي المسار السعيد غير مسنّن. البرمجة
+          الدفاعية تحاول معالجة كل مدخل سيء بتصحيحات صامتة — تثبيت السالبة على الصفر، تحويل
+          الـ strings إلى floats — مما ينتج كوداً لا يفشل أبداً بوضوح ويجعل من الصعب معرفة
+          ما إذا كانت المدخلات صحيحة أصلاً. اعمل على التحقق عند الحدود ثم ثق بالبيانات داخلياً.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Guard clauses في الأعلى تحافظ على قابلية قراءة جسم الدالة — المنطق الرئيسي ليس مدفوناً في if/else متداخلة.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">أعدت هيكلة دالة وجميع اختبارات assert تنجح. هل إعادة الهيكلة صحيحة؟</span>
+      <span class="q-badges"><span class="badge badge-common">★ يُختبر كثيراً</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">الاختبارات يمكنها فقط إخبارك بما تختبره. مجموعة اختبارات ناجحة هي دليل على صحة الحالات المغطاة — وليس دليلاً على جميع الحالات.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          إعادة الهيكلة صحيحة للحالات التي تغطيها اختباراتك. إذا كانت اختباراتك تغطي فقط
+          المسار السعيد، فقد تغير الدالة المُعاد هيكلتها بصمت السلوك لحالات حدية — صفر كربوهيدرات،
+          سكر دم مرتفع جداً، مريض بدون ملف. ممارسة إعادة الهيكلة الجيدة: اكتب اختبارات
+          للحالات الحدية <em>قبل</em> إعادة الهيكلة. الهدف من الاختبارات ليس إظهار أن الكود
+          يعمل — بل معرفة متى يتوقف عن العمل.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>حالات حدية يجب اختبارها دائماً للحسابات: مدخلات صفر، مدخلات سالبة، قيم حدودية، مدخلات كبيرة جداً.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">ما مهمة الـ docstring، وماذا يجب ألا يحتوي أبداً؟</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 جيد أن تعرفه</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">الـ docstring هو العقد العام للدالة. يصف ماذا تفعل، ماذا تحتاج، وماذا تعد. لا يصف أبداً كيف — ذلك هو دور الكود.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          يجب أن يجيب الـ docstring على: ماذا تفعل هذه الدالة، ما هي المدخلات (أنواع ووحدات)،
+          ماذا تعيد، وأي استثناءات يمكنها إطلاق. يجب ألا يحتوي على تفاصيل التنفيذ —
+          "يقسم الكربوهيدرات على ICR ويضيف التصحيح" يسرد الكود. docstrings التي تصف
+          التنفيذ تصبح خاطئة حين يتغير الكود لكن الـ docstring لا — تصبح معلومات مغلوطة نشطة.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>"قد يعيد سالباً إذا كان السكر تحت الهدف (المستدعي يجب التثبيت على صفر)" محتوى قيّم في الـ docstring — تفصيل عقدي غير مرئي من توقيع النوع.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> انتهيت من هذا الموضوع — ومن هذا المقرر — عندما...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>أخذت دالة حقيقية من DiaTwin أو Morafek وطبّقت جميع الخطوات الخمس: تلميحات النوع، docstring، تقسيم، guard clauses، واختبارات assert.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>اختبارات assert تنجح على الكود المُعاد هيكلته، بما في ذلك حالتان حدّيتان على الأقل (مدخل صفر، مدخل غير صالح يُشغّل guard clause).</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع شرح لماذا النسخة المُعاد هيكلتها أسهل للاختبار — بتسمية أي جزء من الأصل جعل الاختبار المعزول مستحيلاً.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>كتبت docstring يصف العقد (المدخلات، المخرجات، الاستثناءات) دون وصف التنفيذ.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع كتابة كل هذا من الذاكرة — تلميحات النوع، docstring، guard clauses، اختبارات assert — دون مراجعة. هذا هو دليل الأوتوماتيكية.</div>
+  </div>
+
+</div><!-- end tab-ar -->
+
+</div><!-- end body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'lms_python_unaided_05_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+</body>
+</html>

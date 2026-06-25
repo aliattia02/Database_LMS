@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic N — Slug | MODULE NAME</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── Topic page-specific styles — copy this block verbatim ── */
+.badge { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must   { background:#fef3c7; color:#92400e; }
+.badge-common { background:#dbeafe; color:#1e40af; }
+.badge-tip    { background:#f0fdf4; color:#166534; }
+
+.q-arrow { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel { padding:18px 20px 16px 52px; }
+
+.strategy-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text  { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+
+.answer-box       { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text  { font-size:13.5px; color:#14532d; line-height:1.7; }
+
+.warning-box      { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text { font-size:13px; color:var(--amber-text); line-height:1.55; }
+
+.key-points    { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point     { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin:10px 0; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; }
+
+.section    { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2 { font-size:18px; font-weight:700; margin-bottom:14px; }
+.section p  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+/* ── VARIANT A (topic2): PR description template block ── */
+.pr-template { background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:14px 18px; margin:12px 0; font-size:13px; color:var(--navy); line-height:1.75; white-space:pre-wrap; }
+
+/* ── VARIANT B (topic3): Merge conflict syntax highlighting ── */
+.conflict-block  { background:#f8fafc; border:1px solid var(--border); border-radius:6px; overflow:hidden; margin:12px 0; font-family:'SF Mono','Fira Code',ui-monospace,monospace; font-size:12px; }
+.conflict-ours   { background:#fffbeb; color:#78350f; padding:6px 14px; display:block; white-space:pre; }
+.conflict-sep    { background:#f1f5f9; color:#64748b; padding:4px 14px; display:block; white-space:pre; font-weight:700; }
+.conflict-theirs { background:#eff6ff; color:#1e3a5f; padding:6px 14px; display:block; white-space:pre; }
+.conflict-marker { color:#94a3b8; font-size:11px; }
+
+.must-block       { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item        { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet      { font-size:15px; flex-shrink:0; }
+
+/* RTL overrides */
+[dir="rtl"] .q-panel         { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point        { flex-direction:row-reverse; }
+[dir="rtl"] .must-item        { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title { flex-direction:row-reverse; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .section .code-block { direction:ltr; text-align:left; }
+[dir="rtl"] .conflict-block  { direction:ltr; text-align:left; }
+
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">MODULE NAME &mdash; Topic N of TOTAL</div>
+    <h1><span>Keyword</span> Rest of Title</h1>
+    <p class="header-sub">One or two sentences describing what this topic covers and why it matters.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <!-- SECTION HEADER — use different background colors per section for visual variety:
+       blue:#eff6ff | green:#f0fdf4 | purple:#f5f3ff | red:#fff1f2 | amber:#fffbeb | orange:#fff7ed | cyan:#ecfeff -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🔷</div>
+    <div>
+      <div class="section-title">Section Title</div>
+      <div class="section-subtitle">One-line subtitle describing the focus of this section</div>
+    </div>
+  </div>
+
+  <!-- EXPLANATORY CARD — concept-first, then commands/examples -->
+  <div class="section">
+    <h2>Concept title here</h2>
+    <p>Conceptual explanation. Use <strong>bold</strong> for important terms.</p>
+    <div class="code-block">example command or code block here</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Key point one.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Key point two — use <code>inline code</code> for commands.</div>
+    </div>
+  </div>
+
+  <!-- ── VARIANT A: PR template block (use in topic covering PRs) ── -->
+  <div class="section">
+    <h2>PR Description Template</h2>
+    <p>Copy this into your PR description to make reviews faster:</p>
+    <div class="pr-template">## What does this PR do?
+
+## Why is this change needed?
+
+## How to test
+
+## Closes #</div>
+  </div>
+
+  <!-- ── VARIANT B: Conflict block (use in topic covering merge conflicts) ── -->
+  <div class="section">
+    <h2>Reading Conflict Markers</h2>
+    <p>When Git cannot auto-merge, it inserts markers like these:</p>
+    <div class="conflict-block">
+      <span class="conflict-ours"><span class="conflict-marker">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD (your branch)</span>
+your version of the code</span>
+      <span class="conflict-sep">======= (divider)</span>
+      <span class="conflict-theirs">their version of the code
+<span class="conflict-marker">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/other-branch</span></span>
+    </div>
+  </div>
+  <!-- PATTERN: add more section-header + section blocks here (2–4 sections per topic) -->
+
+  <!-- Q&A ACCORDION — add one .q-card[data-lang="en"] per question (4–8 per topic) -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">Deep-dive questions for this specific topic</div>
+    </div>
+  </div>
+
+  <!-- Q01 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Topic-specific question here?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">One or two sentence framing.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">Full answer. <code>inline code</code> where needed.</div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Common mistake — omit this block if there's no real pitfall.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Takeaway one.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Takeaway two.</div>
+      </div>
+    </div>
+  </div>
+  <!-- PATTERN: add Q02 EN … Q06 EN here -->
+
+  <!-- SUCCESS CRITERIA — end of each language tab -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done with this topic when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Criterion one — specific, verifiable action.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Criterion two.</div>
+    <!-- PATTERN: 3–4 must-item rows total -->
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🔷</div>
+    <div>
+      <div class="section-title">Abschnittstitel</div>
+      <div class="section-subtitle">Einzeilige Beschreibung des Schwerpunkts dieses Abschnitts</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Konzepttitel hier</h2>
+    <p>Konzeptuelle Erklärung. <strong>Fettdruck</strong> für wichtige Begriffe.</p>
+    <div class="code-block">Beispiel-Befehl oder Codeblock hier</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Schlüsselpunkt eins.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Schlüsselpunkt zwei — <code>Inline-Code</code> für Befehle.</div>
+    </div>
+  </div>
+  <!-- MUSTER: weitere section-header + section Blöcke hier einfügen -->
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Vertiefungsfragen zu diesem Thema</div>
+    </div>
+  </div>
+
+  <!-- Q01 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Themenspezifische Frage hier?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Ein oder zwei Sätze zur Einrahmung.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Vollständige Antwort. <code>Inline-Code</code> wo nötig.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Schlüsselaussage eins.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Schlüsselaussage zwei.</div>
+      </div>
+    </div>
+  </div>
+  <!-- MUSTER: Q02 DE … Q06 DE hier einfügen -->
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit diesem Thema fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Kriterium eins — konkrete, überprüfbare Handlung.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Kriterium zwei.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🔷</div>
+    <div>
+      <div class="section-title">عنوان القسم</div>
+      <div class="section-subtitle">وصف من سطر واحد لتركيز هذا القسم</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>عنوان المفهوم هنا</h2>
+    <p>شرح مفاهيمي. <strong>غامق</strong> للمصطلحات المهمة.</p>
+    <div class="code-block" dir="ltr">example command or code block here</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>النقطة الرئيسية الأولى.</div>
+      <div class="key-point"><div class="key-point-dot"></div>النقطة الرئيسية الثانية — <code dir="ltr">inline-code</code> للأوامر.</div>
+    </div>
+  </div>
+  <!-- النمط: أضف المزيد من كتل section-header + section هنا -->
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">أسئلة التدريب</div>
+      <div class="section-subtitle">أسئلة معمّقة لهذا الموضوع تحديداً</div>
+    </div>
+  </div>
+
+  <!-- Q01 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">سؤال خاص بالموضوع هنا؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">جملة أو جملتان للتأطير.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">الإجابة الكاملة. <code dir="ltr">inline-code</code> حيث يلزم.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>نقطة رئيسية أولى.</div>
+        <div class="key-point"><div class="key-point-dot"></div>نقطة رئيسية ثانية.</div>
+      </div>
+    </div>
+  </div>
+  <!-- النمط: أضف Q02 AR … Q06 AR هنا -->
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> انتهيت من هذا الموضوع عندما...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>المعيار الأول — إجراء ملموس وقابل للتحقق.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>المعيار الثاني.</div>
+  </div>
+
+</div><!-- end tab-ar -->
+
+</div><!-- end body -->
+</main>
+
+<!-- LMS progress bridge — REQUIRED on every tracked topic page.
+     Set this BEFORE lesson-ui.js loads; the key is read at parse time.
+     Must exactly match the `storageKey` declared in registry.js for this lesson. -->
+<script>window.LMS_STORAGE_KEY = 'lms_FOLDER_NAME_NN_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<!-- NOTE: do NOT call guardLanguageTab() here — lesson-ui.js runs it
+     automatically on DOMContentLoaded for both 'ar' and 'de'. -->
+</body>
+</html>

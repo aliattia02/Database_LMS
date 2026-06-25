@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 3 — Debugging | Python Unaided Coding</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── Topic page-specific styles ── */
+.badge { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must   { background:#fef3c7; color:#92400e; }
+.badge-common { background:#dbeafe; color:#1e40af; }
+.badge-tip    { background:#f0fdf4; color:#166534; }
+
+.q-arrow { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel { padding:18px 20px 16px 52px; }
+
+.strategy-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text  { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+
+.answer-box       { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text  { font-size:13.5px; color:#14532d; line-height:1.7; }
+
+.warning-box      { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text { font-size:13px; color:var(--amber-text); line-height:1.55; }
+
+.key-points    { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point     { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin:10px 0; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; }
+
+.section    { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2 { font-size:18px; font-weight:700; margin-bottom:14px; }
+.section p  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+.must-block       { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item        { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet      { font-size:15px; flex-shrink:0; }
+
+/* Step card for numbered technique steps */
+.step-card {
+  background:#f8fafc; border:1px solid var(--border); border-radius:8px;
+  padding:16px 18px; margin-bottom:14px;
+}
+.step-card-header {
+  display:flex; align-items:center; gap:10px; margin-bottom:10px;
+}
+.step-num {
+  width:26px; height:26px; border-radius:6px;
+  background:#f0fdf4; color:#059669;
+  font-size:11px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.step-title { font-size:14px; font-weight:700; color:var(--navy); }
+.step-body  { font-size:13.5px; color:#334155; line-height:1.65; }
+
+/* Comparison table */
+.compare-table { width:100%; border-collapse:collapse; margin:12px 0; font-size:13px; }
+.compare-table th { background:#f1f5f9; padding:8px 12px; text-align:left; font-weight:700; border:1px solid var(--border); color:var(--navy); }
+.compare-table td { padding:8px 12px; border:1px solid var(--border); color:#334155; vertical-align:top; line-height:1.55; }
+.compare-table tr:nth-child(even) td { background:#fafafa; }
+
+/* RTL overrides */
+[dir="rtl"] .q-panel          { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point         { flex-direction:row-reverse; }
+[dir="rtl"] .must-item         { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title  { flex-direction:row-reverse; }
+[dir="rtl"] .step-card-header  { flex-direction:row-reverse; }
+[dir="rtl"] .compare-table th,
+[dir="rtl"] .compare-table td  { text-align:right; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .section .code-block,
+[dir="rtl"] .step-card .code-block { direction:ltr; text-align:left; }
+
+@media (max-width:600px) {
+  .q-panel { padding-left:20px; }
+  .q-badges { display:none; }
+  .compare-table { font-size:11.5px; }
+}
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">PYTHON UNAIDED CODING &mdash; Topic 3 of 5</div>
+    <h1><span>Debugging</span> with Print Statements &amp; Breakpoints</h1>
+    <p class="header-sub">Code that runs but gives the wrong answer. No crash, no stack trace, no obvious clue. This topic gives you two systematic techniques — and the judgement to know which one to reach for.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#ecfeff;">🛠️</div>
+    <div>
+      <div class="section-title">When the Code Runs but Lies</div>
+      <div class="section-subtitle">Exceptions tell you where something broke — debugging tells you why the answer is wrong</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>The two modes of debugging</h2>
+    <p>
+      When code crashes with an exception, you have a stack trace: a location, a type, and a
+      message. That is useful. The harder problem is when code runs to completion but the
+      output is wrong — a dosage is 0.5 units too high, a patient lookup returns the wrong
+      record, a total is off by one entry.
+    </p>
+    <p>
+      Two tools exist for this. They are complementary, not competing. Use <strong>print
+      debugging</strong> for quick, targeted checks when you already have a hypothesis about
+      where the problem is. Use the <strong>PyCharm debugger</strong> when you need to inspect
+      a running program's full state — multiple variables, data structures, call stack — at a
+      specific moment.
+    </p>
+    <div class="warning-box">
+      <div class="warning-box-text"><strong>Anti-pattern to avoid:</strong> Adding print statements everywhere, then removing them, then adding them back. Strategic placement — entry, exit, decision points — gives you the signal without the noise.</div>
+    </div>
+  </div>
+
+  <!-- Print debugging -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🖨️</div>
+    <div>
+      <div class="section-title">Technique 1 — Print Debugging</div>
+      <div class="section-subtitle">Fast, portable, works anywhere — if you place prints strategically</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Where to put print statements</h2>
+    <p>Think in terms of checkpoints, not coverage. You want to know: what went in, what came out, and what was true at the key decision.</p>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">01</div>
+        <div class="step-title">Function entry — what did it actually receive?</div>
+      </div>
+      <div class="step-body">Print every argument at the top of the function. Type matters as much as value.</div>
+      <div class="code-block">def calculate_iob(doses: list, minutes_ago: list) -> float:
+    print(f"[DEBUG] calculate_iob called: doses={doses}, minutes_ago={minutes_ago}")
+    print(f"[DEBUG] types: doses={type(doses)}, minutes_ago={type(minutes_ago)}")
+    total = 0.0
+    ...</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Prefix with <code>[DEBUG]</code> or a tag — makes it easy to grep and remove later.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Print the type alongside the value — a list of strings looks like a list of floats until you print <code>type(doses[0])</code>.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">02</div>
+        <div class="step-title">Decision points — which branch did it take?</div>
+      </div>
+      <div class="step-body">Print inside each branch of an if/else or at the start of a loop body. You want to know which path was executed.</div>
+      <div class="code-block">for i, (dose, t) in enumerate(zip(doses, minutes_ago)):
+    remaining = dose * (1 - t / 120)
+    print(f"[DEBUG] i={i}: dose={dose}, t={t}, remaining={remaining:.3f}")
+    total += remaining</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Loop-internal prints confirm: is the loop running the right number of times? Are intermediate values correct?</div>
+        <div class="key-point"><div class="key-point-dot"></div>Use <code>enumerate()</code> to get the index alongside the value — crucial for spotting the off-by-one immediately.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">03</div>
+        <div class="step-title">Function exit — what is it actually returning?</div>
+      </div>
+      <div class="step-body">Print immediately before the return statement. You can also compare the intermediate total versus the expected value.</div>
+      <div class="code-block">    print(f"[DEBUG] calculate_iob returning: total={total:.4f}")
+    return total</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>If the entry print looks right but the exit print is wrong, the bug is inside the function. If the exit print looks right but the caller gets the wrong value, something changed it after the return.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Full worked example</h2>
+      <p>Take the buggy <code>calculate_iob()</code> from Topic 2 and debug it using print statements. The <code>range(len(doses) - 1)</code> bug becomes immediately visible:</p>
+      <div class="code-block">def calculate_iob_buggy(doses, minutes_ago):
+    total = 0.0
+    for i in range(len(doses) - 1):       # bug here
+        remaining = doses[i] * (1 - minutes_ago[i] / 120)
+        print(f"[DEBUG] i={i}, dose={doses[i]}, remaining={remaining:.3f}")
+        total += remaining
+    print(f"[DEBUG] final total={total:.4f}, expected ~4.5")
+    return total
+
+calculate_iob_buggy([5.0, 3.0], [30, 90])
+# Output:
+# [DEBUG] i=0, dose=5.0, remaining=3.750
+# [DEBUG] final total=3.7500, expected ~4.5
+# ↑ only one iteration ran — the bug is in range()</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>The loop body printed only once (i=0), immediately showing that <code>range(len(doses) - 1)</code> yielded only one index for a 2-element list.</div>
+        <div class="key-point"><div class="key-point-dot"></div>The final total (3.75) versus the expected (~4.5) confirmed the wrong answer without any additional guesswork.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PyCharm debugger -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">🔬</div>
+    <div>
+      <div class="section-title">Technique 2 — PyCharm Debugger (Breakpoints)</div>
+      <div class="section-subtitle">Stop the program mid-execution and inspect everything</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>How to use a breakpoint effectively</h2>
+    <p>A breakpoint pauses execution at a specific line. While paused, you can inspect any variable, step line by line, or jump into called functions. No print statements needed — but you need to know where to stop.</p>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">01</div>
+        <div class="step-title">Set a breakpoint at the first suspicious line</div>
+      </div>
+      <div class="step-body">Click the gutter (left margin) next to the line in PyCharm. A red dot appears. Run the file in Debug mode (Shift+F9 on Windows/Linux, ⌃D on macOS).</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Set the breakpoint <em>before</em> the line you suspect — you want to see the state just before execution reaches it.</div>
+        <div class="key-point"><div class="key-point-dot"></div>For loop bugs, set the breakpoint inside the loop body so it triggers on each iteration.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">02</div>
+        <div class="step-title">Inspect the Variables panel</div>
+      </div>
+      <div class="step-body">When execution pauses, the Variables panel (bottom-left in debug mode) shows every local variable. Expand lists and dicts to see their contents. No print needed.</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>For the <code>calculate_iob</code> bug: at the first pause inside the loop, check <code>i</code>. After the loop body executes once and you step again, the loop has ended — you see the bug immediately.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Hover over a variable name in the editor to see its current value inline — faster than searching the panel.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">03</div>
+        <div class="step-title">Step through with F8 (Step Over) and F7 (Step Into)</div>
+      </div>
+      <div class="step-body">F8 executes the current line and moves to the next — stays at the same call level. F7 steps into a function call — lets you follow execution inside a helper function.</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><strong>F8 (Step Over):</strong> use this most of the time. Moves line by line without diving into library internals.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>F7 (Step Into):</strong> use when you suspect the bug is inside a function you called. Follows execution into that function's body.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>Shift+F8 (Step Out):</strong> run the rest of the current function and pause at its caller — useful when you've stepped into something and want to come back up.</div>
+      </div>
+    </div>
+
+    <h2>Print vs Breakpoint — when to use each</h2>
+    <table class="compare-table">
+      <tr>
+        <th>Situation</th>
+        <th>Reach for print</th>
+        <th>Reach for breakpoint</th>
+      </tr>
+      <tr>
+        <td>Quick spot-check on one value</td>
+        <td>✓ Faster to add and remove</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Bug inside a loop (many iterations)</td>
+        <td>✓ Print every iteration — see the pattern</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Need to inspect a large nested dict</td>
+        <td></td>
+        <td>✓ Variables panel expands interactively</td>
+      </tr>
+      <tr>
+        <td>Bug might be across multiple functions</td>
+        <td></td>
+        <td>✓ Call stack panel shows the full chain</td>
+      </tr>
+      <tr>
+        <td>Bug only triggers with specific input</td>
+        <td>✓ Add a conditional print</td>
+        <td>✓ Conditional breakpoint (right-click the dot)</td>
+      </tr>
+      <tr>
+        <td>Async code / Flask request handler</td>
+        <td>✓ Print to stdout — simpler</td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Q&A Accordion -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">These cover the judgement layer — not just the mechanics</div>
+    </div>
+  </div>
+
+  <!-- Q01 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">You add print(x) at line 12, but the bug is at line 45. How does this help you?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Debugging is a process of bisection. You are narrowing the search space — not looking for the bug directly, but ruling out where it cannot be.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          If <code>x</code> at line 12 is correct, you know the bug is introduced somewhere
+          between line 12 and the wrong output. You've eliminated everything above line 12.
+          Add another print at line 28. If that is also correct, the bug is between 28 and 45.
+          This binary search approach means you find bugs in log(n) steps rather than reading
+          every line. The print at line 12 does not have to be near the bug — it is narrowing
+          the search space.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>A correct intermediate print eliminates the code before it. An incorrect print points to the code before it as the source.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Start with a print halfway through the function, then bisect again based on what you see.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">What is a conditional breakpoint, and when would you use one in a DiaTwin context?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Commonly tested</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">If a loop runs 10,000 times and the bug only appears on iteration 9,847, stepping through with F8 is not viable. A conditional breakpoint pauses only when a specific expression is true.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          A conditional breakpoint is a breakpoint with an attached condition expression. PyCharm
+          only pauses when that expression evaluates to <code>True</code>. Right-click on a
+          breakpoint dot → "Edit breakpoint" → type your condition (e.g.
+          <code>patient_id == "P-00923"</code> or <code>iob_value &gt; 10.0</code>).
+          In DiaTwin, this is useful when processing a batch of 500 CGM records and the
+          wrong result only appears for one specific patient — you can pause exactly on that
+          patient without stepping through the other 499.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Equivalent to adding <code>if condition: breakpoint()</code> in code — but non-destructive, no code changes needed.</div>
+        <div class="key-point"><div class="key-point-dot"></div>The built-in <code>breakpoint()</code> function (Python 3.7+) is a portable alternative — it triggers the debugger even outside an IDE.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Why is print(type(x)) often more useful than print(x) alone?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Python's dynamic typing means a variable can look like one thing and be another. "5.0" and 5.0 print identically if you forget the quotes. The type is what matters for arithmetic and serialisation.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <code>print(x)</code> shows the value. <code>print(type(x))</code> shows its type.
+          In Python, <code>"120" * 2 == "120120"</code> (string repetition) while
+          <code>120 * 2 == 240</code> (arithmetic). If CGM readings come in as strings from
+          a JSON payload and you do not convert them, arithmetic will either fail with a
+          <code>TypeError</code> or produce nonsense silently. Printing both value and type
+          together — <code>print(f"dose={dose}, type={type(dose)}")</code> — immediately
+          catches type confusion.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>A common source: <code>json.loads()</code> returns numbers as floats by default, but if your JSON has <code>"age": "34"</code> (quoted), it comes in as a string.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Use <code>isinstance(x, (int, float))</code> as a guard rather than trusting the type at all times in a data pipeline.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">You debug a function and the print at entry shows the right value, but the print at exit shows the wrong one. What does that tell you?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">The entry print and the exit print act as a bracket. If what's inside the bracket is wrong, the bug is in the function body. You have already eliminated the caller.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          The bug is inside the function body — between the entry and the exit print. The inputs
+          were correct; the transformation was not. Next step: add a print after each logical
+          operation inside the function body to narrow down exactly which line corrupts the value.
+          This is the bisection approach applied inside the function. The entry/exit bracket has
+          localised the bug to one function; the internal bisection localises it to one operation.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Entry correct + exit wrong → bug is inside. Entry wrong → bug is in the caller or above. Neither of these requires reading every line; they give you direction.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">What is the Call Stack panel in PyCharm's debugger and when is it useful?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Good to know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">When paused at a breakpoint, you know what is happening now. The Call Stack tells you how execution got there — every function call in the chain, with their local variables, still alive in memory.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          The Call Stack panel lists every active function call frame above the current one.
+          Clicking a frame in the panel switches the Variables panel to show that frame's
+          local variables. This is useful when you are paused deep inside a helper function
+          and want to inspect what the calling function passed — without having to add prints
+          to the caller. In a Flask request handler, the call stack shows: your route handler
+          → the calculation service → the utility function where the breakpoint is. You can
+          click back up to the route handler and inspect the request object, all without
+          restarting.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>The Call Stack is the debugger equivalent of reading a stack trace — but interactive, not post-mortem.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Use it when the bug might have been introduced by the caller passing a wrong argument — check the caller's local variables to confirm what it sent.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Should you leave debug print statements in committed code? What is the alternative?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Good to know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Debug prints are temporary scaffolding. They have noise, they reveal internal state, and they slow output. Professional code uses structured logging — which is configured to show or suppress based on the deployment environment.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          No — remove them before committing. The standard alternative is Python's
+          <code>logging</code> module. Replace <code>print(f"[DEBUG] x={x}")</code> with
+          <code>logger.debug(f"x={x}")</code>. In production, the log level is set to
+          <code>INFO</code> or higher, so debug messages are suppressed. In development,
+          set it to <code>DEBUG</code> and they reappear. This means you never have to
+          add and remove the same print again — the logging system decides whether to
+          show it based on the environment.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>In DiaTwin / Morafek, every service should have a module-level logger: <code>logger = logging.getLogger(__name__)</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Committed <code>print()</code> statements in server-side code will appear in production logs and may leak patient data. Use <code>logging</code> with level guards instead.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done with this topic when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You have debugged a broken function from Topic 2 using print statements: entry print, loop-internal prints, and exit print — and identified the bug from the output.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You have set a breakpoint in PyCharm, run the same function in Debug mode, and inspected the wrong variable in the Variables panel without any print statements.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain the bisection strategy: a correct intermediate print eliminates everything before it; an incorrect print points to the code before it.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You know when to reach for print (quick, hypothesis-driven) vs a breakpoint (full state inspection, multi-variable, nested structures).</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can use F8, F7, and Shift+F8 in PyCharm's debugger without looking them up.</div>
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#ecfeff;">🛠️</div>
+    <div>
+      <div class="section-title">Wenn der Code läuft, aber lügt</div>
+      <div class="section-subtitle">Exceptions sagen dir, wo etwas kaputt ist — Debugging sagt dir, warum die Antwort falsch ist</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Die zwei Modi des Debuggings</h2>
+    <p>
+      Wenn Code mit einer Exception abstürzt, hast du einen Stack-Trace: einen Ort, einen Typ
+      und eine Meldung. Das ist nützlich. Das schwierigere Problem ist, wenn Code bis zum Ende
+      läuft, die Ausgabe aber falsch ist — eine Dosierung ist 0,5 Einheiten zu hoch, eine
+      Patientensuche gibt den falschen Datensatz zurück, eine Summe fehlt einen Eintrag.
+    </p>
+    <p>
+      Es gibt zwei Werkzeuge dafür. Verwende <strong>Print-Debugging</strong> für schnelle,
+      gezielte Checks, wenn du bereits eine Hypothese hast. Verwende den <strong>PyCharm
+      Debugger</strong>, wenn du den vollständigen Zustand eines laufenden Programms inspizieren
+      musst — mehrere Variablen, Datenstrukturen, Aufrufstapel.
+    </p>
+    <div class="warning-box">
+      <div class="warning-box-text"><strong>Anti-Pattern zu vermeiden:</strong> Print-Statements überall hinzufügen, dann entfernen, dann wieder hinzufügen. Strategische Platzierung — Einstieg, Ausstieg, Entscheidungspunkte — gibt dir das Signal ohne das Rauschen.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🖨️</div>
+    <div>
+      <div class="section-title">Technik 1 — Print-Debugging</div>
+      <div class="section-subtitle">Schnell, portabel, funktioniert überall — wenn du Prints strategisch platzierst</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Wo Print-Statements platzieren</h2>
+    <p>Denke in Checkpoints, nicht in Abdeckung. Du willst wissen: Was kam rein, was kam raus, und was war an der Schlüsselentscheidung wahr.</p>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">01</div>
+        <div class="step-title">Funktionseinstieg — was hat sie tatsächlich empfangen?</div>
+      </div>
+      <div class="step-body">Drucke jedes Argument am Anfang der Funktion. Typ ist genauso wichtig wie Wert.</div>
+      <div class="code-block">def calculate_iob(doses: list, minutes_ago: list) -> float:
+    print(f"[DEBUG] calculate_iob aufgerufen: doses={doses}, minutes_ago={minutes_ago}")
+    print(f"[DEBUG] Typen: doses={type(doses)}, minutes_ago={type(minutes_ago)}")
+    total = 0.0
+    ...</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Mit <code>[DEBUG]</code> präfixen — macht es einfach, sie später zu finden und zu entfernen.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Drucke den Typ neben dem Wert — eine Liste von Strings sieht aus wie eine Liste von Floats, bis du <code>type(doses[0])</code> druckst.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">02</div>
+        <div class="step-title">Entscheidungspunkte — welchen Zweig hat es genommen?</div>
+      </div>
+      <div class="step-body">Drucke innerhalb jedes Zweigs eines if/else oder am Anfang eines Schleifenkörpers.</div>
+      <div class="code-block">for i, (dose, t) in enumerate(zip(doses, minutes_ago)):
+    remaining = dose * (1 - t / 120)
+    print(f"[DEBUG] i={i}: dose={dose}, t={t}, remaining={remaining:.3f}")
+    total += remaining</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Schleifeninterner Print bestätigt: Läuft die Schleife die richtige Anzahl von Malen? Sind die Zwischenwerte korrekt?</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">03</div>
+        <div class="step-title">Funktionsausstieg — was gibt sie tatsächlich zurück?</div>
+      </div>
+      <div class="step-body">Drucke unmittelbar vor dem return-Statement.</div>
+      <div class="code-block">    print(f"[DEBUG] calculate_iob gibt zurück: total={total:.4f}")
+    return total</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Wenn der Einstiegs-Print korrekt aussieht, aber der Ausstiegs-Print falsch ist, liegt der Bug innerhalb der Funktion.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">🔬</div>
+    <div>
+      <div class="section-title">Technik 2 — PyCharm Debugger (Breakpoints)</div>
+      <div class="section-subtitle">Das Programm in der Mitte der Ausführung stoppen und alles inspizieren</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Wie man einen Breakpoint effektiv einsetzt</h2>
+    <p>Ein Breakpoint pausiert die Ausführung an einer bestimmten Zeile. Während der Pause kannst du jede Variable inspizieren, Zeile für Zeile vorgehen oder in aufgerufene Funktionen einsteigen.</p>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">01</div>
+        <div class="step-title">Breakpoint an der ersten verdächtigen Zeile setzen</div>
+      </div>
+      <div class="step-body">Klicke auf den Randbereich (linker Rand) neben der Zeile in PyCharm. Ein roter Punkt erscheint. Führe die Datei im Debug-Modus aus (Shift+F9 unter Windows/Linux, ⌃D unter macOS).</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">02</div>
+        <div class="step-title">Variables-Panel inspizieren</div>
+      </div>
+      <div class="step-body">Wenn die Ausführung pausiert, zeigt das Variables-Panel (unten links im Debug-Modus) jede lokale Variable. Listen und Dicts aufklappen um ihren Inhalt zu sehen.</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">03</div>
+        <div class="step-title">Mit F8 (Step Over) und F7 (Step Into) durchgehen</div>
+      </div>
+      <div class="step-body">F8 führt die aktuelle Zeile aus und geht zur nächsten — bleibt auf derselben Aufrufebene. F7 springt in einen Funktionsaufruf hinein.</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><strong>F8 (Step Over):</strong> meistens verwenden. Bewegt sich zeilenweise ohne in Bibliotheksinterna einzutauchen.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>F7 (Step Into):</strong> verwenden, wenn du vermutest, dass der Bug in einer aufgerufenen Funktion ist.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>Shift+F8 (Step Out):</strong> den Rest der aktuellen Funktion ausführen und beim Aufrufer pausieren.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Diese decken die Urteilsebene ab — nicht nur die Mechanik</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Du fügst print(x) in Zeile 12 hinzu, aber der Bug ist in Zeile 45. Wie hilft das?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss ich kennen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Debugging ist ein Bisektionsprozess. Du engst den Suchraum ein — suchst nicht direkt den Bug, sondern schließt aus, wo er nicht sein kann.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Wenn <code>x</code> in Zeile 12 korrekt ist, weißt du, dass der Bug irgendwo zwischen
+          Zeile 12 und der falschen Ausgabe eingeführt wird. Du hast alles oberhalb von Zeile 12
+          eliminiert. Füge einen weiteren Print in Zeile 28 hinzu. Wenn dieser auch korrekt ist,
+          liegt der Bug zwischen 28 und 45. Dieser Binärsuchansatz bedeutet, dass du Bugs in
+          log(n) Schritten findest, anstatt jede Zeile zu lesen.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Ein korrekter Zwischen-Print eliminiert den Code davor. Ein inkorrekter Print zeigt auf den Code davor als Quelle.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Was ist ein bedingter Breakpoint, und wann würdest du ihn in einem DiaTwin-Kontext verwenden?</span>
+      <span class="q-badges"><span class="badge badge-common">★ Häufig gefragt</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Wenn eine Schleife 10.000 Mal läuft und der Bug nur in Iteration 9.847 auftaucht, ist schrittweises Durchgehen mit F8 nicht praktikabel.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Ein bedingter Breakpoint ist ein Breakpoint mit einer angehängten Bedingungsausdruck.
+          PyCharm pausiert nur, wenn dieser Ausdruck <code>True</code> ergibt. Rechtsklick auf
+          den Breakpoint-Punkt → "Breakpoint bearbeiten" → Bedingung eingeben (z.B.
+          <code>patient_id == "P-00923"</code>). In DiaTwin ist das nützlich, wenn du einen
+          Batch von 500 CGM-Datensätzen verarbeitest und das falsche Ergebnis nur für einen
+          bestimmten Patienten auftaucht.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Entspricht dem Hinzufügen von <code>if bedingung: breakpoint()</code> im Code — aber zerstörungsfrei, keine Codeänderungen nötig.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Warum ist print(type(x)) oft nützlicher als print(x) allein?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss ich kennen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Pythons dynamische Typisierung bedeutet, dass eine Variable wie eines aussehen und etwas anderes sein kann. "5.0" und 5.0 sehen beim Drucken identisch aus, wenn du die Anführungszeichen vergisst.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <code>print(x)</code> zeigt den Wert. <code>print(type(x))</code> zeigt seinen Typ.
+          In Python ist <code>"120" * 2 == "120120"</code> (String-Wiederholung), während
+          <code>120 * 2 == 240</code> (Arithmetik). Wenn CGM-Readings als Strings aus einer
+          JSON-Payload kommen und du sie nicht konvertierst, schlägt die Arithmetik fehl oder
+          produziert Unsinn. Beides zusammen zu drucken — Wert und Typ — erkennt Typverwechslungen
+          sofort.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Häufige Ursache: <code>json.loads()</code> gibt Zahlen standardmäßig als Floats zurück, aber wenn JSON <code>"age": "34"</code> hat (mit Anführungszeichen), kommt es als String.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Der Einstiegs-Print zeigt den richtigen Wert, aber der Ausstiegs-Print zeigt den falschen. Was sagt dir das?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss ich kennen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Der Einstiegs- und Ausstiegs-Print wirken wie eine Klammer. Wenn was innerhalb der Klammer falsch ist, liegt der Bug im Funktionskörper.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Der Bug liegt im Funktionskörper — zwischen dem Einstiegs- und dem Ausstiegs-Print.
+          Die Eingaben waren korrekt; die Transformation war es nicht. Nächster Schritt: einen
+          Print nach jeder logischen Operation im Funktionskörper hinzufügen, um genau
+          herauszufinden, welche Zeile den Wert korrumpiert. Dies ist der Bisektionsansatz,
+          der innerhalb der Funktion angewendet wird.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Einstieg korrekt + Ausstieg falsch → Bug ist drinnen. Einstieg falsch → Bug ist im Aufrufer oder darüber.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Was ist das Call-Stack-Panel im PyCharm-Debugger und wann ist es nützlich?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Gut zu wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">An einem Breakpoint pausiert weißt du, was jetzt passiert. Der Call-Stack sagt dir, wie die Ausführung dorthin gekommen ist.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Das Call-Stack-Panel listet jeden aktiven Funktionsaufruf-Frame über dem aktuellen
+          auf. Das Anklicken eines Frames wechselt das Variables-Panel, um die lokalen Variablen
+          dieses Frames zu zeigen. In einem Flask-Request-Handler zeigt der Call-Stack:
+          dein Route-Handler → der Berechnungsservice → die Hilfsfunktion, wo der Breakpoint
+          ist. Du kannst nach oben zum Route-Handler klicken und das Request-Objekt inspizieren,
+          ohne neu zu starten.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Der Call-Stack ist das Debugger-Äquivalent des Lesens eines Stack-Traces — aber interaktiv, nicht post-mortem.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Sollte man Debug-Print-Statements in committeten Code lassen? Was ist die Alternative?</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 Gut zu wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Debug-Prints sind temporäres Gerüst. Professioneller Code verwendet strukturiertes Logging — das je nach Deployment-Umgebung ein- oder ausgeblendet werden kann.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Nein — vor dem Commit entfernen. Die Standardalternative ist Pythons
+          <code>logging</code>-Modul. Ersetze <code>print(f"[DEBUG] x={x}")</code> durch
+          <code>logger.debug(f"x={x}")</code>. In der Produktion wird der Log-Level auf
+          <code>INFO</code> oder höher gesetzt, sodass Debug-Meldungen unterdrückt werden.
+          In der Entwicklung auf <code>DEBUG</code> setzen und sie erscheinen wieder.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>In DiaTwin/Morafek sollte jeder Service einen Logger auf Modulebene haben: <code>logger = logging.getLogger(__name__)</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Committete <code>print()</code>-Statements in serverseitigem Code erscheinen in Produktionsprotokollen und können Patientendaten leaken. Stattdessen <code>logging</code> mit Level-Guards verwenden.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit diesem Thema fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eine kaputte Funktion aus Thema 2 mit Print-Statements debuggt hast: Einstiegs-Print, schleifeninterne Prints und Ausstiegs-Print — und den Bug aus der Ausgabe identifiziert hast.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du einen Breakpoint in PyCharm gesetzt, dieselbe Funktion im Debug-Modus ausgeführt und die falsche Variable im Variables-Panel ohne Print-Statements inspiziert hast.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du die Bisektionsstrategie erklären kannst: ein korrekter Zwischen-Print eliminiert alles davor; ein inkorrekter Print zeigt auf den Code davor.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du weißt, wann du zum Print (schnell, hypothesengetrieben) vs. einem Breakpoint (vollständige Zustandsinspektion) greifen sollst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du F8, F7 und Shift+F8 im PyCharm-Debugger ohne Nachschlagen verwenden kannst.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#ecfeff;">🛠️</div>
+    <div>
+      <div class="section-title">حين يعمل الكود لكنه يكذب</div>
+      <div class="section-subtitle">الاستثناءات تخبرك أين انكسر شيء ما — التصحيح يخبرك لماذا الإجابة خاطئة</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>النمطان للتصحيح</h2>
+    <p>
+      حين ينهار الكود باستثناء، لديك stack trace: موقع، نوع، ورسالة. ذلك مفيد. المشكلة الأصعب
+      هي حين يكتمل الكود لكن المخرج خاطئ — جرعة أعلى بـ 0.5 وحدة، بحث عن مريض يعيد السجل
+      الخاطئ، مجموع يفتقد إدخالاً.
+    </p>
+    <p>
+      أداتان موجودتان لهذا. استخدم <strong>تصحيح الطباعة</strong> للفحوصات السريعة والمستهدفة
+      حين يكون لديك فرضية. استخدم <strong>مصحّح PyCharm</strong> حين تحتاج إلى فحص الحالة
+      الكاملة للبرنامج — متغيرات متعددة، هياكل البيانات، مكدس الاستدعاء.
+    </p>
+    <div class="warning-box">
+      <div class="warning-box-text"><strong>نمط مضاد يجب تجنبه:</strong> إضافة عبارات print في كل مكان، ثم إزالتها، ثم إضافتها مجدداً. التوضيع الاستراتيجي — الدخول، الخروج، نقاط القرار — يعطيك الإشارة دون الضوضاء.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🖨️</div>
+    <div>
+      <div class="section-title">الأسلوب 1 — تصحيح الطباعة</div>
+      <div class="section-subtitle">سريع، محمول، يعمل في أي مكان — إذا وضعت عبارات print باستراتيجية</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>أين توضع عبارات print</h2>
+    <p>فكّر من حيث نقاط التفتيش، لا التغطية. تريد أن تعرف: ما الذي دخل، ما الذي خرج، وما الذي كان صحيحاً عند القرار الرئيسي.</p>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">01</div>
+        <div class="step-title">دخول الدالة — ماذا تلقّت فعلاً؟</div>
+      </div>
+      <div class="step-body">اطبع كل وسيطة في أعلى الدالة. النوع مهم بقدر القيمة.</div>
+      <div class="code-block" dir="ltr">def calculate_iob(doses: list, minutes_ago: list) -> float:
+    print(f"[DEBUG] calculate_iob: doses={doses}, minutes_ago={minutes_ago}")
+    print(f"[DEBUG] أنواع: doses={type(doses)}, minutes_ago={type(minutes_ago)}")
+    total = 0.0
+    ...</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>ابدأ بـ <code dir="ltr">[DEBUG]</code> — يجعل البحث عنها والتخلص منها لاحقاً أسهل.</div>
+        <div class="key-point"><div class="key-point-dot"></div>اطبع النوع جانب القيمة — قائمة من السلاسل تبدو كقائمة من الأعداد حتى تطبع <code dir="ltr">type(doses[0])</code>.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">02</div>
+        <div class="step-title">نقاط القرار — أي فرع أخذه؟</div>
+      </div>
+      <div class="step-body">اطبع داخل كل فرع من if/else أو في بداية جسم الحلقة.</div>
+      <div class="code-block" dir="ltr">for i, (dose, t) in enumerate(zip(doses, minutes_ago)):
+    remaining = dose * (1 - t / 120)
+    print(f"[DEBUG] i={i}: dose={dose}, t={t}, remaining={remaining:.3f}")
+    total += remaining</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>الطباعة داخل الحلقة تؤكد: هل تعمل الحلقة العدد الصحيح من المرات؟ هل القيم الوسيطة صحيحة؟</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">03</div>
+        <div class="step-title">خروج الدالة — ماذا تعيد فعلاً؟</div>
+      </div>
+      <div class="step-body">اطبع مباشرةً قبل جملة return.</div>
+      <div class="code-block" dir="ltr">    print(f"[DEBUG] calculate_iob تعيد: total={total:.4f}")
+    return total</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>إذا كان طباعة الدخول صحيحة لكن طباعة الخروج خاطئة، فالخطأ داخل الدالة.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">🔬</div>
+    <div>
+      <div class="section-title">الأسلوب 2 — مصحّح PyCharm (نقاط التوقف)</div>
+      <div class="section-subtitle">إيقاف البرنامج في منتصف التنفيذ وفحص كل شيء</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>كيفية استخدام نقطة توقف بفعالية</h2>
+    <p>نقطة التوقف توقف التنفيذ عند سطر محدد. أثناء التوقف يمكنك فحص أي متغير، التقدم سطراً بسطر، أو الدخول إلى الدوال المستدعاة.</p>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">01</div>
+        <div class="step-title">ضع نقطة توقف عند السطر الأول المشبوه</div>
+      </div>
+      <div class="step-body">انقر على هامش اليسار بجانب السطر في PyCharm. تظهر نقطة حمراء. شغّل الملف في وضع التصحيح (Shift+F9 في Windows/Linux، ⌃D في macOS).</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">02</div>
+        <div class="step-title">افحص لوحة Variables</div>
+      </div>
+      <div class="step-body">حين يتوقف التنفيذ، تُظهر لوحة Variables (أسفل يسار في وضع التصحيح) كل متغير محلي. افتح القوائم والقواميس لرؤية محتواها. لا طباعة مطلوبة.</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-num">03</div>
+        <div class="step-title">تقدم بـ F8 (تخطي) وF7 (دخول)</div>
+      </div>
+      <div class="step-body">F8 ينفذ السطر الحالي وينتقل للتالي — يبقى على نفس مستوى الاستدعاء. F7 يدخل في استدعاء دالة — يتبع التنفيذ داخل جسم دالة المساعدة.</div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><strong>F8 (تخطي):</strong> استخدمه معظم الوقت. يتحرك سطراً بسطر دون الدخول في التفاصيل الداخلية للمكتبات.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>F7 (دخول):</strong> استخدمه حين تشك أن الخطأ داخل دالة استدعيتها.</div>
+        <div class="key-point"><div class="key-point-dot"></div><strong>Shift+F8 (خروج):</strong> ينفذ بقية الدالة الحالية ويتوقف عند مستدعيها.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">❓</div>
+    <div>
+      <div class="section-title">أسئلة للتدريب</div>
+      <div class="section-subtitle">هذه تغطي طبقة الحكم — ليس الميكانيكا فقط</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">أضفت print(x) في السطر 12، لكن الخطأ في السطر 45. كيف يساعد ذلك؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">التصحيح عملية ثنائية البحث. تضيّق مجال البحث — لا تبحث عن الخطأ مباشرة، بل تستبعد أين لا يمكن أن يكون.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          إذا كان <code dir="ltr">x</code> في السطر 12 صحيحاً، تعرف أن الخطأ يُدخَل في مكان ما
+          بين السطر 12 والمخرج الخاطئ. لقد استبعدت كل شيء فوق السطر 12. أضف طباعة أخرى في
+          السطر 28. إذا كانت صحيحة أيضاً، فالخطأ بين 28 و45. هذا النهج يعني إيجاد الأخطاء
+          في log(n) خطوات بدلاً من قراءة كل سطر.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>طباعة وسيطة صحيحة تستبعد الكود قبلها. طباعة خاطئة تشير إلى الكود قبلها كمصدر.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">ما هي نقطة التوقف المشروطة، ومتى تستخدمها في سياق DiaTwin؟</span>
+      <span class="q-badges"><span class="badge badge-common">★ يُختبر كثيراً</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">إذا كانت الحلقة تعمل 10,000 مرة والخطأ يظهر فقط في التكرار 9,847، فالتقدم خطوة بخطوة بـ F8 غير عملي.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          نقطة التوقف المشروطة هي نقطة توقف مع تعبير شرطي مرفق. PyCharm يتوقف فقط حين
+          يُقيَّم ذلك التعبير إلى <code dir="ltr">True</code>. انقر بالزر الأيمن على نقطة
+          التوقف → "تحرير نقطة التوقف" → أدخل الشرط (مثل <code dir="ltr">patient_id == "P-00923"</code>).
+          في DiaTwin، هذا مفيد حين تعالج دفعة من 500 سجل CGM والنتيجة الخاطئة تظهر فقط
+          لمريض محدد.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>مكافئ لإضافة <code dir="ltr">if condition: breakpoint()</code> في الكود — لكن غير مُدمِّر، لا تغييرات كود مطلوبة.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">لماذا print(type(x)) غالباً أفيد من print(x) وحده؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">الكتابة الديناميكية في Python تعني أن المتغير يمكن أن يبدو كشيء ويكون آخر. "5.0" و5.0 يُطبعان بشكل متطابق إذا نسيت الاقتباسات.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          <code dir="ltr">print(x)</code> يُظهر القيمة. <code dir="ltr">print(type(x))</code>
+          يُظهر نوعها. في Python، <code dir="ltr">"120" * 2 == "120120"</code> (تكرار النص)
+          بينما <code dir="ltr">120 * 2 == 240</code> (حساب). إذا جاءت قراءات CGM كنصوص
+          من حمولة JSON ولم تحوّلها، فالحساب إما سيفشل بـ <code dir="ltr">TypeError</code>
+          أو ينتج هراءً. طباعة القيمة والنوع معاً تكشف ارتباك الأنواع فوراً.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>مصدر شائع: <code dir="ltr">json.loads()</code> يعيد الأرقام كـ floats افتراضياً، لكن إذا كان JSON يحتوي <code dir="ltr">"age": "34"</code> (بين اقتباسات)، يأتي كنص.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">طباعة الدخول تُظهر القيمة الصحيحة، لكن طباعة الخروج تُظهر الخاطئة. ماذا يخبرك ذلك؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">طباعتا الدخول والخروج تعملان كقوسين. إذا كان ما بداخل القوسين خاطئاً، فالخطأ في جسم الدالة.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          الخطأ في جسم الدالة — بين طباعة الدخول والخروج. المدخلات كانت صحيحة؛ التحويل لم
+          يكن. الخطوة التالية: أضف طباعة بعد كل عملية منطقية داخل جسم الدالة لتحديد بالضبط
+          أي سطر يُفسد القيمة. هذا هو نهج الثنائية المطبق داخل الدالة.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>دخول صحيح + خروج خاطئ → الخطأ بالداخل. دخول خاطئ → الخطأ في المستدعي أو أعلى. كلاهما يعطيك اتجاهاً.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">ما لوحة Call Stack في مصحّح PyCharm ومتى تكون مفيدة؟</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 جيد أن تعرفه</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">عند التوقف في نقطة توقف، تعرف ما يحدث الآن. Call Stack يخبرك كيف وصل التنفيذ إلى هناك.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          لوحة Call Stack تُدرج كل إطار استدعاء دالة نشط فوق الإطار الحالي. النقر على إطار
+          في اللوحة يُحوّل لوحة Variables لإظهار المتغيرات المحلية لذلك الإطار. في Flask،
+          يُظهر Call Stack: معالج المسار → خدمة الحساب → الدالة المساعدة حيث توجد نقطة التوقف.
+          يمكنك النقر للأعلى لمعالج المسار وفحص كائن الطلب، كل ذلك دون إعادة التشغيل.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Call Stack هو مكافئ المصحّح لقراءة stack trace — لكن تفاعلي، لا ما بعد الوفاة.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">هل يجب ترك عبارات print للتصحيح في الكود المُودَع؟ ما البديل؟</span>
+      <span class="q-badges"><span class="badge badge-tip">💡 جيد أن تعرفه</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">عبارات print للتصحيح سقالة مؤقتة. الكود المهني يستخدم التسجيل المنظم — الذي يمكن تكوينه للإظهار أو الإخفاء بناءً على بيئة النشر.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          لا — أزلها قبل الإيداع. البديل القياسي هو وحدة <code dir="ltr">logging</code> في Python.
+          استبدل <code dir="ltr">print(f"[DEBUG] x={x}")</code> بـ <code dir="ltr">logger.debug(f"x={x}")</code>.
+          في الإنتاج، يُضبط مستوى السجل على <code dir="ltr">INFO</code> أو أعلى فتُكبَت رسائل
+          التصحيح. في التطوير، اضبطه على <code dir="ltr">DEBUG</code> وتعود للظهور. هذا يعني
+          أنك لن تضطر أبداً لإضافة وإزالة نفس الطباعة مرة أخرى.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>في DiaTwin/Morafek، كل خدمة يجب أن تملك logger على مستوى الوحدة: <code dir="ltr">logger = logging.getLogger(__name__)</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>عبارات <code dir="ltr">print()</code> المُودَعة في كود جانب الخادم تظهر في سجلات الإنتاج وقد تُسرّب بيانات المرضى. استخدم <code dir="ltr">logging</code> بحراسات المستوى عوضاً عن ذلك.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> انتهيت من هذا الموضوع عندما...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>صحّحت دالة معطوبة من الموضوع 2 باستخدام عبارات print: طباعة الدخول، والطباعات داخل الحلقة، وطباعة الخروج — وحددت الخطأ من المخرج.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>وضعت نقطة توقف في PyCharm، شغّلت نفس الدالة في وضع التصحيح، وفحصت المتغير الخاطئ في لوحة Variables بدون أي عبارات print.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع شرح استراتيجية الثنائية: طباعة وسيطة صحيحة تستبعد كل شيء قبلها؛ طباعة خاطئة تشير إلى الكود قبلها.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تعرف متى تلجأ إلى print (سريع، مدفوع بالفرضية) مقابل نقطة توقف (فحص الحالة الكاملة، متغيرات متعددة، هياكل متداخلة).</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع استخدام F8 وF7 وShift+F8 في مصحّح PyCharm دون الرجوع إليها.</div>
+  </div>
+
+</div><!-- end tab-ar -->
+
+</div><!-- end body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'lms_python_unaided_03_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+</body>
+</html>

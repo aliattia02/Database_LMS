@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>General Overview | MODULE NAME</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── General-page-specific styles — copy this block verbatim ── */
+.badge { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must   { background:#fef3c7; color:#92400e; }
+.badge-common { background:#dbeafe; color:#1e40af; }
+.badge-tip    { background:#f0fdf4; color:#166534; }
+
+.q-arrow { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel { padding:18px 20px 16px 52px; }
+
+.strategy-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text  { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+
+.answer-box       { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text  { font-size:13.5px; color:#14532d; line-height:1.7; }
+
+.warning-box      { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text { font-size:13px; color:var(--amber-text); line-height:1.55; }
+
+.key-points    { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point     { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+code       { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin:10px 0; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; }
+
+.ask-card    { background:var(--white); border:1px solid var(--border); border-radius:8px; padding:13px 16px; margin-bottom:8px; box-shadow:var(--shadow); display:flex; gap:10px; align-items:flex-start; }
+.ask-icon    { font-size:15px; flex-shrink:0; padding-top:1px; }
+.ask-content { flex:1; }
+.ask-q       { font-size:13.5px; font-weight:600; color:var(--navy); margin-bottom:3px; }
+.ask-why     { font-size:12.5px; color:var(--slate); line-height:1.5; }
+
+.must-block       { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item        { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet      { font-size:15px; flex-shrink:0; }
+
+/* RTL overrides */
+[dir="rtl"] .q-panel          { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point         { flex-direction:row-reverse; }
+[dir="rtl"] .must-item         { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title  { flex-direction:row-reverse; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .code-block        { direction:ltr; text-align:left; }
+
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">MODULE NAME &mdash; General Overview</div>
+    <h1>Module Full Title</h1>
+    <p class="header-sub">What you already know, what this module adds, and the core concepts.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <!-- PROGRESS BAR — general.html only -->
+  <div class="progress-bar">
+    <span class="progress-label">Study progress</span>
+    <div class="progress-track"><div class="progress-fill" id="prog-en" style="width:0%"></div></div>
+    <span class="progress-count" id="prog-count-en">0 / 0 opened</span>
+  </div>
+
+  <!-- SECTION 1: Module structure -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📚</div>
+    <div>
+      <div class="section-title">What this module covers</div>
+      <div class="section-subtitle">Topics in this module — start with General Overview, then Mind Map</div>
+    </div>
+  </div>
+
+  <!-- Explanatory card with key-points list -->
+  <div class="section">
+    <h2>Section title here</h2>
+    <p>One or two sentences of conceptual framing for this section.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>First key point — complete sentence.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Second key point — use <code>inline code</code> when naming commands.</div>
+      <!-- PATTERN: add more .key-point rows as needed -->
+    </div>
+  </div>
+
+  <!-- SECTION: Q&A Accordion — add one .q-card[data-lang="en"] per question -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Core Conceptual Questions</div>
+      <div class="section-subtitle">Click any question to expand — focus on understanding, not memorising</div>
+    </div>
+  </div>
+
+  <!-- Q01 EN — PATTERN: duplicate this block, incrementing q-num -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Question text here?</span>
+      <span class="q-badges">
+        <span class="badge badge-must">⚑ Must know</span>
+        <!-- badge-common = frequently asked | badge-tip = good to know -->
+      </span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">One or two sentence framing — the "why" before the "what".</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Full answer here. Use <code>inline code</code> for commands/terms.
+          <div class="code-block">multi-line code example
+goes here</div>
+        </div>
+      </div>
+      <!-- OPTIONAL: warning-box for common mistakes -->
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Common mistake to avoid here.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Takeaway bullet one.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Takeaway bullet two.</div>
+      </div>
+    </div>
+  </div>
+  <!-- PATTERN: add Q02 EN, Q03 EN … Q08 EN here -->
+
+  <!-- SECTION: Resources -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🔗</div>
+    <div>
+      <div class="section-title">Recommended Resources</div>
+      <div class="section-subtitle">Pick one resource per topic — don't try all at once</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">📖</div>
+    <div class="ask-content">
+      <div class="ask-q">Resource name — for Topic N</div>
+      <div class="ask-why">One sentence: what it covers and why it's the best choice for this topic.</div>
+    </div>
+  </div>
+  <!-- PATTERN: add more .ask-card blocks here -->
+
+  <!-- SUCCESS CRITERIA — end of each language tab -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Success criterion one — describe a concrete action the learner can perform.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Success criterion two.</div>
+    <!-- PATTERN: 3–4 must-item rows total -->
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="progress-bar">
+    <span class="progress-label">Lernfortschritt</span>
+    <div class="progress-track"><div class="progress-fill" id="prog-de" style="width:0%"></div></div>
+    <span class="progress-count" id="prog-count-de">0 / 0 geöffnet</span>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📚</div>
+    <div>
+      <div class="section-title">Was dieses Modul abdeckt</div>
+      <div class="section-subtitle">Themen dieses Moduls — beginne mit Überblick, dann Mindmap</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Abschnittstitel hier</h2>
+    <p>Ein oder zwei Sätze zur konzeptionellen Einordnung dieses Abschnitts.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Erster Schlüsselpunkt — vollständiger Satz.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Zweiter Schlüsselpunkt — bei Befehlen <code>Inline-Code</code> verwenden.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Kernkonzeptfragen</div>
+      <div class="section-subtitle">Klicke eine Frage an — auf Verstehen, nicht Auswendiglernen fokussieren</div>
+    </div>
+  </div>
+
+  <!-- Q01 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Fragetext hier?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Ein oder zwei Sätze zum Rahmen — das „Warum" vor dem „Was".</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Vollständige Antwort hier. <code>Inline-Code</code> für Befehle verwenden.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Erster Schlüsselpunkt.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Zweiter Schlüsselpunkt.</div>
+      </div>
+    </div>
+  </div>
+  <!-- MUSTER: Q02 DE, Q03 DE … hier einfügen -->
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🔗</div>
+    <div>
+      <div class="section-title">Empfohlene Ressourcen</div>
+      <div class="section-subtitle">Eine Ressource pro Thema — nicht alle auf einmal</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">📖</div>
+    <div class="ask-content">
+      <div class="ask-q">Ressourcenname — für Thema N</div>
+      <div class="ask-why">Ein Satz: Was es abdeckt und warum es die beste Wahl für dieses Thema ist.</div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Erfolgskriterium eins — beschreibt eine konkrete Handlung.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Erfolgskriterium zwei.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+
+<!-- ═══ ARABIC TAB — dir="rtl" lang="ar" on the wrapper div ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="progress-bar">
+    <span class="progress-label">تقدم الدراسة</span>
+    <div class="progress-track"><div class="progress-fill" id="prog-ar" style="width:0%"></div></div>
+    <span class="progress-count" id="prog-count-ar">0 / 0 مفتوح</span>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📚</div>
+    <div>
+      <div class="section-title">ما يغطيه هذا الموديول</div>
+      <div class="section-subtitle">موضوعات هذا الموديول — ابدأ بالنظرة العامة ثم الخريطة الذهنية</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>عنوان القسم هنا</h2>
+    <p>جملة أو جملتان لتأطير هذا القسم مفاهيمياً.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>النقطة الرئيسية الأولى — جملة كاملة.</div>
+      <div class="key-point"><div class="key-point-dot"></div>النقطة الرئيسية الثانية — استخدم <code dir="ltr">inline-code</code> للأوامر.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">الأسئلة المفاهيمية الأساسية</div>
+      <div class="section-subtitle">انقر أي سؤال للتوسعة — ركّز على الفهم لا الحفظ</div>
+    </div>
+  </div>
+
+  <!-- Q01 AR — note dir="ltr" on code/code-block inside RTL -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">نص السؤال هنا؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">جملة أو جملتان للتأطير — لماذا قبل ماذا.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">الإجابة الكاملة هنا. استخدم <code dir="ltr">inline-code</code> للأوامر.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>نقطة رئيسية أولى.</div>
+        <div class="key-point"><div class="key-point-dot"></div>نقطة رئيسية ثانية.</div>
+      </div>
+    </div>
+  </div>
+  <!-- النمط: أضف Q02 AR، Q03 AR … هنا -->
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🔗</div>
+    <div>
+      <div class="section-title">المصادر الموصى بها</div>
+      <div class="section-subtitle">اختر مصدراً واحداً لكل موضوع — لا تحاول الجميع دفعة واحدة</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">📖</div>
+    <div class="ask-content">
+      <div class="ask-q">اسم المصدر — للموضوع N</div>
+      <div class="ask-why">جملة واحدة: ما يغطيه ولماذا هو الخيار الأفضل لهذا الموضوع.</div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> انتهيت عندما...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>معيار النجاح الأول — صِف إجراءً ملموساً يستطيع المتعلم تنفيذه.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>معيار النجاح الثاني.</div>
+  </div>
+
+</div><!-- end tab-ar -->
+
+</div><!-- end body -->
+</main>
+
+<script src="../shared/lesson-ui.js"></script>
+<script>
+updateProgress();
+</script>
+</body>
+</html>

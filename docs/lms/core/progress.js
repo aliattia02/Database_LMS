@@ -51,6 +51,11 @@ export function getAllStorageKeys() {
       const cfg = lesson.progress;
       if (cfg?.type === 'checklist' && cfg.storageKey) {
         keys.add(cfg.storageKey);
+        // Also include the _acc suffix key written by toggleAcc() in lesson-ui.js.
+        // Accordion-based lessons (phase-02 through phase-07) persist opens there;
+        // without this entry the key is never synced to Firestore and is invisible
+        // to migrateLocalStorageToFirestore / resetAllProgress on other devices.
+        keys.add(cfg.storageKey + '_acc');
       }
     }
   }
@@ -74,9 +79,18 @@ export function computeLessonProgress(lesson) {
   if (cfg.type !== 'checklist') {
     return { done: 0, total: cfg.total || 0, pct: 100 };
   }
-  const raw     = safeReadStorage(cfg.storageKey);
-  const ignore  = new Set(cfg.ignoreKeys || []);
-  const done    = Object.entries(raw).filter(([k, v]) => !ignore.has(k) && !!v).length;
+  const ignore = new Set(cfg.ignoreKeys || []);
+
+  // Count q-card marks from the base storageKey ({ q_0: true, … })
+  const raw  = safeReadStorage(cfg.storageKey);
+  const qDone = Object.entries(raw).filter(([k, v]) => !ignore.has(k) && !!v).length;
+
+  // Count accordion marks from the _acc suffix key ({ acc_0: true, … })
+  // Written by lesson-ui.js _lmsSaveAccProgress() for .acc-item lessons.
+  const rawAcc  = safeReadStorage(cfg.storageKey + '_acc');
+  const accDone = Object.values(rawAcc).filter(Boolean).length;
+
+  const done    = qDone + accDone;
   const total   = cfg.total || 0;
   const clamped = Math.min(done, total);
   return {
