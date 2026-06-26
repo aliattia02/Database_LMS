@@ -19,6 +19,25 @@ Always attach these reference files when starting a new module generation sessio
 > You do **not** need to attach `theme.css`, `lesson-ui.js`, or `app.js` — the generated
 > files reference them via `../shared/` and the LMS loads them at runtime.
 
+### 👤 User Data Files (for personalized / tailored courses)
+
+When generating a module from a **personalized lesson request**, also attach one or more of
+the following user-supplied files alongside the standard reference files above. The more
+context you attach, the more precisely the generated content can be tailored.
+
+| File type | What it contains | How it influences generation |
+|-----------|-----------------|------------------------------|
+| **CV / Résumé** (PDF or DOCX) | Work history, tech stack, job titles | Calibrate assumed knowledge; skip basics they already know; reference their real-world context in examples |
+| **Job description** (PDF, DOCX, or TXT) | Target role requirements, required skills, keywords | Drive topic prioritisation (CRITICAL/HIGH for listed skills); align competency questions and success criteria to the JD |
+| **Skills / abilities brief** (TXT or DOCX) | Self-assessed strengths and gaps | Identify which sections need deeper treatment vs. a lighter touch |
+| **Portfolio / project list** (PDF or TXT) | Past projects, technologies used | Ground examples in their actual stack; avoid redundant content |
+| **Any other profile document** | Certifications, transcripts, cover letter | Additional context for tone calibration and prerequisite detection |
+
+> These files map directly to the fields the admin sees in the **Requests tab**:
+> `profileFile`, `targetJobFile`, and `targetAbilitiesFile` (uploaded attachments) and
+> the typed `answers` fields (`role`, `level`, `goal`, `gaps`, `targetJob`,
+> `targetAbilities`). Attach whichever combination the user provided.
+
 ---
 
 ## 🚀 HOW TO USE THIS PROMPT
@@ -37,6 +56,23 @@ Then use one of these trigger phrases to generate files individually or all at o
 | All topic files | `"Start creating all topic files"` |
 | Registry entry only | `"Generate the registry.js entry"` |
 
+### 👤 Personalized / tailored module workflow
+
+When building a module from a **personalized lesson request** (Requests tab in the admin):
+
+1. **Open the request card** — copy the typed answers (`role`, `level`, `goal`, `gaps`,
+   `targetJob`, `targetAbilities`) into the COURSE BRIEF USER DATA fields below.
+2. **Download attached files** — click the `📎` links for `profileFile`, `targetJobFile`,
+   and/or `targetAbilitiesFile` and attach them to this conversation alongside the standard
+   reference files.
+3. **Paste the brief** — fill in MODULE NAME, FOLDER NAME, and FIELD; leave any
+   `← infer from files` fields blank if the attached documents cover them.
+4. **Send a generation trigger** — the model will read all attached files and tailor
+   priorities, examples, and success criteria to the learner's profile automatically.
+5. **Publish via the Requests tab** — once the HTML is ready, paste it into the lesson
+   textarea in the admin and click ✅ Publish lesson. The lesson is written to
+   `users/{uid}/personalized_lessons` and the request is stamped `fulfilled`.
+
 ---
 
 ---
@@ -50,6 +86,25 @@ for a custom LMS system. I am going to give you a **Course Brief** for a new mod
 you will generate self-contained HTML files **and** a `registry.js` entry that match the
 exact structure, styling conventions, and JavaScript patterns of the reference files I have
 attached.
+
+When **user data files** are attached (CV, job description, skills brief, or any other
+profile document), you must use them to personalise every aspect of the generated module:
+- **Assumed knowledge**: skip or compress topics the learner demonstrably knows from their CV;
+  add a prerequisite note in `general.html` referencing their background.
+- **Topic priorities**: elevate skills listed in the job description to `CRITICAL` or `HIGH`;
+  demote topics already mastered.
+- **Examples & scenarios**: ground code examples, Q&A answers, and case studies in the
+  learner's real stack, industry, or role — not generic placeholders.
+- **Competency questions** (masterplan card subtitles): make them role-specific
+  ("Can you optimise the PostgreSQL queries your Django ORM produces?" rather than
+  "Can you explain query optimisation?").
+- **Success criteria** (`must-block`): map directly to the target job requirements or
+  stated ability gaps, using the learner's own language where possible.
+- **Decoder block priorities**: rank topics by gap between current skill (CV) and
+  required skill (JD), not by generic importance.
+
+Do not mention the user's name or reproduce personal data verbatim in generated HTML —
+use the context to *shape* the content, not to expose the raw profile.
 
 ---
 
@@ -302,16 +357,34 @@ If none fit, add a new field object to `LMS_CONFIG.fields[]`.
 ## COURSE BRIEF
 
 Fill in this section before sending, or provide the information conversationally.
+If **user data files** are attached, fields marked `← infer from files` can be left blank —
+derive them from the CV, job description, or skills brief instead.
 
 ```
 MODULE NAME:           [e.g. "Docker & Containers"]
 MODULE FOLDER NAME:    [e.g. "docker"]  ← used in all file paths and registry
 MODULE TAGLINE:        [one sentence: who this is for and what gap it closes]
-TARGET LEARNER:        [background, what they already know]
+TARGET LEARNER:        [background, what they already know]  ← infer from CV if attached
 FIELD:                 [backend | frontend | career | local-prep]
 PATH:                  [lms/modules/FOLDER | lms/personalied_modules/FOLDER]
 
+--- USER DATA (fill from admin Requests tab or attached files) ---
+
+LEARNER ROLE:          [current job title or target role from JD]        ← req.answers.role
+LEARNER LEVEL:         [junior | mid | senior | career-changer]          ← req.answers.level
+LEARNING GOAL:         [what the learner wants to achieve]               ← req.answers.goal
+KNOWN GAPS:            [skills the learner flagged as weak]              ← req.answers.gaps
+TARGET JOB:            [typed target job description]                    ← req.answers.targetJob
+                       OR attach the job description file                ← req.targetJobFile
+TARGET ABILITIES:      [typed target abilities / skill wishlist]         ← req.answers.targetAbilities
+                       OR attach the abilities brief file                ← req.targetAbilitiesFile
+PROFILE FILE:          [attach CV / résumé PDF or DOCX]                 ← req.profileFile
+
+-----------------------------------------------------------------
+
 TOPICS (list each with a 1-line description and priority):
+  ← If a JD is attached, derive topic priorities from skill frequency in the JD.
+  ← If a CV is attached, downgrade topics the learner already demonstrates.
   Topic 1: [title] — [description] — Priority: CRITICAL | HIGH | MEDIUM | LOW
   Topic 2:
   Topic 3:
@@ -323,10 +396,12 @@ ORIENTATION LESSONS (shown as 00A, 00B in masterplan):
   00B: [title and competency question] (optional)
 
 PREREQUISITES (what the learner already knows):
+  ← Infer from CV if attached; list actual technologies / concepts evidenced there.
   -
   -
 
 SUCCESS CRITERIA (4 things the learner can do when done):
+  ← Map to JD requirements or stated TARGET ABILITIES if provided.
   1.
   2.
   3.
@@ -337,12 +412,15 @@ RECOMMENDED RESOURCES (2–3 links with one-line descriptions):
   -
 
 MUST-KNOW SKILLS (for decoder block, 3–5 items):
+  ← Derive from JD "required skills" section if attached.
   -
 
 NICE-TO-HAVE SKILLS (for decoder block, 1–3 items):
+  ← Derive from JD "nice to have" / "preferred" section if attached.
   -
 
 DOMAIN CONTEXT: [e.g. "senior DBA interview", "medical informatics research team"]
+  ← Infer from job title + company sector in JD or CV if not stated.
 ```
 
 ---
@@ -389,6 +467,16 @@ For the registry entry:
 ---
 
 ## QUALITY CHECKLIST (verify before outputting each file)
+
+### Personalisation (when user data files were attached)
+- [ ] Topic priorities reflect the JD skill-frequency ranking, not generic importance
+- [ ] Topics demonstrably known from the CV are compressed or marked as prerequisites — not treated as new learning
+- [ ] At least one Q&A answer per topic references the learner's actual stack, role, or industry
+- [ ] Masterplan competency questions are role-specific, not generic ("Can you…?" framed around their target job)
+- [ ] `must-block` success criteria map to JD requirements or stated TARGET ABILITIES, using the learner's language
+- [ ] Decoder block rank order reflects skill gap (current CV vs. target JD), not arbitrary ordering
+- [ ] `general.html` prerequisites section lists technologies/concepts evidenced in the CV
+- [ ] No raw personal data (name, address, employer names) reproduced verbatim in the HTML
 
 ### All HTML files
 - [ ] `../shared/theme.css` linked in `<head>`

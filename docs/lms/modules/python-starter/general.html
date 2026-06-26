@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>General Overview | Python Starter</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── General-page-specific styles — copy this block verbatim ── */
+.badge { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must   { background:#fef3c7; color:#92400e; }
+.badge-common { background:#dbeafe; color:#1e40af; }
+.badge-tip    { background:#f0fdf4; color:#166534; }
+
+.q-arrow { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel { padding:18px 20px 16px 52px; }
+
+.strategy-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text  { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+
+.answer-box       { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text  { font-size:13.5px; color:#14532d; line-height:1.7; }
+
+.warning-box      { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text { font-size:13px; color:var(--amber-text); line-height:1.55; }
+
+.key-points    { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point     { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+code       { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin:10px 0; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; }
+
+.ask-card    { background:var(--white); border:1px solid var(--border); border-radius:8px; padding:13px 16px; margin-bottom:8px; box-shadow:var(--shadow); display:flex; gap:10px; align-items:flex-start; }
+.ask-icon    { font-size:15px; flex-shrink:0; padding-top:1px; }
+.ask-content { flex:1; }
+.ask-q       { font-size:13.5px; font-weight:600; color:var(--navy); margin-bottom:3px; }
+.ask-why     { font-size:12.5px; color:var(--slate); line-height:1.5; }
+
+.must-block       { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item        { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet      { font-size:15px; flex-shrink:0; }
+
+/* RTL overrides */
+[dir="rtl"] .q-panel          { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point         { flex-direction:row-reverse; }
+[dir="rtl"] .must-item         { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title  { flex-direction:row-reverse; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .code-block        { direction:ltr; text-align:left; }
+
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Python Starter &mdash; General Overview</div>
+    <h1>Python Starter Track</h1>
+    <p class="header-sub">What you already know, what this track adds, and the core concepts you need before building backend services.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="progress-bar">
+    <span class="progress-label">Study progress</span>
+    <div class="progress-track"><div class="progress-fill" id="prog-en" style="width:0%"></div></div>
+    <span class="progress-count" id="prog-count-en">0 / 0 opened</span>
+  </div>
+
+  <!-- SECTION 1: Module structure -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📚</div>
+    <div>
+      <div class="section-title">What this track covers</div>
+      <div class="section-subtitle">5 topic lessons — start here, then open the Mind Map, then work in order</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>From zero syntax to backend-ready Python</h2>
+    <p>This track teaches you the Python you actually need before touching a web framework or database library. No prior programming is required — basic terminal comfort is assumed.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Topic 1 — Variables &amp; Data Types:</strong> the six built-in scalar types, assignment rules, and safe type conversion.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Topic 2 — Control Flow:</strong> <code>if/elif/else</code>, <code>for</code> loops, <code>while</code> loops, <code>break</code>, and <code>continue</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Topic 3 — Functions:</strong> defining functions with positional and keyword arguments, return values, and LEGB scope.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Topic 4 — Data Structures:</strong> lists, tuples, dictionaries, and sets — and when to choose each one.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Topic 5 — Modules &amp; File I/O:</strong> importing standard-library modules and safely opening, reading, and writing files.</div>
+    </div>
+  </div>
+
+  <!-- SECTION: Q&A Accordion -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Core Conceptual Questions</div>
+      <div class="section-subtitle">Click any question to expand — focus on understanding, not memorising</div>
+    </div>
+  </div>
+
+  <!-- Q01 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">What is a variable, and how does Python's dynamic typing differ from other languages?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Think of a variable as a label you stick on a value — you can peel the label off and stick it on a different value at any time. Python doesn't lock the label to a type; the value itself carries the type.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          A variable is a name that refers to an object in memory. In Python, the <em>type</em> belongs to the object, not the name, so you can reassign a name to an object of a completely different type:
+          <div class="code-block">x = 42        # x points to an int
+x = "hello"   # now x points to a str — perfectly legal</div>
+          Statically-typed languages like Java or C would reject this because the variable's type is fixed at declaration.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Dynamic typing does <em>not</em> mean "no types". Every value has a precise type — Python just checks it at runtime instead of compile time. Surprises happen when you pass the wrong type to a function.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Use <code>type(x)</code> to inspect a value's type at any time.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Python's six scalar types are <code>int</code>, <code>float</code>, <code>complex</code>, <code>bool</code>, <code>str</code>, and <code>NoneType</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">What is the difference between <code>if</code>, <code>elif</code>, and <code>else</code>, and when should you use each?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Think of a decision tree: <code>if</code> is the first branch, <code>elif</code> adds more branches, and <code>else</code> is the catch-all at the bottom. Only one branch ever runs.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <code>if</code> evaluates a condition — if <code>True</code>, its block runs and the rest are skipped. <code>elif</code> ("else if") is checked only when every earlier condition was <code>False</code>. <code>else</code> runs when none of the above matched.
+          <div class="code-block">score = 72
+if score >= 90:
+    grade = "A"
+elif score >= 60:
+    grade = "B"
+else:
+    grade = "F"</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>You can have zero or many <code>elif</code> clauses, but at most one <code>else</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Order matters — conditions are checked top-to-bottom and the first match wins.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">What is a function, and why should you define one instead of repeating code?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">A function is a named recipe. Instead of writing out all the steps every time you bake a cake, you write the recipe once and call it by name. If the recipe changes, you fix it in one place.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          A function is a reusable block of code that takes inputs (parameters), does something, and optionally returns an output.
+          <div class="code-block">def greet(name, greeting="Hello"):
+    return f"{greeting}, {name}!"
+
+print(greet("Ana"))          # Hello, Ana!
+print(greet("Ben", "Hi"))   # Hi, Ben!</div>
+          Functions eliminate repetition (DRY — Don't Repeat Yourself), make testing easier, and give a chunk of logic a meaningful name.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Positional arguments must be passed in order; keyword arguments can be passed by name in any order.</div>
+        <div class="key-point"><div class="key-point-dot"></div>A function without an explicit <code>return</code> statement returns <code>None</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">What is the difference between a list, a tuple, a dictionary, and a set?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Each container solves a different problem: a list is an ordered to-do list you can edit; a tuple is a fixed record; a dictionary is a lookup table by name; a set is a bag of unique items.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <div class="code-block">my_list  = [1, 2, 3]          # ordered, mutable, allows duplicates
+my_tuple = (1, 2, 3)          # ordered, immutable
+my_dict  = {"a": 1, "b": 2}  # key→value pairs, keys are unique
+my_set   = {1, 2, 3}          # unordered, unique values only</div>
+          Choose by need: list for sequences you'll modify, tuple for data that must not change (e.g. coordinates), dict for fast lookup by key, set for membership tests and deduplication.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code>{}</code> on its own creates an empty <em>dict</em>, not a set. Use <code>set()</code> for an empty set.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>List indexing is zero-based: <code>my_list[0]</code> is the first element.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Dict lookups are O(1) on average — much faster than scanning a list.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">How do you import a module and why do modules exist?</span>
+      <span class="q-badges"><span class="badge badge-common">✦ Frequently asked</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">A module is a toolbox. Instead of building every tool from scratch, you open the toolbox that already has what you need — <code>import</code> is how you open it.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Modules let you reuse code across files and access Python's large standard library without reinventing the wheel.
+          <div class="code-block">import math
+print(math.sqrt(16))   # 4.0
+
+from datetime import date
+today = date.today()   # no 'datetime.' prefix needed</div>
+          Use <code>import module</code> to keep the namespace explicit, or <code>from module import name</code> when you need something frequently and the name is unambiguous.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Avoid <code>from module import *</code> — it pollutes your namespace and makes code hard to read.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Third-party modules (e.g. <code>requests</code>) must be installed with <code>pip</code> first; standard-library modules are always available.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">How do you read from and write to a file safely in Python?</span>
+      <span class="q-badges"><span class="badge badge-common">✦ Frequently asked</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Opening a file without closing it is like leaving a tap running. The <code>with</code> statement is Python's automatic tap-off — the file is always closed when the block exits, even if an error occurs.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Always use the <code>with open(...)</code> context manager — it guarantees the file is closed.
+          <div class="code-block"># Read
+with open("data.txt", "r", encoding="utf-8") as f:
+    content = f.read()
+
+# Write (overwrites the file)
+with open("output.txt", "w", encoding="utf-8") as f:
+    f.write("Hello, world!\n")
+
+# Append
+with open("log.txt", "a", encoding="utf-8") as f:
+    f.write("New log entry\n")</div>
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Always specify <code>encoding="utf-8"</code> explicitly — the default can vary between operating systems and cause hard-to-debug bugs.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Mode <code>"r"</code> = read, <code>"w"</code> = write (clears file), <code>"a"</code> = append, <code>"rb"</code>/<code>"wb"</code> = binary.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Use <code>f.readlines()</code> to get a list of lines, or iterate <code>for line in f:</code> to process one line at a time without loading the whole file.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Resources -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🔗</div>
+    <div>
+      <div class="section-title">Recommended Resources</div>
+      <div class="section-subtitle">Pick one resource per topic — don't try all at once</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">📖</div>
+    <div class="ask-content">
+      <div class="ask-q">Python Official Tutorial (docs.python.org/3/tutorial) — for Topics 1–3</div>
+      <div class="ask-why">The authoritative source; chapters 3–4 cover data types, control flow, and functions in exactly the right depth for this track.</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">🎥</div>
+    <div class="ask-content">
+      <div class="ask-q">Corey Schafer's Python Beginner Series (YouTube) — for Topics 1–4</div>
+      <div class="ask-why">Short, focused videos with clear examples; ideal if you learn better by watching before reading. Each video maps to one concept.</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">📖</div>
+    <div class="ask-content">
+      <div class="ask-q">Real Python — "Reading and Writing Files in Python" — for Topic 5</div>
+      <div class="ask-why">Covers every file mode, context managers, and binary vs. text files with practical examples — the best single article on this topic.</div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can write a script that uses variables of at least three different types, applies conditionals and a loop, and produces correct output.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can define a function with default keyword arguments, call it correctly, and explain what happens when you omit an argument.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can choose between a list, tuple, dict, and set for a given problem and justify your choice in one sentence.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can read a text file line by line and write results to a new file using a <code>with</code> block — without looking up the syntax.</div>
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="progress-bar">
+    <span class="progress-label">Lernfortschritt</span>
+    <div class="progress-track"><div class="progress-fill" id="prog-de" style="width:0%"></div></div>
+    <span class="progress-count" id="prog-count-de">0 / 0 geöffnet</span>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📚</div>
+    <div>
+      <div class="section-title">Was dieser Kurs abdeckt</div>
+      <div class="section-subtitle">5 Themenlektionen — beginne hier, öffne dann die Mindmap und arbeite der Reihe nach</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Von null Syntax zu backend-tauglichem Python</h2>
+    <p>Dieser Kurs vermittelt genau das Python, das du brauchst, bevor du ein Web-Framework oder eine Datenbankbibliothek anfasst. Keine Vorkenntnisse im Programmieren nötig — grundlegende Terminalerfahrung wird vorausgesetzt.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Thema 1 — Variablen &amp; Datentypen:</strong> die sechs eingebauten Skalartypen, Zuweisungsregeln und sichere Typkonvertierung.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Thema 2 — Kontrollfluss:</strong> <code>if/elif/else</code>, <code>for</code>-Schleifen, <code>while</code>-Schleifen, <code>break</code> und <code>continue</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Thema 3 — Funktionen:</strong> Definition mit positionalen und Keyword-Argumenten, Rückgabewerten und LEGB-Scope.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Thema 4 — Datenstrukturen:</strong> Listen, Tupel, Dictionaries und Sets — und wann man welche verwendet.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Thema 5 — Module &amp; Datei-I/O:</strong> Importieren von Standardbibliotheksmodulen und sicheres Öffnen, Lesen und Schreiben von Dateien.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Kernkonzeptfragen</div>
+      <div class="section-subtitle">Klicke eine Frage an — auf Verstehen, nicht Auswendiglernen fokussieren</div>
+    </div>
+  </div>
+
+  <!-- Q01 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Was ist eine Variable, und wie unterscheidet sich Pythons dynamische Typisierung von anderen Sprachen?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Stelle dir eine Variable als Etikett vor, das du auf einen Wert klebst — du kannst es jederzeit abziehen und auf einen anderen Wert kleben. Python bindet das Etikett nicht an einen Typ; der Wert selbst trägt den Typ.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Eine Variable ist ein Name, der auf ein Objekt im Speicher zeigt. In Python gehört der <em>Typ</em> dem Objekt, nicht dem Namen:
+          <div class="code-block">x = 42        # x zeigt auf einen int
+x = "hallo"   # jetzt zeigt x auf einen str — völlig legal</div>
+          Statisch typisierte Sprachen wie Java oder C würden das ablehnen, weil der Typ der Variable bei der Deklaration festgelegt wird.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Dynamische Typisierung bedeutet <em>nicht</em> „keine Typen". Jeder Wert hat einen genauen Typ — Python prüft ihn nur zur Laufzeit statt zur Kompilierzeit.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Verwende <code>type(x)</code>, um den Typ eines Werts jederzeit zu prüfen.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Pythons sechs Skalartypen sind <code>int</code>, <code>float</code>, <code>complex</code>, <code>bool</code>, <code>str</code> und <code>NoneType</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Was ist der Unterschied zwischen <code>if</code>, <code>elif</code> und <code>else</code>, und wann verwendet man welches?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Denke an einen Entscheidungsbaum: <code>if</code> ist der erste Ast, <code>elif</code> fügt weitere Äste hinzu, und <code>else</code> ist der Auffangast am Ende. Nur ein Ast wird jemals ausgeführt.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <code>if</code> wertet eine Bedingung aus — ist sie <code>True</code>, wird sein Block ausgeführt und der Rest übersprungen. <code>elif</code> wird nur geprüft, wenn alle vorherigen Bedingungen <code>False</code> waren. <code>else</code> läuft, wenn keine der obigen Bedingungen zutraf.
+          <div class="code-block">punkte = 72
+if punkte >= 90:
+    note = "Sehr gut"
+elif punkte >= 60:
+    note = "Gut"
+else:
+    note = "Nicht bestanden"</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Es kann null oder viele <code>elif</code>-Klauseln geben, aber höchstens ein <code>else</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Die Reihenfolge zählt — Bedingungen werden von oben nach unten geprüft, das erste Treffer gewinnt.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Was ist eine Funktion, und warum sollte man eine definieren, statt Code zu wiederholen?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Eine Funktion ist ein benanntes Rezept. Statt alle Schritte jedes Mal aufzuschreiben, schreibst du das Rezept einmal und rufst es beim Namen. Ändert sich das Rezept, korrigierst du es an einer Stelle.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Eine Funktion ist ein wiederverwendbarer Codeblock, der Eingaben (Parameter) entgegennimmt und optional ein Ergebnis zurückgibt.
+          <div class="code-block">def grüße(name, gruß="Hallo"):
+    return f"{gruß}, {name}!"
+
+print(grüße("Ana"))           # Hallo, Ana!
+print(grüße("Ben", "Hi"))    # Hi, Ben!</div>
+          Funktionen eliminieren Wiederholungen (DRY — Don't Repeat Yourself) und geben einem Codeblock einen sprechenden Namen.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Positionale Argumente müssen in der richtigen Reihenfolge übergeben werden; Keyword-Argumente können in beliebiger Reihenfolge übergeben werden.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Eine Funktion ohne explizites <code>return</code> gibt <code>None</code> zurück.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Was ist der Unterschied zwischen einer Liste, einem Tupel, einem Dictionary und einem Set?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Jeder Container löst ein anderes Problem: Eine Liste ist eine geordnete To-do-Liste, die du bearbeiten kannst; ein Tupel ist ein unveränderlicher Datensatz; ein Dictionary ist eine Nachschlagetabelle nach Namen; ein Set ist ein Beutel mit einzigartigen Elementen.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <div class="code-block">meine_liste  = [1, 2, 3]          # geordnet, veränderlich, Duplikate erlaubt
+mein_tupel   = (1, 2, 3)          # geordnet, unveränderlich
+mein_dict    = {"a": 1, "b": 2}  # Schlüssel→Wert-Paare
+mein_set     = {1, 2, 3}          # ungeordnet, nur eindeutige Werte</div>
+          Wähle nach Bedarf: Liste für Sequenzen, die du ändern wirst; Tupel für Daten, die sich nicht ändern dürfen; Dict für schnelle Suche nach Schlüssel; Set für Mitgliedschaftsprüfungen und Deduplizierung.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code>{}</code> allein erstellt ein leeres <em>Dict</em>, kein Set. Verwende <code>set()</code> für ein leeres Set.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Listen-Indizierung ist nullbasiert: <code>meine_liste[0]</code> ist das erste Element.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Dict-Suche ist im Durchschnitt O(1) — viel schneller als das Durchsuchen einer Liste.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Wie importiert man ein Modul, und wozu gibt es Module?</span>
+      <span class="q-badges"><span class="badge badge-common">✦ Häufig gefragt</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Ein Modul ist ein Werkzeugkasten. Statt jedes Werkzeug selbst zu bauen, öffnest du den Kasten, der bereits das Richtige enthält — <code>import</code> ist das Öffnen.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Module ermöglichen die Wiederverwendung von Code über Dateien hinweg und den Zugriff auf Pythons große Standardbibliothek.
+          <div class="code-block">import math
+print(math.sqrt(16))   # 4.0
+
+from datetime import date
+heute = date.today()   # kein 'datetime.'-Präfix nötig</div>
+          Verwende <code>import modul</code>, um den Namensraum explizit zu halten, oder <code>from modul import name</code>, wenn du etwas häufig benötigst und der Name eindeutig ist.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Vermeide <code>from modul import *</code> — es verunreinigt deinen Namensraum und macht Code schwer lesbar.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Module von Drittanbietern (z. B. <code>requests</code>) müssen zuerst mit <code>pip</code> installiert werden; Standardbibliotheksmodule sind immer verfügbar.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Wie liest und schreibt man in Python sicher in eine Datei?</span>
+      <span class="q-badges"><span class="badge badge-common">✦ Häufig gefragt</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Eine Datei ohne Schließen zu öffnen ist wie einen Wasserhahn aufzudrehen und zu vergessen, ihn zuzudrehen. Das <code>with</code>-Statement ist Pythons automatisches Abdrehen — die Datei wird immer geschlossen, wenn der Block endet, auch bei einem Fehler.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Verwende immer den <code>with open(...)</code>-Kontextmanager — er garantiert, dass die Datei geschlossen wird.
+          <div class="code-block"># Lesen
+with open("daten.txt", "r", encoding="utf-8") as f:
+    inhalt = f.read()
+
+# Schreiben (überschreibt die Datei)
+with open("ausgabe.txt", "w", encoding="utf-8") as f:
+    f.write("Hallo, Welt!\n")
+
+# Anhängen
+with open("log.txt", "a", encoding="utf-8") as f:
+    f.write("Neuer Logeintrag\n")</div>
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Gib <code>encoding="utf-8"</code> immer explizit an — die Standardeinstellung kann je nach Betriebssystem variieren und schwer zu debuggende Fehler verursachen.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Modus <code>"r"</code> = lesen, <code>"w"</code> = schreiben (löscht Datei), <code>"a"</code> = anhängen, <code>"rb"</code>/<code>"wb"</code> = binär.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Verwende <code>f.readlines()</code> für eine Liste von Zeilen oder iteriere <code>for line in f:</code>, um die Datei ohne vollständiges Laden zu verarbeiten.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🔗</div>
+    <div>
+      <div class="section-title">Empfohlene Ressourcen</div>
+      <div class="section-subtitle">Eine Ressource pro Thema — nicht alle auf einmal</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">📖</div>
+    <div class="ask-content">
+      <div class="ask-q">Offizielles Python-Tutorial (docs.python.org/de/3/tutorial) — für Themen 1–3</div>
+      <div class="ask-why">Die autoritative Quelle; Kapitel 3–4 behandeln Datentypen, Kontrollfluss und Funktionen in genau der richtigen Tiefe für diesen Kurs.</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">🎥</div>
+    <div class="ask-content">
+      <div class="ask-q">Corey Schafer's Python-Einsteigerserie (YouTube) — für Themen 1–4</div>
+      <div class="ask-why">Kurze, fokussierte Videos mit klaren Beispielen; ideal, wenn du lieber zuerst schaust, bevor du liest. Jedes Video behandelt genau ein Konzept.</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">📖</div>
+    <div class="ask-content">
+      <div class="ask-q">Real Python — „Reading and Writing Files in Python" — für Thema 5</div>
+      <div class="ask-why">Deckt jeden Dateimodus, Kontextmanager und Binär- vs. Textdateien mit praktischen Beispielen ab — der beste einzelne Artikel zu diesem Thema.</div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du ein Skript schreiben kannst, das Variablen mindestens dreier verschiedener Typen verwendet, Bedingungen und eine Schleife anwendet und korrekte Ausgaben erzeugt.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eine Funktion mit Standard-Keyword-Argumenten definieren, korrekt aufrufen und erklären kannst, was passiert, wenn ein Argument weggelassen wird.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du für ein gegebenes Problem zwischen Liste, Tupel, Dict und Set wählen und deine Entscheidung in einem Satz begründen kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eine Textdatei zeilenweise lesen und Ergebnisse mit einem <code>with</code>-Block in eine neue Datei schreiben kannst — ohne die Syntax nachzuschlagen.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="progress-bar">
+    <span class="progress-label">تقدم الدراسة</span>
+    <div class="progress-track"><div class="progress-fill" id="prog-ar" style="width:0%"></div></div>
+    <span class="progress-count" id="prog-count-ar">0 / 0 مفتوح</span>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📚</div>
+    <div>
+      <div class="section-title">ما يغطيه هذا المسار</div>
+      <div class="section-subtitle">5 دروس موضوعية — ابدأ من هنا، ثم افتح الخريطة الذهنية، ثم اعمل بالترتيب</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>من الصفر إلى Python جاهز للباك-إند</h2>
+    <p>يُعلّمك هذا المسار بالضبط ما تحتاجه من Python قبل أن تلمس أي إطار ويب أو مكتبة قواعد بيانات. لا يُشترط أي خلفية برمجية — يُفترض الارتياح الأساسي مع الطرفية.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>الموضوع 1 — المتغيرات وأنواع البيانات:</strong> الأنواع الستة المدمجة وقواعد الإسناد والتحويل الآمن بين الأنواع.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>الموضوع 2 — تدفق التحكم:</strong> <code dir="ltr">if/elif/else</code> وحلقات <code dir="ltr">for</code> و<code dir="ltr">while</code> و<code dir="ltr">break</code> و<code dir="ltr">continue</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>الموضوع 3 — الدوال:</strong> التعريف بمعاملات موضعية ومعاملات بالكلمات المفتاحية وقيم الإرجاع ونطاق LEGB.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>الموضوع 4 — هياكل البيانات:</strong> القوائم والـtuples والقواميس والمجموعات — ومتى تختار كلاً منها.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>الموضوع 5 — الوحدات وقراءة/كتابة الملفات:</strong> استيراد وحدات المكتبة القياسية وفتح الملفات وقراءتها وكتابتها بأمان.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">الأسئلة المفاهيمية الأساسية</div>
+      <div class="section-subtitle">انقر أي سؤال للتوسعة — ركّز على الفهم لا الحفظ</div>
+    </div>
+  </div>
+
+  <!-- Q01 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">ما هو المتغير، وكيف يختلف النوع الديناميكي في Python عن اللغات الأخرى؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">تخيّل المتغير كملصق تلصقه على قيمة — يمكنك نزعه ولصقه على قيمة مختلفة في أي وقت. لا يُقيّد Python الملصق بنوع معين؛ القيمة نفسها هي التي تحمل النوع.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          المتغير هو اسم يشير إلى كائن في الذاكرة. في Python، <em>النوع</em> ينتمي للكائن لا للاسم، فيمكنك إعادة الإسناد إلى كائن من نوع مختلف تماماً:
+          <div class="code-block" dir="ltr">x = 42        # x يشير إلى int
+x = "مرحباً"  # الآن x يشير إلى str — مسموح تماماً</div>
+          اللغات ذات النوع الثابت مثل Java أو C ترفض ذلك لأن نوع المتغير يُحدد عند التصريح.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ النوع الديناميكي لا يعني «بلا أنواع». كل قيمة لها نوع دقيق — Python يفحصه وقت التشغيل لا وقت التحويل البرمجي.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>استخدم <code dir="ltr">type(x)</code> لفحص نوع أي قيمة في أي وقت.</div>
+        <div class="key-point"><div class="key-point-dot"></div>الأنواع الستة في Python هي: <code dir="ltr">int</code> و<code dir="ltr">float</code> و<code dir="ltr">complex</code> و<code dir="ltr">bool</code> و<code dir="ltr">str</code> و<code dir="ltr">NoneType</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">ما الفرق بين <code dir="ltr">if</code> و<code dir="ltr">elif</code> و<code dir="ltr">else</code>، ومتى يُستخدم كل منها؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">تخيّل شجرة قرارات: <code dir="ltr">if</code> هو الفرع الأول، <code dir="ltr">elif</code> يضيف فروعاً إضافية، و<code dir="ltr">else</code> هو الفرع الشامل في النهاية. فرع واحد فقط يُنفَّذ دائماً.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          <code dir="ltr">if</code> يُقيّم شرطاً — إن كان <code dir="ltr">True</code> يُنفَّذ كتلته وتُتخطى البقية. <code dir="ltr">elif</code> يُفحص فقط إذا كانت كل الشروط السابقة <code dir="ltr">False</code>. <code dir="ltr">else</code> يعمل حين لا يتطابق أي شرط.
+          <div class="code-block" dir="ltr">درجة = 72
+if درجة >= 90:
+    تقدير = "ممتاز"
+elif درجة >= 60:
+    تقدير = "جيد"
+else:
+    تقدير = "راسب"</div>
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>يمكن أن يكون هناك صفر أو عدة <code dir="ltr">elif</code>، لكن <code dir="ltr">else</code> واحد على الأكثر.</div>
+        <div class="key-point"><div class="key-point-dot"></div>الترتيب مهم — تُفحص الشروط من الأعلى للأسفل والأول يفوز.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">ما هي الدالة، ولماذا تُعرِّفها بدلاً من تكرار الكود؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">الدالة هي وصفة مُسمّاة. بدلاً من كتابة جميع الخطوات في كل مرة، تكتب الوصفة مرة واحدة وتستدعيها بالاسم. إن تغيرت الوصفة تُصلحها في مكان واحد.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          الدالة هي كتلة كود قابلة لإعادة الاستخدام تأخذ مدخلات (معاملات) وتُعيد اختيارياً نتيجة.
+          <div class="code-block" dir="ltr">def رحّب(الاسم, تحية="مرحباً"):
+    return f"{تحية}، {الاسم}!"
+
+print(رحّب("أنا"))           # مرحباً، أنا!
+print(رحّب("بن", "أهلاً"))  # أهلاً، بن!</div>
+          الدوال تُزيل التكرار (DRY — لا تكرر نفسك)، وتُسهّل الاختبار، وتُعطي قطعة المنطق اسماً ذا معنى.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>المعاملات الموضعية يجب تمريرها بالترتيب؛ معاملات الكلمات المفتاحية يمكن تمريرها بأي ترتيب.</div>
+        <div class="key-point"><div class="key-point-dot"></div>دالة بدون <code dir="ltr">return</code> صريح تُعيد <code dir="ltr">None</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">ما الفرق بين القائمة والـtuple والقاموس والمجموعة؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">كل حاوية تحل مشكلة مختلفة: القائمة هي قائمة مهام مرتبة يمكنك تعديلها؛ الـtuple هو سجل ثابت؛ القاموس هو جدول بحث بالاسم؛ المجموعة هي حقيبة من العناصر الفريدة.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          <div class="code-block" dir="ltr">my_list  = [1, 2, 3]          # مرتبة، قابلة للتعديل، تسمح بالتكرار
+my_tuple = (1, 2, 3)          # مرتبة، غير قابلة للتعديل
+my_dict  = {"a": 1, "b": 2}  # أزواج مفتاح←قيمة
+my_set   = {1, 2, 3}          # غير مرتبة، قيم فريدة فقط</div>
+          اختر بحسب الحاجة: قائمة للتسلسلات التي ستُعدّلها؛ tuple للبيانات الثابتة؛ dict للبحث السريع بالمفتاح؛ set لفحص العضوية وإزالة التكرارات.
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code dir="ltr">{}</code> وحده يُنشئ <em>قاموساً</em> فارغاً لا مجموعة. استخدم <code dir="ltr">set()</code> للمجموعة الفارغة.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>فهرسة القائمة تبدأ من الصفر: <code dir="ltr">my_list[0]</code> هو العنصر الأول.</div>
+        <div class="key-point"><div class="key-point-dot"></div>البحث في القاموس O(1) في المتوسط — أسرع بكثير من مسح قائمة.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">كيف تستورد وحدة ولماذا توجد الوحدات؟</span>
+      <span class="q-badges"><span class="badge badge-common">✦ يُسأل كثيراً</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">الوحدة هي صندوق أدوات. بدلاً من بناء كل أداة من الصفر، تفتح الصندوق الذي يحتوي على ما تحتاجه — <code dir="ltr">import</code> هو طريقة فتحه.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          الوحدات تتيح إعادة استخدام الكود عبر الملفات والوصول إلى المكتبة القياسية الضخمة لـPython.
+          <div class="code-block" dir="ltr">import math
+print(math.sqrt(16))   # 4.0
+
+from datetime import date
+اليوم = date.today()   # لا حاجة لبادئة 'datetime.'</div>
+          استخدم <code dir="ltr">import module</code> للحفاظ على مساحة الأسماء واضحة، أو <code dir="ltr">from module import name</code> عند الحاجة المتكررة والاسم لا لبس فيه.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>تجنب <code dir="ltr">from module import *</code> — يُلوّث مساحة أسمائك ويُصعّب قراءة الكود.</div>
+        <div class="key-point"><div class="key-point-dot"></div>وحدات الجهات الخارجية مثل <code dir="ltr">requests</code> تحتاج تثبيتاً أولاً بـ<code dir="ltr">pip</code>؛ وحدات المكتبة القياسية متاحة دائماً.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">كيف تقرأ من ملف وتكتب فيه بأمان في Python؟</span>
+      <span class="q-badges"><span class="badge badge-common">✦ يُسأل كثيراً</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">فتح ملف دون إغلاقه كترك صنبور مياه مفتوحاً. جملة <code dir="ltr">with</code> هي الإغلاق التلقائي في Python — الملف يُغلق دائماً عند انتهاء الكتلة حتى لو حدث خطأ.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">
+          استخدم دائماً مدير السياق <code dir="ltr">with open(...)</code> — يضمن إغلاق الملف.
+          <div class="code-block" dir="ltr"># قراءة
+with open("بيانات.txt", "r", encoding="utf-8") as f:
+    المحتوى = f.read()
+
+# كتابة (يُفرغ الملف أولاً)
+with open("مخرجات.txt", "w", encoding="utf-8") as f:
+    f.write("مرحباً بالعالم!\n")
+
+# إلحاق
+with open("سجل.txt", "a", encoding="utf-8") as f:
+    f.write("إدخال جديد\n")</div>
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ حدّد دائماً <code dir="ltr">encoding="utf-8"</code> صراحةً — الإعداد الافتراضي يختلف بين أنظمة التشغيل وقد يُسبّب أخطاء صعبة التشخيص.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>الوضع <code dir="ltr">"r"</code> = قراءة، <code dir="ltr">"w"</code> = كتابة (يحذف الملف)، <code dir="ltr">"a"</code> = إلحاق، <code dir="ltr">"rb"</code>/<code dir="ltr">"wb"</code> = ثنائي.</div>
+        <div class="key-point"><div class="key-point-dot"></div>استخدم <code dir="ltr">f.readlines()</code> للحصول على قائمة الأسطر، أو تكرار <code dir="ltr">for line in f:</code> لمعالجة سطر بسطر دون تحميل الملف كاملاً.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🔗</div>
+    <div>
+      <div class="section-title">المصادر الموصى بها</div>
+      <div class="section-subtitle">اختر مصدراً واحداً لكل موضوع — لا تحاول الجميع دفعة واحدة</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">📖</div>
+    <div class="ask-content">
+      <div class="ask-q">الدليل الرسمي لـPython (docs.python.org/ar/3/tutorial) — للموضوعات 1–3</div>
+      <div class="ask-why">المرجع الرسمي؛ الفصول 3–4 تغطي أنواع البيانات والتحكم والدوال بالعمق المناسب لهذا المسار.</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">🎥</div>
+    <div class="ask-content">
+      <div class="ask-q">سلسلة Corey Schafer للمبتدئين في Python (يوتيوب) — للموضوعات 1–4</div>
+      <div class="ask-why">مقاطع قصيرة ومركّزة بأمثلة واضحة؛ مثالية إن كنت تتعلم بالمشاهدة قبل القراءة. كل مقطع يتناول مفهوماً واحداً.</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">📖</div>
+    <div class="ask-content">
+      <div class="ask-q">Real Python — "Reading and Writing Files in Python" — للموضوع 5</div>
+      <div class="ask-why">يغطي كل وضع للملفات ومديري السياق والفارق بين الثنائي والنصي مع أمثلة عملية — أفضل مقال منفرد في هذا الموضوع.</div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> انتهيت عندما...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع كتابة سكريبت يستخدم متغيرات من ثلاثة أنواع على الأقل، ويطبّق شروطاً وحلقة، وينتج مخرجات صحيحة.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع تعريف دالة بمعاملات كلمات مفتاحية افتراضية، واستدعاؤها بشكل صحيح، وشرح ما يحدث عند حذف معامل.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع الاختيار بين قائمة وtuple وقاموس ومجموعة لمسألة معينة وتبرير اختيارك في جملة واحدة.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع قراءة ملف نصي سطراً بسطر وكتابة النتائج في ملف جديد باستخدام كتلة <code dir="ltr">with</code> — دون الرجوع إلى المرجع.</div>
+  </div>
+
+</div><!-- end tab-ar -->
+
+</div><!-- end body -->
+</main>
+
+<script src="../shared/lesson-ui.js"></script>
+<script>
+updateProgress();
+guardLanguageTab('ar');
+guardLanguageTab('de');
+</script>
+</body>
+</html>

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 1 — HTML Basics &amp; Document Structure | HTML Starter</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+.section-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.section-intro  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:16px; }
+.section        { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2     { font-size:18px; font-weight:700; margin-bottom:6px; color:var(--navy); }
+.section p      { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+.accordion     { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+.acc-item      { background:var(--white); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.acc-trigger   { width:100%; display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:none; border:none; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--navy); text-align:left; transition:background .12s; }
+.acc-trigger:hover { background:var(--bg); }
+.acc-chevron   { font-size:12px; color:var(--muted); transition:transform .2s; flex-shrink:0; }
+.acc-trigger.open .acc-chevron { transform:rotate(180deg); }
+.acc-body      { display:none; padding:16px; border-top:1px solid var(--border); font-size:13.5px; color:var(--navy); line-height:1.65; }
+.acc-body.open { display:block; }
+
+.concepts       { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.concept        { background:var(--white); border:1px solid var(--border); border-left:3px solid var(--border); border-radius:8px; padding:12px 16px; }
+.concept.blue   { border-left-color:#0284c7; }
+.concept.green  { border-left-color:#059669; }
+.concept.orange { border-left-color:#d97706; }
+.concept.teal   { border-left-color:#0d9488; }
+.concept.purple { border-left-color:#7c3aed; }
+.concept.red    { border-left-color:#dc2626; }
+.concept-name   { font-size:13px; font-weight:700; color:var(--navy); margin-bottom:4px; }
+.concept-desc   { font-size:12px; color:var(--slate); line-height:1.6; }
+
+.callout      { border-radius:0 8px 8px 0; padding:12px 16px; margin-bottom:16px; border:1px solid transparent; border-left-width:3px; }
+.callout .lbl { font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; margin-bottom:6px; }
+.callout p, .callout li  { font-size:12px; line-height:1.65; }
+.callout ul, .callout ol { padding-left:16px; }
+.callout li              { margin-bottom:4px; }
+.callout.tip       { background:#d1fae5; border-color:#a7f3d0; border-left-color:#059669; }
+.callout.tip .lbl  { color:#059669; }
+.callout.tip p, .callout.tip li { color:#065f46; }
+.callout.warn       { background:#fef3c7; border-color:#fde68a; border-left-color:#b45309; }
+.callout.warn .lbl  { color:#b45309; }
+.callout.warn p, .callout.warn li { color:#78350f; }
+.callout.info       { background:#e0f2fe; border-color:#bae6fd; border-left-color:#0284c7; }
+.callout.info .lbl  { color:#0284c7; }
+.callout.info p, .callout.info li { color:#075985; }
+.callout.interview       { background:#e0e7ff; border-color:#a5b4fc; border-left-color:#4338ca; }
+.callout.interview .lbl  { color:#3730a3; }
+.callout.interview p     { color:#312e81; font-weight:600; }
+
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { background:#f8fafc; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:16px; }
+.code-block.simple { padding:10px 14px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; }
+.code-header         { display:flex; align-items:center; justify-content:space-between; padding:8px 14px; border-bottom:1px solid var(--border); }
+.code-header-left    { display:flex; align-items:center; gap:8px; }
+.code-label          { font-size:10px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.code-label.html     { color:#dc2626; }
+.code-label.output   { color:#d97706; }
+.copy-btn            { font-size:10px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; color:var(--muted); background:none; border:1px solid var(--border); border-radius:5px; padding:3px 8px; cursor:pointer; transition:color .15s,border-color .15s; }
+.copy-btn:hover      { color:var(--navy); }
+.copy-btn.copied     { color:#059669; border-color:#059669; }
+.code-body           { padding:16px 14px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; color:#334155; line-height:1.75; overflow-x:auto; white-space:pre; background:#f8fafc; }
+.kw  { color:#0284c7; font-weight:600; }
+.str { color:#059669; }
+.cm  { color:#94a3b8; }
+
+.challenge                 { background:var(--white); border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:16px; box-shadow:var(--shadow); }
+.challenge-head            { padding:12px 16px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; transition:background .12s; }
+.challenge-head:hover      { background:var(--bg); }
+.challenge-head-left       { display:flex; align-items:center; gap:10px; }
+.challenge-badge           { font-size:10px; font-weight:700; letter-spacing:.08em; background:#fef3c7; color:#b45309; border:1px solid #fde68a; border-radius:99px; padding:2px 8px; }
+.challenge-title           { font-size:13px; font-weight:600; color:var(--navy); }
+.challenge-arrow           { font-size:12px; color:var(--muted); transition:transform .2s; }
+.challenge-arrow.open      { transform:rotate(180deg); }
+.challenge-body            { display:none; padding:16px; border-top:1px solid var(--border); }
+.challenge-body.open       { display:block; }
+.challenge-q               { font-size:13px; color:var(--navy); margin-bottom:12px; line-height:1.6; }
+.answer-toggle             { font-size:11px; color:var(--muted); cursor:pointer; text-decoration:underline; margin-bottom:8px; display:inline-block; }
+.answer-toggle:hover       { color:var(--navy); }
+.answer                    { display:none; }
+.answer.open               { display:block; }
+
+.badge       { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must  { background:#fef3c7; color:#92400e; }
+.badge-common{ background:#dbeafe; color:#1e40af; }
+.q-arrow     { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel           { padding:18px 20px 16px 52px; }
+.strategy-label    { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text     { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+.answer-box        { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label  { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text   { font-size:13.5px; color:#14532d; line-height:1.7; }
+.warning-box       { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text  { font-size:13px; color:var(--amber-text); line-height:1.55; }
+.key-points        { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point         { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot     { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+.must-block                  { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title            { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item       { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet     { font-size:15px; flex-shrink:0; }
+
+.progress-bar   { display:flex; align-items:center; gap:12px; margin-bottom:20px; padding:12px 16px; background:var(--white); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); }
+.progress-label { font-size:12px; font-weight:600; color:var(--muted); white-space:nowrap; }
+.prog-bar       { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+.prog-fill      { height:100%; background:var(--accent); border-radius:3px; transition:width .3s; }
+.prog-label     { font-size:12px; color:var(--muted); white-space:nowrap; }
+
+[dir="rtl"] .acc-trigger    { text-align:right; }
+[dir="rtl"] .callout        { border-radius:8px 0 0 8px; border-left-width:1px; border-right-width:3px; }
+[dir="rtl"] .callout.tip    { border-right-color:#059669; }
+[dir="rtl"] .callout.warn   { border-right-color:#b45309; }
+[dir="rtl"] .callout.info   { border-right-color:#0284c7; }
+[dir="rtl"] .concept        { border-left-width:1px; border-right-width:3px; border-left-color:var(--border); }
+[dir="rtl"] .concept.blue   { border-right-color:#0284c7; }
+[dir="rtl"] .concept.green  { border-right-color:#059669; }
+[dir="rtl"] .q-panel        { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point      { flex-direction:row-reverse; }
+[dir="rtl"] .must-item      { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title { flex-direction:row-reverse; }
+[dir="rtl"] .code-block     { direction:ltr; }
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="../../../../../../Downloads/masterplan.html">← Back to course index</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">HTML Starter &mdash; Topic 1 of 5 &middot; Critical &middot; ~1.5h</div>
+    <h1><span>HTML Basics</span> &amp; Document Structure</h1>
+    <p class="header-sub">Learn the anatomy of a valid HTML document — every line of the boilerplate explained, and the nesting rules that keep your markup correct.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="progress-bar">
+    <span class="progress-label">Study progress</span>
+    <div class="prog-bar"><div class="prog-fill" id="prog-en" style="width:0%"></div></div>
+    <span id="prog-count-en" class="prog-label">0 / 0 opened</span>
+  </div>
+
+  <!-- LESSON 1: The Boilerplate -->
+  <div class="section">
+    <div class="section-label">Lesson 1 · ~45 min</div>
+    <h2>The HTML Boilerplate</h2>
+    <p class="section-intro">Every HTML file starts with the same skeleton. Understanding each line — not just copying it — is the foundation everything else rests on.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>⚡ Why This Matters</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">The boilerplate lines are not decoration — each one fixes a specific real-world problem (encoding bugs, mobile viewport scaling, legacy browser quirks). Leaving any out causes hard-to-debug issues that only appear in certain browsers or devices.</p>
+          <div class="callout interview">
+            <div class="lbl">⚓ Core Insight</div>
+            <p>The HTML boilerplate is a set of instructions to the browser about <em>how</em> to parse and render your document — before any content is read.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Core Concepts</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>&lt;!DOCTYPE html&gt;</code></div>
+              <div class="concept-desc">Not an HTML element — it's a declaration that tells the browser to parse the document using the modern HTML5 standard. Without it, browsers fall into "quirks mode" and render the page using legacy rules from the 1990s.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>&lt;html lang="en"&gt;</code></div>
+              <div class="concept-desc">The root element that wraps the entire document. The <code>lang</code> attribute is critical: screen readers use it to choose the correct pronunciation engine, and search engines use it for language targeting.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>&lt;head&gt;</code></div>
+              <div class="concept-desc">Contains metadata about the document — information <em>for</em> the browser and search engines, not visible content for the user. Everything in <code>&lt;head&gt;</code> is invisible on the rendered page.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>&lt;meta charset="UTF-8"&gt;</code></div>
+              <div class="concept-desc">Sets the character encoding to UTF-8, which supports every language script on Earth. Without this, accented characters, emoji, and non-Latin scripts display as garbled symbols (mojibake).</div>
+            </div>
+            <div class="concept purple">
+              <div class="concept-name"><code>&lt;meta name="viewport" ...&gt;</code></div>
+              <div class="concept-desc">Tells mobile browsers not to zoom out and shrink the page. Without <code>width=device-width, initial-scale=1</code>, your page will look tiny on phones and CSS media queries won't work correctly.</div>
+            </div>
+            <div class="concept red">
+              <div class="concept-name"><code>&lt;title&gt;</code></div>
+              <div class="concept-desc">Sets the text shown in the browser tab, in bookmarks, and in search engine results. It's the most important SEO element on the page after the content itself.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🌍 Worked Example</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout tip">
+            <div class="lbl">✅ Scenario</div>
+            <p>You're creating the first page of a new website. Write the complete, valid HTML5 boilerplate — nothing more, nothing less.</p>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="cm">&lt;!-- 1. DOCTYPE: enable HTML5 standards mode --&gt;</span>
+<span class="kw">&lt;!DOCTYPE html&gt;</span>
+
+<span class="cm">&lt;!-- 2. Root element: set the document language --&gt;</span>
+<span class="kw">&lt;html</span> <span class="str">lang=</span><span class="str">"en"</span><span class="kw">&gt;</span>
+
+<span class="kw">&lt;head&gt;</span>
+  <span class="cm">&lt;!-- 3. Character encoding: must be within first 1024 bytes --&gt;</span>
+  <span class="kw">&lt;meta</span> <span class="str">charset=</span><span class="str">"UTF-8"</span><span class="kw">&gt;</span>
+
+  <span class="cm">&lt;!-- 4. Viewport: prevent mobile browsers from shrinking the page --&gt;</span>
+  <span class="kw">&lt;meta</span> <span class="str">name=</span><span class="str">"viewport"</span> <span class="str">content=</span><span class="str">"width=device-width, initial-scale=1.0"</span><span class="kw">&gt;</span>
+
+  <span class="cm">&lt;!-- 5. Title: shown in the browser tab and search results --&gt;</span>
+  <span class="kw">&lt;title&gt;</span>My First Page<span class="kw">&lt;/title&gt;</span>
+<span class="kw">&lt;/head&gt;</span>
+
+<span class="kw">&lt;body&gt;</span>
+  <span class="cm">&lt;!-- All visible content goes here --&gt;</span>
+  <span class="kw">&lt;p&gt;</span>Hello, world!<span class="kw">&lt;/p&gt;</span>
+<span class="kw">&lt;/body&gt;</span>
+
+<span class="kw">&lt;/html&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🎯 Challenge</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="challenge">
+            <div class="challenge-head" onclick="togChallenge(this)">
+              <div class="challenge-head-left">
+                <span class="challenge-badge">TRY IT</span>
+                <span class="challenge-title">Write a valid boilerplate from memory</span>
+              </div>
+              <span class="challenge-arrow">▾</span>
+            </div>
+            <div class="challenge-body">
+              <p class="challenge-q">Close this lesson and open a blank file (or CodePen). Without looking at any reference, write a complete, valid HTML5 boilerplate. Include: DOCTYPE, html with lang, head, charset meta, viewport meta, a descriptive title, and an empty body. When done, validate it at <strong>validator.w3.org</strong>.</p>
+              <span class="answer-toggle" data-show="Show answer ↓" data-hide="Hide answer ↑" onclick="togAnswer(this)">Show answer ↓</span>
+              <div class="answer">
+                <div class="callout tip">
+                  <div class="lbl">✓ Answer</div>
+                  <p>The template in the Worked Example above is the complete answer. Key things to check: <code>lang</code> attribute on <code>&lt;html&gt;</code>, <code>charset</code> is the very first child of <code>&lt;head&gt;</code>, and both <code>&lt;head&gt;</code> and <code>&lt;body&gt;</code> are present as direct children of <code>&lt;html&gt;</code>. The validator will warn you if any required part is missing.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LESSON 2: Nesting & Structure -->
+  <div class="section">
+    <div class="section-label">Lesson 2 · ~45 min</div>
+    <h2>Nesting, Parent–Child Relationships &amp; Comments</h2>
+    <p class="section-intro">HTML elements nest inside each other to create a tree. Understanding parent–child relationships and correct nesting is what separates valid markup from broken layouts.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>⚡ Why This Matters</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">Incorrect nesting is one of the most common causes of layout bugs. Browsers attempt to auto-correct invalid HTML — but the correction they apply is often not what you intended, producing mysterious visual glitches that are very hard to trace.</p>
+          <div class="callout interview">
+            <div class="lbl">⚓ Core Insight</div>
+            <p>Every element you open must be closed before its parent closes. Tags that overlap (e.g. <code>&lt;b&gt;&lt;i&gt;&lt;/b&gt;&lt;/i&gt;</code>) are invalid — the inner element must close first.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Core Concepts</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name">Parent &amp; Child Elements</div>
+              <div class="concept-desc">An element that contains another element is its <strong>parent</strong>; the contained element is the <strong>child</strong>. Elements at the same level inside the same parent are <strong>siblings</strong>. CSS selectors and JS traversal rely heavily on these relationships.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name">Block vs. Inline Elements</div>
+              <div class="concept-desc"><strong>Block elements</strong> (e.g. <code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>) start on a new line and take up the full available width. <strong>Inline elements</strong> (e.g. <code>&lt;span&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;strong&gt;</code>) flow within text and only take as much width as their content.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name">HTML Comments</div>
+              <div class="concept-desc">Comments are not displayed by the browser: <code>&lt;!-- This is a comment --&gt;</code>. Use them to document your markup, temporarily disable sections, or leave notes for collaborators. Comments are visible in the page source — never put passwords or secrets in them.</div>
+            </div>
+          </div>
+
+          <div class="callout warn">
+            <div class="lbl">⚠️ Common Pitfall</div>
+            <p>Block elements (<code>&lt;p&gt;</code>, <code>&lt;div&gt;</code>) cannot be placed inside inline elements (<code>&lt;span&gt;</code>, <code>&lt;a&gt;</code>). The browser will silently restructure your tree in unexpected ways if you do.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🌍 Worked Example</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout tip">
+            <div class="lbl">✅ Scenario</div>
+            <p>Build a simple article page structure — a heading, two paragraphs, and one word in the second paragraph made bold. Show both correct and incorrect nesting.</p>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML — Correct</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="kw">&lt;article&gt;</span>
+  <span class="kw">&lt;h1&gt;</span>My Article Title<span class="kw">&lt;/h1&gt;</span>
+
+  <span class="kw">&lt;p&gt;</span>This is the first paragraph of the article.<span class="kw">&lt;/p&gt;</span>
+
+  <span class="kw">&lt;p&gt;</span>
+    This is the second paragraph.
+    This word is <span class="kw">&lt;strong&gt;</span>important<span class="kw">&lt;/strong&gt;</span>.
+    <span class="cm">&lt;!-- &lt;strong&gt; opens and closes INSIDE the &lt;p&gt; --&gt;</span>
+  <span class="kw">&lt;/p&gt;</span>
+<span class="kw">&lt;/article&gt;</span></div>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label output">HTML — Invalid Nesting ✗</span></div>
+            </div>
+            <div class="code-body"><span class="cm">&lt;!-- Wrong: &lt;strong&gt; opened inside &lt;p&gt; but closed outside --&gt;</span>
+<span class="kw">&lt;p&gt;</span>This word is <span class="kw">&lt;strong&gt;</span>important<span class="kw">&lt;/p&gt;&lt;/strong&gt;</span>  <span class="cm">&lt;!-- ✗ invalid --&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PRACTICE QUESTIONS -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">In-depth questions for this topic</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">What does <code>&lt;!DOCTYPE html&gt;</code> do, and what happens if you omit it?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Think of DOCTYPE as a "mode switch" that tells the browser which rulebook to use.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <code>&lt;!DOCTYPE html&gt;</code> is a declaration (not an element) that instructs the browser to render the document in <strong>standards mode</strong> — using current HTML5 rules.<br><br>
+          Without it, browsers enter <strong>quirks mode</strong> — a backwards-compatibility mode that mimics the inconsistent rendering behaviour of 1990s browsers. This causes box model differences, font sizing bugs, and other layout discrepancies that are very hard to diagnose.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>DOCTYPE enables standards mode — consistent, modern rendering.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Without it: quirks mode — buggy, inconsistent legacy rendering.</div>
+        <div class="key-point"><div class="key-point-dot"></div>It must be the very first line of the file — nothing before it, not even whitespace.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">What is the difference between <code>&lt;head&gt;</code> and <code>&lt;body&gt;</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Head = backstage instructions for the browser. Body = what the audience (user) sees on stage.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <strong><code>&lt;head&gt;</code></strong> contains metadata — information <em>about</em> the document that isn't rendered directly: charset, viewport, title, stylesheet links, script tags, SEO meta tags.<br><br>
+          <strong><code>&lt;body&gt;</code></strong> contains all visible content: text, images, links, forms — everything the user sees and interacts with.<br><br>
+          Both are required direct children of <code>&lt;html&gt;</code>, and <code>&lt;head&gt;</code> must come before <code>&lt;body&gt;</code>.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>&lt;head&gt;</code> = metadata (invisible to user, critical for browser).</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>&lt;body&gt;</code> = all visible content.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Order matters: <code>&lt;head&gt;</code> before <code>&lt;body&gt;</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done with Topic 1 when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can write a valid HTML5 boilerplate from memory — all 5 key lines — without looking it up.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain what each boilerplate line does and what breaks without it.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You understand parent–child–sibling relationships and can identify valid vs. invalid nesting.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can pass your boilerplate through the W3C validator with zero errors.</div>
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="progress-bar">
+    <span class="progress-label">Lernfortschritt</span>
+    <div class="prog-bar"><div class="prog-fill" id="prog-de" style="width:0%"></div></div>
+    <span id="prog-count-de" class="prog-label">0 / 0 geöffnet</span>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Lektion 1 · ~45 Min</div>
+    <h2>Das HTML-Boilerplate</h2>
+    <p class="section-intro">Jede HTML-Datei beginnt mit demselben Grundgerüst. Jede Zeile zu verstehen — nicht nur zu kopieren — ist das Fundament, auf dem alles andere aufbaut.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>⚡ Warum das wichtig ist</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">Die Boilerplate-Zeilen sind kein Dekor — jede löst ein bestimmtes reales Problem (Zeichenkodierungsfehler, Viewport-Skalierung auf Mobilgeräten, Veraltete-Browser-Quirks). Fehlt eine davon, entstehen schwer zu debuggende Probleme, die nur in bestimmten Browsern oder Geräten auftreten.</p>
+          <div class="callout interview">
+            <div class="lbl">⚓ Kernerkenntnis</div>
+            <p>Das HTML-Boilerplate ist eine Reihe von Anweisungen an den Browser, <em>wie</em> er dein Dokument parsen und rendern soll — bevor ein einziges Inhaltselement gelesen wird.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Kernkonzepte</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>&lt;!DOCTYPE html&gt;</code></div>
+              <div class="concept-desc">Kein HTML-Element — eine Deklaration, die dem Browser mitteilt, das Dokument im modernen HTML5-Standard zu parsen. Ohne sie fällt der Browser in den „Quirks-Modus" und rendert die Seite mit Legacy-Regeln aus den 1990ern.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>&lt;html lang="de"&gt;</code></div>
+              <div class="concept-desc">Das Wurzelelement, das das gesamte Dokument umschließt. Das <code>lang</code>-Attribut ist entscheidend: Screenreader verwenden es für die korrekte Aussprache-Engine, Suchmaschinen für das Sprach-Targeting.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>&lt;meta charset="UTF-8"&gt;</code></div>
+              <div class="concept-desc">Setzt die Zeichenkodierung auf UTF-8, die jedes Sprachskript der Welt unterstützt. Ohne diese Angabe werden Umlaute, Emoji und nicht-lateinische Zeichen als unleserliche Symbole (Mojibake) angezeigt.</div>
+            </div>
+            <div class="concept purple">
+              <div class="concept-name"><code>&lt;meta name="viewport" ...&gt;</code></div>
+              <div class="concept-desc">Verhindert, dass mobile Browser die Seite verkleinern und herauszoomen. Ohne <code>width=device-width, initial-scale=1</code> sieht deine Seite auf Smartphones winzig aus und CSS-Media-Queries funktionieren nicht korrekt.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🌍 Anwendungsbeispiel</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout tip">
+            <div class="lbl">✅ Szenario</div>
+            <p>Du erstellst die erste Seite einer neuen deutschsprachigen Website. Schreibe das vollständige, gültige HTML5-Boilerplate.</p>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="kw">&lt;!DOCTYPE html&gt;</span>
+<span class="kw">&lt;html</span> <span class="str">lang=</span><span class="str">"de"</span><span class="kw">&gt;</span>
+<span class="kw">&lt;head&gt;</span>
+  <span class="kw">&lt;meta</span> <span class="str">charset=</span><span class="str">"UTF-8"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;meta</span> <span class="str">name=</span><span class="str">"viewport"</span> <span class="str">content=</span><span class="str">"width=device-width, initial-scale=1.0"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;title&gt;</span>Meine erste Seite<span class="kw">&lt;/title&gt;</span>
+<span class="kw">&lt;/head&gt;</span>
+<span class="kw">&lt;body&gt;</span>
+  <span class="kw">&lt;p&gt;</span>Hallo, Welt!<span class="kw">&lt;/p&gt;</span>
+<span class="kw">&lt;/body&gt;</span>
+<span class="kw">&lt;/html&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Vertiefende Fragen zu diesem Thema</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Was macht <code>&lt;!DOCTYPE html&gt;</code> und was passiert, wenn man es weglässt?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Stell dir DOCTYPE als einen „Moduswechsel" vor, der dem Browser sagt, welches Regelwerk er verwenden soll.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <code>&lt;!DOCTYPE html&gt;</code> ist eine Deklaration (kein Element), die den Browser anweist, das Dokument im <strong>Standards-Modus</strong> zu rendern — mit aktuellen HTML5-Regeln.<br><br>
+          Ohne sie wechselt der Browser in den <strong>Quirks-Modus</strong> — einen Rückwärtskompatibilitätsmodus, der das inkonsistente Renderverhalten von Browsern aus den 1990ern nachahmt.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>DOCTYPE aktiviert den Standards-Modus — konsistentes, modernes Rendering.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Ohne ihn: Quirks-Modus — fehlerhaftes Legacy-Rendering.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Muss die allererste Zeile der Datei sein — nichts davor, nicht einmal Leerzeichen.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit Thema 1 fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du ein gültiges HTML5-Boilerplate aus dem Gedächtnis schreiben kannst — alle 5 Schlüsselzeilen — ohne nachzuschlagen.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du erklären kannst, was jede Boilerplate-Zeile bewirkt und was ohne sie kaputt geht.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du Eltern-Kind-Geschwister-Beziehungen verstehst und gültiges von ungültigem Nesting unterscheiden kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du dein Boilerplate durch den W3C-Validator ohne Fehler bekommst.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+</div><!-- end tab-ar -->
+
+</div><!-- end body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'lms_html_starter_01_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<script>
+function copyCode(btn) {
+  const body = btn.closest('.code-block').querySelector('.code-body');
+  const text = (body.innerText || body.textContent).replace(/\u00A0/g, ' ');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1800);
+  }).catch(() => { btn.textContent = 'failed'; setTimeout(() => { btn.textContent = 'copy'; }, 1500); });
+}
+
+function togChallenge(headEl) {
+  const body  = headEl.nextElementSibling;
+  const arrow = headEl.querySelector('.challenge-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function togAnswer(toggleEl) {
+  const ans = toggleEl.nextElementSibling;
+  ans.classList.toggle('open');
+  const isOpen = ans.classList.contains('open');
+  toggleEl.textContent = isOpen
+    ? (toggleEl.dataset.hide || 'Hide answer ↑')
+    : (toggleEl.dataset.show || 'Show answer ↓');
+}
+
+updateProgress();
+guardLanguageTab('ar');
+</script>
+</body>
+</html>

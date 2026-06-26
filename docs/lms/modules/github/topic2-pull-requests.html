@@ -230,7 +230,7 @@
         </div>
       </div>
       <div class="key-points">
-        <div class="key-point"><div class="key-point-dot"></div>For research teams at UKM: squash merge is common — it keeps the main branch log readable at a glance.</div>
+        <div class="key-point"><div class="key-point-dot"></div>For most teams: squash merge is common — it keeps the main branch log readable at a glance.</div>
         <div class="key-point"><div class="key-point-dot"></div>Whatever the strategy, once merged, <strong>delete your feature branch immediately</strong>. It has served its purpose.</div>
         <div class="key-point"><div class="key-point-dot"></div>After merging, <code>git switch main && git pull</code> to get the merged commit locally.</div>
       </div>
@@ -349,7 +349,7 @@ git push</div>
         <div class="answer-box-text">
           <strong>Format:</strong> <code>type(scope): short description in imperative mood</code><br><br>
           <div class="code-block">feat(fhir): add LOINC code mapping for lab results
-fix(auth): resolve token refresh truncation on bcrypt hash
+fix(auth): resolve token expiry edge case in login flow
 docs(api): clarify pagination parameters in README
 chore(deps): upgrade FastAPI to 0.111.0
 refactor(models): extract device schema into separate module</div>
@@ -639,7 +639,7 @@ git push</div>
         <div class="answer-box-text">
           <strong>Format:</strong> <code>type(scope): kurze Beschreibung im Imperativ</code><br><br>
           <div class="code-block">feat(fhir): LOINC-Code-Mapping für Laborbefunde hinzufügen
-fix(auth): Token-Refresh-Abschneidung bei bcrypt-Hash beheben
+fix(auth): Token-Ablauf-Randfall im Login-Flow beheben
 docs(api): Paginierungsparameter in README klären
 chore(deps): FastAPI auf 0.111.0 aktualisieren
 refactor(models): Geräteschema in separates Modul auslagern</div>
@@ -921,7 +921,7 @@ git push</div>
         <div class="answer-box-text">
           <strong>الصياغة:</strong> <code dir="ltr">type(scope): وصف مختصر بصيغة الأمر</code><br><br>
           <div class="code-block" dir="ltr">feat(fhir): add LOINC code mapping for lab results
-fix(auth): resolve token refresh truncation on bcrypt hash
+fix(auth): resolve token expiry edge case in login flow
 docs(api): clarify pagination parameters in README
 chore(deps): upgrade FastAPI to 0.111.0
 refactor(models): extract device schema into separate module</div>

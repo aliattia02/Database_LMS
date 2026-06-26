@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 5 — Modules &amp; File I/O | Python Starter</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── Topic page-specific styles — copy this block verbatim ── */
+.badge { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must   { background:#fef3c7; color:#92400e; }
+.badge-common { background:#dbeafe; color:#1e40af; }
+.badge-tip    { background:#f0fdf4; color:#166534; }
+
+.q-arrow { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel { padding:18px 20px 16px 52px; }
+
+.strategy-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text  { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+
+.answer-box       { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text  { font-size:13.5px; color:#14532d; line-height:1.7; }
+
+.warning-box      { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text { font-size:13px; color:var(--amber-text); line-height:1.55; }
+
+.key-points    { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point     { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin:10px 0; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; }
+
+.section    { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2 { font-size:18px; font-weight:700; margin-bottom:14px; }
+.section p  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+.type-table { width:100%; border-collapse:collapse; margin:12px 0; font-size:13px; }
+.type-table th { background:#f1f5f9; color:var(--navy); font-weight:700; text-align:left; padding:8px 12px; border:1px solid var(--border); }
+.type-table td { padding:7px 12px; border:1px solid var(--border); color:#334155; vertical-align:top; }
+.type-table tr:nth-child(even) td { background:#fafbfc; }
+.type-badge { font-size:11px; font-weight:700; padding:1px 7px; border-radius:99px; background:#eff6ff; color:#1d4ed8; white-space:nowrap; }
+
+.must-block       { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item        { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet      { font-size:15px; flex-shrink:0; }
+
+/* RTL overrides */
+[dir="rtl"] .q-panel         { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point        { flex-direction:row-reverse; }
+[dir="rtl"] .must-item        { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title { flex-direction:row-reverse; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .section .code-block { direction:ltr; text-align:left; }
+
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Python Starter &mdash; Topic 5 of 5</div>
+    <h1><span>Modules</span> &amp; File I/O</h1>
+    <p class="header-sub">Learn how to import code from Python's standard library and reuse it across scripts, then safely <code>open</code>, read, write, and close files — the bridge between your programs and the outside world.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <!-- SECTION 1: Importing Modules -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📦</div>
+    <div>
+      <div class="section-title">Importing Modules</div>
+      <div class="section-subtitle">Reusing code from Python's standard library — and your own files</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Import styles you'll see in real code</h2>
+    <p>A <strong>module</strong> is just a file of reusable Python code (or a built-in component of the interpreter). The <code>import</code> statement loads it into your script so you can use the names it defines. There are several import styles, each with a different trade-off between convenience and clarity.</p>
+    <div class="code-block">import math                          # import the whole module
+import os as operating_system        # import with an alias
+from datetime import datetime        # import one name directly
+from collections import defaultdict, namedtuple   # import several names
+from math import *                   # ⚠️ avoid — imports everything
+
+math.sqrt(16)                # → 4.0      (must use the module prefix)
+operating_system.getcwd()    # → current working directory
+datetime.now()                # → no prefix needed, imported directly</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Python caches modules the first time they're imported — importing the same module again later in the same run does not re-run its code.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Use <code>dir(module)</code> to list the names a module defines, and <code>help(module)</code> to read its documentation from the interpreter.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>from module import *</code> works, but it makes it hard to tell where a name came from when you read the code later — avoid it outside quick experiments.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">A tour of the standard library</h2>
+    <p>Python ships with a large standard library, so many common tasks need no extra installation. A handful of modules cover most day-to-day needs.</p>
+    <div class="code-block">import os         # filesystem paths, environment variables, processes
+import sys        # interpreter internals, command-line arguments
+import math       # mathematical functions (sqrt, floor, pi, ...)
+import random     # pseudo-random numbers and choices
+import datetime   # dates, times, and durations
+import json       # reading and writing JSON data
+from pathlib import Path   # modern, object-oriented filesystem paths</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Third-party packages (not in the standard library, like <code>requests</code> or <code>pandas</code>) are installed with <code>pip install package_name</code> and then imported the same way.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Never name your own script the same as a standard module (e.g. <code>random.py</code>) — Python will import your file instead of the real one and silently break unrelated code.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Opening and Closing Files -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">📂</div>
+    <div>
+      <div class="section-title">Opening and Closing Files</div>
+      <div class="section-subtitle">The <code>open()</code> function, file modes, and why closing matters</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>The <code>open()</code> function and file modes</h2>
+    <p><code>open()</code> returns a file object you can read from or write to. The second argument — the <strong>mode</strong> — controls whether you're reading, writing, or appending, and whether the file is treated as text or raw bytes.</p>
+    <div class="code-block">f = open("notes.txt", "r")    # open for reading (text mode is the default)
+content = f.read()
+f.close()                     # releases the OS file handle — don't skip this
+
+# Common modes
+"r"    # read       — file must already exist
+"w"    # write      — creates the file; OVERWRITES it if it already exists
+"a"    # append     — creates the file if missing; writes go to the end
+"x"    # exclusive create — fails with an error if the file already exists
+"r+"   # read AND write — file must already exist
+"rb" / "wb"   # binary mode — for images, zip files, etc. (no text decoding)</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Forgetting <code>f.close()</code> can leave writes un-flushed to disk and leaks a limited OS resource — every open file handle that isn't closed stays reserved until the program exits.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Pass <code>encoding="utf-8"</code> explicitly in text mode to avoid relying on the operating system's default encoding, which differs between platforms.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">Using <code>with</code> to close files automatically</h2>
+    <p>The <code>with</code> statement creates a <strong>context manager</strong> that closes the file for you automatically — even if an exception is raised inside the block. This is the standard, idiomatic way to work with files in Python.</p>
+    <div class="code-block">with open("notes.txt", "r", encoding="utf-8") as f:
+    content = f.read()
+# f is already closed here — no f.close() needed, even if read() had failed
+
+# Multiple files in one with statement
+with open("in.txt") as src, open("out.txt", "w") as dst:
+    dst.write(src.read().upper())</div>
+    <div class="warning-box">
+      <div class="warning-box-text">⚠️ <code>"w"</code> mode truncates the file to zero length the instant it is opened — before you write a single byte. If you want to keep the existing content, use <code>"a"</code> (append) instead.</div>
+    </div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Prefer <code>with open(...) as f:</code> over manual <code>open()</code> / <code>close()</code> in almost all real code — it's shorter and impossible to forget to close.</div>
+      <div class="key-point"><div class="key-point-dot"></div>As soon as execution leaves the <code>with</code> block — normally or via an exception — the file is closed; there is no scenario where it stays open by mistake.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Reading and Writing Files -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">✍️</div>
+    <div>
+      <div class="section-title">Reading and Writing Files</div>
+      <div class="section-subtitle">Pulling content out of a file and pushing content into one</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Reading: <code>read()</code>, <code>readline()</code>, <code>readlines()</code>, and iteration</h2>
+    <p>Python gives you several ways to read a file, depending on whether you want it all at once, one line at a time, or as a list of lines.</p>
+    <div class="code-block">with open("poem.txt") as f:
+    whole = f.read()           # entire file as a single string
+
+with open("poem.txt") as f:
+    first_line = f.readline()  # one line, including the trailing "\n"
+
+with open("poem.txt") as f:
+    lines = f.readlines()      # a list of every line, each ending in "\n"
+
+# Most memory-efficient — read one line at a time, never loading it all
+with open("poem.txt") as f:
+    for line in f:
+        print(line.strip())    # .strip() removes the trailing newline</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Iterating directly over the file object (<code>for line in f</code>) is the preferred pattern for large files — it streams one line at a time instead of loading the whole file into memory.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>.strip()</code> removes leading and trailing whitespace, which conveniently includes the <code>\n</code> each line read from a file ends with.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">Writing: <code>write()</code> and <code>writelines()</code></h2>
+    <div class="code-block">with open("log.txt", "w") as f:
+    f.write("First line\n")             # write() does NOT add a newline for you
+    f.writelines(["a\n", "b\n", "c\n"])  # writes each string from an iterable
+
+with open("log.txt", "a") as f:
+    f.write("Appended later\n")         # "a" mode never overwrites existing content</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code>write()</code> returns the number of characters written, not <code>None</code> — easy to assume otherwise since it's rarely used.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>print("text", file=f)</code> is also a valid way to write to a file and adds the newline for you automatically, like a normal <code>print()</code> call.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">Modern paths with <code>pathlib</code></h2>
+    <p><code>pathlib.Path</code> represents filesystem paths as objects instead of plain strings, and handles platform differences (like <code>/</code> vs <code>\</code>) for you.</p>
+    <div class="code-block">from pathlib import Path
+
+p = Path("data") / "input.txt"   # joins path segments — works on any OS
+p.exists()              # → True / False
+p.is_file()              # → True / False
+p.suffix                 # → ".txt"
+p.stem                   # → "input"
+p.read_text()             # shortcut: open, read, and close in one call
+p.write_text("hello")     # shortcut: open, write, and close in one call</div>
+  </div>
+
+  <!-- SECTION 4: Handling Files Safely -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fef2f2;">🛡️</div>
+    <div>
+      <div class="section-title">Handling Files Safely</div>
+      <div class="section-subtitle">Errors, edge cases, and reading/writing structured data</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Catching file errors with <code>try</code> / <code>except</code></h2>
+    <p>Files can fail to open for reasons outside your control — the file is missing, you lack permission, or the disk is full. Wrap risky file operations in <code>try</code> / <code>except</code> instead of letting an unhandled error crash the whole script.</p>
+    <div class="code-block">try:
+    with open("config.json") as f:
+        data = f.read()
+except FileNotFoundError:
+    print("Config file is missing — using defaults.")
+    data = "{}"
+except PermissionError:
+    print("No permission to read this file.")
+    raise
+
+# Checking first is an alternative, but not airtight —
+# the file could still vanish between the check and the open() call
+from pathlib import Path
+if Path("config.json").exists():
+    ...</div>
+    <div class="warning-box">
+      <div class="warning-box-text">⚠️ Checking <code>Path.exists()</code> before opening reduces surprises, but it is not race-proof: another process could delete the file in the gap between the check and the <code>open()</code> call. <code>try</code> / <code>except</code> is the safer pattern in real systems.</div>
+    </div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code>FileNotFoundError</code> and <code>PermissionError</code> are the two most common file exceptions — both are subclasses of the broader <code>OSError</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Catch the most specific exception you can handle meaningfully; re-raise (<code>raise</code>) anything you can't actually recover from.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">Reading and writing JSON</h2>
+    <p>The <code>json</code> module pairs naturally with file I/O — it reads and writes structured data directly to and from a file object, no manual string parsing needed.</p>
+    <div class="code-block">import json
+
+with open("config.json", "w") as f:
+    json.dump({"debug": True, "retries": 3}, f, indent=2)   # write JSON
+
+with open("config.json") as f:
+    config = json.load(f)    # → {'debug': True, 'retries': 3}
+
+# String versions, when you don't have a file — e.g. an API response
+text = json.dumps({"ok": True})    # dict → JSON string
+back = json.loads(text)            # JSON string → dict</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Remember the naming pattern: the <strong>"s"</strong> versions (<code>dumps</code>/<code>loads</code>) work on <strong>s</strong>trings; the plain versions (<code>dump</code>/<code>load</code>) work on file objects.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>json.dump(..., indent=2)</code> produces human-readable, indented output — useful for config files a person might open and edit.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">File modes at a glance</h2>
+    <table class="type-table">
+      <tr>
+        <th>Mode</th>
+        <th>Read?</th>
+        <th>Write?</th>
+        <th>If file is missing</th>
+        <th>If file exists</th>
+      </tr>
+      <tr>
+        <td><span class="type-badge">r</span></td>
+        <td>✅ Yes</td>
+        <td>❌ No</td>
+        <td>❌ Raises <code>FileNotFoundError</code></td>
+        <td>Opens it as-is</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">w</span></td>
+        <td>❌ No</td>
+        <td>✅ Yes</td>
+        <td>✅ Creates it</td>
+        <td>⚠️ Overwrites (truncates) it</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">a</span></td>
+        <td>❌ No</td>
+        <td>✅ Yes</td>
+        <td>✅ Creates it</td>
+        <td>Appends to the end</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">x</span></td>
+        <td>❌ No</td>
+        <td>✅ Yes</td>
+        <td>✅ Creates it</td>
+        <td>❌ Raises <code>FileExistsError</code></td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">r+</span></td>
+        <td>✅ Yes</td>
+        <td>✅ Yes</td>
+        <td>❌ Raises <code>FileNotFoundError</code></td>
+        <td>Reads/writes, no truncation</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Q&A ACCORDION -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">Typical interview and self-check questions on modules and file I/O</div>
+    </div>
+  </div>
+
+  <!-- Q01 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">What is the difference between <code>import module</code> and <code>from module import name</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text"><code>import module</code> brings in the whole toolbox and you keep reaching for it by name every time. <code>from module import name</code> takes one specific tool out of the box and puts it directly on your workbench — shorter to use, but the box it came from is less obvious later.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text"><code>import module</code> loads the module and requires you to prefix every name from it with <code>module.</code>. <code>from module import name</code> imports a specific name directly into your namespace, so you use it bare, without the prefix. Both load the same underlying code — the difference is only in how the names become available afterward.
+        <div class="code-block">import math
+math.pi          # → 3.14159...   (prefix required)
+
+from math import pi
+pi               # → 3.14159...   (used directly, no prefix)</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>The prefixed form (<code>import module</code>) is generally easier to read in larger files — anyone can tell at a glance that <code>math.sqrt</code> comes from <code>math</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>You can combine both: <code>import module</code> for general use, plus a targeted <code>from module import specific_thing</code> for a name you use constantly.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Why should you use <code>with open(...) as f</code> instead of calling <code>open()</code> and <code>close()</code> manually?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Manual <code>open()</code>/<code>close()</code> is like borrowing a library book and trusting yourself to return it — works fine until you get distracted by an error halfway through and never do. <code>with</code> is the library returning the book for you automatically the moment you walk out the door, no matter what happened while you were browsing.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">A <code>with</code> block is a <strong>context manager</strong>: it guarantees that <code>f.close()</code> runs when the block ends, even if an exception is raised inside it. With manual <code>open()</code>/<code>close()</code>, an exception between the two calls skips <code>close()</code> entirely, leaving the file handle open until the program exits.
+        <div class="code-block"># Risky — close() is skipped if read() raises an exception
+f = open("data.txt")
+content = f.read()   # if this raises, f.close() below never runs
+f.close()
+
+# Safe — close() always runs, exception or not
+with open("data.txt") as f:
+    content = f.read()</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>A <code>try</code> / <code>finally</code> around manual <code>open()</code>/<code>close()</code> achieves the same safety, but <code>with</code> says the same thing in less code and is the convention every Python codebase expects.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Many other objects besides files support <code>with</code> — locks, database connections, and network sockets all use the same pattern for guaranteed cleanup.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">What is the difference between <code>read()</code>, <code>readline()</code>, and <code>readlines()</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Think of a file as a stack of index cards. <code>read()</code> hands you the entire stack glued into one long strip. <code>readline()</code> hands you one card at a time. <code>readlines()</code> hands you the whole stack, but still separated into individual cards inside a list.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text"><code>read()</code> returns the entire file as one string. <code>readline()</code> returns a single line (including its trailing <code>\n</code>) and advances to the next one on each call. <code>readlines()</code> returns a list containing every line as a separate string. For large files, iterating the file object directly with <code>for line in f:</code> is usually best — it behaves like repeated <code>readline()</code> calls without building a full list in memory.
+        <div class="code-block">with open("a.txt") as f:
+    f.read()        # → "line1\nline2\nline3\n"   (one big string)
+
+with open("a.txt") as f:
+    f.readline()    # → "line1\n"                 (first line only)
+    f.readline()    # → "line2\n"                 (next call, next line)
+
+with open("a.txt") as f:
+    f.readlines()   # → ["line1\n", "line2\n", "line3\n"]</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>readlines()</code> loads the whole file into memory as a list — fine for small files, wasteful for huge ones.</div>
+        <div class="key-point"><div class="key-point-dot"></div>All three methods continue from wherever the file's internal "cursor" currently is — calling <code>read()</code> twice in a row returns an empty string the second time, since the cursor is already at the end.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">What is the difference between text mode and binary mode when opening a file?</span>
+      <span class="q-badges"><span class="badge badge-common">● Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Text mode is like reading a letter — Python automatically decodes the raw bytes into readable characters using an encoding, and translates line endings for you. Binary mode is like handling the sealed envelope itself — you get the exact raw bytes, untouched, with no assumptions about what they mean.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">Text mode (the default, or explicit <code>"t"</code>) decodes bytes into <code>str</code> using a text encoding — usually UTF-8 — and returns <code>str</code> objects from <code>read()</code>. Binary mode (<code>"b"</code> suffix, e.g. <code>"rb"</code>, <code>"wb"</code>) returns raw <code>bytes</code> with no decoding at all. Binary mode is required for non-text files — images, audio, ZIP archives, and any format that isn't meant to be interpreted as characters.
+        <div class="code-block">with open("photo.jpg", "rb") as f:
+    data = f.read()          # → bytes object, e.g. b'\xff\xd8\xff\xe0...'
+
+with open("notes.txt", "r", encoding="utf-8") as f:
+    text = f.read()          # → str object, e.g. "Hello, world"</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Opening a binary file (like an image) in text mode usually raises a <code>UnicodeDecodeError</code> — the bytes aren't valid text in the assumed encoding.</div>
+        <div class="key-point"><div class="key-point-dot"></div>If you're not sure which mode you need: text files (<code>.txt</code>, <code>.json</code>, <code>.csv</code>, source code) → text mode; everything else → binary mode.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">How do you safely handle a file that might not exist?</span>
+      <span class="q-badges"><span class="badge badge-common">● Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">There are two strategies: "look before you leap" (check first, then act) and "ask forgiveness, not permission" (just try, and handle the failure if it happens). Python culture generally favors the second for files, because checking first can never fully guarantee the file is still there a moment later.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">Wrap the <code>open()</code> call in <code>try</code> / <code>except FileNotFoundError</code> and provide a fallback — a default value, a friendly message, or creating the file. This handles the missing-file case without crashing, and without a separate existence check that could go stale between the check and the open.
+        <div class="code-block">try:
+    with open("settings.txt") as f:
+        settings = f.read()
+except FileNotFoundError:
+    settings = "default_theme=light"   # fall back to a sensible default
+    with open("settings.txt", "w") as f:
+        f.write(settings)              # and create the file for next time</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>Path("file").exists()</code> from <code>pathlib</code> is fine for a quick sanity check or a friendlier error message, but pair it with <code>try</code>/<code>except</code> rather than relying on it alone.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Use mode <code>"a"</code> (append) instead of a check-then-create dance when you simply want a file to exist and be ready to receive more data — it creates the file automatically if missing.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">How do you read and write JSON data to a file?</span>
+      <span class="q-badges"><span class="badge badge-tip">✦ Tip</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">JSON is just a text format for dictionaries and lists. The <code>json</code> module is a translator that sits between Python's native objects and that text format, so you never have to hand-write the punctuation yourself.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">Use <code>json.dump(obj, file)</code> to write a Python object straight to an open file as JSON, and <code>json.load(file)</code> to read JSON from an open file back into a Python object (typically a <code>dict</code> or <code>list</code>). The string-only siblings <code>json.dumps()</code> and <code>json.loads()</code> convert to and from a JSON string instead of a file, which is useful when the JSON came from somewhere other than a file — like a network response.
+        <div class="code-block">import json
+
+data = {"name": "Ada", "languages": ["Python", "SQL"]}
+
+with open("profile.json", "w") as f:
+    json.dump(data, f, indent=2)   # writes formatted JSON to the file
+
+with open("profile.json") as f:
+    loaded = json.load(f)          # → {'name': 'Ada', 'languages': [...]}</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>JSON only supports a subset of Python's types — dicts, lists, strings, numbers, booleans, and <code>None</code>. Tuples become lists, and types like <code>set</code> or custom classes raise a <code>TypeError</code> unless you supply custom encoding logic.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>json.load()</code> raises <code>json.JSONDecodeError</code> if the file's content isn't valid JSON — worth catching alongside <code>FileNotFoundError</code> when loading config files.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA EN -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done with this topic when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain the difference between <code>import module</code> and <code>from module import name</code>, and import a standard-library module correctly.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can open a file with <code>with open(...) as f:</code> and explain why this is safer than calling <code>open()</code> and <code>close()</code> manually.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can choose the right reading method — <code>read()</code>, <code>readline()</code>, <code>readlines()</code>, or iterating line by line — for a given task.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can write to a file safely, handle a missing file with <code>try</code>/<code>except</code>, and read or write a JSON file with the <code>json</code> module.</div>
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <!-- SECTION 1 DE: Module importieren -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📦</div>
+    <div>
+      <div class="section-title">Module importieren</div>
+      <div class="section-subtitle">Code aus Pythons Standardbibliothek wiederverwenden — und aus eigenen Dateien</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Import-Stile, die dir in echtem Code begegnen</h2>
+    <p>Ein <strong>Modul</strong> ist einfach eine Datei mit wiederverwendbarem Python-Code (oder eine eingebaute Komponente des Interpreters). Die <code>import</code>-Anweisung lädt es in dein Skript, sodass du die darin definierten Namen nutzen kannst. Es gibt mehrere Import-Stile, jeweils mit einem anderen Verhältnis zwischen Bequemlichkeit und Klarheit.</p>
+    <div class="code-block">import math                          # ganzes Modul importieren
+import os as betriebssystem          # mit Alias importieren
+from datetime import datetime        # einen Namen direkt importieren
+from collections import defaultdict, namedtuple   # mehrere Namen importieren
+from math import *                   # ⚠️ vermeiden — importiert alles
+
+math.sqrt(16)                # → 4.0      (Modul-Präfix erforderlich)
+betriebssystem.getcwd()      # → aktuelles Arbeitsverzeichnis
+datetime.now()                # → kein Präfix nötig, direkt importiert</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Python cached Module beim ersten Import — ein erneuter Import desselben Moduls im selben Programmlauf führt seinen Code nicht noch einmal aus.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>dir(modul)</code> listet die im Modul definierten Namen auf, <code>help(modul)</code> zeigt seine Dokumentation direkt im Interpreter.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>from modul import *</code> funktioniert, macht es aber schwer nachzuvollziehen, woher ein Name stammt, wenn man den Code später liest — außerhalb kurzer Experimente vermeiden.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">Ein Rundgang durch die Standardbibliothek</h2>
+    <p>Python wird mit einer umfangreichen Standardbibliothek geliefert, sodass viele alltägliche Aufgaben keine zusätzliche Installation benötigen. Eine Handvoll Module deckt die meisten Bedürfnisse ab.</p>
+    <div class="code-block">import os         # Dateisystempfade, Umgebungsvariablen, Prozesse
+import sys        # Interpreter-Interna, Kommandozeilenargumente
+import math       # mathematische Funktionen (sqrt, floor, pi, ...)
+import random     # Pseudozufallszahlen und -auswahl
+import datetime   # Daten, Zeiten und Zeitspannen
+import json       # JSON-Daten lesen und schreiben
+from pathlib import Path   # moderne, objektorientierte Dateisystempfade</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Drittanbieter-Pakete (nicht in der Standardbibliothek, z. B. <code>requests</code> oder <code>pandas</code>) werden mit <code>pip install paketname</code> installiert und dann genauso importiert.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Nenne dein eigenes Skript niemals wie ein Standardmodul (z. B. <code>random.py</code>) — Python importiert dann deine Datei statt des echten Moduls und bricht stillschweigend nicht zusammenhängenden Code.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 DE: Dateien öffnen und schließen -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">📂</div>
+    <div>
+      <div class="section-title">Dateien öffnen und schließen</div>
+      <div class="section-subtitle">Die Funktion <code>open()</code>, Dateimodi, und warum Schließen wichtig ist</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Die Funktion <code>open()</code> und Dateimodi</h2>
+    <p><code>open()</code> gibt ein Dateiobjekt zurück, von dem du lesen oder in das du schreiben kannst. Das zweite Argument — der <strong>Modus</strong> — bestimmt, ob du liest, schreibst oder anhängst, und ob die Datei als Text oder als reine Bytes behandelt wird.</p>
+    <div class="code-block">datei = open("notizen.txt", "r")   # zum Lesen öffnen (Textmodus ist Standard)
+inhalt = datei.read()
+datei.close()                       # gibt das Betriebssystem-Handle frei — nicht weglassen
+
+# Gängige Modi
+"r"    # lesen      — Datei muss bereits existieren
+"w"    # schreiben  — erstellt die Datei; ÜBERSCHREIBT sie, falls vorhanden
+"a"    # anhängen   — erstellt die Datei falls fehlend; schreibt ans Ende
+"x"    # exklusiv erstellen — schlägt fehl, wenn die Datei schon existiert
+"r+"   # lesen UND schreiben — Datei muss bereits existieren
+"rb" / "wb"   # Binärmodus — für Bilder, ZIP-Dateien usw. (keine Textdekodierung)</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Vergisst man <code>datei.close()</code>, können Schreibvorgänge ungeschrieben im Puffer bleiben, und eine begrenzte Betriebssystemressource bleibt belegt, bis das Programm endet.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Im Textmodus explizit <code>encoding="utf-8"</code> angeben, um sich nicht auf die Standardkodierung des Betriebssystems zu verlassen, die sich zwischen Plattformen unterscheidet.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">Mit <code>with</code> Dateien automatisch schließen</h2>
+    <p>Die <code>with</code>-Anweisung erstellt einen <strong>Kontextmanager</strong>, der die Datei automatisch für dich schließt — selbst wenn innerhalb des Blocks eine Ausnahme ausgelöst wird. Das ist die übliche, idiomatische Art, in Python mit Dateien zu arbeiten.</p>
+    <div class="code-block">with open("notizen.txt", "r", encoding="utf-8") as datei:
+    inhalt = datei.read()
+# datei ist hier bereits geschlossen — kein datei.close() nötig, selbst bei einem Fehler
+
+# Mehrere Dateien in einer with-Anweisung
+with open("ein.txt") as quelle, open("aus.txt", "w") as ziel:
+    ziel.write(quelle.read().upper())</div>
+    <div class="warning-box">
+      <div class="warning-box-text">⚠️ Der Modus <code>"w"</code> kürzt die Datei in dem Moment, in dem sie geöffnet wird, auf null Länge — noch bevor ein einziges Byte geschrieben wurde. Soll der bestehende Inhalt erhalten bleiben, <code>"a"</code> (anhängen) verwenden.</div>
+    </div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code>with open(...) as datei:</code> in fast allem realen Code dem manuellen <code>open()</code> / <code>close()</code> vorziehen — kürzer, und das Schließen kann nicht vergessen werden.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Sobald die Ausführung den <code>with</code>-Block verlässt — normal oder durch eine Ausnahme — wird die Datei geschlossen; es gibt kein Szenario, in dem sie versehentlich offen bleibt.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 DE: Dateien lesen und schreiben -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">✍️</div>
+    <div>
+      <div class="section-title">Dateien lesen und schreiben</div>
+      <div class="section-subtitle">Inhalte aus einer Datei holen und Inhalte in eine Datei schreiben</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Lesen: <code>read()</code>, <code>readline()</code>, <code>readlines()</code> und Iteration</h2>
+    <p>Python bietet mehrere Wege, eine Datei zu lesen — abhängig davon, ob du alles auf einmal, Zeile für Zeile, oder als Liste von Zeilen möchtest.</p>
+    <div class="code-block">with open("gedicht.txt") as datei:
+    ganzer_text = datei.read()        # gesamte Datei als ein String
+
+with open("gedicht.txt") as datei:
+    erste_zeile = datei.readline()    # eine Zeile, inklusive abschließendem "\n"
+
+with open("gedicht.txt") as datei:
+    zeilen = datei.readlines()        # Liste aller Zeilen, jede endet mit "\n"
+
+# Am speichereffizientesten — eine Zeile nach der anderen, nie alles auf einmal
+with open("gedicht.txt") as datei:
+    for zeile in datei:
+        print(zeile.strip())          # .strip() entfernt den abschließenden Zeilenumbruch</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Direktes Iterieren über das Dateiobjekt (<code>for zeile in datei</code>) ist das bevorzugte Muster für große Dateien — es liest eine Zeile nach der anderen, statt die ganze Datei in den Speicher zu laden.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>.strip()</code> entfernt führende und nachfolgende Leerzeichen, was praktischerweise auch den <code>\n</code> einschließt, mit dem jede gelesene Zeile endet.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">Schreiben: <code>write()</code> und <code>writelines()</code></h2>
+    <div class="code-block">with open("protokoll.txt", "w") as datei:
+    datei.write("Erste Zeile\n")              # write() fügt KEINEN Zeilenumbruch hinzu
+    datei.writelines(["a\n", "b\n", "c\n"])    # schreibt jeden String aus einem Iterable
+
+with open("protokoll.txt", "a") as datei:
+    datei.write("Später angehängt\n")         # "a"-Modus überschreibt nie bestehenden Inhalt</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code>write()</code> gibt die Anzahl geschriebener Zeichen zurück, nicht <code>None</code> — leicht das Gegenteil anzunehmen, da der Rückgabewert selten genutzt wird.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>print("text", file=datei)</code> ist ebenfalls eine gültige Möglichkeit, in eine Datei zu schreiben, und fügt den Zeilenumbruch automatisch hinzu, genau wie ein normaler <code>print()</code>-Aufruf.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">Moderne Pfade mit <code>pathlib</code></h2>
+    <p><code>pathlib.Path</code> stellt Dateisystempfade als Objekte statt als einfache Strings dar und übernimmt Plattformunterschiede (wie <code>/</code> versus <code>\</code>) für dich.</p>
+    <div class="code-block">from pathlib import Path
+
+p = Path("daten") / "eingabe.txt"   # verbindet Pfadsegmente — auf jedem Betriebssystem
+p.exists()                # → True / False
+p.is_file()                # → True / False
+p.suffix                   # → ".txt"
+p.stem                     # → "eingabe"
+p.read_text()               # Abkürzung: öffnen, lesen, schließen in einem Aufruf
+p.write_text("hallo")       # Abkürzung: öffnen, schreiben, schließen in einem Aufruf</div>
+  </div>
+
+  <!-- SECTION 4 DE: Dateien sicher handhaben -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fef2f2;">🛡️</div>
+    <div>
+      <div class="section-title">Dateien sicher handhaben</div>
+      <div class="section-subtitle">Fehler, Randfälle, und das Lesen/Schreiben strukturierter Daten</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Dateifehler mit <code>try</code> / <code>except</code> abfangen</h2>
+    <p>Dateien können aus Gründen außerhalb deiner Kontrolle nicht geöffnet werden — die Datei fehlt, dir fehlt die Berechtigung, oder die Festplatte ist voll. Riskante Dateioperationen in <code>try</code> / <code>except</code> einbetten, statt einen unbehandelten Fehler das ganze Skript abstürzen zu lassen.</p>
+    <div class="code-block">try:
+    with open("konfig.json") as datei:
+        daten = datei.read()
+except FileNotFoundError:
+    print("Konfigurationsdatei fehlt — verwende Standardwerte.")
+    daten = "{}"
+except PermissionError:
+    print("Keine Berechtigung, diese Datei zu lesen.")
+    raise
+
+# Vorheriges Prüfen ist eine Alternative, aber nicht hieb- und stichfest —
+# die Datei könnte zwischen Prüfung und open()-Aufruf trotzdem verschwinden
+from pathlib import Path
+if Path("konfig.json").exists():
+    ...</div>
+    <div class="warning-box">
+      <div class="warning-box-text">⚠️ <code>Path.exists()</code> vor dem Öffnen zu prüfen verringert Überraschungen, ist aber nicht race-sicher: Ein anderer Prozess könnte die Datei in der Lücke zwischen Prüfung und <code>open()</code>-Aufruf löschen. <code>try</code> / <code>except</code> ist das sicherere Muster in echten Systemen.</div>
+    </div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code>FileNotFoundError</code> und <code>PermissionError</code> sind die zwei häufigsten Dateifehler — beide sind Unterklassen des allgemeineren <code>OSError</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Die spezifischste Ausnahme abfangen, die man sinnvoll behandeln kann; alles andere mit <code>raise</code> weiterreichen, wenn man sich nicht wirklich davon erholen kann.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">JSON lesen und schreiben</h2>
+    <p>Das <code>json</code>-Modul passt natürlich zur Datei-I/O — es liest und schreibt strukturierte Daten direkt von und zu einem Dateiobjekt, ohne manuelles String-Parsing.</p>
+    <div class="code-block">import json
+
+with open("konfig.json", "w") as datei:
+    json.dump({"debug": True, "versuche": 3}, datei, indent=2)   # JSON schreiben
+
+with open("konfig.json") as datei:
+    konfig = json.load(datei)    # → {'debug': True, 'versuche': 3}
+
+# String-Varianten, wenn keine Datei vorliegt — z. B. eine API-Antwort
+text = json.dumps({"ok": True})    # dict → JSON-String
+zurueck = json.loads(text)         # JSON-String → dict</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Merke das Namensmuster: die Varianten mit <strong>"s"</strong> (<code>dumps</code>/<code>loads</code>) arbeiten mit <strong>S</strong>trings; die einfachen Varianten (<code>dump</code>/<code>load</code>) arbeiten mit Dateiobjekten.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>json.dump(..., indent=2)</code> erzeugt lesbare, eingerückte Ausgabe — nützlich für Konfigurationsdateien, die man von Hand öffnen und bearbeiten könnte.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">Dateimodi auf einen Blick</h2>
+    <table class="type-table">
+      <tr>
+        <th>Modus</th>
+        <th>Lesen?</th>
+        <th>Schreiben?</th>
+        <th>Wenn Datei fehlt</th>
+        <th>Wenn Datei existiert</th>
+      </tr>
+      <tr>
+        <td><span class="type-badge">r</span></td>
+        <td>✅ Ja</td>
+        <td>❌ Nein</td>
+        <td>❌ Löst <code>FileNotFoundError</code> aus</td>
+        <td>Öffnet sie wie sie ist</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">w</span></td>
+        <td>❌ Nein</td>
+        <td>✅ Ja</td>
+        <td>✅ Erstellt sie</td>
+        <td>⚠️ Überschreibt (kürzt) sie</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">a</span></td>
+        <td>❌ Nein</td>
+        <td>✅ Ja</td>
+        <td>✅ Erstellt sie</td>
+        <td>Hängt ans Ende an</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">x</span></td>
+        <td>❌ Nein</td>
+        <td>✅ Ja</td>
+        <td>✅ Erstellt sie</td>
+        <td>❌ Löst <code>FileExistsError</code> aus</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">r+</span></td>
+        <td>✅ Ja</td>
+        <td>✅ Ja</td>
+        <td>❌ Löst <code>FileNotFoundError</code> aus</td>
+        <td>Liest/schreibt, keine Kürzung</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Q&A DE -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Typische Interview- und Selbstkontrollfragen zu Modulen und Datei-I/O</div>
+    </div>
+  </div>
+
+  <!-- Q01 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Was ist der Unterschied zwischen <code>import modul</code> und <code>from modul import name</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss man wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text"><code>import modul</code> bringt die ganze Werkzeugkiste mit, und du greifst jedes Mal namentlich darauf zu. <code>from modul import name</code> nimmt ein bestimmtes Werkzeug aus der Kiste und legt es direkt auf deine Werkbank — kürzer in der Nutzung, aber später weniger offensichtlich, aus welcher Kiste es stammt.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text"><code>import modul</code> lädt das Modul und verlangt, dass jeder Name daraus mit <code>modul.</code> vorangestellt wird. <code>from modul import name</code> importiert einen bestimmten Namen direkt in deinen Namensraum, sodass du ihn ohne Präfix verwendest. Beide laden denselben zugrunde liegenden Code — der Unterschied liegt nur darin, wie die Namen danach verfügbar werden.
+        <div class="code-block">import math
+math.pi          # → 3.14159...   (Präfix erforderlich)
+
+from math import pi
+pi               # → 3.14159...   (direkt verwendet, kein Präfix)</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Die Form mit Präfix (<code>import modul</code>) ist in größeren Dateien meist leichter zu lesen — jeder erkennt auf einen Blick, dass <code>math.sqrt</code> aus <code>math</code> stammt.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Beides lässt sich kombinieren: <code>import modul</code> für den allgemeinen Gebrauch, plus ein gezieltes <code>from modul import bestimmtes_ding</code> für einen Namen, den man ständig verwendet.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Warum sollte man <code>with open(...) as datei</code> verwenden statt <code>open()</code> und <code>close()</code> manuell aufzurufen?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss man wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Manuelles <code>open()</code>/<code>close()</code> ist, als würde man ein Bibliotheksbuch ausleihen und sich selbst zutrauen, es zurückzubringen — funktioniert gut, bis man mitten im Lesen von einem Fehler abgelenkt wird und es nie zurückgibt. <code>with</code> ist die Bibliothek, die das Buch automatisch zurückgibt, sobald man die Tür verlässt — egal was während des Stöberns passiert ist.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Ein <code>with</code>-Block ist ein <strong>Kontextmanager</strong>: Er garantiert, dass <code>datei.close()</code> ausgeführt wird, wenn der Block endet — selbst wenn darin eine Ausnahme auftritt. Bei manuellem <code>open()</code>/<code>close()</code> überspringt eine Ausnahme zwischen den beiden Aufrufen <code>close()</code> komplett, sodass das Datei-Handle bis zum Programmende offen bleibt.
+        <div class="code-block"># Riskant — close() wird übersprungen, wenn read() eine Ausnahme auslöst
+datei = open("daten.txt")
+inhalt = datei.read()   # löst dies aus, läuft das close() unten nie
+datei.close()
+
+# Sicher — close() läuft immer, mit oder ohne Ausnahme
+with open("daten.txt") as datei:
+    inhalt = datei.read()</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Ein <code>try</code> / <code>finally</code> um manuelles <code>open()</code>/<code>close()</code> erreicht dieselbe Sicherheit, aber <code>with</code> sagt dasselbe in weniger Code und ist die Konvention, die jede Python-Codebasis erwartet.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Viele andere Objekte außer Dateien unterstützen <code>with</code> — Locks, Datenbankverbindungen und Netzwerk-Sockets verwenden alle das gleiche Muster für garantiertes Aufräumen.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Was ist der Unterschied zwischen <code>read()</code>, <code>readline()</code> und <code>readlines()</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss man wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Stell dir eine Datei als Stapel Karteikarten vor. <code>read()</code> gibt dir den ganzen Stapel, zu einem langen Streifen zusammengeklebt. <code>readline()</code> gibt dir eine Karte nach der anderen. <code>readlines()</code> gibt dir den ganzen Stapel, aber weiterhin als einzelne Karten in einer Liste.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text"><code>read()</code> gibt die gesamte Datei als einen String zurück. <code>readline()</code> gibt eine einzelne Zeile zurück (inklusive abschließendem <code>\n</code>) und rückt bei jedem Aufruf zur nächsten vor. <code>readlines()</code> gibt eine Liste zurück, die jede Zeile als eigenen String enthält. Bei großen Dateien ist direktes Iterieren über das Dateiobjekt mit <code>for zeile in datei:</code> meist am besten — es verhält sich wie wiederholte <code>readline()</code>-Aufrufe, ohne eine vollständige Liste im Speicher aufzubauen.
+        <div class="code-block">with open("a.txt") as datei:
+    datei.read()        # → "zeile1\nzeile2\nzeile3\n"   (ein großer String)
+
+with open("a.txt") as datei:
+    datei.readline()    # → "zeile1\n"                   (nur erste Zeile)
+    datei.readline()    # → "zeile2\n"                   (nächster Aufruf, nächste Zeile)
+
+with open("a.txt") as datei:
+    datei.readlines()   # → ["zeile1\n", "zeile2\n", "zeile3\n"]</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>readlines()</code> lädt die gesamte Datei als Liste in den Speicher — bei kleinen Dateien unproblematisch, bei sehr großen verschwenderisch.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Alle drei Methoden setzen dort fort, wo der interne "Cursor" der Datei aktuell steht — ruft man <code>read()</code> zweimal hintereinander auf, kommt beim zweiten Mal ein leerer String zurück, da der Cursor schon am Ende steht.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Was ist der Unterschied zwischen Textmodus und Binärmodus beim Öffnen einer Datei?</span>
+      <span class="q-badges"><span class="badge badge-common">● Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Textmodus ist wie das Lesen eines Briefs — Python dekodiert die rohen Bytes automatisch mithilfe einer Kodierung in lesbare Zeichen und übersetzt Zeilenenden für dich. Binärmodus ist wie der Umgang mit dem versiegelten Umschlag selbst — man bekommt die exakten rohen Bytes, unangetastet, ohne Annahmen über ihre Bedeutung.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Textmodus (der Standard, oder explizit <code>"t"</code>) dekodiert Bytes mithilfe einer Textkodierung — meist UTF-8 — in <code>str</code> und liefert <code>str</code>-Objekte von <code>read()</code>. Binärmodus (Suffix <code>"b"</code>, z. B. <code>"rb"</code>, <code>"wb"</code>) liefert rohe <code>bytes</code> ohne jegliche Dekodierung. Binärmodus ist für Nicht-Text-Dateien erforderlich — Bilder, Audio, ZIP-Archive, und jedes Format, das nicht als Zeichen interpretiert werden soll.
+        <div class="code-block">with open("foto.jpg", "rb") as datei:
+    daten = datei.read()          # → bytes-Objekt, z. B. b'\xff\xd8\xff\xe0...'
+
+with open("notizen.txt", "r", encoding="utf-8") as datei:
+    text = datei.read()           # → str-Objekt, z. B. "Hallo, Welt"</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Eine Binärdatei (wie ein Bild) im Textmodus zu öffnen löst meist einen <code>UnicodeDecodeError</code> aus — die Bytes sind kein gültiger Text in der angenommenen Kodierung.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Im Zweifel: Textdateien (<code>.txt</code>, <code>.json</code>, <code>.csv</code>, Quellcode) → Textmodus; alles andere → Binärmodus.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Wie geht man sicher mit einer Datei um, die möglicherweise nicht existiert?</span>
+      <span class="q-badges"><span class="badge badge-common">● Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Es gibt zwei Strategien: "erst schauen, dann handeln" (zuerst prüfen, dann agieren) und "lieber um Verzeihung bitten als um Erlaubnis fragen" (einfach versuchen und bei Fehlschlag reagieren). Die Python-Kultur bevorzugt bei Dateien meist die zweite, weil eine vorherige Prüfung nie vollständig garantieren kann, dass die Datei einen Moment später noch da ist.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Den <code>open()</code>-Aufruf in <code>try</code> / <code>except FileNotFoundError</code> einbetten und einen Fallback bereitstellen — einen Standardwert, eine freundliche Meldung, oder das Erstellen der Datei. Das behandelt den Fall einer fehlenden Datei, ohne abzustürzen, und ohne eine separate Existenzprüfung, die zwischen Prüfung und Öffnen veralten könnte.
+        <div class="code-block">try:
+    with open("einstellungen.txt") as datei:
+        einstellungen = datei.read()
+except FileNotFoundError:
+    einstellungen = "standard_theme=hell"   # auf einen sinnvollen Standard zurückfallen
+    with open("einstellungen.txt", "w") as datei:
+        datei.write(einstellungen)          # und die Datei fürs nächste Mal anlegen</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>Path("datei").exists()</code> aus <code>pathlib</code> eignet sich für eine schnelle Plausibilitätsprüfung oder eine freundlichere Fehlermeldung, sollte aber mit <code>try</code>/<code>except</code> kombiniert werden, statt sich allein darauf zu verlassen.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Modus <code>"a"</code> (anhängen) statt eines "prüfen-dann-erstellen"-Tanzes verwenden, wenn eine Datei einfach existieren und bereit sein soll, weitere Daten aufzunehmen — er erstellt die Datei automatisch, falls sie fehlt.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Wie liest und schreibt man JSON-Daten in eine Datei?</span>
+      <span class="q-badges"><span class="badge badge-tip">✦ Tipp</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">JSON ist einfach ein Textformat für Dictionaries und Listen. Das <code>json</code>-Modul ist ein Übersetzer zwischen Pythons nativen Objekten und diesem Textformat, sodass man die Zeichensetzung nie selbst von Hand schreiben muss.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text"><code>json.dump(objekt, datei)</code> verwenden, um ein Python-Objekt direkt als JSON in eine geöffnete Datei zu schreiben, und <code>json.load(datei)</code>, um JSON aus einer geöffneten Datei zurück in ein Python-Objekt zu lesen (typischerweise ein <code>dict</code> oder eine <code>list</code>). Die reinen String-Varianten <code>json.dumps()</code> und <code>json.loads()</code> konvertieren zu und von einem JSON-String statt einer Datei — nützlich, wenn das JSON nicht aus einer Datei stammt, sondern z. B. aus einer Netzwerkantwort.
+        <div class="code-block">import json
+
+daten = {"name": "Ada", "sprachen": ["Python", "SQL"]}
+
+with open("profil.json", "w") as datei:
+    json.dump(daten, datei, indent=2)   # formatiertes JSON in die Datei schreiben
+
+with open("profil.json") as datei:
+    geladen = json.load(datei)           # → {'name': 'Ada', 'sprachen': [...]}</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Merke das Namensmuster: die Varianten mit <strong>"s"</strong> (<code>dumps</code>/<code>loads</code>) arbeiten mit <strong>S</strong>trings; die einfachen Varianten (<code>dump</code>/<code>load</code>) arbeiten mit Dateiobjekten.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>json.load()</code> löst <code>json.JSONDecodeError</code> aus, wenn der Dateiinhalt kein gültiges JSON ist — lohnt sich, neben <code>FileNotFoundError</code> beim Laden von Konfigurationsdateien abzufangen.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA DE -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit diesem Thema fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du den Unterschied zwischen <code>import modul</code> und <code>from modul import name</code> erklären und ein Standardbibliotheksmodul korrekt importieren kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eine Datei mit <code>with open(...) as datei:</code> öffnen und erklären kannst, warum das sicherer ist als <code>open()</code> und <code>close()</code> manuell aufzurufen.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du die richtige Lesemethode — <code>read()</code>, <code>readline()</code>, <code>readlines()</code> oder zeilenweise Iteration — für eine gegebene Aufgabe wählen kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du sicher in eine Datei schreiben, eine fehlende Datei mit <code>try</code>/<code>except</code> behandeln und mit dem <code>json</code>-Modul eine JSON-Datei lesen oder schreiben kannst.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+
+</div><!-- end body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'lms_python-starter_05_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<script>
+/**
+ * No #tab-ar div exists above — Arabic isn't translated yet. Calling
+ * guardLanguageTab('ar') (defined in lesson-ui.js) creates the tab-ar
+ * panel from scratch and fills it with the shared "not yet translated"
+ * card, the same way phase-01-sql-mysql.html does it.
+ */
+guardLanguageTab('ar');
+</script>
+</body>
+</html>

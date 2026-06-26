@@ -129,7 +129,7 @@ code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,mon
       changes is how the code is organised — how easy it is to read, to test, and to extend.
     </p>
     <p>
-      The target for this topic is your own insulin calculation pipeline from DiaTwin.
+      The target for this topic is your own insulin calculation pipeline from past work.
       You know this code: you designed the logic, you understand the edge cases, and you
       know what the inputs and outputs mean. That domain knowledge makes it the perfect
       subject for an unaided refactor. You are not guessing at intent — you are expressing
@@ -151,7 +151,7 @@ code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,mon
 
   <div class="section">
     <h2>Work through them on the actual code</h2>
-    <p>Take <code>insulinCalculationService</code> (or a Python equivalent from DiaTwin) and apply each move. Write the before and after side-by-side in a comment.</p>
+    <p>Take your insulin calculation service (or a Python equivalent from your own codebase) and apply each move. Write the before and after side-by-side in a comment.</p>
 
     <!-- Move 1 -->
     <div class="step-card">
@@ -365,7 +365,7 @@ def total_dose(carbs: float, profile: dict, bg: float) -> float:
       </div>
       <div class="key-points">
         <div class="key-point"><div class="key-point-dot"></div>The refactoring move in this topic (splitting database calls from calculations) is not just aesthetics — it is what makes the calculation independently testable.</div>
-        <div class="key-point"><div class="key-point-dot"></div>In DiaTwin: functions that compute doses, check thresholds, or format messages should all be pure. Functions that read from MongoDB or call FHIR endpoints are the thin I/O boundary — test those with mocks.</div>
+        <div class="key-point"><div class="key-point-dot"></div>In a typical backend service: functions that compute doses, check thresholds, or format messages should all be pure. Functions that read from MongoDB or call FHIR endpoints are the thin I/O boundary — test those with mocks.</div>
       </div>
     </div>
   </div>
@@ -525,7 +525,7 @@ def total_dose(carbs: float, profile: dict, bg: float) -> float:
   <!-- SUCCESS CRITERIA -->
   <div class="must-block">
     <div class="must-block-title"><span>✓</span> You are done with this topic — and this course — when...</div>
-    <div class="must-item"><span class="must-bullet">✓</span>You have taken a real function from DiaTwin or Morafek and applied all five moves: type hints, docstring, split into single-responsibility functions, guard clauses, and assert tests.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You have taken a real function from your own past work and applied all five moves: type hints, docstring, split into single-responsibility functions, guard clauses, and assert tests.</div>
     <div class="must-item"><span class="must-bullet">✓</span>The assert tests pass on the refactored code, including at least two edge cases (zero input, invalid input that triggers a guard clause).</div>
     <div class="must-item"><span class="must-bullet">✓</span>You can explain why the refactored version is easier to test than the original — specifically naming which part of the original made isolated testing impossible.</div>
     <div class="must-item"><span class="must-bullet">✓</span>You have written a docstring that describes the contract (inputs, outputs, exceptions) without describing the implementation.</div>
@@ -555,7 +555,7 @@ def total_dose(carbs: float, profile: dict, bg: float) -> float:
       zu lesen, zu testen und zu erweitern ist.
     </p>
     <p>
-      Das Ziel für dieses Thema ist deine eigene Insulin-Berechnungspipeline aus DiaTwin.
+      Das Ziel für dieses Thema ist deine eigene Insulin-Berechnungspipeline aus früherer Arbeit.
       Du kennst diesen Code: du hast die Logik entworfen, du verstehst die Randfälle, und du
       weißt, was die Eingaben und Ausgaben bedeuten. Dieses Domänenwissen macht es zum
       perfekten Gegenstand für ein unbegleitetes Refactoring.
@@ -860,7 +860,7 @@ def total_dose(carbs: float, profile: dict, bg: float) -> float:
 
   <div class="must-block">
     <div class="must-block-title"><span>✓</span> Du bist mit diesem Thema — und diesem Kurs — fertig, wenn...</div>
-    <div class="must-item"><span class="must-bullet">✓</span>Du eine echte Funktion aus DiaTwin oder Morafek genommen und alle fünf Schritte angewendet hast: Type-Hints, Docstring, Aufteilung, Guard-Klauseln und Assert-Tests.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eine echte Funktion aus deiner eigenen früheren Arbeit genommen und alle fünf Schritte angewendet hast: Type-Hints, Docstring, Aufteilung, Guard-Klauseln und Assert-Tests.</div>
     <div class="must-item"><span class="must-bullet">✓</span>Die Assert-Tests auf dem refaktorierten Code bestehen, einschließlich mindestens zwei Randfälle (null Eingabe, ungültige Eingabe die eine Guard-Klausel auslöst).</div>
     <div class="must-item"><span class="must-bullet">✓</span>Du erklären kannst, warum die refaktorierte Version leichter zu testen ist — speziell was am Original isoliertes Testen unmöglich machte.</div>
     <div class="must-item"><span class="must-bullet">✓</span>Du einen Docstring geschrieben hast, der den Vertrag beschreibt (Eingaben, Ausgaben, Exceptions) ohne die Implementierung zu beschreiben.</div>
@@ -889,7 +889,7 @@ def total_dose(carbs: float, profile: dict, bg: float) -> float:
       قراءته واختباره وتوسيعه.
     </p>
     <p>
-      الهدف لهذا الموضوع هو خط أنابيب حساب الإنسولين الخاص بك من DiaTwin. أنت تعرف هذا الكود:
+      الهدف لهذا الموضوع هو خط أنابيب حساب الإنسولين الخاص بك من عمل سابق. أنت تعرف هذا الكود:
       صممت المنطق، تفهم الحالات الحدية، وتعرف ما تعنيه المدخلات والمخرجات. هذه المعرفة
       بالنطاق تجعله الموضوع المثالي لإعادة هيكلة مستقلة.
     </p>
@@ -1174,7 +1174,7 @@ def total_dose(carbs: float, profile: dict, bg: float) -> float:
 
   <div class="must-block">
     <div class="must-block-title"><span>✓</span> انتهيت من هذا الموضوع — ومن هذا المقرر — عندما...</div>
-    <div class="must-item"><span class="must-bullet">✓</span>أخذت دالة حقيقية من DiaTwin أو Morafek وطبّقت جميع الخطوات الخمس: تلميحات النوع، docstring، تقسيم، guard clauses، واختبارات assert.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>أخذت دالة حقيقية من عمل سابق وطبّقت جميع الخطوات الخمس: تلميحات النوع، docstring، تقسيم، guard clauses، واختبارات assert.</div>
     <div class="must-item"><span class="must-bullet">✓</span>اختبارات assert تنجح على الكود المُعاد هيكلته، بما في ذلك حالتان حدّيتان على الأقل (مدخل صفر، مدخل غير صالح يُشغّل guard clause).</div>
     <div class="must-item"><span class="must-bullet">✓</span>تستطيع شرح لماذا النسخة المُعاد هيكلتها أسهل للاختبار — بتسمية أي جزء من الأصل جعل الاختبار المعزول مستحيلاً.</div>
     <div class="must-item"><span class="must-bullet">✓</span>كتبت docstring يصف العقد (المدخلات، المخرجات، الاستثناءات) دون وصف التنفيذ.</div>

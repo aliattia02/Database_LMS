@@ -123,7 +123,7 @@ code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,mon
     <p>
       You've seen hundreds of Python functions. You can look at a function and immediately
       know whether it's correct. That skill — <strong>recognition</strong> — is real, and
-      it's built from all the Flask, DiaTwin, and Morafek code you've worked with.
+      it's built from all the Flask, healthcare-backend, and past production code you've worked with.
     </p>
     <p>
       But recognition and <strong>production</strong> are different cognitive skills. Recognition
@@ -144,7 +144,7 @@ code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,mon
     <div class="key-points">
       <div class="key-point"><div class="key-point-dot"></div><strong>Small enough to finish in 5 minutes</strong> — you get immediate feedback on whether you actually knew it or just thought you did.</div>
       <div class="key-point"><div class="key-point-dot"></div><strong>Logic, not I/O</strong> — no file reading, no API calls, no mocking required. Pure input-in, output-out functions.</div>
-      <div class="key-point"><div class="key-point-dot"></div><strong>Directly useful</strong> — string validation, code parsing, dict merging, and duplicate detection are patterns in your own DiaTwin and Morafek code.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Directly useful</strong> — string validation, code parsing, dict merging, and duplicate detection are patterns in your own production code.</div>
       <div class="key-point"><div class="key-point-dot"></div><strong>They force edge-case thinking</strong> — what if the string is empty? What if the list has one element? What if all dicts are empty?</div>
     </div>
   </div>
@@ -439,7 +439,7 @@ code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,mon
           dependencies (no database calls, no <code>datetime.now()</code> without injection, no
           file reads). All four functions here are testable because they are pure input-in /
           output-out: <code>assert validate_email("a@b.com") == True</code> works with zero setup.
-          This is the shape your DiaTwin utility functions should eventually have.
+          This is the shape your own utility functions should eventually have.
         </div>
       </div>
       <div class="key-points">
@@ -477,7 +477,7 @@ code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,mon
     <p>
       Du hast Hunderte von Python-Funktionen gesehen. Du kannst eine Funktion ansehen und sofort
       erkennen, ob sie korrekt ist. Diese Fähigkeit — <strong>Wiedererkennen</strong> — ist real
-      und wurde durch den gesamten Flask-, DiaTwin- und Morafek-Code aufgebaut, mit dem du gearbeitet hast.
+      und wurde durch den gesamten Flask-, Gesundheits-Backend- und früheren Produktionscode aufgebaut, mit dem du gearbeitet hast.
     </p>
     <p>
       Aber Wiedererkennen und <strong>Produzieren</strong> sind unterschiedliche kognitive Fähigkeiten.
@@ -498,7 +498,7 @@ code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,mon
     <div class="key-points">
       <div class="key-point"><div class="key-point-dot"></div><strong>Klein genug für 5 Minuten</strong> — du erhältst sofortiges Feedback, ob du es wirklich wusstest oder nur dachtest, es zu wissen.</div>
       <div class="key-point"><div class="key-point-dot"></div><strong>Logik, kein I/O</strong> — kein Dateilesen, keine API-Aufrufe, kein Mocking erforderlich. Reine Eingabe-rein, Ausgabe-raus Funktionen.</div>
-      <div class="key-point"><div class="key-point-dot"></div><strong>Direkt nützlich</strong> — String-Validierung, Code-Parsing, Dict-Zusammenführung und Duplikat-Erkennung sind Muster in deinem eigenen DiaTwin- und Morafek-Code.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Direkt nützlich</strong> — String-Validierung, Code-Parsing, Dict-Zusammenführung und Duplikat-Erkennung sind Muster in deinem eigenen Produktionscode.</div>
       <div class="key-point"><div class="key-point-dot"></div><strong>Sie erzwingen Edge-Case-Denken</strong> — was wenn der String leer ist? Was wenn die Liste ein Element hat? Was wenn alle Dicts leer sind?</div>
     </div>
   </div>
@@ -793,7 +793,7 @@ code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,mon
           kein <code>datetime.now()</code> ohne Injektion, kein Dateilesen). Alle vier Funktionen
           hier sind testbar weil sie reines Eingabe-rein / Ausgabe-raus sind:
           <code>assert validate_email("a@b.com") == True</code> funktioniert ohne Setup.
-          Das ist die Form, die deine DiaTwin-Hilfsfunktionen letztendlich haben sollten.
+          Das ist die Form, die deine eigenen Hilfsfunktionen letztendlich haben sollten.
         </div>
       </div>
       <div class="key-points">
@@ -829,7 +829,7 @@ code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,mon
     <h2>تستطيع قراءته. هل تستطيع كتابته؟</h2>
     <p>
       رأيت مئات من دوال بايثون. تستطيع النظر إلى دالة وتعرف فوراً إن كانت صحيحة.
-      هذه المهارة — <strong>التعرف</strong> — حقيقية، وبُنيت من كل كود Flask وDiaTwin وMorafek
+      هذه المهارة — <strong>التعرف</strong> — حقيقية، وبُنيت من كل كود Flask وخلفية صحية وعمل سابق
       الذي عملت معه.
     </p>
     <p>
@@ -850,7 +850,7 @@ code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,mon
     <div class="key-points">
       <div class="key-point"><div class="key-point-dot"></div><strong>صغيرة كفاية لإنجازها في 5 دقائق</strong> — تحصل على تغذية راجعة فورية إن كنت تعرف ذلك فعلاً أم كنت تظن ذلك فحسب.</div>
       <div class="key-point"><div class="key-point-dot"></div><strong>منطق لا I/O</strong> — لا قراءة ملفات، لا استدعاءات API، لا محاكاة مطلوبة. دوال نقية مدخل-داخل، مخرج-خارج.</div>
-      <div class="key-point"><div class="key-point-dot"></div><strong>مفيدة مباشرة</strong> — التحقق من السلاسل، تحليل الأكواد، دمج القواميس، واكتشاف التكرار هي أنماط في كودك DiaTwin وMorafek الخاص.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>مفيدة مباشرة</strong> — التحقق من السلاسل، تحليل الأكواد، دمج القواميس، واكتشاف التكرار هي أنماط في كودك الإنتاجي الخاص.</div>
       <div class="key-point"><div class="key-point-dot"></div><strong>تفرض التفكير في الحالات الحدية</strong> — ماذا لو كان النص فارغاً؟ ماذا لو كانت القائمة تحتوي عنصراً واحداً؟ ماذا لو كانت كل القواميس فارغة؟</div>
     </div>
   </div>
@@ -1138,7 +1138,7 @@ code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,mon
           لا <code dir="ltr">datetime.now()</code> بدون حقن، لا قراءة ملفات). الدوال الأربع هنا
           قابلة للاختبار لأنها نقية مدخل-داخل / مخرج-خارج:
           <code dir="ltr">assert validate_email("a@b.com") == True</code> تعمل بدون أي إعداد.
-          هذا الشكل الذي يجب أن تكون عليه دوال الأدوات في DiaTwin في نهاية المطاف.
+          هذا الشكل الذي يجب أن تكون عليه دوال الأدوات الخاصة بك في نهاية المطاف.
         </div>
       </div>
       <div class="key-points">

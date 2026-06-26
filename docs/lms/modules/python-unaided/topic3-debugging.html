@@ -357,7 +357,7 @@ calculate_iob_buggy([5.0, 3.0], [30, 90])
   <div class="q-card" data-lang="en">
     <button class="q-trigger" onclick="toggle(this)">
       <span class="q-num">02</span>
-      <span class="q-text">What is a conditional breakpoint, and when would you use one in a DiaTwin context?</span>
+      <span class="q-text">What is a conditional breakpoint, and when would you use one in a hospital-data context?</span>
       <span class="q-badges"><span class="badge badge-common">★ Commonly tested</span></span>
       <span class="q-arrow">▾</span>
     </button>
@@ -371,7 +371,7 @@ calculate_iob_buggy([5.0, 3.0], [30, 90])
           only pauses when that expression evaluates to <code>True</code>. Right-click on a
           breakpoint dot → "Edit breakpoint" → type your condition (e.g.
           <code>patient_id == "P-00923"</code> or <code>iob_value &gt; 10.0</code>).
-          In DiaTwin, this is useful when processing a batch of 500 CGM records and the
+          In a hospital-data pipeline, this is useful when processing a batch of 500 CGM records and the
           wrong result only appears for one specific patient — you can pause exactly on that
           patient without stepping through the other 499.
         </div>
@@ -495,7 +495,7 @@ calculate_iob_buggy([5.0, 3.0], [30, 90])
         </div>
       </div>
       <div class="key-points">
-        <div class="key-point"><div class="key-point-dot"></div>In DiaTwin / Morafek, every service should have a module-level logger: <code>logger = logging.getLogger(__name__)</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>In a typical service codebase, every module should have a module-level logger: <code>logger = logging.getLogger(__name__)</code>.</div>
         <div class="key-point"><div class="key-point-dot"></div>Committed <code>print()</code> statements in server-side code will appear in production logs and may leak patient data. Use <code>logging</code> with level guards instead.</div>
       </div>
     </div>
@@ -681,7 +681,7 @@ calculate_iob_buggy([5.0, 3.0], [30, 90])
   <div class="q-card" data-lang="de">
     <button class="q-trigger" onclick="toggle(this)">
       <span class="q-num">02</span>
-      <span class="q-text">Was ist ein bedingter Breakpoint, und wann würdest du ihn in einem DiaTwin-Kontext verwenden?</span>
+      <span class="q-text">Was ist ein bedingter Breakpoint, und wann würdest du ihn in einem Kontext mit Krankenhausdaten verwenden?</span>
       <span class="q-badges"><span class="badge badge-common">★ Häufig gefragt</span></span>
       <span class="q-arrow">▾</span>
     </button>
@@ -694,7 +694,7 @@ calculate_iob_buggy([5.0, 3.0], [30, 90])
           Ein bedingter Breakpoint ist ein Breakpoint mit einer angehängten Bedingungsausdruck.
           PyCharm pausiert nur, wenn dieser Ausdruck <code>True</code> ergibt. Rechtsklick auf
           den Breakpoint-Punkt → "Breakpoint bearbeiten" → Bedingung eingeben (z.B.
-          <code>patient_id == "P-00923"</code>). In DiaTwin ist das nützlich, wenn du einen
+          <code>patient_id == "P-00923"</code>). In einer Krankenhaus-Datenpipeline ist das nützlich, wenn du einen
           Batch von 500 CGM-Datensätzen verarbeitest und das falsche Ergebnis nur für einen
           bestimmten Patienten auftaucht.
         </div>
@@ -806,7 +806,7 @@ calculate_iob_buggy([5.0, 3.0], [30, 90])
         </div>
       </div>
       <div class="key-points">
-        <div class="key-point"><div class="key-point-dot"></div>In DiaTwin/Morafek sollte jeder Service einen Logger auf Modulebene haben: <code>logger = logging.getLogger(__name__)</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>In einer typischen Service-Codebasis sollte jeder Service einen Logger auf Modulebene haben: <code>logger = logging.getLogger(__name__)</code>.</div>
         <div class="key-point"><div class="key-point-dot"></div>Committete <code>print()</code>-Statements in serverseitigem Code erscheinen in Produktionsprotokollen und können Patientendaten leaken. Stattdessen <code>logging</code> mit Level-Guards verwenden.</div>
       </div>
     </div>
@@ -988,7 +988,7 @@ calculate_iob_buggy([5.0, 3.0], [30, 90])
   <div class="q-card" data-lang="ar">
     <button class="q-trigger" onclick="toggle(this)">
       <span class="q-num">02</span>
-      <span class="q-text">ما هي نقطة التوقف المشروطة، ومتى تستخدمها في سياق DiaTwin؟</span>
+      <span class="q-text">ما هي نقطة التوقف المشروطة، ومتى تستخدمها في سياق بيانات المستشفى؟</span>
       <span class="q-badges"><span class="badge badge-common">★ يُختبر كثيراً</span></span>
       <span class="q-arrow">▾</span>
     </button>
@@ -1001,7 +1001,7 @@ calculate_iob_buggy([5.0, 3.0], [30, 90])
           نقطة التوقف المشروطة هي نقطة توقف مع تعبير شرطي مرفق. PyCharm يتوقف فقط حين
           يُقيَّم ذلك التعبير إلى <code dir="ltr">True</code>. انقر بالزر الأيمن على نقطة
           التوقف → "تحرير نقطة التوقف" → أدخل الشرط (مثل <code dir="ltr">patient_id == "P-00923"</code>).
-          في DiaTwin، هذا مفيد حين تعالج دفعة من 500 سجل CGM والنتيجة الخاطئة تظهر فقط
+          في خط بيانات المستشفى، هذا مفيد حين تعالج دفعة من 500 سجل CGM والنتيجة الخاطئة تظهر فقط
           لمريض محدد.
         </div>
       </div>
@@ -1107,7 +1107,7 @@ calculate_iob_buggy([5.0, 3.0], [30, 90])
         </div>
       </div>
       <div class="key-points">
-        <div class="key-point"><div class="key-point-dot"></div>في DiaTwin/Morafek، كل خدمة يجب أن تملك logger على مستوى الوحدة: <code dir="ltr">logger = logging.getLogger(__name__)</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>في قاعدة كود خدمية نموذجية، كل خدمة يجب أن تملك logger على مستوى الوحدة: <code dir="ltr">logger = logging.getLogger(__name__)</code>.</div>
         <div class="key-point"><div class="key-point-dot"></div>عبارات <code dir="ltr">print()</code> المُودَعة في كود جانب الخادم تظهر في سجلات الإنتاج وقد تُسرّب بيانات المرضى. استخدم <code dir="ltr">logging</code> بحراسات المستوى عوضاً عن ذلك.</div>
       </div>
     </div>

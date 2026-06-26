@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Index | Python Starter</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── lesson_index-specific styles ── */
+.intro-text { color:var(--slate); font-size:14px; line-height:1.7; max-width:680px; margin-bottom:26px; }
+
+.course-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; }
+
+.course-card {
+  background:var(--white); border:1px solid var(--border); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:16px 18px; text-align:left; cursor:pointer;
+  display:flex; flex-direction:column; gap:8px; font-family:inherit; width:100%;
+  transition:border-color .15s ease, transform .15s ease;
+}
+.course-card:hover { border-color:var(--blue); transform:translateY(-2px); }
+.course-card:focus-visible { outline:2px solid var(--blue); outline-offset:2px; }
+
+.course-card-top { display:flex; align-items:center; gap:10px; }
+.course-num {
+  width:26px; height:26px; border-radius:7px; background:var(--blue-bg); color:var(--blue);
+  font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.course-title    { font-size:14px; font-weight:700; color:var(--navy); }
+.course-subtitle { font-size:12.5px; color:var(--slate); line-height:1.55; }
+.course-open     { margin-top:auto; font-size:11.5px; font-weight:600; color:var(--blue); display:flex; align-items:center; gap:4px; }
+
+/* Featured style for General Overview + Mind Map cards */
+.course-card.featured { border-color:var(--blue-border); background:var(--blue-bg); }
+.course-card.featured .course-num { background:var(--blue); color:#fff; }
+
+/* RTL overrides */
+[dir="rtl"] .course-card       { text-align:right; }
+[dir="rtl"] .course-card-top   { flex-direction:row-reverse; }
+[dir="rtl"] .course-open       { flex-direction:row-reverse; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Python Course &mdash; Course Index</div>
+    <h1>Python Starter Track</h1>
+    <p class="header-sub">Foundational Python: variables, control flow, functions, data structures, and file I/O — everything you need before building backend services.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+  <div class="body">
+
+    <!-- ═══ ENGLISH TAB ═══ -->
+    <div id="tab-en" class="tab-content active">
+      <p class="intro-text">Start with <strong>General Overview</strong>, then <strong>Mind Map</strong>, then work through the five topic lessons in order.</p>
+      <div class="course-grid">
+
+        <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/general.html')">
+          <div class="course-card-top">
+            <span class="course-num">01</span>
+            <span class="course-title">General Overview</span>
+          </div>
+          <span class="course-subtitle">What you already know, what's new in this track, and the success criteria for all five topics.</span>
+          <span class="course-open">Open lesson →</span>
+        </button>
+
+        <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/topic0-mindmap.html')">
+          <div class="course-card-top">
+            <span class="course-num">02</span>
+            <span class="course-title">Mind Map</span>
+          </div>
+          <span class="course-subtitle">Interactive map of the full Python topic ecosystem — tap any concept to see why it matters.</span>
+          <span class="course-open">Open lesson →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic1-variables-types.html')">
+          <div class="course-card-top">
+            <span class="course-num">03</span>
+            <span class="course-title">Variables &amp; Data Types</span>
+          </div>
+          <span class="course-subtitle">The six built-in scalar types, assignment rules, and safe type conversion.</span>
+          <span class="course-open">Open lesson →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic2-control-flow.html')">
+          <div class="course-card-top">
+            <span class="course-num">04</span>
+            <span class="course-title">Control Flow</span>
+          </div>
+          <span class="course-subtitle"><code>if/elif/else</code>, <code>for</code> loops, <code>while</code> loops, <code>break</code>, <code>continue</code> — and handling edge cases correctly.</span>
+          <span class="course-open">Open lesson →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic3-functions.html')">
+          <div class="course-card-top">
+            <span class="course-num">05</span>
+            <span class="course-title">Functions</span>
+          </div>
+          <span class="course-subtitle">Defining functions with positional and keyword arguments, return values, and LEGB scope.</span>
+          <span class="course-open">Open lesson →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic4-data-structures.html')">
+          <div class="course-card-top">
+            <span class="course-num">06</span>
+            <span class="course-title">Data Structures</span>
+          </div>
+          <span class="course-subtitle">Lists, tuples, dictionaries, and sets — and how to choose the right one for each problem.</span>
+          <span class="course-open">Open lesson →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic5-modules-file-io.html')">
+          <div class="course-card-top">
+            <span class="course-num">07</span>
+            <span class="course-title">Modules &amp; File I/O</span>
+          </div>
+          <span class="course-subtitle">Importing standard-library modules and safely opening, reading, and writing files.</span>
+          <span class="course-open">Open lesson →</span>
+        </button>
+
+      </div>
+    </div><!-- /tab-en -->
+
+    <!-- ═══ GERMAN TAB ═══ -->
+    <div id="tab-de" class="tab-content">
+      <p class="intro-text">Beginne mit dem <strong>Allgemeinen Überblick</strong>, dann der <strong>Mindmap</strong>, dann die fünf Themenmodule der Reihe nach.</p>
+      <div class="course-grid">
+
+        <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/general.html')">
+          <div class="course-card-top">
+            <span class="course-num">01</span>
+            <span class="course-title">Allgemeiner Überblick</span>
+          </div>
+          <span class="course-subtitle">Was du schon weißt, was neu ist und die Erfolgskriterien für alle fünf Themen.</span>
+          <span class="course-open">Lektion öffnen →</span>
+        </button>
+
+        <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/topic0-mindmap.html')">
+          <div class="course-card-top">
+            <span class="course-num">02</span>
+            <span class="course-title">Mindmap</span>
+          </div>
+          <span class="course-subtitle">Interaktive Karte des gesamten Python-Ökosystems — tippe auf ein Konzept, um mehr zu erfahren.</span>
+          <span class="course-open">Lektion öffnen →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic1-variables-types.html')">
+          <div class="course-card-top">
+            <span class="course-num">03</span>
+            <span class="course-title">Variablen &amp; Datentypen</span>
+          </div>
+          <span class="course-subtitle">Die sechs eingebauten Skalartypen, Zuweisungsregeln und sichere Typkonvertierung.</span>
+          <span class="course-open">Lektion öffnen →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic2-control-flow.html')">
+          <div class="course-card-top">
+            <span class="course-num">04</span>
+            <span class="course-title">Kontrollfluss</span>
+          </div>
+          <span class="course-subtitle"><code>if/elif/else</code>, <code>for</code>-Schleifen, <code>while</code>-Schleifen, <code>break</code>, <code>continue</code> — und korrekter Umgang mit Randfällen.</span>
+          <span class="course-open">Lektion öffnen →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic3-functions.html')">
+          <div class="course-card-top">
+            <span class="course-num">05</span>
+            <span class="course-title">Funktionen</span>
+          </div>
+          <span class="course-subtitle">Funktionen mit positionalen und Keyword-Argumenten, Rückgabewerten und LEGB-Scope definieren.</span>
+          <span class="course-open">Lektion öffnen →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic4-data-structures.html')">
+          <div class="course-card-top">
+            <span class="course-num">06</span>
+            <span class="course-title">Datenstrukturen</span>
+          </div>
+          <span class="course-subtitle">Listen, Tupel, Dictionaries und Sets — und wie man die richtige für jedes Problem auswählt.</span>
+          <span class="course-open">Lektion öffnen →</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic5-modules-file-io.html')">
+          <div class="course-card-top">
+            <span class="course-num">07</span>
+            <span class="course-title">Module &amp; Datei-I/O</span>
+          </div>
+          <span class="course-subtitle">Importieren von Standardbibliotheksmodulen und sicheres Öffnen, Lesen und Schreiben von Dateien.</span>
+          <span class="course-open">Lektion öffnen →</span>
+        </button>
+
+      </div>
+    </div><!-- /tab-de -->
+
+    <!-- ═══ ARABIC TAB ═══ -->
+    <div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+      <p class="intro-text">ابدأ بـ<strong>النظرة العامة</strong>، ثم <strong>الخريطة الذهنية</strong>، ثم دروس الموضوعات الخمسة بالترتيب.</p>
+      <div class="course-grid">
+
+        <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/general.html')">
+          <div class="course-card-top">
+            <span class="course-num">01</span>
+            <span class="course-title">النظرة العامة</span>
+          </div>
+          <span class="course-subtitle">ما تعرفه بالفعل، ما هو جديد في هذا المسار، ومعايير النجاح للموضوعات الخمسة.</span>
+          <span class="course-open">فتح الدرس ←</span>
+        </button>
+
+        <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/topic0-mindmap.html')">
+          <div class="course-card-top">
+            <span class="course-num">02</span>
+            <span class="course-title">الخريطة الذهنية</span>
+          </div>
+          <span class="course-subtitle">خريطة تفاعلية لكامل نظام Python — اضغط على أي مفهوم لمعرفة أهميته.</span>
+          <span class="course-open">فتح الدرس ←</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic1-variables-types.html')">
+          <div class="course-card-top">
+            <span class="course-num">03</span>
+            <span class="course-title">المتغيرات وأنواع البيانات</span>
+          </div>
+          <span class="course-subtitle">الأنواع الستة المدمجة وقواعد الإسناد والتحويل الآمن بين الأنواع.</span>
+          <span class="course-open">فتح الدرس ←</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic2-control-flow.html')">
+          <div class="course-card-top">
+            <span class="course-num">04</span>
+            <span class="course-title">تدفق التحكم</span>
+          </div>
+          <span class="course-subtitle"><code dir="ltr">if/elif/else</code> وحلقات <code dir="ltr">for</code> و<code dir="ltr">while</code> و<code dir="ltr">break</code> و<code dir="ltr">continue</code> — والتعامل الصحيح مع الحالات الحدية.</span>
+          <span class="course-open">فتح الدرس ←</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic3-functions.html')">
+          <div class="course-card-top">
+            <span class="course-num">05</span>
+            <span class="course-title">الدوال</span>
+          </div>
+          <span class="course-subtitle">تعريف الدوال بمعاملات موضعية ومعاملات بالاسم وقيم الإرجاع ونطاق LEGB.</span>
+          <span class="course-open">فتح الدرس ←</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic4-data-structures.html')">
+          <div class="course-card-top">
+            <span class="course-num">06</span>
+            <span class="course-title">هياكل البيانات</span>
+          </div>
+          <span class="course-subtitle">القوائم والـtuples والقواميس والمجموعات — وكيفية اختيار المناسب لكل مسألة.</span>
+          <span class="course-open">فتح الدرس ←</span>
+        </button>
+
+        <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic5-modules-file-io.html')">
+          <div class="course-card-top">
+            <span class="course-num">07</span>
+            <span class="course-title">الوحدات وقراءة/كتابة الملفات</span>
+          </div>
+          <span class="course-subtitle">استيراد وحدات المكتبة القياسية وفتح الملفات وقراءتها وكتابتها بأمان.</span>
+          <span class="course-open">فتح الدرس ←</span>
+        </button>
+
+      </div>
+    </div><!-- /tab-ar -->
+
+  </div><!-- end body -->
+</main>
+
+<script src="../shared/lesson-ui.js"></script>
+<script>
+/**
+ * python-starter — lesson_index.html
+ * openLesson() sends a postMessage to the parent shell so card clicks
+ * navigate within the shell (sidebar highlights, back button works).
+ * The location.href fallback handles standalone / direct-URL access.
+ */
+function openLesson(route) {
+  if (window.parent !== window) {
+    try {
+      window.parent.postMessage({ type: 'lms:openLesson', route: route }, '*');
+      return;
+    } catch (_) {}
+  }
+  location.href = route.replace('lms/modules/python-starter/', './');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 2 — Control Flow | Python Starter</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── Topic page-specific styles — copy this block verbatim ── */
+.badge { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must   { background:#fef3c7; color:#92400e; }
+.badge-common { background:#dbeafe; color:#1e40af; }
+.badge-tip    { background:#f0fdf4; color:#166534; }
+
+.q-arrow { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel { padding:18px 20px 16px 52px; }
+
+.strategy-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text  { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+
+.answer-box       { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text  { font-size:13.5px; color:#14532d; line-height:1.7; }
+
+.warning-box      { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text { font-size:13px; color:var(--amber-text); line-height:1.55; }
+
+.key-points    { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point     { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin:10px 0; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; }
+
+.section    { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2 { font-size:18px; font-weight:700; margin-bottom:14px; }
+.section p  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+.type-table { width:100%; border-collapse:collapse; margin:12px 0; font-size:13px; }
+.type-table th { background:#f1f5f9; color:var(--navy); font-weight:700; text-align:left; padding:8px 12px; border:1px solid var(--border); }
+.type-table td { padding:7px 12px; border:1px solid var(--border); color:#334155; vertical-align:top; }
+.type-table tr:nth-child(even) td { background:#fafbfc; }
+.type-badge { font-size:11px; font-weight:700; padding:1px 7px; border-radius:99px; background:#eff6ff; color:#1d4ed8; white-space:nowrap; }
+
+.must-block       { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item        { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet      { font-size:15px; flex-shrink:0; }
+
+/* RTL overrides */
+[dir="rtl"] .q-panel         { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point        { flex-direction:row-reverse; }
+[dir="rtl"] .must-item        { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title { flex-direction:row-reverse; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .section .code-block { direction:ltr; text-align:left; }
+
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Python Starter &mdash; Topic 2 of 5</div>
+    <h1><span>Control</span> Flow</h1>
+    <p class="header-sub">Master conditional branching with <code>if/elif/else</code>, iterate with <code>for</code> and <code>while</code> loops, and use <code>break</code> and <code>continue</code> to steer execution — the logic engine behind every Python program.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <!-- SECTION 1: if / elif / else -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🔀</div>
+    <div>
+      <div class="section-title">if / elif / else</div>
+      <div class="section-subtitle">Conditional branching — making decisions in code</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Branching with if, elif, and else</h2>
+    <p>Python evaluates the first condition that is <strong>truthy</strong> and runs that block. All other branches are skipped. Indentation (4 spaces) is mandatory — it replaces the curly braces used in other languages.</p>
+    <div class="code-block">score = 78
+
+if score >= 90:
+    grade = "A"
+elif score >= 75:
+    grade = "B"       # ← this branch runs; score is 78
+elif score >= 60:
+    grade = "C"
+else:
+    grade = "F"       # fallback if nothing above matched
+
+print(grade)          # → B</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Comparison operators:</strong> <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>. Use <code>==</code> for equality, never <code>=</code> (that's assignment).</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Logical operators:</strong> <code>and</code>, <code>or</code>, <code>not</code>. Python uses words, not <code>&amp;&amp;</code> / <code>||</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>You can chain comparisons naturally: <code>0 &lt;= x &lt; 100</code> is valid Python and reads exactly as in mathematics.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>elif</code> and <code>else</code> are optional. A bare <code>if</code> with no else is perfectly valid.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: for loops -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🔁</div>
+    <div>
+      <div class="section-title">for Loops</div>
+      <div class="section-subtitle">Iterating over sequences — the most common loop in Python</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Iterating with for and range()</h2>
+    <p>A <code>for</code> loop in Python iterates over any <strong>iterable</strong> — a list, string, range, tuple, dictionary, or file — one item at a time. You never need to manage an index counter manually.</p>
+    <div class="code-block"># Loop over a list
+fruits = ["apple", "banana", "cherry"]
+for fruit in fruits:
+    print(fruit)          # apple, then banana, then cherry
+
+# Loop a fixed number of times with range()
+for i in range(5):        # 0, 1, 2, 3, 4
+    print(i)
+
+# range(start, stop, step)
+for n in range(2, 11, 2): # 2, 4, 6, 8, 10
+    print(n)
+
+# Loop with index AND value — use enumerate()
+for idx, val in enumerate(fruits):
+    print(idx, val)       # 0 apple, 1 banana, 2 cherry</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code>range(stop)</code> → 0 to stop−1. <code>range(start, stop)</code> → start to stop−1. <code>range(start, stop, step)</code> → every step-th value.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>range</code> is lazy — it does not build a list in memory. Use <code>list(range(5))</code> if you need an actual list.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Prefer <code>enumerate()</code> over manually tracking an index variable — it is more readable and less error-prone.</div>
+      <div class="key-point"><div class="key-point-dot"></div>To loop over two lists in parallel, use <code>zip(list_a, list_b)</code>.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: while loops -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">🔄</div>
+    <div>
+      <div class="section-title">while Loops</div>
+      <div class="section-subtitle">Repeating until a condition becomes false</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Repeating with while</h2>
+    <p>A <code>while</code> loop runs its body as long as its condition is truthy. Use it when you do not know ahead of time how many iterations are needed — for example, reading user input until it is valid, or polling until a resource is ready.</p>
+    <div class="code-block"># Classic countdown
+count = 5
+while count > 0:
+    print(count)
+    count -= 1
+print("Done!")            # → 5 4 3 2 1 Done!
+
+# Validate user input
+while True:               # infinite loop — exited with break
+    raw = input("Enter a positive number: ")
+    if raw.isdigit() and int(raw) > 0:
+        number = int(raw)
+        break
+    print("Invalid — try again.")</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Always make sure the loop condition will eventually become <code>False</code>, or use <code>break</code> — an infinite loop freezes your program.</div>
+      <div class="key-point"><div class="key-point-dot"></div>The <code>while True: … break</code> pattern is idiomatic Python for "keep asking until valid input is received".</div>
+      <div class="key-point"><div class="key-point-dot"></div>If you find yourself writing a <code>while</code> loop with a counter variable, a <code>for … range()</code> is usually clearer.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: break / continue / else -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">⚡</div>
+    <div>
+      <div class="section-title">break, continue &amp; Loop else</div>
+      <div class="section-subtitle">Fine-grained control inside loops</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Steering loops with break, continue, and else</h2>
+    <p><code>break</code> exits the loop immediately. <code>continue</code> skips the rest of the current iteration and jumps to the next one. The optional <code>else</code> clause on a loop runs only if the loop was <em>not</em> terminated by <code>break</code>.</p>
+    <div class="code-block"># break — stop as soon as the target is found
+numbers = [3, 7, 2, 9, 4]
+for n in numbers:
+    if n == 9:
+        print("Found 9!")
+        break           # exits loop; else clause does NOT run
+
+# continue — skip even numbers, print only odds
+for n in range(1, 10):
+    if n % 2 == 0:
+        continue        # jump to next iteration
+    print(n)            # → 1 3 5 7 9
+
+# loop else — runs only if break was never hit
+for n in numbers:
+    if n == 99:
+        print("Found 99!")
+        break
+else:
+    print("99 not found in list")  # ← this runs</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong><code>break</code></strong> exits the <em>innermost</em> loop only. To break out of nested loops, use a flag variable or refactor into a function and use <code>return</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong><code>continue</code></strong> is useful for filtering: skip items you don't care about and keep the happy-path logic un-nested.</div>
+      <div class="key-point"><div class="key-point-dot"></div>The <strong>loop <code>else</code></strong> is Python-specific and often surprises developers from other languages. Use it for "search and report if not found" patterns.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">Quick reference</h2>
+    <table class="type-table">
+      <tr>
+        <th>Keyword</th>
+        <th>Where it can appear</th>
+        <th>What it does</th>
+      </tr>
+      <tr>
+        <td><span class="type-badge">break</span></td>
+        <td><code>for</code> or <code>while</code></td>
+        <td>Exits the innermost loop immediately</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">continue</span></td>
+        <td><code>for</code> or <code>while</code></td>
+        <td>Skips to the next iteration</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">else</span> (loop)</td>
+        <td>After <code>for</code> or <code>while</code></td>
+        <td>Runs only if the loop finished without hitting <code>break</code></td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">pass</span></td>
+        <td>Anywhere a statement is required</td>
+        <td>Does nothing — placeholder for an empty block</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Q&A ACCORDION -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">Typical interview and self-check questions on control flow</div>
+    </div>
+  </div>
+
+  <!-- Q01 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">How does Python evaluate conditions in an <code>if</code> statement? What values are falsy?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Python doesn't require a boolean — any value can stand in as a condition. Knowing the falsy set lets you write cleaner, more idiomatic guards.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">Python converts the condition to a boolean using the object's <code>__bool__</code> method. The <strong>falsy</strong> values are: <code>False</code>, <code>0</code>, <code>0.0</code>, <code>0j</code>, <code>None</code>, <code>""</code>, <code>[]</code>, <code>{}</code>, <code>()</code>, and <code>set()</code>. Every other value is truthy. This means <code>if my_list:</code> is the idiomatic way to check whether a list is non-empty — no need for <code>len(my_list) &gt; 0</code>.</div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code>if value == False:</code> also matches <code>0</code> and <code>0.0</code>. Use <code>if value is False:</code> when you specifically need the boolean singleton.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Memorise the falsy set: <code>None</code>, <code>0</code>, empty string, empty container.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Prefer <code>if items:</code> over <code>if len(items) != 0:</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">What is the difference between a <code>for</code> loop and a <code>while</code> loop? When would you use each?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">A <code>for</code> loop says "do this for each item in a sequence". A <code>while</code> loop says "keep doing this until a condition changes". The key question is: do you know the collection up front?</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">Use a <code>for</code> loop when you have a known iterable (list, range, string, file) — it is cleaner and removes the risk of off-by-one errors. Use a <code>while</code> loop when the number of iterations depends on a condition evaluated at runtime, such as waiting for valid user input, polling a sensor, or reading a stream until EOF. In practice, <code>for</code> loops are far more common in Python.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>for</code> loop → known collection; <code>while</code> loop → unknown duration.</div>
+        <div class="key-point"><div class="key-point-dot"></div>A <code>while</code> loop with a counter (<code>i = 0; while i &lt; 10: i += 1</code>) should almost always be a <code>for i in range(10):</code> instead.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">What does <code>range()</code> return, and what are its three argument forms?</span>
+      <span class="q-badges"><span class="badge badge-common">● Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Think of <code>range</code> as a lazy arithmetic sequence — it remembers the start, stop, and step, and computes each value on demand. It never holds all the numbers in memory at once.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text"><code>range()</code> returns a <code>range</code> object (a lazy sequence), not a list. Its three forms are: <code>range(stop)</code> → 0 up to stop−1; <code>range(start, stop)</code> → start up to stop−1; <code>range(start, stop, step)</code> → every step-th value from start up to stop−1. A negative step counts downward: <code>range(10, 0, -1)</code> yields 10, 9, … 1.
+        <div class="code-block">range(5)          # 0 1 2 3 4
+range(2, 7)       # 2 3 4 5 6
+range(0, 10, 3)   # 0 3 6 9
+range(5, 0, -1)   # 5 4 3 2 1</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ The stop value is <strong>exclusive</strong> — <code>range(1, 5)</code> gives 1, 2, 3, 4 — not 5. This catches many beginners off guard.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>range</code> supports <code>len()</code>, membership tests (<code>7 in range(10)</code>), and slicing — all in O(1).</div>
+        <div class="key-point"><div class="key-point-dot"></div>Wrap with <code>list()</code> only when you genuinely need a list: <code>list(range(5))</code> → <code>[0, 1, 2, 3, 4]</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">How do <code>break</code> and <code>continue</code> differ, and what does the <code>else</code> clause on a loop do?</span>
+      <span class="q-badges"><span class="badge badge-common">● Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text"><code>break</code> is an emergency exit from the loop. <code>continue</code> is a skip-this-item signal. The loop <code>else</code> is a "we finished without finding it" notification — it only fires when <code>break</code> was never reached.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text"><code>break</code> terminates the innermost loop immediately and jumps past it. <code>continue</code> skips the remaining statements in the current iteration and goes back to the loop header to check the condition (or move to the next item). The <code>else</code> clause attached to a <code>for</code> or <code>while</code> loop runs only if the loop completed normally — i.e., it was never exited via <code>break</code>. This makes the loop <code>else</code> ideal for "search and report not found" patterns without needing a separate flag variable.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>break</code> exits only the loop it is directly inside — nested loops require a flag or restructuring to break multiple levels.</div>
+        <div class="key-point"><div class="key-point-dot"></div>The loop <code>else</code> is Python-specific — developers from other languages are often surprised by it.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">How do you loop over a list while keeping track of each element's index?</span>
+      <span class="q-badges"><span class="badge badge-tip">✦ Tip</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Resist the urge to use <code>range(len(...))</code> — it obscures intent. Python gives you <code>enumerate()</code> precisely for this job, and it's the idiomatic choice interviewers expect to see.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">Use <code>enumerate(iterable, start=0)</code>. It yields <code>(index, value)</code> tuples, so you can unpack both in the loop header:
+        <div class="code-block">colors = ["red", "green", "blue"]
+
+# Idiomatic — use enumerate
+for i, color in enumerate(colors):
+    print(f"{i}: {color}")   # 0: red, 1: green, 2: blue
+
+# Start counting from 1 instead of 0
+for i, color in enumerate(colors, start=1):
+    print(f"{i}. {color}")   # 1. red, 2. green, 3. blue
+
+# Avoid this — range(len()) is verbose and fragile
+for i in range(len(colors)):
+    print(colors[i])          # works but not idiomatic</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>enumerate()</code> works on any iterable, not just lists: strings, tuples, file lines, etc.</div>
+        <div class="key-point"><div class="key-point-dot"></div>To loop two lists together, use <code>zip()</code>: <code>for a, b in zip(list1, list2):</code> — stops at the shorter list.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">What is a common mistake when modifying a list while iterating over it with a <code>for</code> loop?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Modifying a list mid-iteration is like pulling planks from a bridge while walking across it — the iterator loses its footing and items get skipped or cause errors.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">Removing or inserting items into a list while iterating over it shifts indices, causing items to be silently skipped or triggering an <code>IndexError</code>. The safe alternatives are: iterate over a <em>copy</em> of the list (<code>for item in my_list[:]:</code>), or build a new list with a list comprehension (<code>[x for x in my_list if condition]</code>).
+        <div class="code-block"># ❌ Buggy — items get skipped
+nums = [1, 2, 3, 4, 5]
+for n in nums:
+    if n % 2 == 0:
+        nums.remove(n)     # shifts indices → 3 survives unscanned
+print(nums)               # [1, 3, 5]  ← wrong! 3 survived by luck
+
+# ✅ Safe — iterate over a copy
+for n in nums[:]:
+    if n % 2 == 0:
+        nums.remove(n)
+
+# ✅ Idiomatic — list comprehension
+nums = [n for n in nums if n % 2 != 0]</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ The same problem applies to dictionaries — never add or remove keys from a dict inside a <code>for key in dict:</code> loop. Iterate over <code>list(dict.keys())</code> instead.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Prefer list comprehensions for filtering — they are faster, safer, and more Pythonic than in-place deletion inside a loop.</div>
+        <div class="key-point"><div class="key-point-dot"></div>If you must mutate in-place, loop in reverse: <code>for i in range(len(lst)-1, -1, -1):</code> and delete by index.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA EN -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done with this topic when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can write an <code>if/elif/else</code> chain using comparison and logical operators without looking up the syntax.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can use <code>for</code> with <code>range()</code>, <code>enumerate()</code>, and <code>zip()</code> comfortably in real code.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can write a <code>while True</code> input-validation loop that exits cleanly with <code>break</code>.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain what the loop <code>else</code> clause does — and why modifying a list inside a <code>for</code> loop is dangerous.</div>
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <!-- SECTION 1 DE: if / elif / else -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🔀</div>
+    <div>
+      <div class="section-title">if / elif / else</div>
+      <div class="section-subtitle">Bedingte Verzweigung — Entscheidungen im Code treffen</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Verzweigung mit if, elif und else</h2>
+    <p>Python wertet die erste Bedingung aus, die <strong>truthy</strong> ist, und führt diesen Block aus. Alle anderen Zweige werden übersprungen. Einrückung (4 Leerzeichen) ist obligatorisch — sie ersetzt die geschweiften Klammern anderer Sprachen.</p>
+    <div class="code-block">punkte = 78
+
+if punkte >= 90:
+    note = "Sehr gut"
+elif punkte >= 75:
+    note = "Gut"          # ← dieser Zweig wird ausgeführt
+elif punkte >= 60:
+    note = "Befriedigend"
+else:
+    note = "Nicht bestanden"
+
+print(note)               # → Gut</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Vergleichsoperatoren:</strong> <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>. Verwende <code>==</code> für Gleichheit, niemals <code>=</code> (das ist Zuweisung).</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong>Logische Operatoren:</strong> <code>and</code>, <code>or</code>, <code>not</code>. Python verwendet Wörter, nicht <code>&amp;&amp;</code> / <code>||</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Vergleiche können verkettet werden: <code>0 &lt;= x &lt; 100</code> ist gültiges Python und liest sich wie in der Mathematik.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>elif</code> und <code>else</code> sind optional. Ein einfaches <code>if</code> ohne <code>else</code> ist vollkommen gültig.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 DE: for loops -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🔁</div>
+    <div>
+      <div class="section-title">for-Schleifen</div>
+      <div class="section-subtitle">Über Sequenzen iterieren — die häufigste Schleife in Python</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Iterieren mit for und range()</h2>
+    <p>Eine <code>for</code>-Schleife in Python iteriert über jedes <strong>Iterable</strong> — eine Liste, einen String, eine Range, ein Tupel, ein Dictionary oder eine Datei — jeweils ein Element nach dem anderen. Ein manuelles Verwalten eines Index-Zählers ist nie nötig.</p>
+    <div class="code-block"># Über eine Liste iterieren
+obst = ["Apfel", "Banane", "Kirsche"]
+for frucht in obst:
+    print(frucht)          # Apfel, dann Banane, dann Kirsche
+
+# Feste Anzahl von Iterationen mit range()
+for i in range(5):         # 0, 1, 2, 3, 4
+    print(i)
+
+# range(start, stop, schritt)
+for n in range(2, 11, 2):  # 2, 4, 6, 8, 10
+    print(n)
+
+# Mit Index UND Wert — enumerate() verwenden
+for idx, wert in enumerate(obst):
+    print(idx, wert)       # 0 Apfel, 1 Banane, 2 Kirsche</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code>range(stop)</code> → 0 bis stop−1. <code>range(start, stop)</code> → start bis stop−1. <code>range(start, stop, schritt)</code> → jeden schritt-ten Wert.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>range</code> ist lazy — es wird keine Liste im Speicher aufgebaut. Verwende <code>list(range(5))</code>, wenn du eine echte Liste brauchst.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Bevorzuge <code>enumerate()</code> gegenüber einer manuell verwalteten Indexvariable — es ist lesbarer und weniger fehleranfällig.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Um zwei Listen parallel zu durchlaufen, verwende <code>zip(liste_a, liste_b)</code>.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 DE: while loops -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">🔄</div>
+    <div>
+      <div class="section-title">while-Schleifen</div>
+      <div class="section-subtitle">Wiederholen, solange eine Bedingung wahr ist</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Wiederholen mit while</h2>
+    <p>Eine <code>while</code>-Schleife führt ihren Rumpf aus, solange ihre Bedingung truthy ist. Verwende sie, wenn du im Voraus nicht weißt, wie viele Iterationen benötigt werden — zum Beispiel beim Einlesen von Benutzereingaben bis sie gültig sind, oder beim Pollen bis eine Ressource bereit ist.</p>
+    <div class="code-block"># Klassischer Countdown
+zaehler = 5
+while zaehler > 0:
+    print(zaehler)
+    zaehler -= 1
+print("Fertig!")           # → 5 4 3 2 1 Fertig!
+
+# Benutzereingabe validieren
+while True:                # Endlosschleife — mit break beendet
+    eingabe = input("Gib eine positive Zahl ein: ")
+    if eingabe.isdigit() and int(eingabe) > 0:
+        zahl = int(eingabe)
+        break
+    print("Ungültig — erneut versuchen.")</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Stelle immer sicher, dass die Schleifenbedingung irgendwann <code>False</code> wird, oder verwende <code>break</code> — eine Endlosschleife friert dein Programm ein.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Das Muster <code>while True: … break</code> ist idiomatisches Python für "solange fragen, bis eine gültige Eingabe vorliegt".</div>
+      <div class="key-point"><div class="key-point-dot"></div>Wenn du eine <code>while</code>-Schleife mit einer Zählvariable schreibst, ist eine <code>for … range()</code>-Schleife meist klarer.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 DE: break / continue / else -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">⚡</div>
+    <div>
+      <div class="section-title">break, continue &amp; Schleifen-else</div>
+      <div class="section-subtitle">Feinsteuerung innerhalb von Schleifen</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Schleifen steuern mit break, continue und else</h2>
+    <p><code>break</code> beendet die Schleife sofort. <code>continue</code> überspringt den Rest der aktuellen Iteration und springt zur nächsten. Die optionale <code>else</code>-Klausel einer Schleife wird nur ausgeführt, wenn die Schleife <em>nicht</em> durch <code>break</code> beendet wurde.</p>
+    <div class="code-block"># break — stoppe, sobald der Zielwert gefunden wird
+zahlen = [3, 7, 2, 9, 4]
+for n in zahlen:
+    if n == 9:
+        print("9 gefunden!")
+        break            # beendet Schleife; else-Klausel läuft NICHT
+
+# continue — gerade Zahlen überspringen, nur ungerade ausgeben
+for n in range(1, 10):
+    if n % 2 == 0:
+        continue         # zur nächsten Iteration springen
+    print(n)             # → 1 3 5 7 9
+
+# Schleifen-else — läuft nur, wenn break nie ausgelöst wurde
+for n in zahlen:
+    if n == 99:
+        print("99 gefunden!")
+        break
+else:
+    print("99 nicht in der Liste")  # ← dies wird ausgegeben</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong><code>break</code></strong> beendet nur die <em>innerste</em> Schleife. Um aus verschachtelten Schleifen auszubrechen, verwende eine Flag-Variable oder lagere in eine Funktion aus und nutze <code>return</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><strong><code>continue</code></strong> ist nützlich zum Filtern: Elemente, die dich nicht interessieren, überspringen und den Hauptpfad unnested halten.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Das <strong>Schleifen-<code>else</code></strong> ist Python-spezifisch und überrascht oft Entwickler aus anderen Sprachen. Nutze es für "Suchen und Melden, wenn nicht gefunden"-Muster.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">Schnellreferenz</h2>
+    <table class="type-table">
+      <tr>
+        <th>Schlüsselwort</th>
+        <th>Wo verwendbar</th>
+        <th>Wirkung</th>
+      </tr>
+      <tr>
+        <td><span class="type-badge">break</span></td>
+        <td><code>for</code> oder <code>while</code></td>
+        <td>Beendet die innerste Schleife sofort</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">continue</span></td>
+        <td><code>for</code> oder <code>while</code></td>
+        <td>Springt zur nächsten Iteration</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">else</span> (Schleife)</td>
+        <td>Nach <code>for</code> oder <code>while</code></td>
+        <td>Läuft nur, wenn die Schleife ohne <code>break</code> endete</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">pass</span></td>
+        <td>Überall wo eine Anweisung erwartet wird</td>
+        <td>Tut nichts — Platzhalter für leere Blöcke</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Q&A DE -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Typische Interview- und Selbstkontrollfragen zu Control Flow</div>
+    </div>
+  </div>
+
+  <!-- Q01 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Wie wertet Python Bedingungen in einer <code>if</code>-Anweisung aus? Welche Werte sind falsy?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss man wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Python verlangt keinen booleschen Wert — jeder Wert kann als Bedingung stehen. Das Kennen der falsy-Menge ermöglicht sauberere, idiomatische Guards.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Python konvertiert die Bedingung mithilfe der <code>__bool__</code>-Methode des Objekts in einen Boolean. Die <strong>falschen</strong> Werte (falsy) sind: <code>False</code>, <code>0</code>, <code>0.0</code>, <code>0j</code>, <code>None</code>, <code>""</code>, <code>[]</code>, <code>{}</code>, <code>()</code> und <code>set()</code>. Alle anderen Werte sind truthy. Das bedeutet: <code>if meine_liste:</code> ist die idiomatische Art zu prüfen, ob eine Liste nicht leer ist — kein <code>len(meine_liste) &gt; 0</code> nötig.</div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code>if wert == False:</code> trifft auch <code>0</code> und <code>0.0</code>. Verwende <code>if wert is False:</code>, wenn du gezielt den booleschen Singleton brauchst.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Lerne die falsy-Menge auswendig: <code>None</code>, <code>0</code>, leerer String, leere Container.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Bevorzuge <code>if elemente:</code> gegenüber <code>if len(elemente) != 0:</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Was ist der Unterschied zwischen einer <code>for</code>-Schleife und einer <code>while</code>-Schleife? Wann benutzt du welche?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss man wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Eine <code>for</code>-Schleife sagt "tue dies für jedes Element einer Sequenz". Eine <code>while</code>-Schleife sagt "mache das weiter, bis sich eine Bedingung ändert". Die Schlüsselfrage: Kennst du die Sammlung im Voraus?</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Verwende eine <code>for</code>-Schleife, wenn du ein bekanntes Iterable hast (Liste, Range, String, Datei) — sie ist übersichtlicher und eliminiert Off-by-one-Fehler. Verwende eine <code>while</code>-Schleife, wenn die Anzahl der Iterationen von einer zur Laufzeit ausgewerteten Bedingung abhängt, zum Beispiel beim Warten auf gültige Benutzereingaben, beim Pollen eines Sensors oder beim Lesen eines Streams bis EOF. In der Praxis sind <code>for</code>-Schleifen in Python weitaus häufiger.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>for</code>-Schleife → bekannte Sammlung; <code>while</code>-Schleife → unbekannte Dauer.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Eine <code>while</code>-Schleife mit Zähler sollte fast immer ein <code>for i in range(...):</code> sein.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Was gibt <code>range()</code> zurück, und welche drei Argumentformen gibt es?</span>
+      <span class="q-badges"><span class="badge badge-common">● Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Stell dir <code>range</code> als eine lazy arithmetische Sequenz vor — sie merkt sich Start, Stop und Schritt und berechnet jeden Wert bei Bedarf. Sie hält nie alle Zahlen gleichzeitig im Speicher.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text"><code>range()</code> gibt ein <code>range</code>-Objekt zurück (eine lazy Sequenz), keine Liste. Die drei Formen sind: <code>range(stop)</code> → 0 bis stop−1; <code>range(start, stop)</code> → start bis stop−1; <code>range(start, stop, schritt)</code> → jeden schritt-ten Wert von start bis stop−1. Ein negativer Schritt zählt rückwärts: <code>range(10, 0, -1)</code> ergibt 10, 9, … 1.
+        <div class="code-block">range(5)          # 0 1 2 3 4
+range(2, 7)       # 2 3 4 5 6
+range(0, 10, 3)   # 0 3 6 9
+range(5, 0, -1)   # 5 4 3 2 1</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Der Stop-Wert ist <strong>exklusiv</strong> — <code>range(1, 5)</code> ergibt 1, 2, 3, 4 — nicht 5. Das überrascht viele Anfänger.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>range</code> unterstützt <code>len()</code>, Mitgliedschaftstests (<code>7 in range(10)</code>) und Slicing — alles in O(1).</div>
+        <div class="key-point"><div class="key-point-dot"></div>Wrapping mit <code>list()</code> nur wenn wirklich eine Liste benötigt wird: <code>list(range(5))</code> → <code>[0, 1, 2, 3, 4]</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Wie unterscheiden sich <code>break</code> und <code>continue</code>, und was bewirkt die <code>else</code>-Klausel einer Schleife?</span>
+      <span class="q-badges"><span class="badge badge-common">● Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text"><code>break</code> ist ein Notausgang aus der Schleife. <code>continue</code> ist ein "Dieses Element überspringen"-Signal. Das Schleifen-<code>else</code> ist eine "Wir sind fertig, ohne es zu finden"-Meldung — es feuert nur, wenn <code>break</code> nie erreicht wurde.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text"><code>break</code> beendet die innerste Schleife sofort und springt dahinter. <code>continue</code> überspringt die restlichen Anweisungen der aktuellen Iteration und geht zurück zum Schleifenkopf. Die <code>else</code>-Klausel einer <code>for</code>- oder <code>while</code>-Schleife läuft nur, wenn die Schleife normal beendet wurde — also nie durch <code>break</code> verlassen wurde. Das macht das Schleifen-<code>else</code> ideal für "Suche und melde, wenn nicht gefunden"-Muster ohne separate Flag-Variable.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>break</code> beendet nur die direkt umgebende Schleife — bei verschachtelten Schleifen braucht man eine Flag oder Umstrukturierung.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Das Schleifen-<code>else</code> ist Python-spezifisch — Entwickler aus anderen Sprachen sind oft überrascht davon.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Wie iterierst du über eine Liste und behältst gleichzeitig den Index jedes Elements im Blick?</span>
+      <span class="q-badges"><span class="badge badge-tip">✦ Tipp</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Widerstehe dem Drang, <code>range(len(...))</code> zu verwenden — das verschleiert die Absicht. Python bietet <code>enumerate()</code> genau für diesen Zweck, und das ist die idiomatische Wahl.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Verwende <code>enumerate(iterable, start=0)</code>. Es liefert <code>(index, wert)</code>-Tupel, die du im Schleifenkopf entpacken kannst:
+        <div class="code-block">farben = ["rot", "grün", "blau"]
+
+# Idiomatisch — enumerate verwenden
+for i, farbe in enumerate(farben):
+    print(f"{i}: {farbe}")    # 0: rot, 1: grün, 2: blau
+
+# Ab 1 zählen statt 0
+for i, farbe in enumerate(farben, start=1):
+    print(f"{i}. {farbe}")   # 1. rot, 2. grün, 3. blau
+
+# Vermeide dies — range(len()) ist umständlich
+for i in range(len(farben)):
+    print(farben[i])          # funktioniert, aber nicht idiomatisch</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>enumerate()</code> funktioniert mit jedem Iterable, nicht nur mit Listen: Strings, Tupel, Dateieinträge usw.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Um zwei Listen parallel zu durchlaufen, verwende <code>zip()</code>: <code>for a, b in zip(liste1, liste2):</code> — stoppt bei der kürzeren Liste.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Was ist ein häufiger Fehler beim Verändern einer Liste während der Iteration mit einer <code>for</code>-Schleife?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss man wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Eine Liste während der Iteration zu verändern ist wie Bretter aus einer Brücke zu reißen, während man darüber läuft — der Iterator verliert den Boden und Elemente werden übersprungen oder es entstehen Fehler.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Elemente während der Iteration zu entfernen oder einzufügen verschiebt Indizes, wodurch Elemente lautlos übersprungen werden oder ein <code>IndexError</code> entsteht. Die sicheren Alternativen sind: über eine <em>Kopie</em> der Liste iterieren (<code>for item in meine_liste[:]:</code>) oder eine neue Liste per List Comprehension erstellen (<code>[x for x in meine_liste if bedingung]</code>).
+        <div class="code-block"># ❌ Fehlerhaft — Elemente werden übersprungen
+zahlen = [1, 2, 3, 4, 5]
+for n in zahlen:
+    if n % 2 == 0:
+        zahlen.remove(n)    # verschiebt Indizes → 3 wird nicht geprüft
+print(zahlen)               # [1, 3, 5]  ← falsch!
+
+# ✅ Sicher — über eine Kopie iterieren
+for n in zahlen[:]:
+    if n % 2 == 0:
+        zahlen.remove(n)
+
+# ✅ Idiomatisch — List Comprehension
+zahlen = [n for n in zahlen if n % 2 != 0]</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Das gleiche Problem gilt für Dictionaries — niemals Schlüssel in einer <code>for key in dict:</code>-Schleife hinzufügen oder entfernen. Stattdessen über <code>list(dict.keys())</code> iterieren.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Bevorzuge List Comprehensions zum Filtern — sie sind schneller, sicherer und pythonischer als In-Place-Löschung in einer Schleife.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Falls In-Place-Mutation nötig ist, iteriere rückwärts: <code>for i in range(len(lst)-1, -1, -1):</code> und lösche per Index.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA DE -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit diesem Thema fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eine <code>if/elif/else</code>-Kette mit Vergleichs- und logischen Operatoren ohne Nachschlagen schreiben kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du <code>for</code> mit <code>range()</code>, <code>enumerate()</code> und <code>zip()</code> souverän in echtem Code einsetzen kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eine <code>while True</code>-Eingabevalidierungsschleife schreiben kannst, die sauber mit <code>break</code> endet.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du erklären kannst, was die <code>else</code>-Klausel einer Schleife macht — und warum das Verändern einer Liste in einer <code>for</code>-Schleife gefährlich ist.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+</div><!-- end body -->
+</main>
+
+<!-- LMS progress bridge — REQUIRED on every tracked topic page.
+     Set this BEFORE lesson-ui.js loads; the key is read at parse time.
+     Must exactly match the `storageKey` declared in registry.js for this lesson. -->
+<script>window.LMS_STORAGE_KEY = 'lms_python-starter_02_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<script>
+/**
+ * No #tab-ar div exists above — Arabic isn't translated yet. Calling
+ * guardLanguageTab('ar') (defined in lesson-ui.js) creates the tab-ar
+ * panel from scratch and fills it with the shared "not yet translated"
+ * card, the same way phase-01-sql-mysql.html does it.
+ */
+guardLanguageTab('ar');
+</script>
+</body>
+</html>

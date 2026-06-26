@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mind Map | Python Starter</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── Mind-map page-specific styles ──
+   initMindmapAdvanced() renders into the per-language mount points below;
+   this block only sets up the mount containers themselves. */
+.mindmap-container { min-height: 480px; }
+[dir="rtl"] .mindmap-container { direction: rtl; }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./masterplan.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Python Course &mdash; Mind Map</div>
+    <h1>Mind Map</h1>
+    <p class="header-sub">How variables, control flow, functions, data structures, and file I/O fit together before you build anything bigger. Tap any concept to see why it matters.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<div id="tab-en" class="tab-content active">
+  <div id="agrid-en" class="amap-grid"></div>
+  <div id="alegend-en" class="amap-legend"></div>
+</div>
+
+<div id="tab-de" class="tab-content">
+  <div id="agrid-de" class="amap-grid"></div>
+  <div id="alegend-de" class="amap-legend"></div>
+</div>
+
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+  <div id="agrid-ar" class="amap-grid"></div>
+  <div id="alegend-ar" class="amap-legend"></div>
+</div>
+
+</div><!-- end body -->
+</main>
+
+<script src="../shared/lesson-ui.js"></script>
+<script>
+var DATA = {
+  en: {
+    legendTitle: "Legend",
+    legendMust: "Must-know concept",
+    whyLabel: "Why it matters",
+    studyLabel: "Study this in",
+    mustLabel: "Must Know",
+    branches: [
+      {
+        color: "#2563eb", bg: "#eff6ff", border: "#bfdbfe",
+        title: "Variables & Data Types",
+        children: [
+          { label: "Six built-in scalar types", mk: true,
+            info: "int, float, complex, bool, str, and NoneType cover every basic value type.",
+            why: "Knowing exactly which types exist stops you from writing checks against types that don't exist in Python.",
+            topic: "Variables & Data Types" },
+          { label: "Dynamic typing & reassignment", mk: true,
+            info: "A name can point to an int, then later point to a str — the type lives on the value, not the name.",
+            why: "This is the single biggest mental shift coming from a statically-typed language.",
+            topic: "Variables & Data Types" },
+          { label: "Safe type conversion", mk: true,
+            info: "int(), float(), str(), and bool() convert between types — but not every conversion succeeds silently.",
+            why: "Unsafe conversion (e.g. int('abc')) is the most common source of crashes when reading user input.",
+            topic: "Variables & Data Types" },
+          { label: "type() and isinstance()", mk: false,
+            info: "Two ways to check what a value actually is at runtime.",
+            why: "Useful for debugging and for defensive checks before calling type-specific methods.",
+            topic: "Variables & Data Types" },
+          { label: "f-strings for formatting", mk: false,
+            info: "f\"Hello {name}\" embeds expressions directly inside a string literal.",
+            why: "The cleanest, fastest way to build readable output and log messages.",
+            topic: "Variables & Data Types" }
+        ]
+      },
+      {
+        color: "#0891b2", bg: "#ecfeff", border: "#a5f3fc",
+        title: "Control Flow",
+        children: [
+          { label: "if / elif / else branching", mk: true,
+            info: "Only one branch in a chain ever runs — Python checks top to bottom and stops at the first True condition.",
+            why: "Almost every real program makes a decision before it does something useful.",
+            topic: "Control Flow" },
+          { label: "for loops and range()", mk: true,
+            info: "for iterates directly over any sequence; range() generates a sequence of numbers to loop over.",
+            why: "This is how you'll process every list, file, or API response you ever touch.",
+            topic: "Control Flow" },
+          { label: "while loops", mk: true,
+            info: "Repeats a block as long as a condition stays True — used when you don't know the iteration count in advance.",
+            why: "Essential for retry logic, polling, and reading until a sentinel value appears.",
+            topic: "Control Flow" },
+          { label: "break, continue, and pass", mk: false,
+            info: "break exits a loop early, continue skips to the next iteration, pass does nothing.",
+            why: "These three keywords give you fine control over loop flow without nested conditionals.",
+            topic: "Control Flow" },
+          { label: "List comprehensions", mk: false,
+            info: "[x*2 for x in items if x > 0] builds a new list in a single readable line.",
+            why: "A core Python idiom — recognizing one in someone else's code is a daily occurrence.",
+            topic: "Control Flow" }
+        ]
+      },
+      {
+        color: "#7c3aed", bg: "#f5f3ff", border: "#ddd6fe",
+        title: "Functions",
+        children: [
+          { label: "def and return values", mk: true,
+            info: "def name(params): defines a reusable block; return sends a value back to the caller.",
+            why: "Functions are the smallest unit of reusable logic — everything else builds on this.",
+            topic: "Functions" },
+          { label: "Positional vs keyword arguments", mk: true,
+            info: "greet('Sam') passes by position; greet(name='Sam') passes by name — both call the same function.",
+            why: "Reading a function call correctly means knowing which argument maps to which parameter.",
+            topic: "Functions" },
+          { label: "Default argument values", mk: false,
+            info: "def greet(name, greeting='Hello'): lets a parameter be optional.",
+            why: "Lets callers skip arguments that usually don't change, without overloading the function.",
+            topic: "Functions" },
+          { label: "LEGB scope", mk: true,
+            info: "Local, Enclosing, Global, Built-in — the order Python searches when resolving a name.",
+            why: "Explains why a variable inside a function can't be seen outside it, and vice versa.",
+            topic: "Functions" },
+          { label: "*args and **kwargs", mk: false,
+            info: "Collect any number of extra positional or keyword arguments into a tuple or dict.",
+            why: "Shows up constantly in library code that wraps or forwards calls to other functions.",
+            topic: "Functions" }
+        ]
+      },
+      {
+        color: "#dc2626", bg: "#fef2f2", border: "#fecaca",
+        title: "Data Structures",
+        children: [
+          { label: "Lists — ordered & mutable", mk: true,
+            info: "[1, 2, 3] — an ordered collection you can append to, remove from, and change in place.",
+            why: "The default container for any sequence of items that might grow or shrink.",
+            topic: "Data Structures" },
+          { label: "Dictionaries — key/value pairs", mk: true,
+            info: "{'name': 'Sam', 'age': 30} — looks up a value by key instead of by position.",
+            why: "Almost every JSON response or config file maps directly onto a dict.",
+            topic: "Data Structures" },
+          { label: "Tuples — ordered & immutable", mk: true,
+            info: "(x, y) — like a list, but once created it can't be changed.",
+            why: "Use it to signal 'this data shouldn't change' — like coordinates or a fixed record.",
+            topic: "Data Structures" },
+          { label: "Sets — unique & unordered", mk: false,
+            info: "{1, 2, 3} — automatically removes duplicates and supports fast membership tests.",
+            why: "The right tool whenever you need to deduplicate or quickly check whether an item is already in there.",
+            topic: "Data Structures" },
+          { label: "Slicing & indexing", mk: false,
+            info: "items[1:3] grabs a sub-range; items[-1] grabs the last element.",
+            why: "One syntax that works across strings, lists, and tuples — worth knowing cold.",
+            topic: "Data Structures" }
+        ]
+      },
+      {
+        color: "#d97706", bg: "#fffbeb", border: "#fde68a",
+        title: "Modules & File I/O",
+        children: [
+          { label: "import and the standard library", mk: true,
+            info: "import json, import os — Python ships with dozens of ready-to-use modules.",
+            why: "Knowing what's already built in saves you from reinventing common functionality.",
+            topic: "Modules & File I/O" },
+          { label: "open() and the with statement", mk: true,
+            info: "with open('file.txt') as f: opens a file and guarantees it closes automatically.",
+            why: "The with pattern prevents the classic bug of forgetting to close a file handle.",
+            topic: "Modules & File I/O" },
+          { label: "Reading vs writing modes", mk: false,
+            info: "'r' reads, 'w' overwrites, 'a' appends — the second argument to open() controls behavior.",
+            why: "Using the wrong mode is how files get silently overwritten or fail to update.",
+            topic: "Modules & File I/O" },
+          { label: "Closing files safely", mk: true,
+            info: "Even without with, every opened file must eventually be closed with f.close().",
+            why: "Unclosed file handles leak resources and can corrupt data that hasn't been flushed to disk.",
+            topic: "Modules & File I/O" },
+          { label: "pip and third-party packages", mk: false,
+            info: "pip install requests pulls in code other people wrote and published.",
+            why: "The standard library doesn't cover everything — most real projects depend on outside packages too.",
+            topic: "Modules & File I/O" }
+        ]
+      }
+    ]
+  },
+
+  de: {
+    legendTitle: "Legende",
+    legendMust: "Muss-Konzept",
+    whyLabel: "Warum es wichtig ist",
+    studyLabel: "Vertiefen in",
+    mustLabel: "Muss wissen",
+    branches: [
+      {
+        color: "#2563eb", bg: "#eff6ff", border: "#bfdbfe",
+        title: "Variablen & Datentypen",
+        children: [
+          { label: "Sechs eingebaute Skalartypen", mk: true,
+            info: "int, float, complex, bool, str und NoneType decken jeden grundlegenden Werttyp ab.",
+            why: "Wer genau weiß, welche Typen existieren, schreibt keine Prüfungen gegen Typen, die es in Python gar nicht gibt.",
+            topic: "Variablen & Datentypen" },
+          { label: "Dynamische Typisierung & Neuzuweisung", mk: true,
+            info: "Ein Name kann zuerst auf ein int und später auf einen str zeigen — der Typ gehört zum Wert, nicht zum Namen.",
+            why: "Das ist die größte gedankliche Umstellung, wenn man von einer statisch typisierten Sprache kommt.",
+            topic: "Variablen & Datentypen" },
+          { label: "Sichere Typumwandlung", mk: true,
+            info: "int(), float(), str() und bool() wandeln zwischen Typen um — aber nicht jede Umwandlung gelingt stillschweigend.",
+            why: "Unsichere Umwandlung (z. B. int('abc')) ist die häufigste Absturzursache beim Einlesen von Benutzereingaben.",
+            topic: "Variablen & Datentypen" },
+          { label: "type() und isinstance()", mk: false,
+            info: "Zwei Wege, um zur Laufzeit zu prüfen, was ein Wert tatsächlich ist.",
+            why: "Nützlich zum Debuggen und für defensive Prüfungen, bevor typspezifische Methoden aufgerufen werden.",
+            topic: "Variablen & Datentypen" },
+          { label: "f-Strings zur Formatierung", mk: false,
+            info: "f\"Hallo {name}\" bettet Ausdrücke direkt in ein String-Literal ein.",
+            why: "Der sauberste und schnellste Weg, lesbare Ausgaben und Log-Meldungen zu erzeugen.",
+            topic: "Variablen & Datentypen" }
+        ]
+      },
+      {
+        color: "#0891b2", bg: "#ecfeff", border: "#a5f3fc",
+        title: "Kontrollfluss",
+        children: [
+          { label: "if/elif/else-Verzweigung", mk: true,
+            info: "In einer Kette läuft immer nur ein Zweig — Python prüft von oben nach unten und stoppt bei der ersten True-Bedingung.",
+            why: "Fast jedes echte Programm trifft eine Entscheidung, bevor es etwas Nützliches tut.",
+            topic: "Kontrollfluss" },
+          { label: "for-Schleifen und range()", mk: true,
+            info: "for iteriert direkt über jede Sequenz; range() erzeugt eine Zahlenfolge zum Durchlaufen.",
+            why: "So verarbeitest du jede Liste, Datei oder API-Antwort, die dir je begegnet.",
+            topic: "Kontrollfluss" },
+          { label: "while-Schleifen", mk: true,
+            info: "Wiederholt einen Block, solange eine Bedingung True bleibt — nützlich, wenn die Anzahl der Durchläufe vorher nicht feststeht.",
+            why: "Unerlässlich für Retry-Logik, Polling und das Einlesen bis zu einem Sentinel-Wert.",
+            topic: "Kontrollfluss" },
+          { label: "break, continue und pass", mk: false,
+            info: "break beendet eine Schleife vorzeitig, continue springt zum nächsten Durchlauf, pass tut nichts.",
+            why: "Diese drei Schlüsselwörter geben dir feine Kontrolle über den Schleifenablauf ohne verschachtelte Bedingungen.",
+            topic: "Kontrollfluss" },
+          { label: "List Comprehensions", mk: false,
+            info: "[x*2 for x in items if x > 0] baut in einer einzigen lesbaren Zeile eine neue Liste.",
+            why: "Ein zentrales Python-Idiom — eines im Code anderer wiederzuerkennen kommt täglich vor.",
+            topic: "Kontrollfluss" }
+        ]
+      },
+      {
+        color: "#7c3aed", bg: "#f5f3ff", border: "#ddd6fe",
+        title: "Funktionen",
+        children: [
+          { label: "def und Rückgabewerte", mk: true,
+            info: "def name(params): definiert einen wiederverwendbaren Block; return sendet einen Wert an den Aufrufer zurück.",
+            why: "Funktionen sind die kleinste Einheit wiederverwendbarer Logik — alles andere baut darauf auf.",
+            topic: "Funktionen" },
+          { label: "Positions- vs. Schlüsselwortargumente", mk: true,
+            info: "greet('Sam') übergibt nach Position; greet(name='Sam') übergibt nach Name — beide rufen dieselbe Funktion auf.",
+            why: "Einen Funktionsaufruf richtig zu lesen heißt zu wissen, welches Argument zu welchem Parameter gehört.",
+            topic: "Funktionen" },
+          { label: "Standardwerte für Argumente", mk: false,
+            info: "def greet(name, greeting='Hello'): macht einen Parameter optional.",
+            why: "Lässt Aufrufer Argumente überspringen, die sich normalerweise nicht ändern, ohne die Funktion zu überladen.",
+            topic: "Funktionen" },
+          { label: "LEGB-Scope", mk: true,
+            info: "Local, Enclosing, Global, Built-in — die Reihenfolge, in der Python einen Namen sucht.",
+            why: "Erklärt, warum eine Variable innerhalb einer Funktion außerhalb nicht sichtbar ist — und umgekehrt.",
+            topic: "Funktionen" },
+          { label: "*args und **kwargs", mk: false,
+            info: "Sammeln beliebig viele zusätzliche Positions- oder Schlüsselwortargumente in einem Tuple oder Dict.",
+            why: "Taucht ständig in Bibliothekscode auf, der Aufrufe an andere Funktionen weiterleitet.",
+            topic: "Funktionen" }
+        ]
+      },
+      {
+        color: "#dc2626", bg: "#fef2f2", border: "#fecaca",
+        title: "Datenstrukturen",
+        children: [
+          { label: "Listen — geordnet & veränderlich", mk: true,
+            info: "[1, 2, 3] — eine geordnete Sammlung, der du Elemente hinzufügen, entfernen und vor Ort ändern kannst.",
+            why: "Der Standardbehälter für jede Sequenz von Elementen, die wachsen oder schrumpfen könnte.",
+            topic: "Datenstrukturen" },
+          { label: "Dictionaries — Schlüssel/Wert-Paare", mk: true,
+            info: "{'name': 'Sam', 'age': 30} — sucht einen Wert über einen Schlüssel statt über eine Position.",
+            why: "Fast jede JSON-Antwort oder Konfigurationsdatei bildet sich direkt auf ein Dict ab.",
+            topic: "Datenstrukturen" },
+          { label: "Tupel — geordnet & unveränderlich", mk: true,
+            info: "(x, y) — wie eine Liste, aber einmal erstellt nicht mehr veränderbar.",
+            why: "Signalisiert 'diese Daten sollen sich nicht ändern' — etwa Koordinaten oder ein fester Datensatz.",
+            topic: "Datenstrukturen" },
+          { label: "Sets — einzigartig & ungeordnet", mk: false,
+            info: "{1, 2, 3} — entfernt automatisch Duplikate und unterstützt schnelle Zugehörigkeitsprüfungen.",
+            why: "Das richtige Werkzeug, wenn du Duplikate entfernen oder schnell prüfen musst, ob ein Element schon vorhanden ist.",
+            topic: "Datenstrukturen" },
+          { label: "Slicing & Indexierung", mk: false,
+            info: "items[1:3] greift einen Teilbereich heraus; items[-1] greift das letzte Element.",
+            why: "Eine Syntax, die für Strings, Listen und Tupel gleich funktioniert — gut, sie im Schlaf zu kennen.",
+            topic: "Datenstrukturen" }
+        ]
+      },
+      {
+        color: "#d97706", bg: "#fffbeb", border: "#fde68a",
+        title: "Module & Datei-I/O",
+        children: [
+          { label: "import und die Standardbibliothek", mk: true,
+            info: "import json, import os — Python liefert Dutzende sofort nutzbare Module mit.",
+            why: "Zu wissen, was schon eingebaut ist, erspart dir, gängige Funktionalität neu zu erfinden.",
+            topic: "Module & Datei-I/O" },
+          { label: "open() und die with-Anweisung", mk: true,
+            info: "with open('file.txt') as f: öffnet eine Datei und garantiert, dass sie automatisch geschlossen wird.",
+            why: "Das with-Muster verhindert den klassischen Fehler, einen Dateihandler zu vergessen zu schließen.",
+            topic: "Module & Datei-I/O" },
+          { label: "Lese- vs. Schreibmodi", mk: false,
+            info: "'r' liest, 'w' überschreibt, 'a' hängt an — das zweite Argument von open() steuert das Verhalten.",
+            why: "Der falsche Modus ist der Grund, warum Dateien still überschrieben werden oder nicht aktualisiert werden.",
+            topic: "Module & Datei-I/O" },
+          { label: "Dateien sicher schließen", mk: true,
+            info: "Auch ohne with muss jede geöffnete Datei irgendwann mit f.close() geschlossen werden.",
+            why: "Nicht geschlossene Dateihandler verschwenden Ressourcen und können Daten beschädigen, die noch nicht auf die Festplatte geschrieben wurden.",
+            topic: "Module & Datei-I/O" },
+          { label: "pip und Drittanbieter-Pakete", mk: false,
+            info: "pip install requests holt Code, den andere geschrieben und veröffentlicht haben.",
+            why: "Die Standardbibliothek deckt nicht alles ab — die meisten echten Projekte hängen auch von externen Paketen ab.",
+            topic: "Module & Datei-I/O" }
+        ]
+      }
+    ]
+  },
+
+  ar: {
+    legendTitle: "المفتاح",
+    legendMust: "مفهوم أساسي",
+    whyLabel: "لماذا يهم",
+    studyLabel: "تعمّق في",
+    mustLabel: "ضروري",
+    branches: [
+      {
+        color: "#2563eb", bg: "#eff6ff", border: "#bfdbfe",
+        title: "المتغيرات وأنواع البيانات",
+        children: [
+          { label: "ستة أنواع أساسية مدمجة", mk: true,
+            info: "int و float و complex و bool و str و NoneType تغطي كل نوع قيمة أساسي.",
+            why: "معرفة الأنواع الموجودة بدقة تمنعك من كتابة فحوصات لأنواع لا توجد أصلاً في بايثون.",
+            topic: "المتغيرات وأنواع البيانات" },
+          { label: "الكتابة الديناميكية وإعادة التعيين", mk: true,
+            info: "يمكن لاسم أن يشير أولاً إلى int ثم يشير لاحقًا إلى str — النوع يخص القيمة، لا الاسم.",
+            why: "هذا هو أكبر تحوّل ذهني عند القدوم من لغة ذات كتابة ثابتة.",
+            topic: "المتغيرات وأنواع البيانات" },
+          { label: "تحويل الأنواع بأمان", mk: true,
+            info: "int() و float() و str() و bool() تحوّل بين الأنواع — لكن ليس كل تحويل ينجح بصمت.",
+            why: "التحويل غير الآمن (مثل int('abc')) هو السبب الأكثر شيوعًا للانهيار عند قراءة إدخال المستخدم.",
+            topic: "المتغيرات وأنواع البيانات" },
+          { label: "type() و isinstance()", mk: false,
+            info: "طريقتان لفحص النوع الحقيقي لقيمة ما أثناء التشغيل.",
+            why: "مفيدتان في التصحيح وفي الفحوصات الدفاعية قبل استدعاء دوال خاصة بنوع معيّن.",
+            topic: "المتغيرات وأنواع البيانات" },
+          { label: "f-strings للتنسيق", mk: false,
+            info: "f\"Hello {name}\" يضمّن التعبيرات مباشرة داخل سلسلة نصية.",
+            why: "أنظف وأسرع طريقة لبناء مخرجات ورسائل سجلّ قابلة للقراءة.",
+            topic: "المتغيرات وأنواع البيانات" }
+        ]
+      },
+      {
+        color: "#0891b2", bg: "#ecfeff", border: "#a5f3fc",
+        title: "تدفق التحكم",
+        children: [
+          { label: "تفرّع if / elif / else", mk: true,
+            info: "يعمل فرع واحد فقط في السلسلة في كل مرة — تفحص بايثون من الأعلى إلى الأسفل وتتوقف عند أول شرط True.",
+            why: "يكاد كل برنامج حقيقي يتخذ قرارًا قبل أن يفعل شيئًا مفيدًا.",
+            topic: "تدفق التحكم" },
+          { label: "حلقات for ودالة range()", mk: true,
+            info: "تتكرر for مباشرة على أي تسلسل؛ تولّد range() سلسلة أرقام للتكرار عليها.",
+            why: "بهذه الطريقة تعالج كل قائمة أو ملف أو استجابة API ستتعامل معها.",
+            topic: "تدفق التحكم" },
+          { label: "حلقات while", mk: true,
+            info: "تكرّر كتلة طالما ظل الشرط True — تُستخدم عندما لا تعرف عدد التكرارات مسبقًا.",
+            why: "ضرورية لمنطق إعادة المحاولة، والاستقصاء الدوري، والقراءة حتى ظهور قيمة محدّدة.",
+            topic: "تدفق التحكم" },
+          { label: "break وcontinue وpass", mk: false,
+            info: "تخرج break من الحلقة مبكرًا، وتنتقل continue إلى التكرار التالي، ولا تفعل pass شيئًا.",
+            why: "تمنحك هذه الكلمات الثلاث تحكمًا دقيقًا في تدفق الحلقة دون شروط متداخلة.",
+            topic: "تدفق التحكم" },
+          { label: "قوائم الفهم (List Comprehensions)", mk: false,
+            info: "[x*2 for x in items if x > 0] يبني قائمة جديدة في سطر واحد مقروء.",
+            why: "تعبير أساسي في بايثون — التعرّف عليه في كود الآخرين أمر يومي.",
+            topic: "تدفق التحكم" }
+        ]
+      },
+      {
+        color: "#7c3aed", bg: "#f5f3ff", border: "#ddd6fe",
+        title: "الدوال",
+        children: [
+          { label: "def وقيم الإرجاع", mk: true,
+            info: "تُعرّف def name(params): كتلة قابلة لإعادة الاستخدام؛ وتُرجع return قيمة إلى المستدعي.",
+            why: "الدوال هي أصغر وحدة منطق قابلة لإعادة الاستخدام — وكل شيء آخر يُبنى عليها.",
+            topic: "الدوال" },
+          { label: "وسائط موضعية مقابل وسائط بالاسم", mk: true,
+            info: "تمرّر greet('Sam') بالموضع؛ وتمرّر greet(name='Sam') بالاسم — وكلاهما يستدعي نفس الدالة.",
+            why: "قراءة استدعاء دالة بشكل صحيح تعني معرفة أي وسيط يقابل أي بارامتر.",
+            topic: "الدوال" },
+          { label: "قيم افتراضية للوسائط", mk: false,
+            info: "تجعل def greet(name, greeting='Hello'): البارامتر اختياريًا.",
+            why: "تتيح للمستدعي تجاوز وسائط لا تتغيّر عادة، دون إثقال الدالة.",
+            topic: "الدوال" },
+          { label: "نطاق LEGB", mk: true,
+            info: "Local وEnclosing وGlobal وBuilt-in — الترتيب الذي تبحث به بايثون عن اسم.",
+            why: "يوضّح لماذا لا يمكن رؤية متغيّر داخل دالة من خارجها، والعكس صحيح.",
+            topic: "الدوال" },
+          { label: "*args و**kwargs", mk: false,
+            info: "تجمع أي عدد من الوسائط الموضعية أو بالاسم الإضافية في tuple أو dict.",
+            why: "تظهر باستمرار في كود المكتبات التي تُمرّر الاستدعاءات إلى دوال أخرى.",
+            topic: "الدوال" }
+        ]
+      },
+      {
+        color: "#dc2626", bg: "#fef2f2", border: "#fecaca",
+        title: "هياكل البيانات",
+        children: [
+          { label: "القوائم — مرتبة وقابلة للتغيير", mk: true,
+            info: "[1, 2, 3] — مجموعة مرتبة يمكنك الإضافة إليها والحذف منها وتعديلها في مكانها.",
+            why: "الوعاء الافتراضي لأي تسلسل من العناصر قد ينمو أو يتقلّص.",
+            topic: "هياكل البيانات" },
+          { label: "القواميس — أزواج مفتاح/قيمة", mk: true,
+            info: "{'name': 'Sam', 'age': 30} — تبحث عن قيمة عبر مفتاح بدلاً من موضع.",
+            why: "تكاد كل استجابة JSON أو ملف إعدادات تُترجم مباشرة إلى dict.",
+            topic: "هياكل البيانات" },
+          { label: "الصفوف (Tuples) — مرتبة وثابتة", mk: true,
+            info: "(x, y) — مثل القائمة، لكنها لا تتغيّر بعد إنشائها.",
+            why: "تُستخدم للإشارة إلى أن 'هذه البيانات لا ينبغي أن تتغيّر' — مثل الإحداثيات أو سجل ثابت.",
+            topic: "هياكل البيانات" },
+          { label: "المجموعات (Sets) — فريدة وغير مرتبة", mk: false,
+            info: "{1, 2, 3} — تُزيل التكرارات تلقائيًا وتدعم فحص العضوية بسرعة.",
+            why: "الأداة المناسبة كلما احتجت إلى إزالة التكرار أو التحقق سريعًا من وجود عنصر.",
+            topic: "هياكل البيانات" },
+          { label: "التقطيع والفهرسة (Slicing & Indexing)", mk: false,
+            info: "items[1:3] يأخذ نطاقًا فرعيًا؛ items[-1] يأخذ العنصر الأخير.",
+            why: "صياغة واحدة تعمل على النصوص والقوائم والصفوف — تستحق معرفتها عن ظهر قلب.",
+            topic: "هياكل البيانات" }
+        ]
+      },
+      {
+        color: "#d97706", bg: "#fffbeb", border: "#fde68a",
+        title: "الوحدات وقراءة/كتابة الملفات",
+        children: [
+          { label: "import والمكتبة القياسية", mk: true,
+            info: "import json، import os — تأتي بايثون مع عشرات الوحدات الجاهزة للاستخدام.",
+            why: "معرفة ما هو مدمج بالفعل يوفّر عليك إعادة اختراع وظائف شائعة.",
+            topic: "الوحدات وقراءة/كتابة الملفات" },
+          { label: "open() وجملة with", mk: true,
+            info: "with open('file.txt') as f: تفتح ملفًا وتضمن إغلاقه تلقائيًا.",
+            why: "يمنع نمط with الخطأ الكلاسيكي المتمثّل في نسيان إغلاق مقبض الملف.",
+            topic: "الوحدات وقراءة/كتابة الملفات" },
+          { label: "أوضاع القراءة مقابل الكتابة", mk: false,
+            info: "'r' للقراءة، و'w' للاستبدال الكامل، و'a' للإضافة — الوسيط الثاني في open() يتحكم في السلوك.",
+            why: "استخدام الوضع الخاطئ هو السبب في استبدال الملفات بصمت أو فشل تحديثها.",
+            topic: "الوحدات وقراءة/كتابة الملفات" },
+          { label: "إغلاق الملفات بأمان", mk: true,
+            info: "حتى بدون with، يجب إغلاق كل ملف مفتوح في النهاية باستخدام f.close().",
+            why: "مقابض الملفات غير المُغلقة تُسرّب الموارد وقد تُفسد بيانات لم تُكتب بعد على القرص.",
+            topic: "الوحدات وقراءة/كتابة الملفات" },
+          { label: "pip وحزم الطرف الثالث", mk: false,
+            info: "pip install requests يجلب كودًا كتبه ونشره أشخاص آخرون.",
+            why: "لا تغطي المكتبة القياسية كل شيء — تعتمد معظم المشاريع الحقيقية على حزم خارجية أيضًا.",
+            topic: "الوحدات وقراءة/كتابة الملفات" }
+        ]
+      }
+    ]
+  }
+};
+
+initMindmapAdvanced(DATA);
+</script>
+</body>
+</html>

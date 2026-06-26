@@ -120,8 +120,8 @@ code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,mon
   <div class="section">
     <h2>The cost of crashing hard</h2>
     <p>
-      Code that raises an unhandled exception and terminates is useless in production. In DiaTwin,
-      a CGM reading pipeline that crashes on one malformed sensor payload will stop processing
+      Code that raises an unhandled exception and terminates is useless in production. In a
+      hospital-data pipeline, a CGM reading pipeline that crashes on one malformed sensor payload will stop processing
       all subsequent readings for every patient on the same batch. The one bad record poisons
       the entire run.
     </p>
@@ -147,7 +147,7 @@ code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,mon
 
   <div class="section">
     <h2>Patterns you will use in every backend project</h2>
-    <p>These are not academic — all three appear in DiaTwin's data pipeline and Morafek's FHIR integration layer.</p>
+    <p>These are not academic — all three appear in real hospital-data pipelines and FHIR integration layers.</p>
 
     <!-- Pattern 1 -->
     <div class="pattern-card">
@@ -303,7 +303,7 @@ def get_baseline_bg(patient_id: str) -> float:
       </div>
       <div class="key-points">
         <div class="key-point"><div class="key-point-dot"></div><code>except Exception: pass</code> is a smell. It means "I don't know what can go wrong but I'm going to hide it." Use it only at the very top of a program as a last-resort logger, never inside a function.</div>
-        <div class="key-point"><div class="key-point-dot"></div>In DiaTwin: <code>except ValueError</code> for CGM parsing, <code>except requests.Timeout</code> for FHIR calls, <code>except KeyError</code> for missing patient profile fields. Each one signals a different root cause and a different response.</div>
+        <div class="key-point"><div class="key-point-dot"></div>In a hospital-data pipeline: <code>except ValueError</code> for CGM parsing, <code>except requests.Timeout</code> for FHIR calls, <code>except KeyError</code> for missing patient profile fields. Each one signals a different root cause and a different response.</div>
       </div>
     </div>
   </div>
@@ -394,7 +394,7 @@ def get_baseline_bg(patient_id: str) -> float:
         </div>
       </div>
       <div class="key-points">
-        <div class="key-point"><div class="key-point-dot"></div>In DiaTwin's HL7 pipeline: the per-message parse can fail silently (log + skip); the database write must succeed (retry + eventually fail loudly); the audit log must always run (finally).</div>
+        <div class="key-point"><div class="key-point-dot"></div>In a typical HL7 pipeline: the per-message parse can fail silently (log + skip); the database write must succeed (retry + eventually fail loudly); the audit log must always run (finally).</div>
         <div class="key-point"><div class="key-point-dot"></div>Exception handling architecture is part of the system design. Think about it at the same time as the happy path, not as an afterthought.</div>
       </div>
     </div>
@@ -461,7 +461,7 @@ except NoResultFound as e:
     raise PatientNotFoundError(patient_id) from e
 # Traceback shows both — you see the SQLAlchemy cause AND the domain error</div>
       <div class="key-points">
-        <div class="key-point"><div class="key-point-dot"></div>In DiaTwin, wrapping SQLAlchemy exceptions in domain exceptions (<code>PatientNotFoundError</code>) keeps the service layer independent of the ORM. The caller sees domain errors, not database internals.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Wrapping SQLAlchemy exceptions in domain exceptions (<code>PatientNotFoundError</code>) keeps the service layer independent of the ORM. The caller sees domain errors, not database internals.</div>
       </div>
     </div>
   </div>
@@ -494,7 +494,7 @@ except NoResultFound as e:
     <h2>Die Kosten eines harten Absturzes</h2>
     <p>
       Code, der eine unbehandelte Exception auslöst und terminiert, ist im Produktionsbetrieb
-      wertlos. In DiaTwin würde eine CGM-Lesepipeline, die bei einem fehlerhaften Sensor-Payload
+      wertlos. In einer Krankenhaus-Datenpipeline würde eine CGM-Lesepipeline, die bei einem fehlerhaften Sensor-Payload
       abstürzt, die Verarbeitung aller nachfolgenden Readings für jeden Patienten im selben Batch
       stoppen. Ein schlechter Datensatz vergiftet den gesamten Durchlauf.
     </p>
@@ -519,7 +519,7 @@ except NoResultFound as e:
 
   <div class="section">
     <h2>Muster, die du in jedem Backend-Projekt verwenden wirst</h2>
-    <p>Diese sind nicht akademisch — alle drei kommen in DiaTwins Datenpipeline und Morafeks FHIR-Integrationsschicht vor.</p>
+    <p>Diese sind nicht akademisch — alle drei kommen in echten Krankenhaus-Datenpipelines und FHIR-Integrationsschichten vor.</p>
 
     <div class="pattern-card">
       <div class="pattern-card-header">
@@ -761,7 +761,7 @@ class PatientNotFoundError(LookupError):
         </div>
       </div>
       <div class="key-points">
-        <div class="key-point"><div class="key-point-dot"></div>In DiaTwin: SQLAlchemy-Exceptions in Domain-Exceptions einwickeln hält die Service-Schicht unabhängig vom ORM. Der Aufrufer sieht Domain-Fehler, keine Datenbankinternas.</div>
+        <div class="key-point"><div class="key-point-dot"></div>SQLAlchemy-Exceptions in Domain-Exceptions einwickeln hält die Service-Schicht unabhängig vom ORM. Der Aufrufer sieht Domain-Fehler, keine Datenbankinternas.</div>
       </div>
     </div>
   </div>
@@ -792,7 +792,7 @@ class PatientNotFoundError(LookupError):
   <div class="section">
     <h2>تكلفة الانهيار القاسي</h2>
     <p>
-      الكود الذي يطلق استثناءً غير معالَج وينهي تنفيذه لا قيمة له في الإنتاج. في DiaTwin، خط
+      الكود الذي يطلق استثناءً غير معالَج وينهي تنفيذه لا قيمة له في الإنتاج. في خط بيانات المستشفى، خط
       أنابيب قراءات CGM الذي ينهار عند مواجهة بيانات مستشعر تالفة سيوقف معالجة جميع القراءات
       اللاحقة لكل المرضى في نفس الدفعة. سجل واحد سيء يفسد التشغيل بأكمله.
     </p>
@@ -815,7 +815,7 @@ class PatientNotFoundError(LookupError):
 
   <div class="section">
     <h2>أنماط ستستخدمها في كل مشروع خلفي</h2>
-    <p>هذه ليست أكاديمية — الثلاثة تظهر في خط بيانات DiaTwin وطبقة تكامل FHIR في Morafek.</p>
+    <p>هذه ليست أكاديمية — الثلاثة تظهر في خطوط بيانات المستشفيات الحقيقية وطبقات تكامل FHIR.</p>
 
     <div class="pattern-card">
       <div class="pattern-card-header">
@@ -1039,7 +1039,7 @@ class PatientNotFoundError(LookupError):
         </div>
       </div>
       <div class="key-points">
-        <div class="key-point"><div class="key-point-dot"></div>في DiaTwin: لف استثناءات SQLAlchemy في استثناءات النطاق يبقي طبقة الخدمة مستقلة عن الـ ORM. المستدعي يرى أخطاء النطاق، وليس داخليات قاعدة البيانات.</div>
+        <div class="key-point"><div class="key-point-dot"></div>لف استثناءات SQLAlchemy في استثناءات النطاق يبقي طبقة الخدمة مستقلة عن الـ ORM. المستدعي يرى أخطاء النطاق، وليس داخليات قاعدة البيانات.</div>
       </div>
     </div>
   </div>

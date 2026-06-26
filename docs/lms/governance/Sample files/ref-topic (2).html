@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic N — Slug | MODULE NAME</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+
+/* ── Section label & intro ── */
+.section-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.section-intro  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:16px; }
+.section        { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2     { font-size:18px; font-weight:700; margin-bottom:6px; color:var(--navy); }
+.section p      { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+/* ── Inner accordion (lesson sub-sections, tracked by toggleAcc) ── */
+.accordion     { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+.acc-item      { background:var(--white); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.acc-trigger   { width:100%; display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:none; border:none; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--navy); text-align:left; transition:background .12s; }
+.acc-trigger:hover { background:var(--bg); }
+.acc-chevron   { font-size:12px; color:var(--muted); transition:transform .2s; flex-shrink:0; }
+.acc-trigger.open .acc-chevron { transform:rotate(180deg); }
+.acc-body      { display:none; padding:16px; border-top:1px solid var(--border); font-size:13.5px; color:var(--navy); line-height:1.65; }
+.acc-body.open { display:block; }
+
+/* ── Concept cards ── */
+.concepts       { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.concept        { background:var(--white); border:1px solid var(--border); border-left:3px solid var(--border); border-radius:8px; padding:12px 16px; }
+.concept.blue   { border-left-color:#0284c7; }
+.concept.green  { border-left-color:#059669; }
+.concept.orange { border-left-color:#d97706; }
+.concept.teal   { border-left-color:#0d9488; }
+.concept.purple { border-left-color:#7c3aed; }
+.concept.red    { border-left-color:#dc2626; }
+.concept.yellow { border-left-color:#b45309; }
+.concept.indigo { border-left-color:#4338ca; }
+.concept-name   { font-size:13px; font-weight:700; color:var(--navy); margin-bottom:4px; }
+.concept-desc   { font-size:12px; color:var(--slate); line-height:1.6; }
+
+/* ── Callouts ── */
+.callout      { border-radius:0 8px 8px 0; padding:12px 16px; margin-bottom:16px; border:1px solid transparent; border-left-width:3px; }
+.callout .lbl { font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; margin-bottom:6px; }
+.callout p, .callout li  { font-size:12px; line-height:1.65; }
+.callout ul, .callout ol { padding-left:16px; }
+.callout li              { margin-bottom:4px; }
+/* tip = success / recommendation */
+.callout.tip       { background:#d1fae5; border-color:#a7f3d0; border-left-color:#059669; }
+.callout.tip .lbl  { color:#059669; }
+.callout.tip p, .callout.tip li { color:#065f46; }
+/* warn = pitfall / common mistake */
+.callout.warn       { background:#fef3c7; border-color:#fde68a; border-left-color:#b45309; }
+.callout.warn .lbl  { color:#b45309; }
+.callout.warn p, .callout.warn li { color:#78350f; }
+/* info = neutral background context */
+.callout.info       { background:#e0f2fe; border-color:#bae6fd; border-left-color:#0284c7; }
+.callout.info .lbl  { color:#0284c7; }
+.callout.info p, .callout.info li { color:#075985; }
+/* interview = key talking point / must-say insight */
+.callout.interview       { background:#e0e7ff; border-color:#a5b4fc; border-left-color:#4338ca; }
+.callout.interview .lbl  { color:#3730a3; }
+.callout.interview p     { color:#312e81; font-weight:600; }
+/* scenario = dark, step-by-step or high-stakes procedure */
+.callout.scenario        { background:#1e293b; color:#e2e8f0; border-left-color:#dc2626; border-left-width:4px; }
+.callout.scenario .lbl   { color:#f87171; font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
+.callout.scenario p      { font-size:12px; line-height:1.6; color:#e2e8f0; }
+.callout.scenario ol, .callout.scenario ul { padding-left:16px; }
+.callout.scenario li     { font-size:12px; line-height:1.6; color:#cbd5e1; margin-bottom:4px; }
+
+/* ── Code blocks ── */
+/* Simple (no header):  <div class="code-block simple">code here</div>        */
+/* Rich (with header):  <div class="code-block"><div class="code-header">...  */
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { background:#f8fafc; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:16px; }
+.code-block.simple { padding:10px 14px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; }
+.code-header         { display:flex; align-items:center; justify-content:space-between; padding:8px 14px; border-bottom:1px solid var(--border); }
+.code-header-left    { display:flex; align-items:center; gap:8px; }
+.code-label          { font-size:10px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.code-label.sql      { color:#0284c7; }
+.code-label.bash     { color:#059669; }
+.code-label.output   { color:#d97706; }
+.code-label.conf     { color:#7c3aed; }
+.code-label.js       { color:#b45309; }
+.code-label.py       { color:#0d9488; }
+.copy-btn            { font-size:10px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; color:var(--muted); background:none; border:1px solid var(--border); border-radius:5px; padding:3px 8px; cursor:pointer; transition:color .15s,border-color .15s; }
+.copy-btn:hover      { color:var(--navy); }
+.copy-btn.copied     { color:#059669; border-color:#059669; }
+.code-body           { padding:16px 14px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; color:#334155; line-height:1.75; overflow-x:auto; white-space:pre; background:#f8fafc; }
+/* Optional syntax highlight helpers — apply inline */
+.kw  { color:#0284c7; font-weight:600; } /* keywords */
+.fn  { color:#7c3aed; }                   /* functions */
+.str { color:#059669; }                   /* strings */
+.cm  { color:#94a3b8; }                   /* comments */
+.num { color:#d97706; }                   /* numbers */
+.op  { color:#db2777; }                   /* operators */
+
+/* ── ASCII diagram ── */
+.ascii-wrap     { background:#f8fafc; border:1px solid var(--border); border-radius:8px; padding:16px; margin-bottom:16px; overflow-x:auto; }
+.ascii-wrap pre { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:11px; color:#334155; line-height:1.6; white-space:pre; margin:0; }
+
+/* ── Reference table (cheat-sheet / option comparison) ── */
+.ref-table              { width:100%; border-collapse:collapse; font-size:12px; margin-bottom:16px; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+.ref-table thead tr     { background:#334155; color:#fff; }
+.ref-table thead th     { padding:10px 14px; text-align:left; font-weight:700; }
+.ref-table tbody tr     { border-bottom:1px solid var(--border); }
+.ref-table tbody tr:last-child { border-bottom:none; }
+.ref-table tbody tr:nth-child(even) { background:var(--bg); }
+.ref-table tbody td     { padding:9px 14px; vertical-align:top; line-height:1.55; }
+.ref-table .mono        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:11px; }
+.win     { color:#059669; font-weight:700; }
+.lose    { color:#dc2626; }
+.neutral { color:#d97706; }
+
+/* ── Compare table (approach A vs B trade-offs) ── */
+.compare-table     { width:100%; border-collapse:collapse; margin-bottom:16px; font-size:12px; }
+.compare-table th  { background:var(--bg); padding:8px 12px; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-align:left; border-bottom:1px solid var(--border); }
+.compare-table td  { padding:8px 12px; color:var(--navy); border-bottom:1px solid var(--border); vertical-align:top; line-height:1.5; }
+.compare-table tr:last-child td { border-bottom:none; }
+.compare-table .mono { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; color:#7c3aed; }
+.compare-table .good { color:#059669; font-weight:600; }
+.compare-table .bad  { color:#dc2626; font-weight:600; }
+
+/* ── Challenge box ── */
+.challenge                 { background:var(--white); border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:16px; box-shadow:var(--shadow); }
+.challenge-head            { padding:12px 16px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; transition:background .12s; }
+.challenge-head:hover      { background:var(--bg); }
+.challenge-head-left       { display:flex; align-items:center; gap:10px; }
+.challenge-badge           { font-size:10px; font-weight:700; letter-spacing:.08em; background:#fef3c7; color:#b45309; border:1px solid #fde68a; border-radius:99px; padding:2px 8px; }
+.challenge-title           { font-size:13px; font-weight:600; color:var(--navy); }
+.challenge-arrow           { font-size:12px; color:var(--muted); transition:transform .2s; }
+.challenge-arrow.open      { transform:rotate(180deg); }
+.challenge-body            { display:none; padding:16px; border-top:1px solid var(--border); }
+.challenge-body.open       { display:block; }
+.challenge-q               { font-size:13px; color:var(--navy); margin-bottom:12px; line-height:1.6; }
+.answer-toggle             { font-size:11px; color:var(--muted); cursor:pointer; text-decoration:underline; margin-bottom:8px; display:inline-block; }
+.answer-toggle:hover       { color:var(--navy); }
+.answer                    { display:none; }
+.answer.open               { display:block; }
+
+/* ── Q&A accordion (for standalone practice-question sections) ── */
+.badge       { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must  { background:#fef3c7; color:#92400e; }
+.badge-common{ background:#dbeafe; color:#1e40af; }
+.badge-tip   { background:#f0fdf4; color:#166534; }
+.q-arrow     { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel           { padding:18px 20px 16px 52px; }
+.strategy-label    { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text     { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+.answer-box        { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label  { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text   { font-size:13.5px; color:#14532d; line-height:1.7; }
+.warning-box       { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text  { font-size:13px; color:var(--amber-text); line-height:1.55; }
+.key-points        { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point         { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot     { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+/* ── Must block ── */
+.must-block                  { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title            { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item       { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet     { font-size:15px; flex-shrink:0; }
+
+/* ── Progress bar (optional — include when topic tracks acc-items) ── */
+.progress-bar   { display:flex; align-items:center; gap:12px; margin-bottom:20px; padding:12px 16px; background:var(--white); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); }
+.progress-label { font-size:12px; font-weight:600; color:var(--muted); white-space:nowrap; }
+.prog-bar       { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+.prog-fill      { height:100%; background:var(--accent); border-radius:3px; transition:width .3s; }
+.prog-label     { font-size:12px; color:var(--muted); white-space:nowrap; }
+
+/* ── RTL overrides ── */
+[dir="rtl"] .acc-trigger          { text-align:right; }
+[dir="rtl"] .callout              { border-radius:8px 0 0 8px; border-left-width:1px; border-right-width:3px; }
+[dir="rtl"] .callout.tip          { border-right-color:#059669; border-left-color:#a7f3d0; }
+[dir="rtl"] .callout.warn         { border-right-color:#b45309; border-left-color:#fde68a; }
+[dir="rtl"] .callout.info         { border-right-color:#0284c7; border-left-color:#bae6fd; }
+[dir="rtl"] .callout.interview    { border-right-color:#4338ca; border-left-color:#a5b4fc; }
+[dir="rtl"] .concept              { border-left-width:1px; border-right-width:3px; border-left-color:var(--border); }
+[dir="rtl"] .concept.blue         { border-right-color:#0284c7; }
+[dir="rtl"] .concept.green        { border-right-color:#059669; }
+[dir="rtl"] .concept.orange       { border-right-color:#d97706; }
+[dir="rtl"] .concept.teal         { border-right-color:#0d9488; }
+[dir="rtl"] .concept.purple       { border-right-color:#7c3aed; }
+[dir="rtl"] .concept.red          { border-right-color:#dc2626; }
+[dir="rtl"] .concept.yellow       { border-right-color:#b45309; }
+[dir="rtl"] .concept.indigo       { border-right-color:#4338ca; }
+[dir="rtl"] .challenge-head       { flex-direction:row-reverse; }
+[dir="rtl"] .challenge-head-left  { flex-direction:row-reverse; }
+[dir="rtl"] .q-panel              { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point            { flex-direction:row-reverse; }
+[dir="rtl"] .must-item            { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title     { flex-direction:row-reverse; }
+[dir="rtl"] .ascii-wrap           { direction:ltr; }
+[dir="rtl"] .code-block           { direction:ltr; }
+[dir="rtl"] .ref-table            { direction:ltr; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .section .code-block  { direction:ltr; text-align:left; }
+
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">MODULE NAME &mdash; Topic N of TOTAL &middot; WEIGHT &middot; ~Xh</div>
+    <h1><span>Keyword</span> Rest of Title</h1>
+    <p class="header-sub">One or two sentences describing what this topic covers and why it matters to the learner.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+
+<!-- ═══════════════════════════════════════════════════
+     ENGLISH TAB
+═══════════════════════════════════════════════════ -->
+<div id="tab-en" class="tab-content active">
+
+  <!-- OPTIONAL progress bar — include when acc-items are tracked via toggleAcc().
+       IDs must match exactly: prog-en / prog-count-en. updateProgress() reads them. -->
+  <div class="progress-bar">
+    <span class="progress-label">Study progress</span>
+    <div class="prog-bar"><div class="prog-fill" id="prog-en" style="width:0%"></div></div>
+    <span id="prog-count-en" class="prog-label">0 / 0 opened</span>
+  </div>
+
+
+  <!-- ═══ RICH LESSON SECTION (accordion sub-structure) ═══
+       Use this pattern for content-heavy lessons (Lesson 1 of N).
+       Each .acc-item is tracked by toggleAcc() and counted in progress.total.
+       Recommended sub-items: Why This Matters → Core Concepts → Deep Dive → Worked Example → Challenge
+  ═══ -->
+  <div class="section">
+    <div class="section-label">Lesson 1 &middot; ~Xh</div>
+    <h2>Lesson Title</h2>
+    <p class="section-intro">One paragraph explaining why this lesson matters and what the learner will be able to do after completing it. Keep it concrete and motivating — no filler.</p>
+    <div class="accordion">
+
+      <!-- ── SUB-ITEM: Why This Matters ── -->
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>⚡ Why This Matters</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">Contextual framing: where does this concept appear in real work, what breaks without it, and why would an interviewer or colleague care? Keep it to 2–3 sentences — no padding.</p>
+          <!-- interview callout = the one sentence a learner should be able to say out loud -->
+          <div class="callout interview">
+            <div class="lbl">⚓ Core Insight</div>
+            <p>The single distilled mental model — no filler. This is what should stick after everything else fades.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SUB-ITEM: Core Concepts ── -->
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Core Concepts</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <!-- Concept cards: one per key term or mechanism.
+               Colors: blue, green, orange, teal, purple, red, yellow, indigo
+               Use 3–5 cards per section. -->
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name">Concept Name A</div>
+              <div class="concept-desc">Definition and explanation of Concept A. Use <code>inline-code</code> for technical terms. Include a real-world implication or analogy on the next line if it aids understanding.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name">Concept Name B</div>
+              <div class="concept-desc">Definition and explanation of Concept B. Keep each card focused on one idea.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name">Concept Name C</div>
+              <div class="concept-desc">Definition and explanation of Concept C. Mention the consequence of getting this wrong.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name">Concept Name D</div>
+              <div class="concept-desc">Definition and explanation of Concept D.</div>
+            </div>
+            <!-- PATTERN: add more .concept.{color} divs here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SUB-ITEM: Deep Dive ── -->
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🔬 Deep Dive — Subtopic Name</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+
+          <!-- info callout: neutral architectural / context note -->
+          <div class="callout info">
+            <div class="lbl">ℹ️ How It Works</div>
+            <p>One or two sentences setting up the diagram or code below — the mechanism in plain English before showing the detail.</p>
+          </div>
+
+          <!-- ASCII diagram: use for flows, pipelines, memory layouts, state machines -->
+          <div class="ascii-wrap"><pre>
+ ┌──────────────────── Layer A (abstraction) ─────────────────┐
+ │                                                            │
+ │  ┌────────────┐  ┌────────────┐  ┌────────────┐           │
+ │  │  Part One  │  │  Part Two  │  │ Part Three │           │
+ │  └────────────┘  └────────────┘  └────────────┘           │
+ │                                                            │
+ └──────────────────────────────┬─────────────────────────────┘
+                                │ handoff
+                                ▼
+ ┌──────────────────── Layer B (storage) ─────────────────────┐
+ │  Persistent state / output                                 │
+ └────────────────────────────────────────────────────────────┘</pre></div>
+
+          <!-- Rich code block: code-label variants: sql, bash, output, conf, js, py -->
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left">
+                <span class="code-label bash">BASH</span>
+              </div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="cm"># Step 1: describe what this command does</span>
+example-command --flag value
+
+<span class="cm"># Step 2: follow-up command</span>
+another-command --option result</div>
+          </div>
+
+          <!-- Reference table: use for cheat-sheets, option comparisons, error codes, flags -->
+          <table class="ref-table">
+            <thead>
+              <tr><th>Item</th><th>Characteristic A</th><th>Characteristic B</th><th>When to use</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="mono">option-alpha</td>
+                <td class="win">✓ Fast</td>
+                <td class="neutral">Moderate</td>
+                <td>Default; use when X</td>
+              </tr>
+              <tr>
+                <td class="mono">option-beta</td>
+                <td class="neutral">Medium</td>
+                <td class="win">✓ Flexible</td>
+                <td>When Y is a requirement</td>
+              </tr>
+              <tr>
+                <td class="mono">option-gamma</td>
+                <td class="lose">✗ Slow</td>
+                <td class="win">✓ Safe</td>
+                <td>Legacy / compatibility</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Compare table: use for approach A vs approach B trade-offs -->
+          <table class="compare-table">
+            <thead><tr><th>Approach</th><th>Pros</th><th>Cons</th><th>Best for</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="mono">Approach A</td>
+                <td class="good">Simple setup</td>
+                <td class="bad">Doesn't scale</td>
+                <td>Prototyping / small projects</td>
+              </tr>
+              <tr>
+                <td class="mono">Approach B</td>
+                <td class="good">Scales well</td>
+                <td class="bad">Higher complexity</td>
+                <td>Production systems</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- warn callout: common mistake or pitfall -->
+          <div class="callout warn">
+            <div class="lbl">⚠️ Common Pitfall</div>
+            <p>Describe the most frequent mistake learners make here, and precisely why it fails. Be specific — vague warnings are ignored.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── SUB-ITEM: Worked Example ── -->
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🌍 Worked Example</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+
+          <!-- tip callout: frame the scenario context -->
+          <div class="callout tip">
+            <div class="lbl">✅ Scenario</div>
+            <p>Describe the concrete, realistic scenario this code solves. Use a generic system the learner would actually encounter — avoid company names or personal details.</p>
+          </div>
+
+          <!-- Multiple code blocks with different labels are fine in one acc-body -->
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left">
+                <span class="code-label sql">SQL</span>
+              </div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="cm">-- Step 1: comment explaining the intent</span>
+<span class="kw">SELECT</span> column_name
+<span class="kw">FROM</span>   table_name
+<span class="kw">WHERE</span>  condition_here;
+<span class="cm">-- Expected result: describe what the output means</span></div>
+          </div>
+
+          <!-- scenario callout: dark card for step-by-step procedures -->
+          <div class="callout scenario">
+            <div class="lbl">🎬 Step-by-Step</div>
+            <p>Optional step-by-step procedure when order matters:</p>
+            <ol>
+              <li>First action — with explanation.</li>
+              <li>Second action — with explanation.</li>
+              <li>Third action — verify the result.</li>
+            </ol>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── SUB-ITEM: Challenge (optional — remove if no strong exercise exists) ── -->
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🎯 Challenge</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="challenge">
+            <div class="challenge-head" onclick="togChallenge(this)">
+              <div class="challenge-head-left">
+                <span class="challenge-badge">TRY IT</span>
+                <span class="challenge-title">Challenge title — one-line description of the exercise</span>
+              </div>
+              <span class="challenge-arrow">▾</span>
+            </div>
+            <div class="challenge-body">
+              <p class="challenge-q">Question or task. Include all information needed: any inputs, the goal, and relevant constraints. Make it specific enough that there is a clear correct answer.</p>
+              <span class="answer-toggle"
+                    data-show="Show answer ↓"
+                    data-hide="Hide answer ↑"
+                    onclick="togAnswer(this)">Show answer ↓</span>
+              <div class="answer">
+                <div class="callout tip">
+                  <div class="lbl">✓ Answer</div>
+                  <p>The worked answer. Explain the reasoning step by step — not just the result. If multiple approaches are valid, state the trade-offs between them.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end accordion -->
+  </div><!-- end section (Lesson 1) -->
+  <!-- PATTERN: add Lesson 2, Lesson 3 … as additional .section blocks with their own .accordion -->
+
+
+  <!-- ═══ SIMPLE SECTION VARIANT (no accordion) ═══
+       Use for short factual blocks, quick-reference summaries, or prerequisite notes.
+       Simple sections do NOT count toward progress.total (only acc-items do).
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">🔷</div>
+    <div>
+      <div class="section-title">Section Title</div>
+      <div class="section-subtitle">One-line subtitle describing the focus of this block</div>
+    </div>
+  </div>
+  <div class="section">
+    <h2>Concept title</h2>
+    <p>Explanation with <strong>bold terms</strong> and <code>inline code</code>.</p>
+    <div class="code-block simple">example code here — no header, no copy button</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Key point one.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Key point two — use <code>inline code</code> for commands.</div>
+    </div>
+  </div>
+
+  ═══ END SIMPLE SECTION VARIANT ═══ -->
+
+
+  <!-- ═══ Q&A SECTION (optional — use when the topic warrants standalone practice questions) ═══
+       q-card questions are separate from acc-item content. Both count toward progress.total.
+       Use q-cards for conceptual questions; use Challenge acc-items for hands-on exercises. ═══ -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">Deep-dive questions for this specific topic</div>
+    </div>
+  </div>
+
+  <!-- Q01 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Topic-specific question here?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">One or two sentence framing of the approach to answering.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">Full answer. Use <code>inline code</code> where needed.
+          <div class="code-block simple">optional code block inside the answer</div>
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Common mistake — omit this block entirely if there is no real pitfall worth flagging.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Takeaway one.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Takeaway two.</div>
+      </div>
+    </div>
+  </div>
+  <!-- PATTERN: add Q02 EN … Q08 EN here -->
+  <!-- Badge guide: badge-must (critical) | badge-common (frequently tested) | badge-tip (FYI) -->
+
+
+  <!-- SUCCESS CRITERIA — always at the end of each language tab -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done with this topic when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Criterion one — a specific, verifiable action the learner can perform.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Criterion two — concrete and measurable.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Criterion three — ties back to the lesson objectives.</div>
+    <!-- PATTERN: 3–4 must-item rows total -->
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══════════════════════════════════════════════════
+     GERMAN TAB
+═══════════════════════════════════════════════════ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="progress-bar">
+    <span class="progress-label">Lernfortschritt</span>
+    <div class="prog-bar"><div class="prog-fill" id="prog-de" style="width:0%"></div></div>
+    <span id="prog-count-de" class="prog-label">0 / 0 geöffnet</span>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Lektion 1 &middot; ~Xh</div>
+    <h2>Lektionstitel</h2>
+    <p class="section-intro">Ein Absatz, der erklärt, warum diese Lektion wichtig ist und was der Lernende danach tun können wird. Konkret und motivierend — kein Fülltext.</p>
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>⚡ Warum das wichtig ist</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">Kontextueller Rahmen: Wo taucht dieses Konzept in der Praxis auf, was scheitert ohne es, und warum interessiert es einen Interviewer oder Kollegen?</p>
+          <div class="callout interview">
+            <div class="lbl">⚓ Kerngedanke</div>
+            <p>Das destillierte mentale Modell in einem Satz — das, was nach allem anderen hängen bleibt.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Kernkonzepte</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name">Konzept A</div>
+              <div class="concept-desc">Definition und Erklärung von Konzept A. <code>inline-code</code> für technische Begriffe. Praxisbezug oder Analogie auf der nächsten Zeile bei Bedarf.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name">Konzept B</div>
+              <div class="concept-desc">Definition und Erklärung von Konzept B. Jeden Abschnitt auf eine Idee beschränken.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name">Konzept C</div>
+              <div class="concept-desc">Definition und Erklärung von Konzept C. Konsequenz bei Fehlanwendung benennen.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name">Konzept D</div>
+              <div class="concept-desc">Definition und Erklärung von Konzept D.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🔬 Vertiefung — Unterthema</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout info">
+            <div class="lbl">ℹ️ So funktioniert es</div>
+            <p>Ein oder zwei Sätze, die das Diagramm oder den Code unten einleiten — der Mechanismus in einfacher Sprache.</p>
+          </div>
+          <div class="ascii-wrap"><pre>
+ ┌──────────────────── Schicht A (Abstraktion) ────────────────┐
+ │                                                             │
+ │  ┌────────────┐  ┌────────────┐  ┌────────────┐            │
+ │  │   Teil 1   │  │   Teil 2   │  │   Teil 3   │            │
+ │  └────────────┘  └────────────┘  └────────────┘            │
+ │                                                             │
+ └─────────────────────────────┬───────────────────────────────┘
+                               │ Übergabe
+                               ▼
+ ┌──────────────────── Schicht B (Speicher) ──────────────────┐
+ │  Persistenter Zustand / Ausgabe                            │
+ └────────────────────────────────────────────────────────────┘</pre></div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label bash">BASH</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">kopieren</button>
+            </div>
+            <div class="code-body"><span class="cm"># Schritt 1: Beschreibe, was dieser Befehl tut</span>
+beispiel-befehl --option wert
+
+<span class="cm"># Schritt 2: Folgender Befehl</span>
+weiterer-befehl --option ergebnis</div>
+          </div>
+          <table class="ref-table">
+            <thead>
+              <tr><th>Option</th><th>Eigenschaft A</th><th>Eigenschaft B</th><th>Einsatz</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="mono">option-alpha</td><td class="win">✓ Schnell</td><td class="neutral">Mittel</td><td>Standard; bei X verwenden</td></tr>
+              <tr><td class="mono">option-beta</td><td class="neutral">Mittel</td><td class="win">✓ Flexibel</td><td>Wenn Y erforderlich</td></tr>
+              <tr><td class="mono">option-gamma</td><td class="lose">✗ Langsam</td><td class="win">✓ Sicher</td><td>Kompatibilität / Legacy</td></tr>
+            </tbody>
+          </table>
+          <div class="callout warn">
+            <div class="lbl">⚠️ Häufiger Fehler</div>
+            <p>Den häufigsten Fehler beschreiben und genau erklären, warum er scheitert. Konkret sein — vage Warnungen werden ignoriert.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🌍 Praxisbeispiel</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout tip">
+            <div class="lbl">✅ Szenario</div>
+            <p>Das konkrete, realistische Szenario beschreiben, das dieser Code löst. Generische Systembezeichnungen verwenden.</p>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label sql">SQL</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">kopieren</button>
+            </div>
+            <div class="code-body"><span class="cm">-- Schritt 1: Absicht des Befehls erklären</span>
+<span class="kw">SELECT</span> spaltenname
+<span class="kw">FROM</span>   tabellenname
+<span class="kw">WHERE</span>  bedingung;
+<span class="cm">-- Erwartetes Ergebnis: beschreiben, was die Ausgabe bedeutet</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🎯 Aufgabe</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="challenge">
+            <div class="challenge-head" onclick="togChallenge(this)">
+              <div class="challenge-head-left">
+                <span class="challenge-badge">AUSPROBIEREN</span>
+                <span class="challenge-title">Aufgabentitel — einzeilige Beschreibung der Übung</span>
+              </div>
+              <span class="challenge-arrow">▾</span>
+            </div>
+            <div class="challenge-body">
+              <p class="challenge-q">Frage oder Aufgabenbeschreibung. Alle notwendigen Informationen angeben: Eingabedaten, Ziel, Einschränkungen. Konkret genug für eine eindeutige Antwort.</p>
+              <span class="answer-toggle"
+                    data-show="Antwort zeigen ↓"
+                    data-hide="Antwort ausblenden ↑"
+                    onclick="togAnswer(this)">Antwort zeigen ↓</span>
+              <div class="answer">
+                <div class="callout tip">
+                  <div class="lbl">✓ Antwort</div>
+                  <p>Die ausgearbeitete Antwort. Den Denkprozess Schritt für Schritt erklären, nicht nur das Ergebnis.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end accordion -->
+  </div><!-- end section -->
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Vertiefungsfragen zu diesem spezifischen Thema</div>
+    </div>
+  </div>
+
+  <!-- Q01 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Themenspezifische Frage hier?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Ein oder zwei Sätze zur Einrahmung des Lösungsansatzes.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Vollständige Antwort. <code>Inline-Code</code> wo nötig.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Schlüsselaussage eins.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Schlüsselaussage zwei.</div>
+      </div>
+    </div>
+  </div>
+  <!-- MUSTER: Q02 DE … Q08 DE hier einfügen -->
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit diesem Thema fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Kriterium eins — eine konkrete, überprüfbare Handlung.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Kriterium zwei — messbar und spezifisch.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Kriterium drei — bezieht sich auf die Lernziele.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+
+<!-- ═══════════════════════════════════════════════════
+     ARABIC TAB
+═══════════════════════════════════════════════════ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="progress-bar">
+    <span class="progress-label">تقدم الدراسة</span>
+    <div class="prog-bar"><div class="prog-fill" id="prog-ar" style="width:0%"></div></div>
+    <span id="prog-count-ar" class="prog-label">0 / 0 مفتوح</span>
+  </div>
+
+  <div class="section">
+    <div class="section-label">الدرس 1 &middot; ~س</div>
+    <h2>عنوان الدرس</h2>
+    <p class="section-intro">فقرة واحدة توضح سبب أهمية هذا الدرس وما الذي سيتمكن المتعلم من فعله بعد إتمامه. اجعلها ملموسة ومحفزة — بلا حشو.</p>
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>⚡ لماذا هذا مهم</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">الإطار السياقي: أين يظهر هذا المفهوم في العمل الفعلي، وما الذي يفشل بدونه، ولماذا يهتم به المُقابِل أو الزميل؟ جملتان أو ثلاث — بلا حشو.</p>
+          <div class="callout interview">
+            <div class="lbl">⚓ الفكرة الجوهرية</div>
+            <p>النموذج الذهني المُقطَّر في جملة واحدة — ما يجب أن يبقى بعد أن يتلاشى كل شيء آخر.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 المفاهيم الأساسية</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name">المفهوم أ</div>
+              <div class="concept-desc">تعريف وشرح المفهوم أ. استخدم <code dir="ltr">inline-code</code> للمصطلحات التقنية. أضف تطبيقاً عملياً أو تشبيهاً في السطر التالي إن أفاد.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name">المفهوم ب</div>
+              <div class="concept-desc">تعريف وشرح المفهوم ب. اقصر كل بطاقة على فكرة واحدة.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name">المفهوم ج</div>
+              <div class="concept-desc">تعريف وشرح المفهوم ج. اذكر عاقبة التطبيق الخاطئ.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name">المفهوم د</div>
+              <div class="concept-desc">تعريف وشرح المفهوم د.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🔬 تعمق — اسم الموضوع الفرعي</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout info">
+            <div class="lbl">ℹ️ كيف يعمل</div>
+            <p>جملة أو جملتان تمهيداً للمخطط أو الكود أدناه — الآلية بلغة مبسّطة قبل عرض التفاصيل.</p>
+          </div>
+          <div class="ascii-wrap" dir="ltr"><pre>
+ ┌──────────────────── الطبقة أ (التجريد) ────────────────────┐
+ │                                                            │
+ │  ┌────────────┐  ┌────────────┐  ┌────────────┐           │
+ │  │   جزء 1   │  │   جزء 2   │  │   جزء 3   │           │
+ │  └────────────┘  └────────────┘  └────────────┘           │
+ │                                                            │
+ └─────────────────────────────┬──────────────────────────────┘
+                               │ تسليم
+                               ▼
+ ┌──────────────────── الطبقة ب (التخزين) ───────────────────┐
+ │  الحالة الدائمة / الإخراج                                 │
+ └────────────────────────────────────────────────────────────┘</pre></div>
+          <div class="code-block" dir="ltr">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label bash">BASH</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+            </div>
+            <div class="code-body"><span class="cm"># الخطوة 1: اشرح ما يفعله هذا الأمر</span>
+example-command --flag value
+
+<span class="cm"># الخطوة 2: الأمر التالي</span>
+another-command --option result</div>
+          </div>
+          <table class="ref-table" dir="ltr">
+            <thead>
+              <tr><th>العنصر</th><th>الخاصية أ</th><th>الخاصية ب</th><th>متى تستخدم</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="mono">option-alpha</td><td class="win">✓ سريع</td><td class="neutral">متوسط</td><td>الافتراضي؛ عند الحاجة لـ X</td></tr>
+              <tr><td class="mono">option-beta</td><td class="neutral">متوسط</td><td class="win">✓ مرن</td><td>عندما يكون Y مطلوباً</td></tr>
+              <tr><td class="mono">option-gamma</td><td class="lose">✗ بطيء</td><td class="win">✓ آمن</td><td>التوافق مع الإصدارات القديمة</td></tr>
+            </tbody>
+          </table>
+          <div class="callout warn">
+            <div class="lbl">⚠️ خطأ شائع</div>
+            <p>صِف الخطأ الأكثر شيوعاً واشرح بدقة سبب فشله. كن محدداً — التحذيرات المبهمة تُتجاهَل.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🌍 مثال تطبيقي</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout tip">
+            <div class="lbl">✅ السيناريو</div>
+            <p>اشرح السيناريو الواقعي المحدد الذي يحله هذا الكود. استخدم أسماء أنظمة عامة — تجنب أسماء الشركات أو التفاصيل الشخصية.</p>
+          </div>
+          <div class="code-block" dir="ltr">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label sql">SQL</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+            </div>
+            <div class="code-body"><span class="cm">-- الخطوة 1: نية الاستعلام</span>
+<span class="kw">SELECT</span> column_name
+<span class="kw">FROM</span>   table_name
+<span class="kw">WHERE</span>  condition_here;
+<span class="cm">-- النتيجة المتوقعة: اشرح ما تعنيه المخرجات</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🎯 تحدٍّ</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="challenge">
+            <div class="challenge-head" onclick="togChallenge(this)">
+              <div class="challenge-head-left">
+                <span class="challenge-badge">جرّبه</span>
+                <span class="challenge-title">عنوان التحدي — وصف من سطر واحد للتمرين</span>
+              </div>
+              <span class="challenge-arrow">▾</span>
+            </div>
+            <div class="challenge-body">
+              <p class="challenge-q">سؤال أو وصف المهمة. أدرج جميع المعلومات اللازمة: بيانات الإدخال، الهدف، القيود ذات الصلة. محدد بما يكفي لوجود إجابة صحيحة واضحة.</p>
+              <span class="answer-toggle"
+                    data-show="إظهار الإجابة ↓"
+                    data-hide="إخفاء الإجابة ↑"
+                    onclick="togAnswer(this)">إظهار الإجابة ↓</span>
+              <div class="answer">
+                <div class="callout tip">
+                  <div class="lbl">✓ الإجابة</div>
+                  <p>الإجابة المُعمَّقة. اشرح المنطق خطوة بخطوة لا النتيجة وحدها. إذا كانت هناك أساليب متعددة صالحة، وضّح المفاضلة بينها.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end accordion -->
+  </div><!-- end section -->
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">أسئلة التدريب</div>
+      <div class="section-subtitle">أسئلة معمّقة لهذا الموضوع تحديداً</div>
+    </div>
+  </div>
+
+  <!-- Q01 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">سؤال خاص بالموضوع هنا؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">جملة أو جملتان لتأطير منهج الإجابة.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">الإجابة الكاملة. <code dir="ltr">inline-code</code> حيث يلزم.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>نقطة رئيسية أولى.</div>
+        <div class="key-point"><div class="key-point-dot"></div>نقطة رئيسية ثانية.</div>
+      </div>
+    </div>
+  </div>
+  <!-- النمط: أضف Q02 AR … Q08 AR هنا -->
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> انتهيت من هذا الموضوع عندما...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>المعيار الأول — إجراء ملموس وقابل للتحقق يمكن للمتعلم تنفيذه.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>المعيار الثاني — محدد وقابل للقياس.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>المعيار الثالث — يرتبط بأهداف الدرس.</div>
+  </div>
+
+</div><!-- end tab-ar -->
+
+
+</div><!-- end body -->
+</main>
+
+<!-- LMS progress bridge — REQUIRED on every tracked topic page.
+     Set this BEFORE lesson-ui.js; the key is read at parse time.
+     Must exactly match the `storageKey` in registry.js for this lesson. -->
+<script>window.LMS_STORAGE_KEY = 'lms_FOLDER_NAME_NN_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<script>
+/* ══ PAGE-LEVEL HELPERS ══════════════════════════════════════════════════════
+   Include these when using the indicated components.
+   Remove any helper whose component is absent from this file.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* copyCode — required when any .code-block with a .copy-btn is present */
+function copyCode(btn) {
+  const body = btn.closest('.code-block').querySelector('.code-body');
+  const text = (body.innerText || body.textContent).replace(/\u00A0/g, ' ');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = btn.dataset.label || 'copy'; btn.classList.remove('copied'); }, 1800);
+  }).catch(() => { btn.textContent = 'failed'; setTimeout(() => { btn.textContent = btn.dataset.label || 'copy'; }, 1500); });
+}
+
+/* togChallenge — required when any .challenge component is present */
+function togChallenge(headEl) {
+  const body  = headEl.nextElementSibling;
+  const arrow = headEl.querySelector('.challenge-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+/* togAnswer — required when any .answer-toggle is present.
+   Reads data-show / data-hide attributes for multilingual toggle labels:
+     data-show="Show answer ↓"   data-hide="Hide answer ↑"    (EN)
+     data-show="Antwort zeigen ↓" data-hide="Antwort ausblenden ↑" (DE)
+     data-show="إظهار الإجابة ↓"  data-hide="إخفاء الإجابة ↑"    (AR) */
+function togAnswer(toggleEl) {
+  const ans    = toggleEl.nextElementSibling;
+  ans.classList.toggle('open');
+  const isOpen = ans.classList.contains('open');
+  toggleEl.textContent = isOpen
+    ? (toggleEl.dataset.hide || 'Hide answer ↑')
+    : (toggleEl.dataset.show || 'Show answer ↓');
+}
+
+/* updateProgress — call only when a progress bar (id="prog-{lang}") is present.
+   lesson-ui.js updates the bar whenever acc-items and q-cards are toggled. */
+updateProgress();
+
+/* guardLanguageTab — call once per language you did NOT generate full content for.
+   Remove the line for any language that HAS full content above.
+   lesson-ui.js handles those automatically on DOMContentLoaded.
+
+   guardLanguageTab('ar');
+   guardLanguageTab('de');
+*/
+</script>
+</body>
+</html>

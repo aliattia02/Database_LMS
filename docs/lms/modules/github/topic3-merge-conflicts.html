@@ -184,17 +184,17 @@
     <p>When Git writes conflict markers into a file, it always uses this three-part structure:</p>
     <div class="conflict-block">
       <span class="conflict-ours"><span class="conflict-marker">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD (your branch — what you currently have)</span>
-patient_id = record.get("patient_id")
-device_type = "CGM"</span>
+product_id = record.get("product_id")
+category = "electronics"</span>
       <span class="conflict-sep">======= (divider — everything above is yours, everything below is theirs)</span>
-      <span class="conflict-theirs">patient_id = record.get("id")
-device_type = record.get("device_type", "unknown")
-<span class="conflict-marker">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/device-model (incoming branch being merged)</span></span>
+      <span class="conflict-theirs">product_id = record.get("id")
+category = record.get("category", "general")
+<span class="conflict-marker">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/product-schema (incoming branch being merged)</span></span>
     </div>
     <div class="key-points">
       <div class="key-point"><div class="key-point-dot"></div><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> — your version (the branch you ran <code>git merge</code> from). Everything between this line and <code>=======</code> is what you had.</div>
       <div class="key-point"><div class="key-point-dot"></div><code>=======</code> — the divider. Above = yours. Below = theirs.</div>
-      <div class="key-point"><div class="key-point-dot"></div><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/device-model</code> — the incoming version (the branch being merged in). Everything between <code>=======</code> and this line is what they had.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/product-schema</code> — the incoming version (the branch being merged in). Everything between <code>=======</code> and this line is what they had.</div>
       <div class="key-point"><div class="key-point-dot"></div>One file can have <strong>multiple conflict blocks</strong> — one per conflicting section. Resolve each one.</div>
     </div>
     <p>Your job: delete all three marker lines and leave only the code that should survive. That might be your version, their version, or a blend of both — you decide based on what is actually correct.</p>
@@ -223,20 +223,20 @@ device_type = record.get("device_type", "unknown")
         <div class="answer-box-text">
 <div class="code-block"># 1. Start the merge (conflict occurs here)
 git switch main
-git merge feature/device-model
-# → CONFLICT (content): Merge conflict in src/models/device.py
+git merge feature/product-schema
+# → CONFLICT (content): Merge conflict in src/models/product.py
 # → Automatic merge failed; fix conflicts and then commit the result.
 
 # 2. See which files have conflicts
 git status
-# → both modified:   src/models/device.py
+# → both modified:   src/models/product.py
 
 # 3. Open the conflicting file in your editor
 #    Find every &lt;&lt;&lt;&lt;&lt;&lt;&lt; block, decide what the final code should be,
 #    delete the three marker lines, save the file.
 
 # 4. Stage the resolved file
-git add src/models/device.py
+git add src/models/product.py
 
 # 5. Confirm no conflicts remain
 git status
@@ -244,7 +244,7 @@ git status
 
 # 6. Complete the merge with a commit
 git commit
-# Git pre-fills the message: "Merge branch 'feature/device-model'"
+# Git pre-fills the message: "Merge branch 'feature/product-schema'"
 # Save and close the editor to accept it.</div>
           The merge is now complete. The commit history shows both branches converging.
         </div>
@@ -252,7 +252,7 @@ git commit
       <div class="key-points">
         <div class="key-point"><div class="key-point-dot"></div><code>git status</code> is your compass throughout. Run it after every step to see where you are.</div>
         <div class="key-point"><div class="key-point-dot"></div>Don't <code>git add .</code> blindly — stage only the files you've resolved. Accidentally staging an unresolved file with markers still in it will commit broken code.</div>
-        <div class="key-point"><div class="key-point-dot"></div>If you staged a file and want to un-stage it: <code>git restore --staged src/models/device.py</code></div>
+        <div class="key-point"><div class="key-point-dot"></div>If you staged a file and want to un-stage it: <code>git restore --staged src/models/product.py</code></div>
       </div>
     </div>
   </div>
@@ -333,8 +333,8 @@ git reset --soft HEAD~1
 
 # Now edit the file — remove all conflict markers properly
 # Then re-stage and re-commit
-git add src/models/device.py
-git commit -m "fix: resolve merge conflict in device model"</div>
+git add src/models/product.py
+git commit -m "fix: resolve merge conflict in product model"</div>
         </div>
       </div>
       <div class="warning-box">
@@ -392,7 +392,7 @@ git merge main</div>
 <div class="code-block"># Enable globally (recommended — set it once and forget it)
 git config --global rerere.enabled true</div>
           Once enabled: next time you hit a conflict, resolve it normally. Git records the resolution. The next time the same conflict appears (e.g. on a subsequent merge), Git applies your previous resolution automatically.<br><br>
-          You'll see: <code>Resolved 'src/models/device.py' using previous resolution.</code>
+          You'll see: <code>Resolved 'src/models/product.py' using previous resolution.</code>
         </div>
       </div>
       <div class="key-points">
@@ -416,21 +416,21 @@ git config --global rerere.enabled true</div>
     <p>The best way to be calm about conflicts is to have caused and resolved one deliberately. Run this script — it manufactures a predictable conflict so you can practise the full resolution workflow without any stakes.</p>
     <div class="code-block"># 1. Fresh practice repo
 git init conflict-practice && cd conflict-practice
-echo "patient_id = record.get('id')" > model.py
+echo "product_id = record.get('id')" > model.py
 git add . && git commit -m "Initial model"
 
 # 2. Create a feature branch and change the same line
-git switch -c feature/patient-lookup
-echo "patient_id = record.get('patient_id')" > model.py
-git commit -am "feat: use explicit patient_id key"
+git switch -c feature/inventory-lookup
+echo "product_id = record.get('product_id')" > model.py
+git commit -am "feat: use explicit product_id key"
 
 # 3. Back on main, make a different change to the same line
 git switch main
-echo "patient_id = record.get('pid')" > model.py
+echo "product_id = record.get('sku')" > model.py
 git commit -am "chore: align key name with API spec"
 
 # 4. Now merge — this WILL conflict
-git merge feature/patient-lookup
+git merge feature/inventory-lookup
 # → CONFLICT (content): Merge conflict in model.py
 
 # 5. Inspect the markers
@@ -496,17 +496,17 @@ git log --all --oneline --graph</div>
     <p>Wenn Git Konflikt-Markierungen in eine Datei schreibt, verwendet es immer diese dreiteilige Struktur:</p>
     <div class="conflict-block">
       <span class="conflict-ours"><span class="conflict-marker">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD (dein Branch — was du aktuell hast)</span>
-patient_id = record.get("patient_id")
-device_type = "CGM"</span>
+product_id = record.get("product_id")
+category = "electronics"</span>
       <span class="conflict-sep">======= (Trennlinie — alles darüber ist deins, alles darunter ist deren Version)</span>
-      <span class="conflict-theirs">patient_id = record.get("id")
-device_type = record.get("device_type", "unknown")
-<span class="conflict-marker">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/device-model (eingehender Branch, der gemergt wird)</span></span>
+      <span class="conflict-theirs">product_id = record.get("id")
+category = record.get("category", "general")
+<span class="conflict-marker">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/product-schema (eingehender Branch, der gemergt wird)</span></span>
     </div>
     <div class="key-points">
       <div class="key-point"><div class="key-point-dot"></div><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> — deine Version (der Branch, von dem aus du <code>git merge</code> ausgeführt hast). Alles zwischen dieser Zeile und <code>=======</code> ist dein Stand.</div>
       <div class="key-point"><div class="key-point-dot"></div><code>=======</code> — die Trennlinie. Oben = deins. Unten = ihres.</div>
-      <div class="key-point"><div class="key-point-dot"></div><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/device-model</code> — die eingehende Version (der Branch, der gemergt wird). Alles zwischen <code>=======</code> und dieser Zeile ist ihr Stand.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/product-schema</code> — die eingehende Version (der Branch, der gemergt wird). Alles zwischen <code>=======</code> und dieser Zeile ist ihr Stand.</div>
       <div class="key-point"><div class="key-point-dot"></div>Eine Datei kann <strong>mehrere Konflikt-Blöcke</strong> haben — einen pro konfliktierende Sektion. Löse jeden einzeln.</div>
     </div>
     <p>Deine Aufgabe: lösche alle drei Markierungszeilen und lasse nur den Code übrig, der überleben soll — deine Version, ihre Version, oder eine Mischung aus beiden.</p>
@@ -535,19 +535,19 @@ device_type = record.get("device_type", "unknown")
         <div class="answer-box-text">
 <div class="code-block"># 1. Merge starten (Konflikt tritt hier auf)
 git switch main
-git merge feature/device-model
-# → CONFLICT (content): Merge conflict in src/models/device.py
+git merge feature/product-schema
+# → CONFLICT (content): Merge conflict in src/models/product.py
 
 # 2. Welche Dateien haben Konflikte?
 git status
-# → both modified:   src/models/device.py
+# → both modified:   src/models/product.py
 
 # 3. Konfliktdatei im Editor öffnen
 #    Jeden &lt;&lt;&lt;&lt;&lt;&lt;&lt;-Block finden, entscheiden, was der finale Code ist,
 #    alle drei Markierungszeilen löschen, Datei speichern.
 
 # 4. Aufgelöste Datei stagen
-git add src/models/device.py
+git add src/models/product.py
 
 # 5. Bestätigen, dass keine Konflikte mehr vorhanden sind
 git status
@@ -555,14 +555,14 @@ git status
 
 # 6. Merge mit einem Commit abschließen
 git commit
-# Git füllt die Nachricht vor: "Merge branch 'feature/device-model'"</div>
+# Git füllt die Nachricht vor: "Merge branch 'feature/product-schema'"</div>
           Der Merge ist nun abgeschlossen. Der Commit-Verlauf zeigt, wie beide Branches konvergieren.
         </div>
       </div>
       <div class="key-points">
         <div class="key-point"><div class="key-point-dot"></div><code>git status</code> ist dein Kompass. Führe es nach jedem Schritt aus.</div>
         <div class="key-point"><div class="key-point-dot"></div>Kein blindes <code>git add .</code> — stage nur die Dateien, die du aufgelöst hast.</div>
-        <div class="key-point"><div class="key-point-dot"></div>Datei wieder entstagen: <code>git restore --staged src/models/device.py</code></div>
+        <div class="key-point"><div class="key-point-dot"></div>Datei wieder entstagen: <code>git restore --staged src/models/product.py</code></div>
       </div>
     </div>
   </div>
@@ -637,8 +637,8 @@ git reset --soft HEAD~1
 
 # Datei bearbeiten — alle Konfliktmarkierungen korrekt entfernen
 # Dann neu stagen und committen
-git add src/models/device.py
-git commit -m "fix: Merge-Konflikt in device model auflösen"</div>
+git add src/models/product.py
+git commit -m "fix: Merge-Konflikt in product model auflösen"</div>
         </div>
       </div>
       <div class="key-points">
@@ -689,7 +689,7 @@ git merge main</div>
 <div class="code-block"># Global aktivieren (einmal einrichten und vergessen)
 git config --global rerere.enabled true</div>
           Einmal aktiviert: löse den Konflikt normal. Git speichert die Lösung. Beim nächsten gleichen Konflikt wendet Git deine vorherige Lösung automatisch an.<br><br>
-          Du siehst: <code>Resolved 'src/models/device.py' using previous resolution.</code>
+          Du siehst: <code>Resolved 'src/models/product.py' using previous resolution.</code>
         </div>
       </div>
       <div class="key-points">
@@ -712,21 +712,21 @@ git config --global rerere.enabled true</div>
     <p>Der beste Weg, Konflikte entspannt zu begegnen, ist, einen absichtlich verursacht und gelöst zu haben. Führe dieses Skript aus — es erzeugt einen vorhersehbaren Konflikt zum Üben ohne Konsequenzen.</p>
     <div class="code-block"># 1. Frisches Übungs-Repo
 git init conflict-practice && cd conflict-practice
-echo "patient_id = record.get('id')" > model.py
+echo "product_id = record.get('id')" > model.py
 git add . && git commit -m "Initial model"
 
 # 2. Feature-Branch erstellen und dieselbe Zeile ändern
-git switch -c feature/patient-lookup
-echo "patient_id = record.get('patient_id')" > model.py
-git commit -am "feat: expliziten patient_id-Schlüssel verwenden"
+git switch -c feature/inventory-lookup
+echo "product_id = record.get('product_id')" > model.py
+git commit -am "feat: expliziten product_id-Schlüssel verwenden"
 
 # 3. Zurück auf main, eine andere Änderung an derselben Zeile vornehmen
 git switch main
-echo "patient_id = record.get('pid')" > model.py
+echo "product_id = record.get('sku')" > model.py
 git commit -am "chore: Schlüsselnamen an API-Spec anpassen"
 
 # 4. Jetzt mergen — das WIRD einen Konflikt verursachen
-git merge feature/patient-lookup
+git merge feature/inventory-lookup
 # → CONFLICT (content): Merge conflict in model.py
 
 # 5. Markierungen ansehen
@@ -790,17 +790,17 @@ git log --all --oneline --graph</div>
     <p>عندما يكتب Git علامات التعارض في ملف، يستخدم دائماً هذا الهيكل ثلاثي الأجزاء:</p>
     <div class="conflict-block" dir="ltr">
       <span class="conflict-ours"><span class="conflict-marker">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD (branch-ك — ما لديك حالياً)</span>
-patient_id = record.get("patient_id")
-device_type = "CGM"</span>
+product_id = record.get("product_id")
+category = "electronics"</span>
       <span class="conflict-sep">======= (الفاصل — كل ما فوقه نسختك، كل ما تحته نسختهم)</span>
-      <span class="conflict-theirs">patient_id = record.get("id")
-device_type = record.get("device_type", "unknown")
-<span class="conflict-marker">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/device-model (الـ branch الوارد المراد دمجه)</span></span>
+      <span class="conflict-theirs">product_id = record.get("id")
+category = record.get("category", "general")
+<span class="conflict-marker">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/product-schema (الـ branch الوارد المراد دمجه)</span></span>
     </div>
     <div class="key-points">
       <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> — نسختك (الـ branch الذي نفّذت منه <code>git merge</code>). كل ما بين هذا السطر و<code>=======</code> هو ما كان لديك.</div>
       <div class="key-point"><div class="key-point-dot"></div><code>=======</code> — الفاصل. ما فوقه = نسختك. ما تحته = نسختهم.</div>
-      <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/device-model</code> — النسخة الواردة (الـ branch المراد دمجه). كل ما بين <code>=======</code> وهذا السطر هو ما كان لديهم.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/product-schema</code> — النسخة الواردة (الـ branch المراد دمجه). كل ما بين <code>=======</code> وهذا السطر هو ما كان لديهم.</div>
       <div class="key-point"><div class="key-point-dot"></div>يمكن أن يحتوي الملف على <strong>كتل تعارض متعددة</strong> — واحدة لكل قسم متعارض. أحل كلاً منها.</div>
     </div>
     <p>مهمتك: احذف الأسطر الثلاث للعلامات واترك فقط الكود الذي يجب أن يبقى — نسختك، نسختهم، أو مزيجاً منهما.</p>
@@ -829,19 +829,19 @@ device_type = record.get("device_type", "unknown")
         <div class="answer-box-text">
 <div class="code-block" dir="ltr"># ١. ابدأ الدمج (التعارض يحدث هنا)
 git switch main
-git merge feature/device-model
-# → CONFLICT (content): Merge conflict in src/models/device.py
+git merge feature/product-schema
+# → CONFLICT (content): Merge conflict in src/models/product.py
 
 # ٢. أي ملفات بها تعارضات؟
 git status
-# → both modified:   src/models/device.py
+# → both modified:   src/models/product.py
 
 # ٣. افتح الملف المتعارض في محررك
 #    ابحث عن كل كتلة &lt;&lt;&lt;&lt;&lt;&lt;&lt;، قرر ما هو الكود النهائي،
 #    احذف الأسطر الثلاثة للعلامات، احفظ الملف.
 
 # ٤. Stage الملف المحلول
-git add src/models/device.py
+git add src/models/product.py
 
 # ٥. تأكد من عدم وجود تعارضات متبقية
 git status
@@ -849,14 +849,14 @@ git status
 
 # ٦. أكمل الدمج بـ commit
 git commit
-# Git يملأ الرسالة مسبقاً: "Merge branch 'feature/device-model'"</div>
+# Git يملأ الرسالة مسبقاً: "Merge branch 'feature/product-schema'"</div>
           الدمج الآن مكتمل. تاريخ الـ commit يُظهر كلا الـ branch-ين يتقاربان.
         </div>
       </div>
       <div class="key-points">
         <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git status</code> هو بوصلتك طوال العملية. نفّذه بعد كل خطوة.</div>
         <div class="key-point"><div class="key-point-dot"></div>لا تستخدم <code dir="ltr">git add .</code> بشكل أعمى — stage فقط الملفات التي حللت تعارضاتها.</div>
-        <div class="key-point"><div class="key-point-dot"></div>لإلغاء stage ملف: <code dir="ltr">git restore --staged src/models/device.py</code></div>
+        <div class="key-point"><div class="key-point-dot"></div>لإلغاء stage ملف: <code dir="ltr">git restore --staged src/models/product.py</code></div>
       </div>
     </div>
   </div>
@@ -934,8 +934,8 @@ git reset --soft HEAD~1
 
 # عدّل الملف — احذف جميع علامات التعارض بشكل صحيح
 # ثم أعد الـ stage والـ commit
-git add src/models/device.py
-git commit -m "fix: resolve merge conflict in device model"</div>
+git add src/models/product.py
+git commit -m "fix: resolve merge conflict in product model"</div>
         </div>
       </div>
       <div class="key-points">
@@ -989,7 +989,7 @@ git merge main</div>
 <div class="code-block" dir="ltr"># تفعيل عالمياً (اضبطه مرة وانسَه)
 git config --global rerere.enabled true</div>
           بمجرد التفعيل: احل التعارض بشكل طبيعي. Git يحفظ الحل. في المرة القادمة عند ظهور نفس التعارض، يطبق Git حلك السابق تلقائياً.<br><br>
-          ستظهر: <code dir="ltr">Resolved 'src/models/device.py' using previous resolution.</code>
+          ستظهر: <code dir="ltr">Resolved 'src/models/product.py' using previous resolution.</code>
         </div>
       </div>
       <div class="key-points">
@@ -1012,21 +1012,21 @@ git config --global rerere.enabled true</div>
     <p>أفضل طريقة للهدوء أمام التعارضات هي أن تكون قد تسببت في واحد وحللته عن قصد. نفّذ هذا السكريبت — يصنع تعارضاً متوقعاً للتدريب بدون أي عواقب.</p>
     <div class="code-block" dir="ltr"># ١. مستودع تدريبي جديد
 git init conflict-practice && cd conflict-practice
-echo "patient_id = record.get('id')" > model.py
+echo "product_id = record.get('id')" > model.py
 git add . && git commit -m "Initial model"
 
 # ٢. أنشئ feature branch وغيّر نفس السطر
-git switch -c feature/patient-lookup
-echo "patient_id = record.get('patient_id')" > model.py
-git commit -am "feat: use explicit patient_id key"
+git switch -c feature/inventory-lookup
+echo "product_id = record.get('product_id')" > model.py
+git commit -am "feat: use explicit product_id key"
 
 # ٣. عد إلى main وأجرِ تغييراً مختلفاً على نفس السطر
 git switch main
-echo "patient_id = record.get('pid')" > model.py
+echo "product_id = record.get('sku')" > model.py
 git commit -am "chore: align key name with API spec"
 
 # ٤. ادمج الآن — سيحدث تعارض بالتأكيد
-git merge feature/patient-lookup
+git merge feature/inventory-lookup
 # → CONFLICT (content): Merge conflict in model.py
 
 # ٥. تفحّص العلامات

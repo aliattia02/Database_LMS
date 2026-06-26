@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 1 — Variables & Data Types | Python Starter</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── Topic page-specific styles — copy this block verbatim ── */
+.badge { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must   { background:#fef3c7; color:#92400e; }
+.badge-common { background:#dbeafe; color:#1e40af; }
+.badge-tip    { background:#f0fdf4; color:#166534; }
+
+.q-arrow { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel { padding:18px 20px 16px 52px; }
+
+.strategy-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text  { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+
+.answer-box       { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text  { font-size:13.5px; color:#14532d; line-height:1.7; }
+
+.warning-box      { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text { font-size:13px; color:var(--amber-text); line-height:1.55; }
+
+.key-points    { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point     { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin:10px 0; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; }
+
+.section    { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2 { font-size:18px; font-weight:700; margin-bottom:14px; }
+.section p  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+.type-table { width:100%; border-collapse:collapse; margin:12px 0; font-size:13px; }
+.type-table th { background:#f1f5f9; color:var(--navy); font-weight:700; text-align:left; padding:8px 12px; border:1px solid var(--border); }
+.type-table td { padding:7px 12px; border:1px solid var(--border); color:#334155; vertical-align:top; }
+.type-table tr:nth-child(even) td { background:#fafbfc; }
+.type-badge { font-size:11px; font-weight:700; padding:1px 7px; border-radius:99px; background:#eff6ff; color:#1d4ed8; white-space:nowrap; }
+
+.must-block       { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item        { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet      { font-size:15px; flex-shrink:0; }
+
+/* RTL overrides */
+[dir="rtl"] .q-panel         { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point        { flex-direction:row-reverse; }
+[dir="rtl"] .must-item        { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title { flex-direction:row-reverse; }
+[dir="rtl"] .type-table th,
+[dir="rtl"] .type-table td   { text-align:right; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .section .code-block { direction:ltr; text-align:left; }
+
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Python Starter &mdash; Topic 1 of 5</div>
+    <h1><span>Variables</span> &amp; Data Types</h1>
+    <p class="header-sub">Learn Python's six built-in scalar types, how assignment works under the hood, and how to convert between types safely — the foundation every other topic builds on.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <!-- SECTION 1: Assignment & Naming -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📦</div>
+    <div>
+      <div class="section-title">Assignment &amp; Naming</div>
+      <div class="section-subtitle">How Python binds names to objects — and the rules that govern them</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>How variable assignment works</h2>
+    <p>In Python, a variable is not a container — it is a <strong>name tag</strong> attached to an object in memory. When you write <code>x = 42</code>, Python creates the integer object <code>42</code> and makes the name <code>x</code> point to it. Multiple names can point to the same object.</p>
+    <div class="code-block">x = 42          # x points to int object 42
+y = x           # y points to the same object
+x = 100         # x now points to a NEW object; y still points to 42
+print(y)        # → 42</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Naming rules:</strong> names must start with a letter or underscore, contain only letters, digits, and underscores, and must not clash with a keyword.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Use <code>snake_case</code> for variable names by convention — <code>user_age</code>, not <code>UserAge</code> or <code>userAge</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Python is case-sensitive: <code>Score</code>, <code>score</code>, and <code>SCORE</code> are three different names.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: The Six Scalar Types -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🔢</div>
+    <div>
+      <div class="section-title">The Six Scalar Types</div>
+      <div class="section-subtitle">Know them by name, literal syntax, and typical use</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Python's built-in scalar types at a glance</h2>
+    <p>Python has six fundamental scalar (single-value) types. Every value you work with belongs to one of them.</p>
+    <table class="type-table">
+      <tr>
+        <th>Type</th>
+        <th>Keyword</th>
+        <th>Example literal</th>
+        <th>Use when…</th>
+      </tr>
+      <tr>
+        <td><span class="type-badge">int</span></td>
+        <td><code>int</code></td>
+        <td><code>42</code>, <code>-7</code>, <code>0</code></td>
+        <td>Whole numbers, counts, indices</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">float</span></td>
+        <td><code>float</code></td>
+        <td><code>3.14</code>, <code>-0.5</code>, <code>1e6</code></td>
+        <td>Decimal / scientific values</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">str</span></td>
+        <td><code>str</code></td>
+        <td><code>"hello"</code>, <code>'world'</code></td>
+        <td>Text, identifiers, messages</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">bool</span></td>
+        <td><code>bool</code></td>
+        <td><code>True</code>, <code>False</code></td>
+        <td>Flags, conditions, toggles</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">NoneType</span></td>
+        <td><code>None</code></td>
+        <td><code>None</code></td>
+        <td>Absence of a value, optional returns</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">complex</span></td>
+        <td><code>complex</code></td>
+        <td><code>2+3j</code></td>
+        <td>Scientific / mathematical computation</td>
+      </tr>
+    </table>
+    <p>Use <code>type(value)</code> to inspect the type of any object at runtime.</p>
+    <div class="code-block">print(type(42))       # &lt;class 'int'&gt;
+print(type(3.14))     # &lt;class 'float'&gt;
+print(type("hello"))  # &lt;class 'str'&gt;
+print(type(True))     # &lt;class 'bool'&gt;
+print(type(None))     # &lt;class 'NoneType'&gt;</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>bool is a subclass of int</strong> — <code>True == 1</code> and <code>False == 0</code> evaluate to <code>True</code>, which can cause surprises in arithmetic.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>None</code> is not zero, not an empty string, and not <code>False</code> — it is its own singleton type.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Python integers have <strong>arbitrary precision</strong> — they never overflow, unlike integers in C or Java.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Type Conversion -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">🔄</div>
+    <div>
+      <div class="section-title">Type Conversion</div>
+      <div class="section-subtitle">Safe and unsafe ways to convert between types</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Explicit vs implicit conversion</h2>
+    <p><strong>Implicit conversion</strong> (coercion) happens automatically when Python can promote a type safely — for example, adding an <code>int</code> to a <code>float</code> yields a <code>float</code>. <strong>Explicit conversion</strong> uses constructor functions like <code>int()</code>, <code>float()</code>, <code>str()</code>, and <code>bool()</code>.</p>
+    <div class="code-block"># Implicit — Python widens int to float automatically
+result = 3 + 1.5      # → 4.5  (float)
+
+# Explicit — you control the conversion
+age_str = "28"
+age_int = int(age_str)     # → 28  (int)
+age_float = float(age_str) # → 28.0 (float)
+back_to_str = str(age_int) # → "28" (str)
+
+# Danger — fails at runtime
+int("hello")   # ValueError: invalid literal</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Always wrap <code>int()</code> or <code>float()</code> conversions from user input in a <code>try/except ValueError</code> block — strings like <code>"abc"</code> raise an error.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>int(3.9)</code> <strong>truncates</strong> toward zero — it does not round. Use <code>round()</code> if rounding is what you need.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Truthiness: <code>bool(0)</code>, <code>bool("")</code>, <code>bool(None)</code>, <code>bool([])</code> all return <code>False</code>; most other values return <code>True</code>.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: f-strings and String Basics -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">💬</div>
+    <div>
+      <div class="section-title">String Basics &amp; f-strings</div>
+      <div class="section-subtitle">Working with text — the type you'll use most</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>String literals and f-string formatting</h2>
+    <p>Strings are sequences of Unicode characters. Use single or double quotes interchangeably; use triple quotes for multi-line strings. The modern way to embed values into strings is an <strong>f-string</strong> (formatted string literal).</p>
+    <div class="code-block">name = "Alice"
+score = 97.5
+
+# f-string — prefix with f, embed expressions in {}
+message = f"Hello, {name}! Your score is {score:.1f}."
+print(message)  # → Hello, Alice! Your score is 97.5.
+
+# Useful format specifiers
+f"{3.14159:.2f}"   # → "3.14"  (2 decimal places)
+f"{1000000:,}"     # → "1,000,000"  (thousands separator)
+f"{'left':<10}"    # → "left      "  (left-align in 10 chars)</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>f-strings are evaluated at runtime, so you can put any valid Python expression inside the braces: <code>f"{2 ** 10}"</code> → <code>"1024"</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Strings are <strong>immutable</strong> — you can never change a character in place; string methods always return a new string.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Prefer f-strings over <code>%</code> formatting or <code>.format()</code> — they are faster and more readable.</div>
+    </div>
+  </div>
+
+  <!-- Q&A ACCORDION -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">Typical interview and self-check questions on variables &amp; types</div>
+    </div>
+  </div>
+
+  <!-- Q01 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">What are the six built-in scalar types in Python, and how do you check an object's type at runtime?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Interviewers ask this to see whether you distinguish Python's types from lower-level languages. Mention that Python types are classes, and that every value is an object.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">The six scalar types are <code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>, <code>NoneType</code> (value: <code>None</code>), and <code>complex</code>. You check a value's type with <code>type(value)</code>, which returns the class object (e.g. <code>&lt;class 'int'&gt;</code>). To check membership use <code>isinstance(value, int)</code> — it respects inheritance, so it returns <code>True</code> for booleans when the target type is <code>int</code>.</div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Don't confuse <code>type(x) == int</code> with <code>isinstance(x, int)</code>. The former fails for subclasses; the latter is usually the right check in production code.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>type()</code> is for inspection; <code>isinstance()</code> is for conditional logic.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>bool</code> is a subclass of <code>int</code>, so <code>isinstance(True, int)</code> returns <code>True</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">What is the difference between a variable in Python and a variable in a language like C or Java?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Think of it as the difference between a labelled box (C/Java) and a name tag on an object (Python). The object exists independently; the name just points to it.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">In C/Java a variable is a fixed memory slot with a declared type — changing the value overwrites that slot. In Python, a variable is a <strong>name binding</strong>: the name points to an object on the heap, and that object carries its own type. Reassigning a name just makes it point to a different object; the old object remains until garbage-collected. Python variables have no declared type — the object does.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Python is <strong>dynamically typed</strong> — type is attached to the object, not the variable name.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Multiple names can reference the same object; use <code>id(x)</code> to inspect the object's memory address.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">What values are falsy in Python, and why does this matter?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Python uses "truthiness" pervasively in conditionals. Knowing the falsy set lets you write idiomatic <code>if value:</code> guards instead of verbose equality checks.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">The falsy values in Python are: <code>False</code>, <code>0</code>, <code>0.0</code>, <code>0j</code>, <code>None</code>, <code>""</code> (empty string), <code>[]</code> (empty list), <code>{}</code> (empty dict), <code>()</code> (empty tuple), and <code>set()</code>. Everything else is truthy. This matters because Python's <code>if</code>, <code>while</code>, and boolean operators use truthiness — <code>if user_name:</code> is idiomatic for checking a non-empty string.</div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code>if value == False:</code> is usually wrong — it passes for <code>0</code> and <code>0.0</code> too, since <code>False == 0</code>. Use <code>if value is False:</code> when you specifically need the boolean singleton.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Memorize: <code>None</code>, <code>0</code>, <code>""</code>, empty containers — all falsy.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Prefer <code>if items:</code> over <code>if len(items) > 0:</code> — it is more Pythonic.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">How do you safely convert a user-supplied string to an integer without crashing?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">User input is always a string. Converting it is one of the first things every real script does — and the most common source of beginner crashes.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">Wrap the conversion in a <code>try/except ValueError</code> block. <code>int()</code> raises <code>ValueError</code> for any string that is not a valid integer literal, and <code>TypeError</code> if you pass <code>None</code>. Handle both:
+<div class="code-block" style="margin-top:8px">raw = input("Enter a number: ")
+try:
+    value = int(raw)
+except (ValueError, TypeError):
+    print(f"'{raw}' is not a valid integer.")
+    value = 0  # sensible default</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code>int("3.7")</code> raises <code>ValueError</code> — <code>int()</code> does not accept decimal strings. Convert to <code>float</code> first, then to <code>int</code> if needed: <code>int(float("3.7"))</code>.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Always validate user input before conversion — never assume it is a number.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>int(float("3.7"))</code> → <code>3</code> (truncates, does not round).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">What is <code>None</code>, and how is it different from <code>0</code>, <code>False</code>, and an empty string?</span>
+      <span class="q-badges"><span class="badge badge-common">● Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text"><code>None</code> means "no value" — it is the explicit absence of a result, not a zero or an empty placeholder.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text"><code>None</code> is the sole instance of <code>NoneType</code>. It represents the intentional absence of a value — for example, a function that doesn't return anything implicitly returns <code>None</code>. Unlike <code>0</code> (a valid count), <code>False</code> (a boolean result), or <code>""</code> (an empty but valid string), <code>None</code> signals "not yet set" or "not applicable". Always test for it with <code>is None</code>, not <code>== None</code>.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Use <code>if x is None:</code> — not <code>if x == None:</code> — because <code>==</code> can be overridden by custom classes.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Functions that don't hit a <code>return</code> statement implicitly return <code>None</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">How do f-strings work, and what advantages do they have over <code>.format()</code>?</span>
+      <span class="q-badges"><span class="badge badge-tip">✦ Tip</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">f-strings are evaluated at the point they are created. Think of the braces as mini-Python expressions embedded directly in the string.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">An f-string is prefixed with <code>f</code> and evaluates expressions inside <code>{}</code> at runtime. They are faster than <code>.format()</code>, easier to read, and support full Python expressions including function calls and format specifiers: <code>f"{price:.2f}"</code>, <code>f"{name.upper()}"</code>. They are available from Python 3.6 onward and are now the preferred formatting approach.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Any valid Python expression works inside the braces: <code>f"{2**8}"</code> → <code>"256"</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Format spec after colon: <code>:.2f</code> for 2 decimal places, <code>:,</code> for thousands separator, <code>:>10</code> for right-align.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA EN -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done with this topic when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can name all six scalar types and write a valid literal for each without looking them up.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain what <code>type()</code> vs <code>isinstance()</code> does and when to prefer each.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can safely convert user input strings to <code>int</code> or <code>float</code> inside a <code>try/except</code> block.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can write an f-string with a format specifier (e.g. 2 decimal places) from memory.</div>
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📦</div>
+    <div>
+      <div class="section-title">Zuweisung &amp; Benennung</div>
+      <div class="section-subtitle">Wie Python Namen an Objekte bindet — und die Regeln dafür</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Wie Variablenzuweisung funktioniert</h2>
+    <p>In Python ist eine Variable kein Behälter — sie ist ein <strong>Namensschild</strong>, das an ein Objekt im Speicher geheftet wird. Wenn du <code>x = 42</code> schreibst, erstellt Python das Integer-Objekt <code>42</code> und lässt den Namen <code>x</code> darauf zeigen. Mehrere Namen können auf dasselbe Objekt zeigen.</p>
+    <div class="code-block">x = 42          # x zeigt auf das int-Objekt 42
+y = x           # y zeigt auf dasselbe Objekt
+x = 100         # x zeigt jetzt auf ein NEUES Objekt; y zeigt noch auf 42
+print(y)        # → 42</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Namensregeln:</strong> Namen müssen mit einem Buchstaben oder Unterstrich beginnen, dürfen nur Buchstaben, Ziffern und Unterstriche enthalten und dürfen kein Schlüsselwort sein.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Verwende <code>snake_case</code> für Variablennamen — <code>benutzer_alter</code>, nicht <code>BenutzerAlter</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Python unterscheidet Groß- und Kleinschreibung: <code>Score</code>, <code>score</code> und <code>SCORE</code> sind drei verschiedene Namen.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🔢</div>
+    <div>
+      <div class="section-title">Die sechs skalaren Typen</div>
+      <div class="section-subtitle">Nach Name, Literal-Syntax und typischem Einsatz kennen</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Pythons eingebaute Skalartypen im Überblick</h2>
+    <p>Python hat sechs fundamentale Skalartypen (Einzelwert-Typen). Jeder Wert, mit dem du arbeitest, gehört zu einem davon.</p>
+    <table class="type-table">
+      <tr>
+        <th>Typ</th>
+        <th>Schlüsselwort</th>
+        <th>Beispiel-Literal</th>
+        <th>Verwende wenn…</th>
+      </tr>
+      <tr>
+        <td><span class="type-badge">int</span></td>
+        <td><code>int</code></td>
+        <td><code>42</code>, <code>-7</code>, <code>0</code></td>
+        <td>Ganze Zahlen, Zählwerte, Indizes</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">float</span></td>
+        <td><code>float</code></td>
+        <td><code>3.14</code>, <code>-0.5</code>, <code>1e6</code></td>
+        <td>Dezimal-/wissenschaftliche Werte</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">str</span></td>
+        <td><code>str</code></td>
+        <td><code>"hallo"</code>, <code>'welt'</code></td>
+        <td>Text, Bezeichner, Nachrichten</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">bool</span></td>
+        <td><code>bool</code></td>
+        <td><code>True</code>, <code>False</code></td>
+        <td>Flags, Bedingungen, Schalter</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">NoneType</span></td>
+        <td><code>None</code></td>
+        <td><code>None</code></td>
+        <td>Fehlen eines Wertes, optionale Rückgaben</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">complex</span></td>
+        <td><code>complex</code></td>
+        <td><code>2+3j</code></td>
+        <td>Wissenschaftliche Berechnungen</td>
+      </tr>
+    </table>
+    <p>Verwende <code>type(wert)</code>, um den Typ eines Objekts zur Laufzeit zu prüfen.</p>
+    <div class="code-block">print(type(42))       # &lt;class 'int'&gt;
+print(type(3.14))     # &lt;class 'float'&gt;
+print(type("hallo"))  # &lt;class 'str'&gt;
+print(type(True))     # &lt;class 'bool'&gt;
+print(type(None))     # &lt;class 'NoneType'&gt;</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>bool ist eine Unterklasse von int</strong> — <code>True == 1</code> und <code>False == 0</code> ergeben <code>True</code>, was bei Arithmetik überraschend sein kann.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>None</code> ist weder null noch ein leerer String noch <code>False</code> — es ist ein eigener Singleton-Typ.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Python-Integers haben <strong>beliebige Präzision</strong> — sie laufen nie über, anders als in C oder Java.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">🔄</div>
+    <div>
+      <div class="section-title">Typkonvertierung</div>
+      <div class="section-subtitle">Sichere und unsichere Wege zur Umwandlung zwischen Typen</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Explizite vs. implizite Konvertierung</h2>
+    <p><strong>Implizite Konvertierung</strong> erfolgt automatisch, wenn Python einen Typ sicher erweitern kann — z. B. beim Addieren von <code>int</code> und <code>float</code> entsteht ein <code>float</code>. <strong>Explizite Konvertierung</strong> verwendet Konstruktorfunktionen wie <code>int()</code>, <code>float()</code>, <code>str()</code> und <code>bool()</code>.</p>
+    <div class="code-block"># Implizit — Python erweitert int zu float automatisch
+ergebnis = 3 + 1.5      # → 4.5  (float)
+
+# Explizit — du steuerst die Konvertierung
+alter_str = "28"
+alter_int = int(alter_str)     # → 28  (int)
+alter_float = float(alter_str) # → 28.0 (float)
+zurueck_str = str(alter_int)   # → "28" (str)
+
+# Gefahr — schlägt zur Laufzeit fehl
+int("hallo")   # ValueError: invalid literal</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Wrape <code>int()</code>- oder <code>float()</code>-Konvertierungen von Benutzereingaben immer in einem <code>try/except ValueError</code>-Block.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>int(3.9)</code> <strong>schneidet ab</strong> in Richtung null — es rundet nicht. Verwende <code>round()</code> wenn Runden gewünscht ist.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Wahrheitswerte: <code>bool(0)</code>, <code>bool("")</code>, <code>bool(None)</code>, <code>bool([])</code> geben alle <code>False</code> zurück.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">💬</div>
+    <div>
+      <div class="section-title">String-Grundlagen &amp; f-Strings</div>
+      <div class="section-subtitle">Mit Text arbeiten — der Typ, den du am häufigsten verwendest</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>String-Literale und f-String-Formatierung</h2>
+    <p>Strings sind Folgen von Unicode-Zeichen. Einfache und doppelte Anführungszeichen sind austauschbar; dreifache Anführungszeichen ermöglichen mehrzeilige Strings. Die moderne Methode zum Einbetten von Werten in Strings ist ein <strong>f-String</strong>.</p>
+    <div class="code-block">name = "Alice"
+punkte = 97.5
+
+# f-String — Präfix f, Ausdrücke in {}
+nachricht = f"Hallo, {name}! Deine Punktzahl ist {punkte:.1f}."
+print(nachricht)  # → Hallo, Alice! Deine Punktzahl ist 97.5.
+
+# Nützliche Format-Spezifizierer
+f"{3.14159:.2f}"   # → "3.14"  (2 Nachkommastellen)
+f"{1000000:,}"     # → "1,000,000"  (Tausendertrennzeichen)
+f"{'links':<10}"   # → "links     "  (linksbündig, 10 Zeichen)</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>f-Strings werden zur Laufzeit ausgewertet — du kannst beliebige Python-Ausdrücke in den Klammern verwenden.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Strings sind <strong>unveränderlich</strong> — String-Methoden geben immer einen neuen String zurück.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Bevorzuge f-Strings gegenüber <code>%</code>-Formatierung oder <code>.format()</code> — sie sind schneller und lesbarer.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Typische Interview- und Selbstprüfungsfragen zu Variablen &amp; Typen</div>
+    </div>
+  </div>
+
+  <!-- Q01 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Was sind die sechs eingebauten Skalartypen in Python, und wie prüfst du den Typ eines Objekts zur Laufzeit?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Interviewer stellen diese Frage, um zu sehen, ob du Pythons Typen von Low-Level-Sprachen unterscheidest. Erwähne, dass Python-Typen Klassen sind und jeder Wert ein Objekt ist.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Die sechs Skalartypen sind <code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>, <code>NoneType</code> (Wert: <code>None</code>) und <code>complex</code>. Den Typ eines Werts prüfst du mit <code>type(wert)</code>. Für Bedingungen verwende <code>isinstance(wert, int)</code> — es berücksichtigt Vererbung, sodass es für Booleans <code>True</code> zurückgibt, wenn der Zieltyp <code>int</code> ist.</div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Verwechsle nicht <code>type(x) == int</code> mit <code>isinstance(x, int)</code>. Ersteres schlägt bei Unterklassen fehl; letzteres ist die richtige Wahl im Produktionscode.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>type()</code> dient der Inspektion; <code>isinstance()</code> für bedingte Logik.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>bool</code> ist eine Unterklasse von <code>int</code>, daher gibt <code>isinstance(True, int)</code> <code>True</code> zurück.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Was ist der Unterschied zwischen einer Variablen in Python und einer in C oder Java?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Stell dir den Unterschied zwischen einer beschrifteten Box (C/Java) und einem Namensschild an einem Objekt (Python) vor.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">In C/Java ist eine Variable ein fixer Speicherplatz mit einem deklarierten Typ. In Python ist eine Variable eine <strong>Namensbindung</strong>: der Name zeigt auf ein Objekt im Heap, und das Objekt trägt seinen eigenen Typ. Python-Variablen haben keinen deklarierten Typ — das Objekt hat ihn.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Python ist <strong>dynamisch typisiert</strong> — der Typ gehört dem Objekt, nicht dem Variablennamen.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Mehrere Namen können auf dasselbe Objekt zeigen; <code>id(x)</code> zeigt die Speicheradresse.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Welche Werte sind in Python „falsy", und warum ist das wichtig?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Python verwendet „Truthiness" überall in Bedingungen. Die falsy-Menge zu kennen ermöglicht idiomatische <code>if wert:</code>-Prüfungen.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Die falsy-Werte in Python sind: <code>False</code>, <code>0</code>, <code>0.0</code>, <code>0j</code>, <code>None</code>, <code>""</code> (leerer String), <code>[]</code> (leere Liste), <code>{}</code> (leeres Dict), <code>()</code> (leeres Tupel) und <code>set()</code>. Alles andere ist truthy. Das ist wichtig, weil Pythons <code>if</code>, <code>while</code> und boolesche Operatoren Truthiness verwenden — <code>if benutzername:</code> ist idiomatisch für die Prüfung auf einen nicht-leeren String.</div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code>if wert == False:</code> ist meist falsch — es trifft auch für <code>0</code> und <code>0.0</code> zu, da <code>False == 0</code>. Verwende <code>if wert is False:</code> wenn du den booleschen Singleton benötigst.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Merke: <code>None</code>, <code>0</code>, <code>""</code>, leere Container — alle falsy.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Bevorzuge <code>if elemente:</code> gegenüber <code>if len(elemente) > 0:</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Wie konvertierst du einen benutzerseitig eingegebenen String sicher in eine ganze Zahl?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Benutzereingaben sind immer Strings. Sie zu konvertieren ist eine der ersten Aufgaben jedes echten Skripts — und die häufigste Quelle von Anfängerfehlern.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Wrape die Konvertierung in einem <code>try/except ValueError</code>-Block. <code>int()</code> wirft <code>ValueError</code> für jeden String, der kein gültiges Integer-Literal ist, und <code>TypeError</code> wenn du <code>None</code> übergibst:
+<div class="code-block" style="margin-top:8px">eingabe = input("Zahl eingeben: ")
+try:
+    wert = int(eingabe)
+except (ValueError, TypeError):
+    print(f"'{eingabe}' ist keine gültige Ganzzahl.")
+    wert = 0  # sinnvoller Standardwert</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code>int("3.7")</code> wirft <code>ValueError</code> — <code>int()</code> akzeptiert keine Dezimalstrings. Konvertiere zuerst zu <code>float</code>: <code>int(float("3.7"))</code>.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Validiere Benutzereingaben immer vor der Konvertierung.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>int(float("3.7"))</code> → <code>3</code> (abschneiden, nicht runden).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Was ist <code>None</code>, und wie unterscheidet es sich von <code>0</code>, <code>False</code> und einem leeren String?</span>
+      <span class="q-badges"><span class="badge badge-common">● Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text"><code>None</code> bedeutet „kein Wert" — es ist die explizite Abwesenheit eines Ergebnisses, kein null oder leerer Platzhalter.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text"><code>None</code> ist die einzige Instanz von <code>NoneType</code>. Es steht für die bewusste Abwesenheit eines Werts — eine Funktion ohne <code>return</code> gibt implizit <code>None</code> zurück. Im Gegensatz zu <code>0</code> (gültige Zahl), <code>False</code> (boolesches Ergebnis) oder <code>""</code> (leerer, aber gültiger String) signalisiert <code>None</code> „noch nicht gesetzt" oder „nicht zutreffend". Teste immer mit <code>is None</code>, nicht mit <code>== None</code>.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Verwende <code>if x is None:</code> — nicht <code>if x == None:</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Funktionen ohne <code>return</code> geben implizit <code>None</code> zurück.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Wie funktionieren f-Strings, und welche Vorteile haben sie gegenüber <code>.format()</code>?</span>
+      <span class="q-badges"><span class="badge badge-tip">✦ Tipp</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">f-Strings werden bei ihrer Erstellung ausgewertet. Die geschweiften Klammern sind Mini-Python-Ausdrücke, direkt in den String eingebettet.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Ein f-String trägt das Präfix <code>f</code> und wertet Ausdrücke in <code>{}</code> zur Laufzeit aus. Sie sind schneller als <code>.format()</code>, lesbarer und unterstützen vollständige Python-Ausdrücke inklusive Funktionsaufrufe und Formatspezifizierer: <code>f"{preis:.2f}"</code>, <code>f"{name.upper()}"</code>. Sie stehen ab Python 3.6 zur Verfügung und sind die bevorzugte Formatierungsmethode.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Beliebige Python-Ausdrücke funktionieren in den Klammern: <code>f"{2**8}"</code> → <code>"256"</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Formatspezifizierer nach dem Doppelpunkt: <code>:.2f</code> für 2 Nachkommastellen, <code>:,</code> für Tausendertrennzeichen.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA DE -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit diesem Thema fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du alle sechs Skalartypen benennen und für jeden ein gültiges Literal schreiben kannst, ohne nachzuschauen.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du erklären kannst, was <code>type()</code> vs. <code>isinstance()</code> macht und wann du welches bevorzugst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du Benutzereingaben sicher in <code>int</code> oder <code>float</code> mit einem <code>try/except</code>-Block konvertieren kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du aus dem Gedächtnis einen f-String mit Formatspezifizierer (z. B. 2 Nachkommastellen) schreiben kannst.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📦</div>
+    <div>
+      <div class="section-title">الإسناد والتسمية</div>
+      <div class="section-subtitle">كيف يربط Python الأسماء بالكائنات — والقواعد التي تحكم ذلك</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>كيف تعمل إسناد المتغيرات</h2>
+    <p>في Python، المتغير ليس وعاءً — بل هو <strong>بطاقة اسم</strong> تُلصق على كائن في الذاكرة. عندما تكتب <code dir="ltr">x = 42</code>، يُنشئ Python كائن العدد الصحيح <code>42</code> ويجعل الاسم <code>x</code> يشير إليه. يمكن لأسماء متعددة الإشارة إلى نفس الكائن.</p>
+    <div class="code-block" dir="ltr">x = 42          # x يشير إلى كائن int رقم 42
+y = x           # y يشير إلى نفس الكائن
+x = 100         # x يشير الآن إلى كائن جديد؛ y لا يزال يشير إلى 42
+print(y)        # → 42</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>قواعد التسمية:</strong> يجب أن تبدأ الأسماء بحرف أو شرطة سفلية، وتحتوي فقط على حروف وأرقام وشرطات سفلية، ولا تتعارض مع كلمة محجوزة.</div>
+      <div class="key-point"><div class="key-point-dot"></div>استخدم <code dir="ltr">snake_case</code> بالاتفاقية — <code dir="ltr">user_age</code> وليس <code dir="ltr">UserAge</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Python حساس لحالة الأحرف: <code dir="ltr">Score</code> و<code dir="ltr">score</code> و<code dir="ltr">SCORE</code> ثلاثة أسماء مختلفة.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🔢</div>
+    <div>
+      <div class="section-title">الأنواع الستة البسيطة</div>
+      <div class="section-subtitle">اعرفها بالاسم وصيغة الحرفية واستخدامها النموذجي</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>أنواع Python البسيطة المدمجة بلمحة سريعة</h2>
+    <p>يحتوي Python على ستة أنواع بسيطة (أحادية القيمة) أساسية. كل قيمة تعمل معها تنتمي إلى أحدها.</p>
+    <table class="type-table">
+      <tr>
+        <th>النوع</th>
+        <th>الكلمة المفتاحية</th>
+        <th>مثال حرفي</th>
+        <th>استخدمه عندما…</th>
+      </tr>
+      <tr>
+        <td><span class="type-badge">int</span></td>
+        <td><code dir="ltr">int</code></td>
+        <td><code dir="ltr">42</code>، <code dir="ltr">-7</code>، <code dir="ltr">0</code></td>
+        <td>الأرقام الصحيحة والعدادات والمؤشرات</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">float</span></td>
+        <td><code dir="ltr">float</code></td>
+        <td><code dir="ltr">3.14</code>، <code dir="ltr">-0.5</code>، <code dir="ltr">1e6</code></td>
+        <td>القيم العشرية والعلمية</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">str</span></td>
+        <td><code dir="ltr">str</code></td>
+        <td><code dir="ltr">"hello"</code>، <code dir="ltr">'world'</code></td>
+        <td>النصوص والمعرّفات والرسائل</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">bool</span></td>
+        <td><code dir="ltr">bool</code></td>
+        <td><code dir="ltr">True</code>، <code dir="ltr">False</code></td>
+        <td>الأعلام والشروط والمفاتيح</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">NoneType</span></td>
+        <td><code dir="ltr">None</code></td>
+        <td><code dir="ltr">None</code></td>
+        <td>غياب القيمة والإرجاع الاختياري</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">complex</span></td>
+        <td><code dir="ltr">complex</code></td>
+        <td><code dir="ltr">2+3j</code></td>
+        <td>الحسابات العلمية والرياضية</td>
+      </tr>
+    </table>
+    <p>استخدم <code dir="ltr">type(value)</code> لفحص نوع أي كائن في وقت التشغيل.</p>
+    <div class="code-block" dir="ltr">print(type(42))       # &lt;class 'int'&gt;
+print(type(3.14))     # &lt;class 'float'&gt;
+print(type("hello"))  # &lt;class 'str'&gt;
+print(type(True))     # &lt;class 'bool'&gt;
+print(type(None))     # &lt;class 'NoneType'&gt;</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>bool هو فئة فرعية من int</strong> — <code dir="ltr">True == 1</code> و<code dir="ltr">False == 0</code> تُعطيان <code dir="ltr">True</code>، مما قد يُفاجئك في العمليات الحسابية.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">None</code> ليس صفرًا ولا نصًا فارغًا ولا <code dir="ltr">False</code> — إنه نوع singleton خاص به.</div>
+      <div class="key-point"><div class="key-point-dot"></div>الأرقام الصحيحة في Python ذات <strong>دقة لا نهائية</strong> — لا تفيض أبدًا بخلاف C أو Java.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">🔄</div>
+    <div>
+      <div class="section-title">تحويل الأنواع</div>
+      <div class="section-subtitle">الطرق الآمنة وغير الآمنة للتحويل بين الأنواع</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>التحويل الصريح مقابل الضمني</h2>
+    <p>يحدث <strong>التحويل الضمني</strong> تلقائيًا عندما يستطيع Python ترقية النوع بأمان — مثل إضافة <code dir="ltr">int</code> إلى <code dir="ltr">float</code> ينتج <code dir="ltr">float</code>. يستخدم <strong>التحويل الصريح</strong> دوال البناء مثل <code dir="ltr">int()</code> و<code dir="ltr">float()</code> و<code dir="ltr">str()</code> و<code dir="ltr">bool()</code>.</p>
+    <div class="code-block" dir="ltr"># ضمني — يُرقّي Python تلقائيًا int إلى float
+result = 3 + 1.5      # → 4.5  (float)
+
+# صريح — أنت تتحكم في التحويل
+age_str = "28"
+age_int = int(age_str)     # → 28  (int)
+age_float = float(age_str) # → 28.0 (float)
+back_to_str = str(age_int) # → "28" (str)
+
+# خطر — يفشل في وقت التشغيل
+int("hello")   # ValueError: invalid literal</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>دائمًا ضع تحويلات <code dir="ltr">int()</code> أو <code dir="ltr">float()</code> من إدخال المستخدم داخل كتلة <code dir="ltr">try/except ValueError</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">int(3.9)</code> <strong>يُقتطع</strong> نحو الصفر — لا يُقرّب. استخدم <code dir="ltr">round()</code> إذا كنت تريد التقريب.</div>
+      <div class="key-point"><div class="key-point-dot"></div>القيم الكاذبة: <code dir="ltr">bool(0)</code> و<code dir="ltr">bool("")</code> و<code dir="ltr">bool(None)</code> و<code dir="ltr">bool([])</code> تُعيد كلها <code dir="ltr">False</code>.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">💬</div>
+    <div>
+      <div class="section-title">أساسيات النصوص وf-strings</div>
+      <div class="section-subtitle">العمل مع النص — النوع الذي ستستخدمه أكثر من غيره</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>حرفيات النصوص وتنسيق f-string</h2>
+    <p>النصوص هي تسلسلات من أحرف Unicode. استخدم علامات الاقتباس المفردة أو المزدوجة بالتبادل؛ واستخدم علامات الاقتباس الثلاثية للنصوص متعددة الأسطر. الطريقة الحديثة لتضمين القيم في النصوص هي <strong>f-string</strong>.</p>
+    <div class="code-block" dir="ltr">name = "Alice"
+score = 97.5
+
+# f-string — البادئة f، التعبيرات في {}
+message = f"Hello, {name}! Your score is {score:.1f}."
+print(message)  # → Hello, Alice! Your score is 97.5.
+
+# محددات تنسيق مفيدة
+f"{3.14159:.2f}"   # → "3.14"  (منزلتان عشريتان)
+f"{1000000:,}"     # → "1,000,000"  (فاصل الآلاف)
+f"{'left':<10}"    # → "left      "  (محاذاة يسار 10 أحرف)</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>يتم تقييم f-strings في وقت التشغيل — يمكنك وضع أي تعبير Python صالح بين الأقواس.</div>
+      <div class="key-point"><div class="key-point-dot"></div>النصوص <strong>غير قابلة للتغيير</strong> — دوال النصوص تُعيد دائمًا نصًا جديدًا.</div>
+      <div class="key-point"><div class="key-point-dot"></div>فضّل f-strings على تنسيق <code dir="ltr">%</code> أو <code dir="ltr">.format()</code> — إنها أسرع وأوضح.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">أسئلة التدريب</div>
+      <div class="section-subtitle">أسئلة مقابلات واختبارات ذاتية نموذجية حول المتغيرات والأنواع</div>
+    </div>
+  </div>
+
+  <!-- Q01 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">ما هي الأنواع الستة البسيطة المدمجة في Python، وكيف تتحقق من نوع كائن في وقت التشغيل؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">يطرح المحاورون هذا السؤال ليروا ما إذا كنت تميز أنواع Python عن اللغات ذات المستوى المنخفض. اذكر أن أنواع Python هي فئات وأن كل قيمة هي كائن.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">الأنواع الستة البسيطة هي <code dir="ltr">int</code> و<code dir="ltr">float</code> و<code dir="ltr">str</code> و<code dir="ltr">bool</code> و<code dir="ltr">NoneType</code> (القيمة: <code dir="ltr">None</code>) و<code dir="ltr">complex</code>. تتحقق من نوع القيمة باستخدام <code dir="ltr">type(value)</code>. للشروط استخدم <code dir="ltr">isinstance(value, int)</code> — فهو يحترم الوراثة، لذلك يُعيد <code dir="ltr">True</code> للقيم البوليانية عندما النوع المستهدف هو <code dir="ltr">int</code>.</div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ لا تخلط بين <code dir="ltr">type(x) == int</code> و<code dir="ltr">isinstance(x, int)</code>. الأول يفشل مع الفئات الفرعية؛ الثاني هو الاختيار الصحيح في كود الإنتاج.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">type()</code> للفحص؛ <code dir="ltr">isinstance()</code> للمنطق الشرطي.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">bool</code> فئة فرعية من <code dir="ltr">int</code>، لذلك <code dir="ltr">isinstance(True, int)</code> تُعيد <code dir="ltr">True</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">ما الفرق بين المتغير في Python والمتغير في لغة مثل C أو Java؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">فكر في الفرق بين صندوق موسوم (C/Java) وبطاقة اسم على كائن (Python).</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">في C/Java، المتغير هو فتحة ذاكرة ثابتة مع نوع معلَن. في Python، المتغير هو <strong>ارتباط اسم</strong>: الاسم يشير إلى كائن في الكومة، والكائن يحمل نوعه الخاص. إعادة تعيين الاسم تجعله يشير فقط إلى كائن مختلف. متغيرات Python ليس لها نوع معلَن — الكائن له.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Python ذو <strong>كتابة ديناميكية</strong> — النوع مرتبط بالكائن لا باسم المتغير.</div>
+        <div class="key-point"><div class="key-point-dot"></div>أسماء متعددة يمكنها الإشارة إلى نفس الكائن؛ <code dir="ltr">id(x)</code> يُظهر عنوان الذاكرة.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">ما هي القيم الكاذبة (falsy) في Python، ولماذا يهم ذلك؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">يستخدم Python "القيمة الحقيقية" (truthiness) بكثرة في الشروط. معرفة مجموعة القيم الكاذبة يتيح لك كتابة <code dir="ltr">if value:</code> بشكل اصطلاحي.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">القيم الكاذبة في Python هي: <code dir="ltr">False</code> و<code dir="ltr">0</code> و<code dir="ltr">0.0</code> و<code dir="ltr">0j</code> و<code dir="ltr">None</code> و<code dir="ltr">""</code> (نص فارغ) و<code dir="ltr">[]</code> (قائمة فارغة) و<code dir="ltr">{}</code> (قاموس فارغ) و<code dir="ltr">()</code> (tuple فارغ) و<code dir="ltr">set()</code>. كل شيء آخر هو صادق. هذا مهم لأن <code dir="ltr">if</code> و<code dir="ltr">while</code> والمشغّلات البوليانية في Python تستخدم القيمة الحقيقية.</div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code dir="ltr">if value == False:</code> عادةً خاطئ — إنه يمر أيضًا لـ<code dir="ltr">0</code> و<code dir="ltr">0.0</code>. استخدم <code dir="ltr">if value is False:</code> عند الحاجة للـsingleton البوليان تحديدًا.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>احفظ: <code dir="ltr">None</code> و<code dir="ltr">0</code> و<code dir="ltr">""</code> والحاويات الفارغة — كلها كاذبة.</div>
+        <div class="key-point"><div class="key-point-dot"></div>فضّل <code dir="ltr">if items:</code> على <code dir="ltr">if len(items) > 0:</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">كيف تحوّل نصًا مُدخلًا من المستخدم إلى عدد صحيح بأمان دون تعطّل البرنامج؟</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ ضروري</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">إدخال المستخدم دائمًا نص. تحويله هو أحد أول ما تفعله كل سكريبت حقيقية — وأكثر أسباب أخطاء المبتدئين شيوعًا.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">ضع التحويل داخل كتلة <code dir="ltr">try/except ValueError</code>. تُطلق <code dir="ltr">int()</code> خطأ <code dir="ltr">ValueError</code> لأي نص ليس حرفيًا صحيحًا صالحًا، و<code dir="ltr">TypeError</code> عند تمرير <code dir="ltr">None</code>:
+<div class="code-block" dir="ltr" style="margin-top:8px">raw = input("Enter a number: ")
+try:
+    value = int(raw)
+except (ValueError, TypeError):
+    print(f"'{raw}' is not a valid integer.")
+    value = 0  # قيمة افتراضية منطقية</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ <code dir="ltr">int("3.7")</code> تُطلق <code dir="ltr">ValueError</code> — لا تقبل <code dir="ltr">int()</code> النصوص العشرية. حوّل أولًا إلى <code dir="ltr">float</code>: <code dir="ltr">int(float("3.7"))</code>.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>تحقق دائمًا من إدخال المستخدم قبل التحويل.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">int(float("3.7"))</code> → <code dir="ltr">3</code> (اقتطاع لا تقريب).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">ما هو <code dir="ltr">None</code>، وكيف يختلف عن <code dir="ltr">0</code> و<code dir="ltr">False</code> والنص الفارغ؟</span>
+      <span class="q-badges"><span class="badge badge-common">● شائع</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text"><code dir="ltr">None</code> يعني "لا قيمة" — إنه الغياب الصريح للنتيجة، وليس صفرًا أو نصًا فارغًا.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text"><code dir="ltr">None</code> هو النسخة الوحيدة من <code dir="ltr">NoneType</code>. يمثّل الغياب المقصود للقيمة — على سبيل المثال، الدالة التي لا تُعيد شيئًا تُعيد ضمنيًا <code dir="ltr">None</code>. على خلاف <code dir="ltr">0</code> (عدد صحيح صالح) أو <code dir="ltr">False</code> (نتيجة بوليانية) أو <code dir="ltr">""</code> (نص فارغ لكن صالح)، يُشير <code dir="ltr">None</code> إلى "لم يُحدَّد بعد" أو "غير قابل للتطبيق". اختبر دائمًا باستخدام <code dir="ltr">is None</code> لا <code dir="ltr">== None</code>.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>استخدم <code dir="ltr">if x is None:</code> — لا <code dir="ltr">if x == None:</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>الدوال التي لا تصل إلى جملة <code dir="ltr">return</code> تُعيد ضمنيًا <code dir="ltr">None</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 AR -->
+  <div class="q-card" data-lang="ar">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">كيف تعمل f-strings، وما مزاياها على <code dir="ltr">.format()</code>؟</span>
+      <span class="q-badges"><span class="badge badge-tip">✦ نصيحة</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">النموذج الذهني</div>
+      <div class="strategy-text">تُقيَّم f-strings عند إنشائها. فكّر في الأقواس المعقوفة كتعبيرات Python مصغّرة مضمّنة مباشرة في النص.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">الإجابة</div>
+        <div class="answer-box-text">f-string تبدأ بالبادئة <code dir="ltr">f</code> وتُقيّم التعبيرات داخل <code dir="ltr">{}</code> في وقت التشغيل. إنها أسرع من <code dir="ltr">.format()</code> وأوضح، وتدعم تعبيرات Python الكاملة بما فيها استدعاءات الدوال ومحددات التنسيق: <code dir="ltr">f"{price:.2f}"</code>، <code dir="ltr">f"{name.upper()}"</code>. متاحة منذ Python 3.6 وهي الطريقة المفضّلة للتنسيق.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>أي تعبير Python صالح يعمل داخل الأقواس: <code dir="ltr">f"{2**8}"</code> → <code dir="ltr">"256"</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>محدد التنسيق بعد النقطتين: <code dir="ltr">:.2f</code> لمنزلتين عشريتين، <code dir="ltr">:,</code> لفاصل الآلاف.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA AR -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> انتهيت من هذا الموضوع عندما...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع تسمية الأنواع الستة البسيطة وكتابة حرفي صالح لكل منها دون البحث عنها.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع شرح ما تفعله <code dir="ltr">type()</code> مقابل <code dir="ltr">isinstance()</code> ومتى تُفضّل كل منهما.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع تحويل إدخال المستخدم بأمان إلى <code dir="ltr">int</code> أو <code dir="ltr">float</code> داخل كتلة <code dir="ltr">try/except</code>.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>تستطيع كتابة f-string بمحدد تنسيق (مثلاً منزلتان عشريتان) من الذاكرة.</div>
+  </div>
+
+</div><!-- end tab-ar -->
+
+</div><!-- end body -->
+</main>
+
+<!-- LMS progress bridge — REQUIRED on every tracked topic page.
+     Set this BEFORE lesson-ui.js loads; the key is read at parse time.
+     Must exactly match the `storageKey` declared in registry.js for this lesson. -->
+<script>window.LMS_STORAGE_KEY = 'lms_python-starter_01_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<!-- NOTE: do NOT call guardLanguageTab() here — lesson-ui.js runs it
+     automatically on DOMContentLoaded for both 'ar' and 'de'. -->
+</body>
+</html>

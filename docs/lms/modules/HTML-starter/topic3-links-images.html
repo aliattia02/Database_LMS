@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 3 — Links, Images &amp; Media | HTML Starter</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+.section-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.section-intro  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:16px; }
+.section        { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2     { font-size:18px; font-weight:700; margin-bottom:6px; color:var(--navy); }
+.section p      { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+.accordion     { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+.acc-item      { background:var(--white); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.acc-trigger   { width:100%; display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:none; border:none; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--navy); text-align:left; transition:background .12s; }
+.acc-trigger:hover { background:var(--bg); }
+.acc-chevron   { font-size:12px; color:var(--muted); transition:transform .2s; flex-shrink:0; }
+.acc-trigger.open .acc-chevron { transform:rotate(180deg); }
+.acc-body      { display:none; padding:16px; border-top:1px solid var(--border); font-size:13.5px; color:var(--navy); line-height:1.65; }
+.acc-body.open { display:block; }
+
+.concepts       { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.concept        { background:var(--white); border:1px solid var(--border); border-left:3px solid var(--border); border-radius:8px; padding:12px 16px; }
+.concept.blue   { border-left-color:#0284c7; }
+.concept.green  { border-left-color:#059669; }
+.concept.orange { border-left-color:#d97706; }
+.concept.teal   { border-left-color:#0d9488; }
+.concept.purple { border-left-color:#7c3aed; }
+.concept.red    { border-left-color:#dc2626; }
+.concept.indigo { border-left-color:#4338ca; }
+.concept.rose   { border-left-color:#e11d48; }
+.concept-name   { font-size:13px; font-weight:700; color:var(--navy); margin-bottom:4px; }
+.concept-desc   { font-size:12px; color:var(--slate); line-height:1.6; }
+
+.callout      { border-radius:0 8px 8px 0; padding:12px 16px; margin-bottom:16px; border:1px solid transparent; border-left-width:3px; }
+.callout .lbl { font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; margin-bottom:6px; }
+.callout p, .callout li  { font-size:12px; line-height:1.65; }
+.callout ul, .callout ol { padding-left:16px; }
+.callout li              { margin-bottom:4px; }
+.callout.tip       { background:#d1fae5; border-color:#a7f3d0; border-left-color:#059669; }
+.callout.tip .lbl  { color:#059669; }
+.callout.tip p, .callout.tip li { color:#065f46; }
+.callout.warn       { background:#fef3c7; border-color:#fde68a; border-left-color:#b45309; }
+.callout.warn .lbl  { color:#b45309; }
+.callout.warn p, .callout.warn li { color:#78350f; }
+.callout.info       { background:#e0f2fe; border-color:#bae6fd; border-left-color:#0284c7; }
+.callout.info .lbl  { color:#0284c7; }
+.callout.info p, .callout.info li { color:#075985; }
+.callout.interview       { background:#e0e7ff; border-color:#a5b4fc; border-left-color:#4338ca; }
+.callout.interview .lbl  { color:#3730a3; }
+.callout.interview p     { color:#312e81; font-weight:600; }
+
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { background:#f8fafc; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:16px; }
+.code-header         { display:flex; align-items:center; justify-content:space-between; padding:8px 14px; border-bottom:1px solid var(--border); }
+.code-header-left    { display:flex; align-items:center; gap:8px; }
+.code-label          { font-size:10px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.code-label.html     { color:#dc2626; }
+.copy-btn            { font-size:10px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; color:var(--muted); background:none; border:1px solid var(--border); border-radius:5px; padding:3px 8px; cursor:pointer; transition:color .15s,border-color .15s; }
+.copy-btn:hover      { color:var(--navy); }
+.copy-btn.copied     { color:#059669; border-color:#059669; }
+.code-body           { padding:16px 14px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; color:#334155; line-height:1.75; overflow-x:auto; white-space:pre; background:#f8fafc; }
+.kw  { color:#0284c7; font-weight:600; }
+.str { color:#059669; }
+.cm  { color:#94a3b8; }
+
+.challenge                 { background:var(--white); border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:16px; box-shadow:var(--shadow); }
+.challenge-head            { padding:12px 16px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; transition:background .12s; }
+.challenge-head:hover      { background:var(--bg); }
+.challenge-head-left       { display:flex; align-items:center; gap:10px; }
+.challenge-badge           { font-size:10px; font-weight:700; letter-spacing:.08em; background:#fef3c7; color:#b45309; border:1px solid #fde68a; border-radius:99px; padding:2px 8px; }
+.challenge-title           { font-size:13px; font-weight:600; color:var(--navy); }
+.challenge-arrow           { font-size:12px; color:var(--muted); transition:transform .2s; }
+.challenge-arrow.open      { transform:rotate(180deg); }
+.challenge-body            { display:none; padding:16px; border-top:1px solid var(--border); }
+.challenge-body.open       { display:block; }
+.challenge-q               { font-size:13px; color:var(--navy); margin-bottom:12px; line-height:1.6; }
+.answer-toggle             { font-size:11px; color:var(--muted); cursor:pointer; text-decoration:underline; margin-bottom:8px; display:inline-block; }
+.answer-toggle:hover       { color:var(--navy); }
+.answer                    { display:none; }
+.answer.open               { display:block; }
+
+.badge       { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must  { background:#fef3c7; color:#92400e; }
+.badge-common{ background:#dbeafe; color:#1e40af; }
+.q-arrow     { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel           { padding:18px 20px 16px 52px; }
+.strategy-label    { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text     { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+.answer-box        { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label  { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text   { font-size:13.5px; color:#14532d; line-height:1.7; }
+.key-points        { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point         { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot     { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+.must-block                  { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title            { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item       { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet     { font-size:15px; flex-shrink:0; }
+
+.progress-bar   { display:flex; align-items:center; gap:12px; margin-bottom:20px; padding:12px 16px; background:var(--white); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); }
+.progress-label { font-size:12px; font-weight:600; color:var(--muted); white-space:nowrap; }
+.prog-bar       { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+.prog-fill      { height:100%; background:var(--accent); border-radius:3px; transition:width .3s; }
+.prog-label     { font-size:12px; color:var(--muted); white-space:nowrap; }
+
+[dir="rtl"] .acc-trigger    { text-align:right; }
+[dir="rtl"] .callout        { border-radius:8px 0 0 8px; border-left-width:1px; border-right-width:3px; }
+[dir="rtl"] .callout.tip    { border-right-color:#059669; }
+[dir="rtl"] .callout.warn   { border-right-color:#b45309; }
+[dir="rtl"] .callout.info   { border-right-color:#0284c7; }
+[dir="rtl"] .concept        { border-left-width:1px; border-right-width:3px; border-left-color:var(--border); }
+[dir="rtl"] .concept.blue   { border-right-color:#0284c7; }
+[dir="rtl"] .concept.green  { border-right-color:#059669; }
+[dir="rtl"] .concept.orange { border-right-color:#d97706; }
+[dir="rtl"] .concept.teal   { border-right-color:#0d9488; }
+[dir="rtl"] .concept.purple { border-right-color:#7c3aed; }
+[dir="rtl"] .concept.red    { border-right-color:#dc2626; }
+[dir="rtl"] .challenge-head-left { flex-direction:row-reverse; }
+[dir="rtl"] .q-panel        { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point      { flex-direction:row-reverse; }
+[dir="rtl"] .must-item      { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title { flex-direction:row-reverse; }
+[dir="rtl"] .code-block     { direction:ltr; }
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="../../../../../../Downloads/masterplan.html">← Back to course index</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">HTML Starter &mdash; Topic 3 of 5 &middot; Critical &middot; ~1h</div>
+    <h1><span>Links, Images</span> &amp; Media</h1>
+    <p class="header-sub">Learn to connect pages with hyperlinks, embed images correctly, and add audio and video — the elements that turn a document into a real webpage.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="progress-bar">
+    <span class="progress-label">Study progress</span>
+    <div class="prog-bar"><div class="prog-fill" id="prog-en" style="width:0%"></div></div>
+    <span id="prog-count-en" class="prog-label">0 / 0 opened</span>
+  </div>
+
+  <!-- LESSON 1: Hyperlinks -->
+  <div class="section">
+    <div class="section-label">Lesson 1 · ~25 min</div>
+    <h2>Hyperlinks — Connecting the Web</h2>
+    <p class="section-intro">The anchor element <code>&lt;a&gt;</code> is what makes the web a <em>web</em>. Without links, every page is an island. Understanding the different URL types and link attributes is essential every day of your career.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>⚡ Why This Matters</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">Links are the most-used HTML element after headings and paragraphs. Getting the URL type wrong (absolute vs relative) breaks navigation across environments. Missing <code>rel="noopener"</code> on external links is a security issue that passes into production daily.</p>
+          <div class="callout interview">
+            <div class="lbl">⚓ Core Insight</div>
+            <p>The <code>href</code> attribute on <code>&lt;a&gt;</code> can hold a URL, a page section anchor, an email address, or a phone number. The element itself is always inline — it flows inside paragraphs and headings.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Core Concepts — Anchor Element</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>&lt;a href="..."&gt;</code> — The anchor element</div>
+              <div class="concept-desc">Creates a clickable hyperlink. The <code>href</code> (hypertext reference) attribute contains the destination. The content between the tags becomes the clickable text or element.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name">Absolute URLs — full path including protocol</div>
+              <div class="concept-desc">Include the full address: <code>https://example.com/about.html</code>. Use for external links — any page on a different domain. Required when linking from email or any context outside your own site.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name">Relative URLs — path relative to current file</div>
+              <div class="concept-desc">Omit the domain: <code>./about.html</code>, <code>../images/logo.png</code>, <code>/contact.html</code>. Use for internal links between pages in the same project. They continue working even after the domain changes.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>target="_blank"</code> — open in new tab</div>
+              <div class="concept-desc">Opens the link in a new browser tab or window. Useful for external links so users don't leave your site. Always pair with <code>rel="noopener noreferrer"</code> to prevent security vulnerabilities.</div>
+            </div>
+            <div class="concept red">
+              <div class="concept-name"><code>rel="noopener noreferrer"</code> — security attribute</div>
+              <div class="concept-desc">Prevents the opened page from accessing your page via <code>window.opener</code> (a phishing attack vector). <code>noreferrer</code> also hides the referrer URL. Required whenever you use <code>target="_blank"</code>.</div>
+            </div>
+            <div class="concept purple">
+              <div class="concept-name">Special <code>href</code> values</div>
+              <div class="concept-desc"><code>href="#section-id"</code> — jump to an element with that <code>id</code> on the same page. <code>href="mailto:user@example.com"</code> — open the user's email client. <code>href="tel:+49301234567"</code> — dial on mobile devices.</div>
+            </div>
+          </div>
+          <div class="callout warn">
+            <div class="lbl">⚠️ Common Mistake</div>
+            <p>Using <code>target="_blank"</code> without <code>rel="noopener noreferrer"</code> allows the opened page to redirect your original tab to a malicious URL. Always include both attributes together.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🌍 Worked Examples</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout tip">
+            <div class="lbl">✅ Examples — Four link patterns</div>
+            <p>These four patterns cover 95% of real-world link usage.</p>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="cm">&lt;!-- 1. Internal link (relative URL) --&gt;</span>
+<span class="kw">&lt;a</span> <span class="str">href=</span><span class="str">"./about.html"</span><span class="kw">&gt;</span>About us<span class="kw">&lt;/a&gt;</span>
+
+<span class="cm">&lt;!-- 2. External link — opens in new tab, with security attributes --&gt;</span>
+<span class="kw">&lt;a</span> <span class="str">href=</span><span class="str">"https://developer.mozilla.org"</span>
+   <span class="str">target=</span><span class="str">"_blank"</span>
+   <span class="str">rel=</span><span class="str">"noopener noreferrer"</span><span class="kw">&gt;</span>MDN Web Docs<span class="kw">&lt;/a&gt;</span>
+
+<span class="cm">&lt;!-- 3. Same-page anchor — jumps to element with id="contact" --&gt;</span>
+<span class="kw">&lt;a</span> <span class="str">href=</span><span class="str">"#contact"</span><span class="kw">&gt;</span>Jump to contact section<span class="kw">&lt;/a&gt;</span>
+...
+<span class="kw">&lt;section</span> <span class="str">id=</span><span class="str">"contact"</span><span class="kw">&gt;</span>...<span class="kw">&lt;/section&gt;</span>
+
+<span class="cm">&lt;!-- 4. Email and phone links --&gt;</span>
+<span class="kw">&lt;a</span> <span class="str">href=</span><span class="str">"mailto:hello@example.com"</span><span class="kw">&gt;</span>Email us<span class="kw">&lt;/a&gt;</span>
+<span class="kw">&lt;a</span> <span class="str">href=</span><span class="str">"tel:+49301234567"</span><span class="kw">&gt;</span>+49 30 1234567<span class="kw">&lt;/a&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🎯 Challenge</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="challenge">
+            <div class="challenge-head" onclick="togChallenge(this)">
+              <div class="challenge-head-left">
+                <span class="challenge-badge">TRY IT</span>
+                <span class="challenge-title">Build a simple navigation bar</span>
+              </div>
+              <span class="challenge-arrow">▾</span>
+            </div>
+            <div class="challenge-body">
+              <p class="challenge-q">Create a <code>&lt;nav&gt;</code> element containing three links: one to an internal page <code>./blog.html</code>, one to <code>https://github.com</code> (opens in new tab, secure), and one that jumps to a <code>#newsletter</code> section on the current page.</p>
+              <span class="answer-toggle" data-show="Show answer ↓" data-hide="Hide answer ↑" onclick="togAnswer(this)">Show answer ↓</span>
+              <div class="answer">
+                <div class="code-block">
+                  <div class="code-header">
+                    <div class="code-header-left"><span class="code-label html">HTML</span></div>
+                    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+                  </div>
+                  <div class="code-body"><span class="kw">&lt;nav&gt;</span>
+  <span class="kw">&lt;a</span> <span class="str">href=</span><span class="str">"./blog.html"</span><span class="kw">&gt;</span>Blog<span class="kw">&lt;/a&gt;</span>
+  <span class="kw">&lt;a</span> <span class="str">href=</span><span class="str">"https://github.com"</span>
+     <span class="str">target=</span><span class="str">"_blank"</span>
+     <span class="str">rel=</span><span class="str">"noopener noreferrer"</span><span class="kw">&gt;</span>GitHub<span class="kw">&lt;/a&gt;</span>
+  <span class="kw">&lt;a</span> <span class="str">href=</span><span class="str">"#newsletter"</span><span class="kw">&gt;</span>Newsletter<span class="kw">&lt;/a&gt;</span>
+<span class="kw">&lt;/nav&gt;</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LESSON 2: Images -->
+  <div class="section">
+    <div class="section-label">Lesson 2 · ~25 min</div>
+    <h2>Images — Embedding Visual Content</h2>
+    <p class="section-intro">The <code>&lt;img&gt;</code> element is a void element (no closing tag) that embeds images. Its three most important attributes — <code>src</code>, <code>alt</code>, and explicit dimensions — prevent the two most common image bugs: broken layouts and inaccessible content.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Core Concepts — Images</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>src</code> — Image source</div>
+              <div class="concept-desc">Path to the image file — relative or absolute URL. Same rules as link <code>href</code>: use relative paths for images in your project, absolute URLs for images hosted elsewhere.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>alt</code> — Alternative text (required)</div>
+              <div class="concept-desc">Describes the image for screen readers, search engines, and broken-image fallback. Write it as a description of what the image <em>communicates</em>, not "image of…". Decorative images: use <code>alt=""</code> (empty string, not omitted) so screen readers skip them.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>width</code> and <code>height</code> — Explicit dimensions</div>
+              <div class="concept-desc">Always specify both in HTML (or CSS). The browser reserves space before the image loads, preventing Cumulative Layout Shift (CLS) — a Core Web Vitals metric. Values without a unit are treated as pixels.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>loading="lazy"</code> — Deferred loading</div>
+              <div class="concept-desc">Tells the browser to defer loading until the image is near the viewport. Use on all images that are not visible on initial page load. Do not use on hero images or above-the-fold content — it delays the largest contentful paint.</div>
+            </div>
+            <div class="concept purple">
+              <div class="concept-name"><code>&lt;figure&gt;</code> and <code>&lt;figcaption&gt;</code></div>
+              <div class="concept-desc">Wrap images (or code, charts, quotes) in <code>&lt;figure&gt;</code> when they have a caption. <code>&lt;figcaption&gt;</code> provides the visible caption. This is the semantic way to associate a caption with its image — screen readers link them correctly.</div>
+            </div>
+          </div>
+          <div class="callout warn">
+            <div class="lbl">⚠️ Common Mistake</div>
+            <p>Omitting <code>alt</code> entirely is different from <code>alt=""</code>. Without the attribute at all, screen readers read out the file name (<code>img-2024-03-17.jpg</code>) as a substitute. Always include <code>alt</code> — either descriptive text or an empty string for decorative images.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Core Concepts — Responsive Images</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept indigo">
+              <div class="concept-name"><code>srcset</code> — Resolution switching</div>
+              <div class="concept-desc">Provide multiple image files at different sizes. The browser picks the most appropriate based on the device screen density and viewport. Use when the image is the same subject at different resolutions (e.g. <code>hero.jpg</code> at 400 w, 800 w, 1200 w).</div>
+            </div>
+            <div class="concept rose">
+              <div class="concept-name"><code>sizes</code> — Layout width hint</div>
+              <div class="concept-desc">Tells the browser how wide the image will be at different breakpoints, so it can select the right <code>srcset</code> source before CSS loads. Example: <code>sizes="(max-width: 600px) 100vw, 50vw"</code>.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>&lt;picture&gt;</code> — Art direction</div>
+              <div class="concept-desc">Use when you need to serve a completely different crop or format at different viewport sizes (not just a smaller version of the same image). Contains <code>&lt;source&gt;</code> elements with <code>media</code> conditions, plus a fallback <code>&lt;img&gt;</code>.</div>
+            </div>
+          </div>
+          <div class="callout info">
+            <div class="lbl">ℹ️ Rule of Thumb</div>
+            <p>Use <code>srcset</code> + <code>sizes</code> for the same image at multiple resolutions. Use <code>&lt;picture&gt;</code> when you need a different crop for mobile vs desktop, or to serve modern formats (WebP, AVIF) with a JPEG fallback.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🌍 Worked Examples</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="cm">&lt;!-- 1. Basic image with all required attributes --&gt;</span>
+<span class="kw">&lt;img</span>
+  <span class="str">src=</span><span class="str">"./images/team-photo.jpg"</span>
+  <span class="str">alt=</span><span class="str">"The Acme team in front of the Berlin office"</span>
+  <span class="str">width=</span><span class="str">"800"</span>
+  <span class="str">height=</span><span class="str">"450"</span>
+  <span class="str">loading=</span><span class="str">"lazy"</span>
+<span class="kw">&gt;</span>
+
+<span class="cm">&lt;!-- 2. Image with caption using figure/figcaption --&gt;</span>
+<span class="kw">&lt;figure&gt;</span>
+  <span class="kw">&lt;img</span>
+    <span class="str">src=</span><span class="str">"./images/chart.png"</span>
+    <span class="str">alt=</span><span class="str">"Bar chart showing Q3 revenue up 23% versus Q2"</span>
+    <span class="str">width=</span><span class="str">"640"</span>
+    <span class="str">height=</span><span class="str">"400"</span>
+  <span class="kw">&gt;</span>
+  <span class="kw">&lt;figcaption&gt;</span>Q3 2024 revenue increased 23% compared to Q2.<span class="kw">&lt;/figcaption&gt;</span>
+<span class="kw">&lt;/figure&gt;</span>
+
+<span class="cm">&lt;!-- 3. Responsive image with srcset --&gt;</span>
+<span class="kw">&lt;img</span>
+  <span class="str">src=</span><span class="str">"./images/hero-800.jpg"</span>
+  <span class="str">srcset=</span><span class="str">"./images/hero-400.jpg 400w,
+          ./images/hero-800.jpg 800w,
+          ./images/hero-1200.jpg 1200w"</span>
+  <span class="str">sizes=</span><span class="str">"(max-width: 600px) 100vw, 800px"</span>
+  <span class="str">alt=</span><span class="str">"City skyline at night"</span>
+  <span class="str">width=</span><span class="str">"800"</span>
+  <span class="str">height=</span><span class="str">"500"</span>
+<span class="kw">&gt;</span>
+
+<span class="cm">&lt;!-- 4. Decorative image — empty alt so screen readers skip it --&gt;</span>
+<span class="kw">&lt;img</span> <span class="str">src=</span><span class="str">"./images/divider-wave.svg"</span> <span class="str">alt=</span><span class="str">""</span> <span class="str">width=</span><span class="str">"1200"</span> <span class="str">height=</span><span class="str">"40"</span><span class="kw">&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LESSON 3: Audio & Video -->
+  <div class="section">
+    <div class="section-label">Lesson 3 · ~10 min</div>
+    <h2>Audio &amp; Video</h2>
+    <p class="section-intro">HTML5 brought native media elements that work without plugins. The <code>&lt;video&gt;</code> and <code>&lt;audio&gt;</code> elements share a similar attribute model and both support the <code>&lt;source&gt;</code> element for format fallbacks.</p>
+
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Core Concepts — Video &amp; Audio</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>controls</code> — Show browser controls</div>
+              <div class="concept-desc">Adds the browser's built-in play/pause/seek/volume controls. Without it, the media is invisible to the user (you'd need to build custom controls with JavaScript). Always include unless building a custom player.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>autoplay</code>, <code>muted</code>, <code>loop</code></div>
+              <div class="concept-desc">Browsers block <code>autoplay</code> with audio unless the video is also <code>muted</code>. Use <code>muted autoplay loop</code> together for background video loops. Never autoplay audio — it is a serious accessibility and usability issue.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>&lt;source&gt;</code> — Format fallback</div>
+              <div class="concept-desc">Provide multiple <code>&lt;source&gt;</code> children so browsers that don't support one format try the next. Modern order: WebM first (smaller), then MP4 as fallback. Always include the <code>type</code> attribute so the browser doesn't download files it can't play.</div>
+            </div>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="cm">&lt;!-- Video with fallback sources --&gt;</span>
+<span class="kw">&lt;video</span> <span class="str">controls</span> <span class="str">width=</span><span class="str">"800"</span> <span class="str">height=</span><span class="str">"450"</span> <span class="str">poster=</span><span class="str">"./thumb.jpg"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;source</span> <span class="str">src=</span><span class="str">"./video/intro.webm"</span> <span class="str">type=</span><span class="str">"video/webm"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;source</span> <span class="str">src=</span><span class="str">"./video/intro.mp4"</span>  <span class="str">type=</span><span class="str">"video/mp4"</span><span class="kw">&gt;</span>
+  <span class="cm">&lt;!-- Fallback text for very old browsers --&gt;</span>
+  Your browser doesn't support HTML5 video.
+<span class="kw">&lt;/video&gt;</span>
+
+<span class="cm">&lt;!-- Audio player --&gt;</span>
+<span class="kw">&lt;audio</span> <span class="str">controls</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;source</span> <span class="str">src=</span><span class="str">"./audio/podcast.ogg"</span> <span class="str">type=</span><span class="str">"audio/ogg"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;source</span> <span class="str">src=</span><span class="str">"./audio/podcast.mp3"</span> <span class="str">type=</span><span class="str">"audio/mpeg"</span><span class="kw">&gt;</span>
+<span class="kw">&lt;/audio&gt;</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q&A SECTION -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">Key questions for this topic — click to expand</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">What is the difference between a relative and an absolute URL?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Think of your project as a house. A relative URL is like saying "go to the room on the left" — it only makes sense from inside the house. An absolute URL is the full postal address — it works from anywhere in the world.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          An <strong>absolute URL</strong> contains the full address including the protocol and domain: <code>https://example.com/about.html</code>. It works from any context — another website, an email, a search engine.<br><br>
+          A <strong>relative URL</strong> omits the domain and is resolved relative to the current document's location: <code>./about.html</code>, <code>../images/logo.png</code>, <code>/contact.html</code> (root-relative). Use relative URLs for internal links — they survive domain changes and work in local development.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Absolute = full address with protocol — use for external links.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Relative = path only — use for internal links within your project.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>/path</code> is root-relative (relative to the domain root, not the current file).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">What happens if you leave the <code>alt</code> attribute empty on an <code>&lt;img&gt;</code>? When is an empty alt appropriate?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">The <code>alt</code> attribute has two jobs: describe the image when it can't be seen, and tell screen readers whether the image carries meaning. Empty alt (<code>alt=""</code>) is an explicit signal: "this image is decorative, ignore it."</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <code>alt=""</code> (explicitly empty) tells screen readers to skip the image entirely. This is correct for <strong>decorative images</strong> — dividers, background textures, icons that have accompanying text labels — where the image adds no information.<br><br>
+          <strong>Omitting <code>alt</code> entirely</strong> is different: screen readers will read out the filename (e.g. "img-2024-03-17.jpg"), which is confusing and unhelpful.<br><br>
+          <strong>Meaningful images</strong> — photos, charts, product images, infographics — need a genuine text description in <code>alt</code> that conveys the same information as the image.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Decorative image: <code>alt=""</code> — screen reader skips it.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Meaningful image: describe what the image communicates, not "image of…".</div>
+        <div class="key-point"><div class="key-point-dot"></div>Never omit the <code>alt</code> attribute — always present, even if empty.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Why does <code>target="_blank"</code> need <code>rel="noopener noreferrer"</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">When you open a new tab with <code>target="_blank"</code>, the new page can reach back and control the original tab through <code>window.opener</code>. It's like handing someone a key to your front door when you thought you were just giving them directions.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Without <code>rel="noopener"</code>, the page opened in the new tab can access <code>window.opener</code> and redirect your original page to a phishing site — a technique called "reverse tabnapping".<br><br>
+          <code>rel="noopener"</code> breaks the reference to <code>window.opener</code>. <code>rel="noreferrer"</code> additionally hides the HTTP Referer header (prevents the destination from knowing where the user came from) and also implies <code>noopener</code>.<br><br>
+          Modern browsers now apply <code>noopener</code> by default for cross-origin <code>target="_blank"</code> links, but explicitly including it is still considered best practice.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Without it: the opened page can redirect your original tab.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>noopener</code> — prevents window.opener access.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>noreferrer</code> — also hides the HTTP Referer header, implies noopener.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You're done with Topic 3 when…</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can write an external link that opens in a new tab with the correct security attributes from memory.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can embed an image with correct <code>alt</code>, explicit <code>width</code>/<code>height</code>, and <code>loading="lazy"</code>.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You know when to use <code>alt=""</code> (empty) vs a real description, and why omitting <code>alt</code> entirely is wrong.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain the difference between <code>srcset</code> (resolution switching) and <code>&lt;picture&gt;</code> (art direction).</div>
+  </div>
+
+</div><!-- /tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="progress-bar">
+    <span class="progress-label">Lernfortschritt</span>
+    <div class="prog-bar"><div class="prog-fill" id="prog-de" style="width:0%"></div></div>
+    <span id="prog-count-de" class="prog-label">0 / 0 geöffnet</span>
+  </div>
+
+  <!-- LEKTION 1: Hyperlinks -->
+  <div class="section">
+    <div class="section-label">Lektion 1 · ~25 Min.</div>
+    <h2>Hyperlinks — Das Web vernetzen</h2>
+    <p class="section-intro">Das Anker-Element <code>&lt;a&gt;</code> macht das Web zu einem <em>Web</em>. Ohne Links ist jede Seite eine Insel. Das Verständnis der verschiedenen URL-Typen und Link-Attribute ist täglich im Einsatz.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>⚡ Warum das wichtig ist</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">Links sind das am häufigsten verwendete HTML-Element nach Überschriften und Absätzen. Den falschen URL-Typ zu wählen (absolut vs. relativ) bricht die Navigation in verschiedenen Umgebungen. Fehlendes <code>rel="noopener"</code> bei externen Links ist ein Sicherheitsproblem, das täglich in den Produktionscode gelangt.</p>
+          <div class="callout interview">
+            <div class="lbl">⚓ Kernaussage</div>
+            <p>Das <code>href</code>-Attribut auf <code>&lt;a&gt;</code> kann eine URL, einen Seitenanker, eine E-Mail-Adresse oder eine Telefonnummer enthalten. Das Element selbst ist immer inline — es fließt innerhalb von Absätzen und Überschriften.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Kernkonzepte — Anker-Element</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>&lt;a href="..."&gt;</code> — Das Anker-Element</div>
+              <div class="concept-desc">Erstellt einen klickbaren Hyperlink. Das <code>href</code>-Attribut (Hypertext-Referenz) enthält das Ziel. Der Inhalt zwischen den Tags wird zum klickbaren Text oder Element.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name">Absolute URLs — vollständige Adresse mit Protokoll</div>
+              <div class="concept-desc">Enthält die vollständige Adresse: <code>https://example.com/about.html</code>. Für externe Links auf anderen Domains verwenden. Notwendig beim Verlinken aus E-Mails oder außerhalb der eigenen Website.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name">Relative URLs — Pfad relativ zur aktuellen Datei</div>
+              <div class="concept-desc">Domain weglassen: <code>./about.html</code>, <code>../images/logo.png</code>, <code>/contact.html</code>. Für interne Links zwischen Seiten im selben Projekt verwenden. Funktionieren auch nach einem Domain-Wechsel.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>target="_blank"</code> — In neuem Tab öffnen</div>
+              <div class="concept-desc">Öffnet den Link in einem neuen Browser-Tab. Nützlich für externe Links, damit Nutzer die Seite nicht verlassen. Immer mit <code>rel="noopener noreferrer"</code> kombinieren, um Sicherheitslücken zu vermeiden.</div>
+            </div>
+            <div class="concept red">
+              <div class="concept-name"><code>rel="noopener noreferrer"</code> — Sicherheitsattribut</div>
+              <div class="concept-desc">Verhindert, dass die geöffnete Seite über <code>window.opener</code> auf deine Seite zugreift (ein Phishing-Angriffsvektor). <code>noreferrer</code> verbirgt zusätzlich die Referrer-URL. Pflicht bei <code>target="_blank"</code>.</div>
+            </div>
+            <div class="concept purple">
+              <div class="concept-name">Spezielle <code>href</code>-Werte</div>
+              <div class="concept-desc"><code>href="#abschnitt-id"</code> — springt zum Element mit dieser <code>id</code> auf der selben Seite. <code>href="mailto:nutzer@beispiel.de"</code> — öffnet den E-Mail-Client. <code>href="tel:+49301234567"</code> — wählt auf Mobilgeräten.</div>
+            </div>
+          </div>
+          <div class="callout warn">
+            <div class="lbl">⚠️ Häufiger Fehler</div>
+            <p><code>target="_blank"</code> ohne <code>rel="noopener noreferrer"</code> zu verwenden, erlaubt der geöffneten Seite, deinen ursprünglichen Tab auf eine bösartige URL umzuleiten. Beide Attribute immer gemeinsam verwenden.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🌍 Anwendungsbeispiele</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="cm">&lt;!-- 1. Interner Link (relative URL) --&gt;</span>
+<span class="kw">&lt;a</span> <span class="str">href=</span><span class="str">"./ueber-uns.html"</span><span class="kw">&gt;</span>Über uns<span class="kw">&lt;/a&gt;</span>
+
+<span class="cm">&lt;!-- 2. Externer Link — öffnet in neuem Tab, mit Sicherheitsattributen --&gt;</span>
+<span class="kw">&lt;a</span> <span class="str">href=</span><span class="str">"https://developer.mozilla.org"</span>
+   <span class="str">target=</span><span class="str">"_blank"</span>
+   <span class="str">rel=</span><span class="str">"noopener noreferrer"</span><span class="kw">&gt;</span>MDN Web Docs<span class="kw">&lt;/a&gt;</span>
+
+<span class="cm">&lt;!-- 3. Seitenanker — springt zum Element mit id="kontakt" --&gt;</span>
+<span class="kw">&lt;a</span> <span class="str">href=</span><span class="str">"#kontakt"</span><span class="kw">&gt;</span>Zum Kontaktbereich<span class="kw">&lt;/a&gt;</span>
+
+<span class="cm">&lt;!-- 4. E-Mail- und Telefon-Links --&gt;</span>
+<span class="kw">&lt;a</span> <span class="str">href=</span><span class="str">"mailto:hallo@beispiel.de"</span><span class="kw">&gt;</span>Schreib uns<span class="kw">&lt;/a&gt;</span>
+<span class="kw">&lt;a</span> <span class="str">href=</span><span class="str">"tel:+49301234567"</span><span class="kw">&gt;</span>+49 30 1234567<span class="kw">&lt;/a&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LEKTION 2: Bilder -->
+  <div class="section">
+    <div class="section-label">Lektion 2 · ~25 Min.</div>
+    <h2>Bilder — Visuelle Inhalte einbetten</h2>
+    <p class="section-intro">Das <code>&lt;img&gt;</code>-Element ist ein Void-Element (kein schließendes Tag), das Bilder einbettet. Seine drei wichtigsten Attribute — <code>src</code>, <code>alt</code> und explizite Dimensionen — verhindern die zwei häufigsten Bild-Fehler: kaputte Layouts und unzugängliche Inhalte.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Kernkonzepte — Bilder</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>src</code> — Bildquelle</div>
+              <div class="concept-desc">Pfad zur Bilddatei — relative oder absolute URL. Gleiche Regeln wie bei Link-<code>href</code>: relative Pfade für Bilder im eigenen Projekt, absolute URLs für extern gehostete Bilder.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>alt</code> — Alternativtext (Pflicht)</div>
+              <div class="concept-desc">Beschreibt das Bild für Screenreader, Suchmaschinen und bei fehlendem Bild. Als Beschreibung formulieren, was das Bild <em>kommuniziert</em> — nicht „Bild von…". Dekorative Bilder: <code>alt=""</code> (leerer String, nicht weglassen), damit Screenreader sie überspringen.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>width</code> und <code>height</code> — Explizite Maße</div>
+              <div class="concept-desc">Immer beide angeben (in HTML oder CSS). Der Browser reserviert Platz, bevor das Bild geladen wird — verhindert Cumulative Layout Shift (CLS), eine wichtige Core Web Vitals-Metrik.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>loading="lazy"</code> — Verzögertes Laden</div>
+              <div class="concept-desc">Weist den Browser an, das Laden zu verzögern, bis das Bild sich dem Viewport nähert. Für alle Bilder verwenden, die beim ersten Seitenaufruf nicht sichtbar sind. Nicht für Hero-Bilder oder Above-the-fold-Inhalte verwenden.</div>
+            </div>
+            <div class="concept purple">
+              <div class="concept-name"><code>&lt;figure&gt;</code> und <code>&lt;figcaption&gt;</code></div>
+              <div class="concept-desc">Bilder (oder Code, Diagramme, Zitate) in <code>&lt;figure&gt;</code> einwickeln, wenn sie eine Beschriftung haben. <code>&lt;figcaption&gt;</code> liefert die sichtbare Bildunterschrift. Screenreader verknüpfen Bild und Beschriftung korrekt.</div>
+            </div>
+          </div>
+          <div class="callout warn">
+            <div class="lbl">⚠️ Häufiger Fehler</div>
+            <p><code>alt</code> ganz wegzulassen unterscheidet sich von <code>alt=""</code>. Ohne das Attribut lesen Screenreader den Dateinamen vor (<code>img-2024-03-17.jpg</code>). Immer <code>alt</code> angeben — entweder mit Beschreibungstext oder leerem String.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Kernkonzepte — Responsive Bilder</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept indigo">
+              <div class="concept-name"><code>srcset</code> — Auflösungswechsel</div>
+              <div class="concept-desc">Stellt mehrere Bilddateien in verschiedenen Größen bereit. Der Browser wählt anhand der Gerätepixeldichte und der Viewport-Breite die passende. Verwendung, wenn dasselbe Motiv in verschiedenen Auflösungen benötigt wird.</div>
+            </div>
+            <div class="concept rose">
+              <div class="concept-name"><code>sizes</code> — Layout-Breitenhinweis</div>
+              <div class="concept-desc">Gibt dem Browser an, wie breit das Bild bei verschiedenen Breakpoints sein wird, damit er das richtige <code>srcset</code>-Bild vor dem CSS-Laden auswählen kann. Beispiel: <code>sizes="(max-width: 600px) 100vw, 50vw"</code>.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>&lt;picture&gt;</code> — Art Direction</div>
+              <div class="concept-desc">Verwenden, wenn für verschiedene Viewport-Größen ein komplett anderer Bildausschnitt oder ein anderes Format benötigt wird. Enthält <code>&lt;source&gt;</code>-Elemente mit <code>media</code>-Bedingungen und ein Fallback-<code>&lt;img&gt;</code>.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🌍 Anwendungsbeispiele</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="cm">&lt;!-- 1. Bild mit allen erforderlichen Attributen --&gt;</span>
+<span class="kw">&lt;img</span>
+  <span class="str">src=</span><span class="str">"./bilder/team-foto.jpg"</span>
+  <span class="str">alt=</span><span class="str">"Das Acme-Team vor dem Berliner Büro"</span>
+  <span class="str">width=</span><span class="str">"800"</span>
+  <span class="str">height=</span><span class="str">"450"</span>
+  <span class="str">loading=</span><span class="str">"lazy"</span>
+<span class="kw">&gt;</span>
+
+<span class="cm">&lt;!-- 2. Bild mit Bildunterschrift --&gt;</span>
+<span class="kw">&lt;figure&gt;</span>
+  <span class="kw">&lt;img</span>
+    <span class="str">src=</span><span class="str">"./bilder/diagramm.png"</span>
+    <span class="str">alt=</span><span class="str">"Balkendiagramm: Q3-Umsatz 23% über Q2"</span>
+    <span class="str">width=</span><span class="str">"640"</span>
+    <span class="str">height=</span><span class="str">"400"</span>
+  <span class="kw">&gt;</span>
+  <span class="kw">&lt;figcaption&gt;</span>Der Q3-Umsatz 2024 stieg um 23% gegenüber Q2.<span class="kw">&lt;/figcaption&gt;</span>
+<span class="kw">&lt;/figure&gt;</span>
+
+<span class="cm">&lt;!-- 3. Dekoratives Bild — leeres alt --&gt;</span>
+<span class="kw">&lt;img</span> <span class="str">src=</span><span class="str">"./bilder/trennlinie.svg"</span> <span class="str">alt=</span><span class="str">""</span> <span class="str">width=</span><span class="str">"1200"</span> <span class="str">height=</span><span class="str">"40"</span><span class="kw">&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LEKTION 3: Audio & Video -->
+  <div class="section">
+    <div class="section-label">Lektion 3 · ~10 Min.</div>
+    <h2>Audio &amp; Video</h2>
+    <p class="section-intro">HTML5 brachte native Medienelemente, die ohne Plugins funktionieren. <code>&lt;video&gt;</code> und <code>&lt;audio&gt;</code> teilen ein ähnliches Attributmodell und unterstützen beide das <code>&lt;source&gt;</code>-Element für Format-Fallbacks.</p>
+
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Kernkonzepte — Video &amp; Audio</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>controls</code> — Browser-Steuerelemente anzeigen</div>
+              <div class="concept-desc">Fügt die eingebauten Browser-Steuerelemente (Abspielen/Pause/Seek/Lautstärke) hinzu. Ohne diese Attribute ist das Medium für den Nutzer unsichtbar. Immer verwenden, wenn kein eigener Player per JavaScript gebaut wird.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>autoplay</code>, <code>muted</code>, <code>loop</code></div>
+              <div class="concept-desc">Browser blockieren <code>autoplay</code> mit Ton, außer wenn das Video auch <code>muted</code> ist. <code>muted autoplay loop</code> zusammen für Hintergrundvideo-Schleifen verwenden. Niemals Audio automatisch abspielen — das ist eine schwere Usability- und Barrierefreiheitsverletzung.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>&lt;source&gt;</code> — Format-Fallback</div>
+              <div class="concept-desc">Mehrere <code>&lt;source&gt;</code>-Kinder angeben, damit Browser, die ein Format nicht unterstützen, das nächste versuchen. Moderne Reihenfolge: WebM zuerst (kleiner), dann MP4 als Fallback. Immer <code>type</code>-Attribut angeben.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÜBUNGSFRAGEN -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Klicke eine Frage an, um sie zu öffnen</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Was ist der Unterschied zwischen einer relativen und einer absoluten URL?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Stell dir dein Projekt als Haus vor. Eine relative URL ist wie „geh in den Raum links" — funktioniert nur von innen. Eine absolute URL ist die vollständige Postadresse — funktioniert von überall.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Eine <strong>absolute URL</strong> enthält die vollständige Adresse mit Protokoll und Domain: <code>https://beispiel.de/ueber-uns.html</code>. Funktioniert in jedem Kontext — andere Website, E-Mail, Suchmaschine.<br><br>
+          Eine <strong>relative URL</strong> lässt die Domain weg und wird relativ zum Speicherort des aktuellen Dokuments aufgelöst: <code>./ueber-uns.html</code>, <code>../bilder/logo.png</code>, <code>/kontakt.html</code>. Für interne Links verwenden — sie funktionieren auch nach einem Domain-Wechsel und in der lokalen Entwicklung.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Absolut = vollständige Adresse mit Protokoll — für externe Links.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Relativ = nur Pfad — für interne Links im eigenen Projekt.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>/pfad</code> ist root-relativ (relativ zur Domain-Root, nicht zur aktuellen Datei).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Was passiert, wenn das <code>alt</code>-Attribut bei einem <code>&lt;img&gt;</code> leer ist? Wann ist ein leeres Alt korrekt?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Das <code>alt</code>-Attribut hat zwei Aufgaben: das Bild beschreiben, wenn es nicht gesehen werden kann, und Screenreadern signalisieren, ob das Bild Bedeutung trägt. Leeres alt (<code>alt=""</code>) bedeutet explizit: „Dieses Bild ist dekorativ, ignoriere es."</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <code>alt=""</code> (explizit leer) weist Screenreader an, das Bild zu überspringen. Korrekt für <strong>dekorative Bilder</strong> — Trennlinien, Hintergrundtexturen, Icons mit Begleittext.<br><br>
+          <code>alt</code> <strong>ganz wegzulassen</strong> ist anders: Screenreader lesen dann den Dateinamen vor (z.B. „img-2024-03-17.jpg"), was verwirrend ist.<br><br>
+          <strong>Bedeutungsvolle Bilder</strong> — Fotos, Diagramme, Produktbilder, Infografiken — benötigen eine echte Textbeschreibung in <code>alt</code>.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Dekoratives Bild: <code>alt=""</code> — Screenreader überspringt es.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Bedeutungsvolles Bild: beschreiben, was es kommuniziert — nicht „Bild von…".</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>alt</code> niemals weglassen — immer angeben, auch wenn leer.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Warum braucht <code>target="_blank"</code> ein <code>rel="noopener noreferrer"</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Wenn du mit <code>target="_blank"</code> einen neuen Tab öffnest, kann die neue Seite über <code>window.opener</code> auf deinen ursprünglichen Tab zugreifen. Es ist wie jemandem einen Schlüssel zu deiner Haustür zu geben, während du dachtest, du gibst ihm nur eine Wegbeschreibung.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Ohne <code>rel="noopener"</code> kann die im neuen Tab geöffnete Seite über <code>window.opener</code> deinen ursprünglichen Tab auf eine Phishing-Seite umleiten — „Reverse Tabnapping".<br><br>
+          <code>rel="noopener"</code> unterbricht die Referenz zu <code>window.opener</code>. <code>rel="noreferrer"</code> verbirgt zusätzlich den HTTP-Referer-Header und impliziert <code>noopener</code>.<br><br>
+          Moderne Browser wenden <code>noopener</code> standardmäßig an, aber das explizite Angeben gilt weiterhin als Best Practice.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Ohne es: die geöffnete Seite kann deinen ursprünglichen Tab umleiten.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>noopener</code> — verhindert window.opener-Zugriff.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>noreferrer</code> — verbirgt auch den HTTP-Referer-Header, impliziert noopener.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit Thema 3 fertig, wenn…</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du aus dem Gedächtnis einen externen Link schreiben kannst, der in einem neuen Tab öffnet — mit den korrekten Sicherheitsattributen.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du ein Bild mit korrektem <code>alt</code>, expliziten <code>width</code>/<code>height</code> und <code>loading="lazy"</code> einbetten kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du weißt, wann <code>alt=""</code> (leer) vs. eine echte Beschreibung verwendet wird, und warum das Weglassen von <code>alt</code> falsch ist.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du den Unterschied zwischen <code>srcset</code> (Auflösungswechsel) und <code>&lt;picture&gt;</code> (Art Direction) erklären kannst.</div>
+  </div>
+
+</div><!-- /tab-de -->
+
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+</div><!-- /tab-ar -->
+
+</div><!-- /body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'lms_html_starter_03_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<script>
+function copyCode(btn) {
+  const body = btn.closest('.code-block').querySelector('.code-body');
+  const text = (body.innerText || body.textContent).replace(/\u00A0/g, ' ');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1800);
+  }).catch(() => { btn.textContent = 'failed'; setTimeout(() => { btn.textContent = 'copy'; }, 1500); });
+}
+function togChallenge(headEl) {
+  const body  = headEl.nextElementSibling;
+  const arrow = headEl.querySelector('.challenge-arrow');
+  body.classList.toggle('open'); arrow.classList.toggle('open');
+}
+function togAnswer(toggleEl) {
+  const ans = toggleEl.nextElementSibling;
+  ans.classList.toggle('open');
+  const isOpen = ans.classList.contains('open');
+  toggleEl.textContent = isOpen
+    ? (toggleEl.dataset.hide || 'Hide answer ↑')
+    : (toggleEl.dataset.show || 'Show answer ↓');
+}
+updateProgress();
+guardLanguageTab('ar');
+</script>
+</body>
+</html>

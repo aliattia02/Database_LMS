@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 5 — Semantic HTML &amp; Accessibility | HTML Starter</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+.section-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.section-intro  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:16px; }
+.section        { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2     { font-size:18px; font-weight:700; margin-bottom:6px; color:var(--navy); }
+.section p      { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+.accordion     { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+.acc-item      { background:var(--white); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.acc-trigger   { width:100%; display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:none; border:none; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--navy); text-align:left; transition:background .12s; }
+.acc-trigger:hover { background:var(--bg); }
+.acc-chevron   { font-size:12px; color:var(--muted); transition:transform .2s; flex-shrink:0; }
+.acc-trigger.open .acc-chevron { transform:rotate(180deg); }
+.acc-body      { display:none; padding:16px; border-top:1px solid var(--border); font-size:13.5px; color:var(--navy); line-height:1.65; }
+.acc-body.open { display:block; }
+
+.concepts       { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.concept        { background:var(--white); border:1px solid var(--border); border-left:3px solid var(--border); border-radius:8px; padding:12px 16px; }
+.concept.blue   { border-left-color:#0284c7; }
+.concept.green  { border-left-color:#059669; }
+.concept.orange { border-left-color:#d97706; }
+.concept.teal   { border-left-color:#0d9488; }
+.concept.purple { border-left-color:#7c3aed; }
+.concept.red    { border-left-color:#dc2626; }
+.concept.indigo { border-left-color:#4338ca; }
+.concept-name   { font-size:13px; font-weight:700; color:var(--navy); margin-bottom:4px; }
+.concept-desc   { font-size:12px; color:var(--slate); line-height:1.6; }
+
+.ref-table              { width:100%; border-collapse:collapse; font-size:12px; margin-bottom:16px; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+.ref-table thead tr     { background:#334155; color:#fff; }
+.ref-table thead th     { padding:10px 14px; text-align:left; font-weight:700; }
+.ref-table tbody tr     { border-bottom:1px solid var(--border); }
+.ref-table tbody tr:last-child { border-bottom:none; }
+.ref-table tbody tr:nth-child(even) { background:var(--bg); }
+.ref-table tbody td     { padding:9px 14px; vertical-align:top; line-height:1.55; }
+.ref-table .mono        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:11px; }
+
+.callout      { border-radius:0 8px 8px 0; padding:12px 16px; margin-bottom:16px; border:1px solid transparent; border-left-width:3px; }
+.callout .lbl { font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; margin-bottom:6px; }
+.callout p, .callout li  { font-size:12px; line-height:1.65; }
+.callout ul, .callout ol { padding-left:16px; }
+.callout li              { margin-bottom:4px; }
+.callout.tip       { background:#d1fae5; border-color:#a7f3d0; border-left-color:#059669; }
+.callout.tip .lbl  { color:#059669; }
+.callout.tip p, .callout.tip li { color:#065f46; }
+.callout.warn       { background:#fef3c7; border-color:#fde68a; border-left-color:#b45309; }
+.callout.warn .lbl  { color:#b45309; }
+.callout.warn p, .callout.warn li { color:#78350f; }
+.callout.info       { background:#e0f2fe; border-color:#bae6fd; border-left-color:#0284c7; }
+.callout.info .lbl  { color:#0284c7; }
+.callout.info p, .callout.info li { color:#075985; }
+.callout.interview       { background:#e0e7ff; border-color:#a5b4fc; border-left-color:#4338ca; }
+.callout.interview .lbl  { color:#3730a3; }
+.callout.interview p     { color:#312e81; font-weight:600; }
+
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { background:#f8fafc; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:16px; }
+.code-header         { display:flex; align-items:center; justify-content:space-between; padding:8px 14px; border-bottom:1px solid var(--border); }
+.code-header-left    { display:flex; align-items:center; gap:8px; }
+.code-label          { font-size:10px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.code-label.html     { color:#dc2626; }
+.copy-btn            { font-size:10px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; color:var(--muted); background:none; border:1px solid var(--border); border-radius:5px; padding:3px 8px; cursor:pointer; transition:color .15s,border-color .15s; }
+.copy-btn:hover      { color:var(--navy); }
+.copy-btn.copied     { color:#059669; border-color:#059669; }
+.code-body           { padding:16px 14px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; color:#334155; line-height:1.75; overflow-x:auto; white-space:pre; background:#f8fafc; }
+.kw  { color:#0284c7; font-weight:600; }
+.str { color:#059669; }
+.cm  { color:#94a3b8; }
+
+.badge       { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must  { background:#fef3c7; color:#92400e; }
+.badge-common{ background:#dbeafe; color:#1e40af; }
+.badge-tip   { background:#f0fdf4; color:#166534; }
+.q-arrow     { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel     { padding:18px 20px 16px 52px; }
+
+.strategy-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text  { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+
+.answer-box       { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text  { font-size:13.5px; color:#14532d; line-height:1.7; }
+
+.warning-box      { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text { font-size:13px; color:var(--amber-text); line-height:1.55; }
+
+.key-points    { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point     { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+.must-block                  { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title            { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item       { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet     { font-size:15px; flex-shrink:0; }
+
+.progress-bar   { display:flex; align-items:center; gap:12px; margin-bottom:20px; padding:12px 16px; background:var(--white); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); }
+.progress-label { font-size:12px; font-weight:600; color:var(--muted); white-space:nowrap; }
+.prog-bar       { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+.prog-fill      { height:100%; background:var(--accent); border-radius:3px; transition:width .3s; }
+.prog-label     { font-size:12px; color:var(--muted); white-space:nowrap; }
+
+/* RTL overrides */
+[dir="rtl"] .acc-trigger     { text-align:right; }
+[dir="rtl"] .callout         { border-radius:8px 0 0 8px; border-left-width:1px; border-right-width:3px; border-left-color:var(--border); }
+[dir="rtl"] .callout.tip     { border-right-color:#059669; }
+[dir="rtl"] .callout.warn    { border-right-color:#b45309; }
+[dir="rtl"] .callout.info    { border-right-color:#0284c7; }
+[dir="rtl"] .callout.interview { border-right-color:#4338ca; }
+[dir="rtl"] .concept         { border-left-width:1px; border-right-width:3px; border-left-color:var(--border); }
+[dir="rtl"] .concept.blue    { border-right-color:#0284c7; }
+[dir="rtl"] .concept.green   { border-right-color:#059669; }
+[dir="rtl"] .concept.orange  { border-right-color:#d97706; }
+[dir="rtl"] .concept.teal    { border-right-color:#0d9488; }
+[dir="rtl"] .concept.purple  { border-right-color:#7c3aed; }
+[dir="rtl"] .concept.red     { border-right-color:#dc2626; }
+[dir="rtl"] .q-panel         { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point       { flex-direction:row-reverse; }
+[dir="rtl"] .must-item       { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title{ flex-direction:row-reverse; }
+[dir="rtl"] .code-block      { direction:ltr; }
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="../../../../../../Downloads/masterplan.html">← Back to course index</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">HTML Starter &mdash; Topic 5 of 5 &middot; Medium Priority &middot; ~1h</div>
+    <h1><span>Semantic</span> HTML &amp; Accessibility</h1>
+    <p class="header-sub">Every <code>&lt;div&gt;</code> you write should ask: "should I be a <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code>, or <code>&lt;nav&gt;</code> instead?" Learn meaning-first elements that improve SEO, screen reader support, and long-term maintainability.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="progress-bar">
+    <span class="progress-label">Study progress</span>
+    <div class="prog-bar"><div class="prog-fill" id="prog-en" style="width:0%"></div></div>
+    <span id="prog-count-en" class="prog-label">0 / 0 opened</span>
+  </div>
+
+  <!-- LESSON 1: Semantic Elements -->
+  <div class="section">
+    <div class="section-label">Lesson 1 · ~30 min</div>
+    <h2>Semantic Elements — Giving Meaning to Structure</h2>
+    <p class="section-intro">Semantic HTML means choosing elements that describe their <em>content role</em>, not just their visual appearance. A <code>&lt;div&gt;</code> is a generic container with no meaning; a <code>&lt;nav&gt;</code> says "this is navigation." That distinction matters to search engines, screen readers, and every developer who reads your code later.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>⚡ Why Semantic Elements Matter</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout interview">
+            <div class="lbl">⚓ Core Insight</div>
+            <p>A page full of <code>&lt;div&gt;</code> elements is meaningless to a machine. Search engines use HTML structure to understand page hierarchy and topic relevance. Screen readers use landmark elements to let users jump directly to the main content, skip navigation, or list every heading on the page. Choosing the right element is free accessibility and SEO.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Landmark Elements — Page-Level Structure</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>&lt;header&gt;</code> — Page or section header</div>
+              <div class="concept-desc">Usually contains a logo, site title, or top navigation. A page can have multiple <code>&lt;header&gt;</code> elements — one for the page and one per <code>&lt;article&gt;</code>. Not the same as <code>&lt;head&gt;</code>, which is invisible metadata.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>&lt;nav&gt;</code> — Navigation block</div>
+              <div class="concept-desc">Wraps a group of navigation links — primary menus, breadcrumbs, pagination. Don't wrap every list of links in <code>&lt;nav&gt;</code> — reserve it for major site-navigation groups. Screen readers can list all <code>&lt;nav&gt;</code> landmarks so users can jump directly to them.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>&lt;main&gt;</code> — Primary page content</div>
+              <div class="concept-desc">The dominant content unique to this page — not repeated elements like headers or footers. There must be <strong>only one</strong> <code>&lt;main&gt;</code> per page. Screen readers provide a keyboard shortcut to jump directly to <code>&lt;main&gt;</code>, bypassing repetitive headers.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>&lt;footer&gt;</code> — Page or section footer</div>
+              <div class="concept-desc">Typically contains copyright, secondary navigation, contact links, or author information. Like <code>&lt;header&gt;</code>, a page can have multiple footers (e.g. one per article). Screen readers expose these as "contentinfo" landmarks.</div>
+            </div>
+            <div class="concept purple">
+              <div class="concept-name"><code>&lt;aside&gt;</code> — Tangentially related content</div>
+              <div class="concept-desc">Content that is related to the surrounding page but not essential to understanding it: sidebars, pull quotes, related article lists, or advertisements. Becomes a "complementary" landmark — screen reader users can skip it or navigate to it directly.</div>
+            </div>
+          </div>
+          <div class="callout warn">
+            <div class="lbl">⚠️ Common Mistake</div>
+            <p>Using <code>&lt;header&gt;</code> and <code>&lt;footer&gt;</code> just to style the top and bottom of a design. The browser cares about the element's semantic role, not its visual position. Only use these elements when the content they contain is genuinely a header or footer in the document sense.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Content Sectioning Elements</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>&lt;article&gt;</code> — Self-contained, reusable content</div>
+              <div class="concept-desc">Independently distributable content — a blog post, a news story, a forum post, a product card, a comment. Ask yourself: "if I copied this to another page, would it still make sense on its own?" If yes, it's an <code>&lt;article&gt;</code>.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>&lt;section&gt;</code> — Thematic grouping with a heading</div>
+              <div class="concept-desc">A thematically-related block of content. Should almost always have a heading (<code>&lt;h2&gt;</code> – <code>&lt;h6&gt;</code>) as its first child. If there's no natural heading for the group, a <code>&lt;div&gt;</code> is probably more appropriate. Think of <code>&lt;section&gt;</code> as a chapter in a document.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>&lt;figure&gt;</code> + <code>&lt;figcaption&gt;</code> — Media with caption</div>
+              <div class="concept-desc">Wraps self-contained media (images, diagrams, charts, code samples) with an optional caption. The <code>&lt;figcaption&gt;</code> is announced by screen readers and associated with the figure. It provides context even when the image cannot be seen or loaded.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>&lt;time datetime=""&gt;</code> — Machine-readable date or time</div>
+              <div class="concept-desc">Human-readable text goes between the tags; the <code>datetime</code> attribute gives the ISO 8601 machine-readable format. Example: <code>&lt;time datetime="2024-06-15"&gt;15 June 2024&lt;/time&gt;</code>. Allows browsers, search engines, and assistive tech to interpret dates accurately regardless of the display format.</div>
+            </div>
+          </div>
+          <table class="ref-table">
+            <thead><tr><th>Choose this</th><th>When the content is…</th><th>Not this</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">&lt;article&gt;</td><td>Self-contained — works out of context</td><td class="mono">&lt;div class="article"&gt;</td></tr>
+              <tr><td class="mono">&lt;section&gt;</td><td>Thematic group with a visible heading</td><td class="mono">&lt;div class="section"&gt;</td></tr>
+              <tr><td class="mono">&lt;aside&gt;</td><td>Tangentially related, skippable content</td><td class="mono">&lt;div class="sidebar"&gt;</td></tr>
+              <tr><td class="mono">&lt;figure&gt;</td><td>Media + caption (image, diagram, code)</td><td class="mono">&lt;div class="image-box"&gt;</td></tr>
+              <tr><td class="mono">&lt;div&gt;</td><td>No semantic meaning — pure layout grouping</td><td>Anything above when it fits</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🌍 Worked Example — Div Soup → Semantic HTML</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout tip">
+            <div class="lbl">✅ The Transformation</div>
+            <p>The two code blocks below produce visually identical pages. The semantic version gives every element a meaningful role that machines, screen readers, and future developers can understand.</p>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML — Before (div soup)</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="cm">&lt;!-- ❌ No semantic meaning — all divs --&gt;</span>
+<span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"header"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"logo"</span><span class="kw">&gt;</span>My Site<span class="kw">&lt;/div&gt;</span>
+  <span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"nav"</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;div&gt;&lt;a</span> <span class="str">href=</span><span class="str">"/"</span><span class="kw">&gt;</span>Home<span class="kw">&lt;/a&gt;&lt;/div&gt;</span>
+    <span class="kw">&lt;div&gt;&lt;a</span> <span class="str">href=</span><span class="str">"/about"</span><span class="kw">&gt;</span>About<span class="kw">&lt;/a&gt;&lt;/div&gt;</span>
+  <span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"main"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"article"</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"title"</span><span class="kw">&gt;</span>Article Title<span class="kw">&lt;/div&gt;</span>
+    <span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"content"</span><span class="kw">&gt;</span>Paragraph text...<span class="kw">&lt;/div&gt;</span>
+    <span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"image-wrap"</span><span class="kw">&gt;</span>
+      <span class="kw">&lt;img</span> <span class="str">src=</span><span class="str">"chart.png"</span><span class="kw">&gt;</span>
+      <span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"caption"</span><span class="kw">&gt;</span>Q4 results<span class="kw">&lt;/div&gt;</span>
+    <span class="kw">&lt;/div&gt;</span>
+  <span class="kw">&lt;/div&gt;</span>
+  <span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"sidebar"</span><span class="kw">&gt;</span>Related posts<span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"footer"</span><span class="kw">&gt;</span>Copyright 2024<span class="kw">&lt;/div&gt;</span></div>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML — After (semantic)</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="cm">&lt;!-- ✅ Meaning built in — no class="header" needed --&gt;</span>
+<span class="kw">&lt;header&gt;</span>
+  <span class="kw">&lt;a</span> <span class="str">href=</span><span class="str">"/"</span> <span class="str">class=</span><span class="str">"logo"</span><span class="kw">&gt;</span>My Site<span class="kw">&lt;/a&gt;</span>
+  <span class="kw">&lt;nav&gt;</span>
+    <span class="kw">&lt;ul&gt;</span>
+      <span class="kw">&lt;li&gt;&lt;a</span> <span class="str">href=</span><span class="str">"/"</span><span class="kw">&gt;</span>Home<span class="kw">&lt;/a&gt;&lt;/li&gt;</span>
+      <span class="kw">&lt;li&gt;&lt;a</span> <span class="str">href=</span><span class="str">"/about"</span><span class="kw">&gt;</span>About<span class="kw">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="kw">&lt;/ul&gt;</span>
+  <span class="kw">&lt;/nav&gt;</span>
+<span class="kw">&lt;/header&gt;</span>
+<span class="kw">&lt;main&gt;</span>
+  <span class="kw">&lt;article&gt;</span>
+    <span class="kw">&lt;h1&gt;</span>Article Title<span class="kw">&lt;/h1&gt;</span>
+    <span class="kw">&lt;p&gt;</span>Paragraph text...<span class="kw">&lt;/p&gt;</span>
+    <span class="kw">&lt;figure&gt;</span>
+      <span class="kw">&lt;img</span> <span class="str">src=</span><span class="str">"chart.png"</span> <span class="str">alt=</span><span class="str">"Bar chart showing Q4 revenue growth of 18%"</span><span class="kw">&gt;</span>
+      <span class="kw">&lt;figcaption&gt;</span>Q4 results — revenue up 18% year on year<span class="kw">&lt;/figcaption&gt;</span>
+    <span class="kw">&lt;/figure&gt;</span>
+  <span class="kw">&lt;/article&gt;</span>
+  <span class="kw">&lt;aside&gt;</span>Related posts<span class="kw">&lt;/aside&gt;</span>
+<span class="kw">&lt;/main&gt;</span>
+<span class="kw">&lt;footer&gt;</span>Copyright 2024<span class="kw">&lt;/footer&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LESSON 2: Accessibility Basics -->
+  <div class="section">
+    <div class="section-label">Lesson 2 · ~30 min</div>
+    <h2>Accessibility Basics — HTML for Everyone</h2>
+    <p class="section-intro">About 15% of the world's population has some form of disability. Web accessibility ensures your pages work for keyboard-only users, screen reader users, and people with visual, motor, or cognitive differences. Most accessibility wins in HTML are free — they come from choosing the right element, writing good text, and keeping structure logical.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>⚡ Why Accessibility Matters</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout interview">
+            <div class="lbl">⚓ Core Insight</div>
+            <p>Accessibility isn't a special feature you add at the end — it's a quality indicator for your HTML. Code that is accessible is also more maintainable, SEO-friendly, and robust. In many countries (EU, USA, UK), accessible web content is a legal requirement for public-facing websites. Start with good HTML and most of the work is already done.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Alt Text — Images Need Words</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name">Informational images — describe the information, not the pixels</div>
+              <div class="concept-desc">Alt text should convey the same information the image conveys. For a chart: "Bar chart showing monthly revenue grew from €40k in January to €65k in June." Not "a chart." Not "image." Not "chart.png."</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name">Decorative images — use an empty <code>alt=""</code></div>
+              <div class="concept-desc">Purely decorative images (dividers, background textures, stock photos that add no information) should use <code>alt=""</code>. Screen readers then skip them silently. <strong>Never omit <code>alt</code> entirely</strong> — without it, screen readers announce the filename (<code>"product-hero-2024-v3-final.jpg"</code>), which is useless and disruptive.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name">Functional images (icon buttons) — describe the action</div>
+              <div class="concept-desc">When an image serves as a button or link, alt text should describe what clicking it does, not what the image looks like. <code>&lt;img alt="Search"&gt;</code> on a magnifying glass icon, not <code>alt="magnifying glass"</code>. <code>&lt;img alt="Close"&gt;</code> on an × icon, not <code>alt="x"</code>.</div>
+            </div>
+          </div>
+          <div class="callout warn">
+            <div class="lbl">⚠️ Common Mistake</div>
+            <p>Writing redundant alt text like "Photo of a dog" or "Image showing a bar chart." Screen readers already announce the element type. Write just "A golden retriever sitting in autumn leaves" or "Bar chart showing Q4 revenue by region."</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Heading Hierarchy — The Outline Rule</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name">One <code>&lt;h1&gt;</code> per page — the document title</div>
+              <div class="concept-desc">The <code>&lt;h1&gt;</code> should be the single most important heading on the page, usually the page or article title. Screen readers announce it when a page loads. Having multiple <code>&lt;h1&gt;</code> elements confuses both assistive tech and search engines about what the page is actually about.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name">Never skip heading levels</div>
+              <div class="concept-desc">Going from <code>&lt;h1&gt;</code> to <code>&lt;h3&gt;</code> without an <code>&lt;h2&gt;</code> in between is a structural error. Screen reader users navigate pages by tabbing through headings — a skipped level breaks their mental model of the page structure. Think of headings as an outline: H1 → H2 → H3, not H1 → H3.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name">Pick headings for structure, not for size</div>
+              <div class="concept-desc">The most common mistake: choosing a heading level because of how big it looks by default. Use CSS to change visual size. Choose heading level only based on the document hierarchy. <code>&lt;h2&gt;</code> is "a section under the page title," regardless of how you want it to look.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 ARIA — When Native HTML Isn't Enough</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout tip">
+            <div class="lbl">✅ The First Rule of ARIA</div>
+            <p>The first rule of ARIA is: <strong>don't use ARIA</strong> — use native HTML elements instead. An <code>&lt;input type="checkbox"&gt;</code> always beats <code>&lt;div role="checkbox"&gt;</code>. Native elements have built-in keyboard behaviour, focus management, and accessibility announcements for free. ARIA is a repair kit for situations where native HTML can't express the right semantics.</p>
+          </div>
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>aria-label</code> — Adds an invisible text label</div>
+              <div class="concept-desc">Use when there is no visible text label to associate with a control. Common case: an icon-only button. <code>&lt;button aria-label="Close modal"&gt;✕&lt;/button&gt;</code> — the screen reader announces "Close modal button" even though the visible content is just "✕".</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>aria-describedby</code> — Points to a description element</div>
+              <div class="concept-desc">Associates an element with a longer description elsewhere in the page. <code>&lt;input aria-describedby="pw-hint"&gt;</code> with <code>&lt;span id="pw-hint"&gt;Must be at least 8 characters&lt;/span&gt;</code>. Screen readers read both the label and the description when the input receives focus.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>role</code> — Overrides an element's semantic role</div>
+              <div class="concept-desc">Tells assistive technology what kind of widget an element is. <code>role="alert"</code> makes a div announce dynamically inserted content immediately. <code>role="status"</code> makes it announce politely. Only reach for <code>role</code> when no semantic HTML element fits and you've verified the keyboard and focus behaviour is correct.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Q&A SECTION -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">Key questions for this topic — click to expand</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">What is semantic HTML and why does it matter?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Imagine giving someone a document with all the formatting stripped out — no bold, no headings, just text in a single block. You can still read it, but finding sections is hard and the structure is invisible. Semantic HTML puts the structure back in, in a form that machines can read.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Semantic HTML is the practice of using HTML elements according to their <strong>intended meaning</strong>, not their default visual appearance.<br><br>
+          A <code>&lt;div&gt;</code> has no inherent meaning — it's a generic block. A <code>&lt;nav&gt;</code> tells every browser, screen reader, and search engine crawler: "this is a navigation region." A <code>&lt;time datetime="2024-06-15"&gt;</code> says: "this text represents a date, here is the machine-readable version."<br><br>
+          It matters for three reasons: <strong>accessibility</strong> (screen readers build navigation menus from landmarks and headings), <strong>SEO</strong> (search engines weight content inside meaningful elements differently), and <strong>maintainability</strong> (code intent is self-documenting).
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Semantic = using elements for their <em>meaning</em>, not their visual output.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Benefits: accessibility, SEO, and self-documenting code.</div>
+        <div class="key-point"><div class="key-point-dot"></div>A <code>&lt;div&gt;</code> is the right choice only when no semantic element fits.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">When should you use <code>&lt;article&gt;</code> vs <code>&lt;section&gt;</code> vs <code>&lt;div&gt;</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Decision tree</div>
+      <div class="strategy-text">"Could I paste this content into a completely different page and would it still make sense?" Yes → <code>&lt;article&gt;</code>. "Does this group of content have a single theme and a heading?" Yes → <code>&lt;section&gt;</code>. "Is this just a styling or layout wrapper with no meaningful grouping?" Yes → <code>&lt;div&gt;</code>.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <strong><code>&lt;article&gt;</code></strong> — self-contained, independently distributable content. Examples: a blog post, a news item, a product card, a user comment. The key test: does it make sense on its own, out of context?<br><br>
+          <strong><code>&lt;section&gt;</code></strong> — a thematic grouping of content that belongs together and has a heading. Examples: "About Us" section of a homepage, a "Comments" section of an article, chapters in a long document. Sections don't stand alone the way articles do.<br><br>
+          <strong><code>&lt;div&gt;</code></strong> — a generic container with no semantic meaning. The correct choice when you need a wrapper purely for CSS layout or JavaScript targeting, and none of the semantic elements apply.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>&lt;article&gt;</code>: self-contained, could live on another site.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>&lt;section&gt;</code>: thematic group with a heading — part of a larger whole.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>&lt;div&gt;</code>: layout-only wrapper — no inherent meaning.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">What makes alt text good or bad?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Imagine you're describing the page to someone over the phone. You wouldn't say "there's an image here." You'd say what the image shows and why it matters. That's what alt text is — a spoken equivalent of the visual content.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <strong>Good alt text</strong> describes the information the image conveys: <code>alt="Bar chart showing Q3 revenue of €120k, up 22% from Q2"</code>. It is concise, specific, and contextual — it conveys what a sighted user would take away from the image.<br><br>
+          <strong>Bad alt text</strong>: <code>alt="image"</code>, <code>alt="photo"</code>, <code>alt="chart"</code>, or a filename like <code>alt="revenue-q3-2024-final.png"</code>. These convey nothing.<br><br>
+          <strong>Decorative images</strong> that add no information should use <code>alt=""</code> — an empty string tells screen readers to skip. Never omit <code>alt</code> entirely — the browser will fall back to announcing the filename.<br><br>
+          <strong>Functional images</strong> (icon buttons, linked images): alt text = the action, not the icon. <code>alt="Search"</code>, not <code>alt="magnifying glass"</code>.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Describe information, not pixels: "what does this image communicate?" not "what does it look like?"</div>
+        <div class="key-point"><div class="key-point-dot"></div>Decorative: <code>alt=""</code> — omitting <code>alt</code> entirely is a different (worse) thing.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Icon buttons: describe the action (<code>alt="Close"</code>), not the icon (<code>alt="X"</code>).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">What does ARIA do and when do you actually need it?</span>
+      <span class="q-badges"><span class="badge badge-common">● Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">ARIA is a set of HTML attributes that add semantic information that native HTML alone can't express. Think of it as subtitles for content that's already there — it doesn't change what's on screen, it adds a parallel description for assistive technology.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          ARIA (Accessible Rich Internet Applications) is a specification of attributes that add semantic roles, states, and properties to HTML elements. It bridges the gap between HTML and the information assistive technologies need.<br><br>
+          <strong>When you need it:</strong> when building custom interactive widgets that have no native HTML equivalent — a custom dropdown, a tab panel, an accordion, a live region that announces dynamic content. <code>role="tabpanel"</code>, <code>aria-expanded="false"</code>, <code>aria-label="Close"</code>.<br><br>
+          <strong>When you don't:</strong> whenever a native HTML element already exists. <code>&lt;button&gt;</code> instead of <code>&lt;div role="button"&gt;</code>. <code>&lt;input type="checkbox"&gt;</code> instead of <code>&lt;div role="checkbox"&gt;</code>. Native elements are always better — they come with built-in keyboard handling, focus management, and correct announcements for free.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>ARIA adds semantic information that native HTML can't express alone.</div>
+        <div class="key-point"><div class="key-point-dot"></div>First rule of ARIA: don't use it — use native HTML instead whenever possible.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Reach for it when building custom widgets (tabs, accordions, live regions) with no native equivalent.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Why must headings follow a logical order?</span>
+      <span class="q-badges"><span class="badge badge-common">● Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Headings are to a web page what a table of contents is to a book. If a book's table of contents jumped from Chapter 1 to Chapter 3 with no Chapter 2, you'd know something was wrong. A skipped heading level sends the same signal — something is broken in the structure.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Screen reader users navigate pages by headings using keyboard shortcuts — they hear a list of headings and jump to the section they want, exactly like scanning a table of contents. A broken hierarchy (h1 → h3, skipping h2) creates confusing gaps in that mental model.<br><br>
+          Search engines also use heading hierarchy to understand page structure and topic relevance. A single <code>&lt;h1&gt;</code> per page signals the main topic; <code>&lt;h2&gt;</code> signals major sections; <code>&lt;h3&gt;</code> signals subsections of those.<br><br>
+          The heading level should reflect the <em>document outline</em>, not the desired font size. If you want a heading to look bigger or smaller, change it with CSS. Never choose a heading level because of its default visual weight.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Headings are navigational anchors for screen reader users — broken order breaks their map.</div>
+        <div class="key-point"><div class="key-point-dot"></div>One <code>&lt;h1&gt;</code> per page; never skip levels (h1 → h2 → h3, not h1 → h3).</div>
+        <div class="key-point"><div class="key-point-dot"></div>Heading level = document structure. Visual size = CSS. Never confuse them.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You're done with Topic 5 when…</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can convert a div-based layout into a semantically correct page using <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;section&gt;</code>, and <code>&lt;footer&gt;</code>.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can write correct alt text for informational images, choose <code>alt=""</code> for decorative ones, and explain why omitting <code>alt</code> entirely is worse than both.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You understand that heading levels define document structure, not visual size — and you never skip levels.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You know the first rule of ARIA, can name two ARIA attributes (<code>aria-label</code>, <code>aria-describedby</code>), and know when to reach for them instead of native HTML.</div>
+  </div>
+
+</div><!-- /tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="progress-bar">
+    <span class="progress-label">Lernfortschritt</span>
+    <div class="prog-bar"><div class="prog-fill" id="prog-de" style="width:0%"></div></div>
+    <span id="prog-count-de" class="prog-label">0 / 0 geöffnet</span>
+  </div>
+
+  <!-- LEKTION 1: Semantische Elemente -->
+  <div class="section">
+    <div class="section-label">Lektion 1 · ~30 Min.</div>
+    <h2>Semantische Elemente — Inhalten Bedeutung geben</h2>
+    <p class="section-intro">Semantisches HTML bedeutet, Elemente zu wählen, die ihre <em>inhaltliche Rolle</em> beschreiben — nicht nur ihr visuelles Erscheinungsbild. Ein <code>&lt;div&gt;</code> ist ein generischer Container ohne Bedeutung; ein <code>&lt;nav&gt;</code> sagt: „Das ist Navigation." Diese Unterscheidung ist für Suchmaschinen, Screenreader und jeden Entwickler, der deinen Code später liest, entscheidend.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>⚡ Warum semantische Elemente wichtig sind</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout interview">
+            <div class="lbl">⚓ Kernaussage</div>
+            <p>Eine Seite voller <code>&lt;div&gt;</code>-Elemente ist für eine Maschine bedeutungslos. Suchmaschinen nutzen die HTML-Struktur, um die Hierarchie und thematische Relevanz einer Seite zu verstehen. Screenreader nutzen Landmarken-Elemente, damit Nutzer direkt zum Hauptinhalt springen, die Navigation überspringen oder alle Überschriften der Seite auflisten können. Das richtige Element zu wählen ist kostenlose Barrierefreiheit und SEO.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Landmarken-Elemente — Seitenweite Struktur</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>&lt;header&gt;</code> — Seiten- oder Abschnitts-Kopfbereich</div>
+              <div class="concept-desc">Enthält üblicherweise Logo, Seitentitel oder Hauptnavigation. Eine Seite kann mehrere <code>&lt;header&gt;</code>-Elemente haben — eines für die Seite und eines je <code>&lt;article&gt;</code>. Nicht identisch mit <code>&lt;head&gt;</code>, das unsichtbare Metadaten enthält.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>&lt;nav&gt;</code> — Navigationsbereich</div>
+              <div class="concept-desc">Umschließt eine Gruppe von Navigationslinks — Hauptmenüs, Breadcrumbs, Seitennavigation. Nicht jede Link-Liste in <code>&lt;nav&gt;</code> einwickeln — nur für wichtige Seitennavigationsgruppen verwenden. Screenreader können alle <code>&lt;nav&gt;</code>-Landmarken auflisten, damit Nutzer direkt dorthin springen können.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>&lt;main&gt;</code> — Primärer Seiteninhalt</div>
+              <div class="concept-desc">Der dominante, seitenspezifische Inhalt — keine wiederholten Elemente wie Header oder Footer. Es darf <strong>nur ein</strong> <code>&lt;main&gt;</code> pro Seite geben. Screenreader bieten eine Tastenkombination, um direkt zum <code>&lt;main&gt;</code> zu springen und sich wiederholende Kopfbereiche zu überspringen.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>&lt;footer&gt;</code> — Seiten- oder Abschnitts-Fußbereich</div>
+              <div class="concept-desc">Enthält typischerweise Copyright-Angaben, sekundäre Navigation, Kontaktlinks oder Autoreninfos. Wie <code>&lt;header&gt;</code> kann eine Seite mehrere Footers haben (z.B. einen je Artikel). Screenreader behandeln diese als „contentinfo"-Landmarken.</div>
+            </div>
+            <div class="concept purple">
+              <div class="concept-name"><code>&lt;aside&gt;</code> — Ergänzende Inhalte</div>
+              <div class="concept-desc">Inhalte, die mit dem umgebenden Inhalt verwandt, aber nicht entscheidend für das Verständnis sind: Seitenleisten, Zitatboxen, verwandte Artikellisten oder Werbeanzeigen. Wird als „complementary"-Landmarke behandelt — Screenreader-Nutzer können ihn überspringen oder direkt ansteuern.</div>
+            </div>
+          </div>
+          <div class="callout warn">
+            <div class="lbl">⚠️ Häufiger Fehler</div>
+            <p><code>&lt;header&gt;</code> und <code>&lt;footer&gt;</code> nur zum Stylen des oberen und unteren Bereichs verwenden. Den Browser interessiert die semantische Rolle des Elements, nicht seine visuelle Position. Diese Elemente nur verwenden, wenn der Inhalt tatsächlich ein Header oder Footer im dokumentarischen Sinne ist.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Inhaltliche Gliederungselemente</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>&lt;article&gt;</code> — Eigenständiger, wiederverwendbarer Inhalt</div>
+              <div class="concept-desc">Unabhängig verteilbarer Inhalt — ein Blogbeitrag, ein Nachrichtenartikel, ein Produktkarte, ein Kommentar. Der Schlüsseltest: Würde dieser Inhalt auf einer anderen Seite noch Sinn ergeben? Wenn ja, ist es ein <code>&lt;article&gt;</code>.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>&lt;section&gt;</code> — Thematische Gruppe mit Überschrift</div>
+              <div class="concept-desc">Ein thematisch zusammengehöriger Inhaltsblock mit einer Überschrift. Sollte fast immer eine Überschrift (<code>&lt;h2&gt;</code>–<code>&lt;h6&gt;</code>) als erstes Kindelement haben. Ohne natürliche Überschrift für die Gruppe ist ein <code>&lt;div&gt;</code> wahrscheinlich besser geeignet. Denke an <code>&lt;section&gt;</code> als Kapitel in einem Dokument.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>&lt;figure&gt;</code> + <code>&lt;figcaption&gt;</code> — Medien mit Beschriftung</div>
+              <div class="concept-desc">Umschließt eigenständige Medien (Bilder, Diagramme, Code-Beispiele) mit optionaler Bildunterschrift. Die <code>&lt;figcaption&gt;</code> wird von Screenreadern vorgelesen und dem Figure-Element zugeordnet. Sie bietet Kontext auch dann, wenn das Bild nicht sichtbar oder geladen ist.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>&lt;time datetime=""&gt;</code> — Maschinenlesbares Datum oder Uhrzeit</div>
+              <div class="concept-desc">Menschenlesbarer Text kommt zwischen die Tags; das <code>datetime</code>-Attribut gibt das ISO 8601-Format für Maschinen an. Beispiel: <code>&lt;time datetime="2024-06-15"&gt;15. Juni 2024&lt;/time&gt;</code>. Ermöglicht Browser, Suchmaschinen und Hilfstechnologien, Datumsangaben unabhängig vom Anzeigeformat korrekt zu interpretieren.</div>
+            </div>
+          </div>
+          <table class="ref-table">
+            <thead><tr><th>Wähle dieses</th><th>Wenn der Inhalt…</th><th>Nicht das</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">&lt;article&gt;</td><td>Eigenständig — funktioniert ohne Kontext</td><td class="mono">&lt;div class="article"&gt;</td></tr>
+              <tr><td class="mono">&lt;section&gt;</td><td>Thematische Gruppe mit sichtbarer Überschrift</td><td class="mono">&lt;div class="section"&gt;</td></tr>
+              <tr><td class="mono">&lt;aside&gt;</td><td>Ergänzend, aber für das Verständnis nicht nötig</td><td class="mono">&lt;div class="sidebar"&gt;</td></tr>
+              <tr><td class="mono">&lt;figure&gt;</td><td>Medien + Beschriftung (Bild, Diagramm, Code)</td><td class="mono">&lt;div class="image-box"&gt;</td></tr>
+              <tr><td class="mono">&lt;div&gt;</td><td>Keine semantische Bedeutung — reines Layout</td><td>Alles oben, wenn es passt</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🌍 Anwendungsbeispiel — Von Div-Suppe zu semantischem HTML</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout tip">
+            <div class="lbl">✅ Die Transformation</div>
+            <p>Die beiden Codeblöcke unten erzeugen visuell identische Seiten. Die semantische Version gibt jedem Element eine bedeutungsvolle Rolle, die Maschinen, Screenreader und zukünftige Entwickler verstehen können.</p>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML — Vorher (Div-Suppe)</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">kopieren</button>
+            </div>
+            <div class="code-body"><span class="cm">&lt;!-- ❌ Keine semantische Bedeutung — nur Divs --&gt;</span>
+<span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"header"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"logo"</span><span class="kw">&gt;</span>Meine Seite<span class="kw">&lt;/div&gt;</span>
+  <span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"nav"</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;div&gt;&lt;a</span> <span class="str">href=</span><span class="str">"/"</span><span class="kw">&gt;</span>Start<span class="kw">&lt;/a&gt;&lt;/div&gt;</span>
+    <span class="kw">&lt;div&gt;&lt;a</span> <span class="str">href=</span><span class="str">"/ueber-uns"</span><span class="kw">&gt;</span>Über uns<span class="kw">&lt;/a&gt;&lt;/div&gt;</span>
+  <span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"main"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"artikel"</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"titel"</span><span class="kw">&gt;</span>Artikeltitel<span class="kw">&lt;/div&gt;</span>
+    <span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"inhalt"</span><span class="kw">&gt;</span>Absatztext...<span class="kw">&lt;/div&gt;</span>
+  <span class="kw">&lt;/div&gt;</span>
+  <span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"sidebar"</span><span class="kw">&gt;</span>Ähnliche Beiträge<span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;div</span> <span class="str">class=</span><span class="str">"footer"</span><span class="kw">&gt;</span>Copyright 2024<span class="kw">&lt;/div&gt;</span></div>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML — Nachher (semantisch)</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">kopieren</button>
+            </div>
+            <div class="code-body"><span class="cm">&lt;!-- ✅ Bedeutung integriert — kein class="header" nötig --&gt;</span>
+<span class="kw">&lt;header&gt;</span>
+  <span class="kw">&lt;a</span> <span class="str">href=</span><span class="str">"/"</span> <span class="str">class=</span><span class="str">"logo"</span><span class="kw">&gt;</span>Meine Seite<span class="kw">&lt;/a&gt;</span>
+  <span class="kw">&lt;nav&gt;</span>
+    <span class="kw">&lt;ul&gt;</span>
+      <span class="kw">&lt;li&gt;&lt;a</span> <span class="str">href=</span><span class="str">"/"</span><span class="kw">&gt;</span>Start<span class="kw">&lt;/a&gt;&lt;/li&gt;</span>
+      <span class="kw">&lt;li&gt;&lt;a</span> <span class="str">href=</span><span class="str">"/ueber-uns"</span><span class="kw">&gt;</span>Über uns<span class="kw">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="kw">&lt;/ul&gt;</span>
+  <span class="kw">&lt;/nav&gt;</span>
+<span class="kw">&lt;/header&gt;</span>
+<span class="kw">&lt;main&gt;</span>
+  <span class="kw">&lt;article&gt;</span>
+    <span class="kw">&lt;h1&gt;</span>Artikeltitel<span class="kw">&lt;/h1&gt;</span>
+    <span class="kw">&lt;p&gt;</span>Absatztext...<span class="kw">&lt;/p&gt;</span>
+  <span class="kw">&lt;/article&gt;</span>
+  <span class="kw">&lt;aside&gt;</span>Ähnliche Beiträge<span class="kw">&lt;/aside&gt;</span>
+<span class="kw">&lt;/main&gt;</span>
+<span class="kw">&lt;footer&gt;</span>Copyright 2024<span class="kw">&lt;/footer&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LEKTION 2: Barrierefreiheitsgrundlagen -->
+  <div class="section">
+    <div class="section-label">Lektion 2 · ~30 Min.</div>
+    <h2>Barrierefreiheitsgrundlagen — HTML für alle</h2>
+    <p class="section-intro">Etwa 15 % der Weltbevölkerung hat eine Form von Behinderung. Barrierefreiheit im Web stellt sicher, dass deine Seiten für Nur-Tastatur-Nutzer, Screenreader-Nutzer und Menschen mit visuellen, motorischen oder kognitiven Unterschieden funktionieren. Die meisten Barrierefreiheits-Gewinne in HTML sind kostenlos — sie kommen aus der Wahl des richtigen Elements, gutem Alternativtext und logischer Struktur.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>⚡ Warum Barrierefreiheit wichtig ist</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout interview">
+            <div class="lbl">⚓ Kernaussage</div>
+            <p>Barrierefreiheit ist kein Feature, das man am Ende hinzufügt — sie ist ein Qualitätsindikator für dein HTML. Code, der barrierefrei ist, ist auch wartbarer, SEO-freundlicher und robuster. In vielen Ländern (EU, USA, UK) ist barrierefreier Webinhalt für öffentlich zugängliche Websites gesetzlich vorgeschrieben. Beginne mit gutem HTML und die meiste Arbeit ist bereits erledigt.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Alt-Text — Bilder brauchen Worte</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name">Informationsbilder — die Information beschreiben, nicht die Pixel</div>
+              <div class="concept-desc">Alt-Text soll dieselbe Information vermitteln, die das Bild vermittelt. Für ein Diagramm: <code>alt="Balkendiagramm: Monatsumsatz stieg von 40 T€ im Januar auf 65 T€ im Juni."</code> — nicht „Diagramm", nicht „Bild", nicht den Dateinamen.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name">Dekorative Bilder — leeres <code>alt=""</code> verwenden</div>
+              <div class="concept-desc">Rein dekorative Bilder (Trennlinien, Hintergrundtexturen, Stockfotos ohne Informationswert) erhalten <code>alt=""</code>. Screenreader überspringen sie dann lautlos. <strong>Niemals das <code>alt</code>-Attribut ganz weglassen</strong> — ohne es liest der Screenreader den Dateinamen vor, was nutzlos und störend ist.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name">Funktionale Bilder (Icon-Buttons) — die Aktion beschreiben</div>
+              <div class="concept-desc">Wenn ein Bild als Button oder Link dient, soll der Alt-Text beschreiben, was der Klick bewirkt — nicht wie das Bild aussieht. <code>alt="Suche"</code> für ein Lupensymbol, nicht <code>alt="Lupe"</code>. <code>alt="Schließen"</code> für ein ×-Symbol, nicht <code>alt="x"</code>.</div>
+            </div>
+          </div>
+          <div class="callout warn">
+            <div class="lbl">⚠️ Häufiger Fehler</div>
+            <p>Redundanten Alt-Text wie „Foto eines Hundes" oder „Bild zeigt ein Balkendiagramm" schreiben. Screenreader kündigen den Elementtyp bereits an. Schreibe einfach: „Goldener Retriever sitzt in Herbstlaub" oder „Balkendiagramm: Q4-Umsatz nach Region".</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Überschriftenhierarchie — Die Gliederungsregel</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name">Nur eine <code>&lt;h1&gt;</code> pro Seite — der Dokumententitel</div>
+              <div class="concept-desc">Die <code>&lt;h1&gt;</code> sollte die einzelne wichtigste Überschrift der Seite sein — üblicherweise der Seiten- oder Artikeltitel. Mehrere <code>&lt;h1&gt;</code>-Elemente verwirren sowohl Hilfstechnologien als auch Suchmaschinen darüber, worum es auf der Seite eigentlich geht.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name">Überschriftebenen niemals überspringen</div>
+              <div class="concept-desc">Von <code>&lt;h1&gt;</code> zu <code>&lt;h3&gt;</code> ohne <code>&lt;h2&gt;</code> dazwischen ist ein struktureller Fehler. Screenreader-Nutzer navigieren Seiten per Tastenkürzel durch Überschriften — eine übersprungene Ebene bricht ihr mentales Modell der Seitenstruktur. Denke an Überschriften wie eine Gliederung: H1 → H2 → H3, nicht H1 → H3.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name">Überschriften nach Struktur wählen, nicht nach Größe</div>
+              <div class="concept-desc">Der häufigste Fehler: eine Überschriftenebene wählen, weil sie standardmäßig groß aussieht. Verwende CSS, um die visuelle Größe zu ändern. Wähle die Überschriftenebene ausschließlich nach der Dokumenthierarchie. <code>&lt;h2&gt;</code> bedeutet „ein Abschnitt unter dem Seitentitel" — unabhängig vom gewünschten Aussehen.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 ARIA — Wenn natives HTML nicht ausreicht</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout tip">
+            <div class="lbl">✅ Die erste ARIA-Regel</div>
+            <p>Die erste Regel von ARIA lautet: <strong>kein ARIA verwenden</strong> — stattdessen native HTML-Elemente benutzen. Ein <code>&lt;input type="checkbox"&gt;</code> ist immer besser als <code>&lt;div role="checkbox"&gt;</code>. Native Elemente haben eingebautes Tastaturverhalten, Fokusmanagement und Barrierefreiheits-Ankündigungen — kostenlos. ARIA ist ein Reparaturset für Situationen, in denen natives HTML die richtige Semantik nicht ausdrücken kann.</p>
+          </div>
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>aria-label</code> — Fügt ein unsichtbares Textlabel hinzu</div>
+              <div class="concept-desc">Verwenden, wenn kein sichtbarer Textlabel für ein Steuerelement vorhanden ist. Häufiger Fall: Icon-only-Button. <code>&lt;button aria-label="Modal schließen"&gt;✕&lt;/button&gt;</code> — der Screenreader kündigt „Modal schließen Schaltfläche" an, obwohl der sichtbare Inhalt nur „✕" ist.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>aria-describedby</code> — Verweist auf ein Beschreibungselement</div>
+              <div class="concept-desc">Verknüpft ein Element mit einer längeren Beschreibung an anderer Stelle auf der Seite. <code>&lt;input aria-describedby="pw-hinweis"&gt;</code> mit <code>&lt;span id="pw-hinweis"&gt;Mindestens 8 Zeichen&lt;/span&gt;</code>. Screenreader lesen Label und Beschreibung vor, wenn das Eingabefeld fokussiert wird.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>role</code> — Überschreibt die semantische Rolle eines Elements</div>
+              <div class="concept-desc">Teilt der Hilfstechnologie mit, was für ein Widget-Typ ein Element ist. <code>role="alert"</code> lässt einen Div dynamisch eingefügten Inhalt sofort ankündigen. <code>role="status"</code> kündigt ihn höflich an. Nur einsetzen, wenn kein semantisches HTML-Element passt und das Tastatur- und Fokusverhalten korrekt implementiert ist.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ÜBUNGSFRAGEN -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Klicke eine Frage an, um sie zu öffnen</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Was ist semantisches HTML und warum ist es wichtig?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Stell dir vor, du gibst jemandem ein Dokument, aus dem alle Formatierungen entfernt wurden — kein Fett, keine Überschriften, nur Text in einem einzigen Block. Du kannst es noch lesen, aber Abschnitte zu finden ist schwierig und die Struktur ist unsichtbar. Semantisches HTML stellt diese Struktur in einer Form wieder her, die Maschinen lesen können.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Semantisches HTML ist die Praxis, HTML-Elemente entsprechend ihrer <strong>beabsichtigten Bedeutung</strong> zu verwenden — nicht wegen ihres standardmäßigen visuellen Erscheinungsbilds.<br><br>
+          Ein <code>&lt;div&gt;</code> hat keine inhärente Bedeutung. Ein <code>&lt;nav&gt;</code> sagt jedem Browser, Screenreader und Suchmaschinen-Crawler: „Das ist ein Navigationsbereich." Ein <code>&lt;time datetime="2024-06-15"&gt;</code> sagt: „Dieser Text repräsentiert ein Datum, hier ist die maschinenlesbare Version."<br><br>
+          Es ist aus drei Gründen wichtig: <strong>Barrierefreiheit</strong> (Screenreader erstellen Navigationsmenüs aus Landmarken und Überschriften), <strong>SEO</strong> (Suchmaschinen gewichten Inhalte in bedeutungsvollen Elementen unterschiedlich) und <strong>Wartbarkeit</strong> (Code-Absicht ist selbstdokumentierend).
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Semantisch = Elemente für ihre <em>Bedeutung</em> verwenden, nicht für ihre visuelle Ausgabe.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Vorteile: Barrierefreiheit, SEO und selbstdokumentierender Code.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Ein <code>&lt;div&gt;</code> ist die richtige Wahl nur, wenn kein semantisches Element passt.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Wann solltest du <code>&lt;article&gt;</code>, <code>&lt;section&gt;</code> oder <code>&lt;div&gt;</code> verwenden?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Entscheidungsbaum</div>
+      <div class="strategy-text">„Würde dieser Inhalt auf einer ganz anderen Seite noch Sinn ergeben?" Ja → <code>&lt;article&gt;</code>. „Hat diese Inhaltsgruppe ein einziges Thema und eine Überschrift?" Ja → <code>&lt;section&gt;</code>. „Ist das nur ein Stil- oder Layout-Wrapper ohne bedeutungsvolle Gruppierung?" Ja → <code>&lt;div&gt;</code>.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <strong><code>&lt;article&gt;</code></strong> — eigenständiger, unabhängig verteilbarer Inhalt. Beispiele: Blogbeitrag, Nachrichtenartikel, Produktkarte, Nutzerkommentar. Der Schlüsseltest: Macht er ohne Kontext Sinn?<br><br>
+          <strong><code>&lt;section&gt;</code></strong> — eine thematische Gruppe zusammengehöriger Inhalte mit einer Überschrift. Beispiele: „Über uns"-Bereich einer Homepage, „Kommentare"-Abschnitt eines Artikels, Kapitel in einem langen Dokument. Abschnitte stehen nicht so eigenständig wie Artikel.<br><br>
+          <strong><code>&lt;div&gt;</code></strong> — ein generischer Container ohne semantische Bedeutung. Die richtige Wahl, wenn du einen Wrapper rein für CSS-Layout oder JavaScript-Targeting brauchst und keines der semantischen Elemente passt.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>&lt;article&gt;</code>: eigenständig, könnte auf einer anderen Seite stehen.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>&lt;section&gt;</code>: thematische Gruppe mit Überschrift — Teil eines größeren Ganzen.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>&lt;div&gt;</code>: reiner Layout-Wrapper — keine inhärente Bedeutung.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Was macht Alt-Text gut oder schlecht?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Stell dir vor, du beschreibst die Seite jemandem am Telefon. Du würdest nicht sagen: „Hier ist ein Bild." Du würdest sagen, was das Bild zeigt und warum es wichtig ist. Das ist Alt-Text — ein gesprochenes Äquivalent des visuellen Inhalts.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <strong>Guter Alt-Text</strong> beschreibt die Information, die das Bild vermittelt: <code>alt="Balkendiagramm: Q3-Umsatz 120 T€, +22 % gegenüber Q2"</code>. Er ist prägnant, spezifisch und kontextuell.<br><br>
+          <strong>Schlechter Alt-Text</strong>: <code>alt="Bild"</code>, <code>alt="Foto"</code>, <code>alt="Diagramm"</code> oder ein Dateiname wie <code>alt="umsatz-q3-2024-final.png"</code>. Diese vermitteln nichts.<br><br>
+          <strong>Dekorative Bilder</strong> ohne Informationswert erhalten <code>alt=""</code> — ein leerer String weist Screenreader an, sie zu überspringen. Das <code>alt</code>-Attribut <strong>niemals ganz weglassen</strong> — der Browser gibt dann den Dateinamen aus.<br><br>
+          <strong>Funktionale Bilder</strong> (Icon-Buttons, verlinkte Bilder): Alt-Text = die Aktion, nicht das Icon. <code>alt="Suche"</code>, nicht <code>alt="Lupe"</code>.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Information beschreiben, nicht Pixel: „Was kommuniziert dieses Bild?" — nicht „Wie sieht es aus?"</div>
+        <div class="key-point"><div class="key-point-dot"></div>Dekorativ: <code>alt=""</code> — das Attribut ganz weglassen ist etwas anderes (und schlechter).</div>
+        <div class="key-point"><div class="key-point-dot"></div>Icon-Buttons: die Aktion beschreiben (<code>alt="Schließen"</code>), nicht das Icon (<code>alt="×"</code>).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Was macht ARIA und wann brauchst du es wirklich?</span>
+      <span class="q-badges"><span class="badge badge-common">● Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">ARIA ist wie Untertitel für Inhalte, die bereits vorhanden sind — es ändert nichts am Bildschirm, aber fügt eine parallele Beschreibung für Hilfstechnologien hinzu.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          ARIA (Accessible Rich Internet Applications) ist eine Spezifikation von Attributen, die semantische Rollen, Zustände und Eigenschaften zu HTML-Elementen hinzufügen. Es überbrückt die Lücke zwischen HTML und den Informationen, die Hilfstechnologien benötigen.<br><br>
+          <strong>Wann du es brauchst:</strong> beim Erstellen benutzerdefinierter interaktiver Widgets ohne native HTML-Entsprechung — ein eigenes Dropdown, ein Tab-Panel, ein Akkordeon, eine Live-Region für dynamische Inhalte.<br><br>
+          <strong>Wann du es nicht brauchst:</strong> wenn ein natives HTML-Element bereits existiert. <code>&lt;button&gt;</code> statt <code>&lt;div role="button"&gt;</code>. <code>&lt;input type="checkbox"&gt;</code> statt <code>&lt;div role="checkbox"&gt;</code>. Native Elemente sind immer besser — sie bringen eingebautes Tastaturverhalten, Fokusmanagement und korrekte Ankündigungen kostenlos mit.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>ARIA fügt semantische Informationen hinzu, die natives HTML allein nicht ausdrücken kann.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Erste ARIA-Regel: es nicht verwenden — stattdessen natives HTML benutzen, wenn möglich.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Einsetzen bei eigenen Widgets (Tabs, Akkordeons, Live-Regionen) ohne native Entsprechung.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Warum müssen Überschriften einer logischen Reihenfolge folgen?</span>
+      <span class="q-badges"><span class="badge badge-common">● Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Überschriften sind für eine Webseite das, was ein Inhaltsverzeichnis für ein Buch ist. Wenn das Inhaltsverzeichnis von Kapitel 1 zu Kapitel 3 springen würde ohne Kapitel 2, wüsstest du, dass etwas nicht stimmt. Eine übersprungene Überschriftenebene sendet dasselbe Signal.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Screenreader-Nutzer navigieren Seiten per Tastenkürzel durch Überschriften — sie hören eine Liste von Überschriften und springen zum gewünschten Abschnitt, genau wie beim Überfliegen eines Inhaltsverzeichnisses. Eine fehlerhafte Hierarchie (h1 → h3, h2 übersprungen) erzeugt verwirrende Lücken in diesem mentalen Modell.<br><br>
+          Auch Suchmaschinen nutzen die Überschriftenhierarchie, um Seitenstruktur und thematische Relevanz zu verstehen. Eine einzelne <code>&lt;h1&gt;</code> pro Seite signalisiert das Hauptthema; <code>&lt;h2&gt;</code> signalisiert wichtige Abschnitte; <code>&lt;h3&gt;</code> Unterabschnitte davon.<br><br>
+          Die Überschriftenebene soll die <em>Dokumentgliederung</em> widerspiegeln — nicht die gewünschte Schriftgröße. Wenn eine Überschrift größer oder kleiner aussehen soll, ändere das mit CSS. Wähle niemals eine Überschriftenebene wegen ihres standardmäßigen visuellen Gewichts.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Überschriften sind Navigationsanker für Screenreader-Nutzer — fehlerhafte Reihenfolge bricht ihre Karte.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Eine <code>&lt;h1&gt;</code> pro Seite; niemals Ebenen überspringen (h1 → h2 → h3, nicht h1 → h3).</div>
+        <div class="key-point"><div class="key-point-dot"></div>Überschriftenebene = Dokumentstruktur. Visuelle Größe = CSS. Beides niemals verwechseln.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit Thema 5 fertig, wenn…</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du ein div-basiertes Layout in eine semantisch korrekte Seite mit <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;section&gt;</code> und <code>&lt;footer&gt;</code> umwandeln kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du korrekten Alt-Text für informative Bilder schreiben, <code>alt=""</code> für dekorative wählen und erklären kannst, warum das Weglassen des <code>alt</code>-Attributs das Schlechteste von beidem ist.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du verstehst, dass Überschriftenebenen Dokumentstruktur definieren — nicht visuelle Größe — und niemals Ebenen übersprungen werden dürfen.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du die erste ARIA-Regel kennst, zwei ARIA-Attribute (<code>aria-label</code>, <code>aria-describedby</code>) benennen kannst und weißt, wann du sie statt nativem HTML einsetzt.</div>
+  </div>
+
+</div><!-- /tab-de -->
+
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+</div><!-- /tab-ar -->
+
+</div><!-- /body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'lms_html_starter_05_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<script>
+function copyCode(btn) {
+  const body = btn.closest('.code-block').querySelector('.code-body');
+  const text = (body.innerText || body.textContent).replace(/\u00A0/g, ' ');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1800);
+  }).catch(() => { btn.textContent = 'failed'; setTimeout(() => { btn.textContent = 'copy'; }, 1500); });
+}
+updateProgress();
+guardLanguageTab('ar');
+</script>
+</body>
+</html>

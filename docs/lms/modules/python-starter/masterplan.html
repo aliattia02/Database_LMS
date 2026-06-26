@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Python Unaided Coding — Course Index</title>
+<title>Python Course — Masterplan</title>
 <link rel="stylesheet" href="../shared/theme.css"/>
 <style>
-/* ── Masterplan page-specific styles — copied verbatim from ref-masterplan.html ── */
+/* ── Masterplan page-specific styles — copy this block verbatim ── */
 
 .intro-text {
   color: var(--slate);
@@ -114,16 +114,11 @@
 .rank-bar-medium   { background: #d97706; }
 .rank-lbl { font-size: 11px; font-weight: 700; min-width: 90px; color: var(--amber-text); }
 
-.client-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.client-tag {
-  font-size: 11px; padding: 3px 10px; border-radius: 8px;
-  background: var(--white); border: 1px solid var(--amber-border);
-  color: var(--amber-text); font-weight: 600;
-}
 .decoder-note {
   font-size: 12.5px; color: var(--amber-text); line-height: 1.65; margin-bottom: 6px;
 }
 
+/* ── RTL overrides ── */
 [dir="rtl"] .course-card       { text-align: right; }
 [dir="rtl"] .course-open       { flex-direction: row-reverse; }
 [dir="rtl"] .grid-group-label  { flex-direction: row-reverse; }
@@ -136,16 +131,14 @@
 </head>
 <body>
 
-<!-- Masterplan = indexRoute, loaded inside the LMS shell — no .home-nav needed. -->
-
 <header class="header">
   <div class="header-inner">
-    <div class="header-meta">PYTHON UNAIDED CODING &mdash; Course Index</div>
-    <h1>Python Unaided Coding</h1>
+    <div class="header-meta">Python Course &mdash; Masterplan</div>
+    <h1>Python Starter Track</h1>
     <p class="header-sub">
-      Build the automaticity to write, read, and debug <code>Python</code> by hand —
-      no AI assist — so you're ready for live coding, code review, and the hospital
-      data integration work ahead.
+      A practical, no-fluff intro to Python — <code>syntax</code>, <code>data structures</code>,
+      and the habits you need before building backend services.
+      No prior programming required; basic terminal comfort assumed.
     </p>
   </div>
 </header>
@@ -161,7 +154,10 @@
 <main>
 <div class="body">
 
-<!-- ═══ ENGLISH TAB ═══ -->
+
+<!-- ═══════════════════════════════════════════════════════
+     ENGLISH TAB
+════════════════════════════════════════════════════════ -->
 <div id="tab-en" class="tab-content active">
 
   <div class="decoder-block">
@@ -174,162 +170,157 @@
       <div class="decoder-section">
         <h3>Must-Know Skills</h3>
         <div class="must-pills">
-          <span class="must-pill">Manual function writing</span>
-          <span class="must-pill">Error tracing</span>
-          <span class="must-pill">Exception handling patterns</span>
-          <span class="must-pill">Print/breakpoint debugging</span>
+          <span class="must-pill">Variable assignment &amp; types</span>
+          <span class="must-pill">Conditionals &amp; loops</span>
+          <span class="must-pill">def / return / scope</span>
+          <span class="must-pill">Lists, dicts &amp; sets</span>
+          <span class="must-pill">import &amp; file I/O</span>
         </div>
         <h3 style="margin-top:10px">Nice-to-Have</h3>
         <div class="must-pills">
           <span class="nice-pill">List comprehensions</span>
-          <span class="nice-pill">Generators &amp; iterators</span>
+          <span class="nice-pill">*args / **kwargs</span>
           <span class="nice-pill">Context managers</span>
+          <span class="nice-pill">f-string formatting</span>
         </div>
       </div>
 
       <div class="decoder-section">
         <h3>Topic Priority Ranking</h3>
         <div class="rank-row">
-          <span class="rank-label">Reading Code &amp; Spotting Bugs</span>
+          <span class="rank-label">Variables &amp; Data Types — foundation of everything</span>
           <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
           <span class="rank-lbl">🔴 Critical</span>
         </div>
         <div class="rank-row">
-          <span class="rank-label">Exception Handling</span>
+          <span class="rank-label">Control Flow — logic that drives every script</span>
           <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
           <span class="rank-lbl">🔴 Critical</span>
         </div>
         <div class="rank-row">
-          <span class="rank-label">Debugging: Prints &amp; Breakpoints</span>
+          <span class="rank-label">Functions — reusability and scope management</span>
           <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
           <span class="rank-lbl">🟠 High</span>
         </div>
         <div class="rank-row">
-          <span class="rank-label">Refactor a Real Module</span>
+          <span class="rank-label">Data Structures — pick the right tool for the job</span>
           <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
           <span class="rank-lbl">🟠 High</span>
         </div>
         <div class="rank-row">
-          <span class="rank-label">Manual Function Writing</span>
+          <span class="rank-label">Modules &amp; File I/O — tying scripts into real systems</span>
           <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-medium" style="width:50%"></div></div>
           <span class="rank-lbl">🟡 Medium</span>
         </div>
       </div>
 
       <div class="decoder-section">
-        <h3>Where This Shows Up</h3>
-        <div class="client-tags">
-          <span class="client-tag">Live coding interviews</span>
-          <span class="client-tag">Code review without AI</span>
-          <span class="client-tag">Hospital data integration: HL7 / FHIR / PACS</span>
-        </div>
+        <p class="decoder-note">
+          💡 <strong>Success criteria:</strong> After completing this track you should be able to
+          write a script with variables, conditionals, and loops; define functions with proper
+          arguments and scope; choose the right data structure for a given problem; and safely
+          import modules and read/write files.
+        </p>
       </div>
 
     </div>
   </div>
 
   <p class="intro-text">
-    New here? Start with <strong>General Overview</strong> for the why, then
-    <strong>Mind Map</strong> to see how the five phases connect. The phases build on
-    each other — work through them in order — but prioritise
-    <strong>Reading Code &amp; Spotting Bugs</strong> and <strong>Exception Handling</strong>
-    first if you're short on time before the hospital integration work starts.
+    New here? Start with <strong>General Overview</strong> to understand the scope,
+    then <strong>Mind Map</strong> to see how everything connects.
+    Work through the five topic lessons in order — both CRITICAL topics
+    (<strong>Variables &amp; Data Types</strong> and <strong>Control Flow</strong>)
+    appear first because every later topic builds on them.
   </p>
 
   <div class="grid-group-label">Orientation — start here</div>
   <div class="course-grid">
 
-    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/general.html')">
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/general.html')">
       <div class="course-card-top">
         <span class="course-num">00A</span>
         <span class="course-title">General Overview</span>
       </div>
       <span class="course-subtitle">
-        Competency question: Can you explain what "unaided coding" means and why it matters
-        before you touch hospital data?
+        What you already know, what's new here, and the success criteria for the full track.
       </span>
       <span class="course-open">Open lesson →</span>
     </button>
 
-    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic0-mindmap.html')">
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/topic0-mindmap.html')">
       <div class="course-card-top">
         <span class="course-num">00B</span>
         <span class="course-title">Mind Map</span>
       </div>
       <span class="course-subtitle">
-        Competency question: Can you see how writing, reading, debugging, and exception
-        handling reinforce each other?
+        Interactive map of the full Python topic ecosystem — tap any concept to see why it matters.
       </span>
       <span class="course-open">Open lesson →</span>
     </button>
 
   </div>
 
-  <div class="grid-group-label">Study Phases — 5 deep dives</div>
+  <div class="grid-group-label">Topic lessons — 5 deep dives</div>
   <div class="course-grid">
 
-    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic1-manual-functions.html')">
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/topic1-variables-types.html')">
       <div class="course-card-top">
         <span class="course-num">01</span>
-        <span class="course-title">Manual Function Writing</span>
+        <span class="course-title">Variables &amp; Data Types</span>
       </div>
       <span class="course-subtitle">
-        Competency question: Can you write a 5–10 line function from scratch — correct
-        types, edge cases, no AI?
+        Can you assign variables, name the six built-in scalar types, and safely convert between them?
       </span>
-      <span class="weight-badge w-medium">📘 MEDIUM · ~4h</span>
+      <span class="weight-badge w-critical">⚡ CRITICAL · ~10h</span>
       <span class="course-open">Open lesson →</span>
     </button>
 
-    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic2-reading-bugs.html')">
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/topic2-control-flow.html')">
       <div class="course-card-top">
         <span class="course-num">02</span>
-        <span class="course-title">Reading Code &amp; Spotting Bugs — Critical Topic</span>
+        <span class="course-title">Control Flow</span>
       </div>
       <span class="course-subtitle">
-        Competency question: Can you read a stack trace, trace it to its source, and
-        explain why the bug happens?
+        Can you write <code>if/elif/else</code>, <code>for</code>, and <code>while</code> loops that handle edge cases correctly?
       </span>
-      <span class="weight-badge w-critical">⚡ CRITICAL · ~8h</span>
+      <span class="weight-badge w-critical">⚡ CRITICAL · ~10h</span>
       <span class="course-open">Open lesson →</span>
     </button>
 
-    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic3-debugging.html')">
+    <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic3-functions.html')">
       <div class="course-card-top">
         <span class="course-num">03</span>
-        <span class="course-title">Debugging: Prints &amp; Breakpoints</span>
+        <span class="course-title">Functions</span>
       </div>
       <span class="course-subtitle">
-        Competency question: Can you debug a "runs but wrong" function with print
-        statements, then again with PyCharm breakpoints?
-      </span>
-      <span class="weight-badge w-high">🔥 HIGH · ~4h</span>
-      <span class="course-open">Open lesson →</span>
-    </button>
-
-    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic4-exceptions.html')">
-      <div class="course-card-top">
-        <span class="course-num">04</span>
-        <span class="course-title">Exception Handling — Critical Topic</span>
-      </div>
-      <span class="course-subtitle">
-        Competency question: Can you catch a specific exception, log it, and fall back
-        gracefully instead of crashing?
-      </span>
-      <span class="weight-badge w-critical">⚡ CRITICAL · ~4h</span>
-      <span class="course-open">Open lesson →</span>
-    </button>
-
-    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic5-refactor.html')">
-      <div class="course-card-top">
-        <span class="course-num">05</span>
-        <span class="course-title">Refactor a Real Module</span>
-      </div>
-      <span class="course-subtitle">
-        Competency question: Can you port your own module logic from past work into clean,
-        typed, tested Python — unaided?
+        Can you define a function with positional &amp; keyword args, return a value, and explain LEGB scope?
       </span>
       <span class="weight-badge w-high">🔥 HIGH · ~8h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic4-data-structures.html')">
+      <div class="course-card-top">
+        <span class="course-num">04</span>
+        <span class="course-title">Data Structures</span>
+      </div>
+      <span class="course-subtitle">
+        Can you pick between a list, tuple, dict, and set, and justify your choice for a given problem?
+      </span>
+      <span class="weight-badge w-high">🔥 HIGH · ~8h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic5-modules-file-io.html')">
+      <div class="course-card-top">
+        <span class="course-num">05</span>
+        <span class="course-title">Modules &amp; File I/O</span>
+      </div>
+      <span class="course-subtitle">
+        Can you import a standard-library module and safely open, read, write, and close a file?
+      </span>
+      <span class="weight-badge w-medium">📘 MEDIUM · ~5h</span>
       <span class="course-open">Open lesson →</span>
     </button>
 
@@ -338,7 +329,9 @@
 </div><!-- /tab-en -->
 
 
-<!-- ═══ GERMAN TAB ═══ -->
+<!-- ═══════════════════════════════════════════════════════
+     GERMAN TAB
+════════════════════════════════════════════════════════ -->
 <div id="tab-de" class="tab-content">
 
   <div class="decoder-block">
@@ -351,162 +344,157 @@
       <div class="decoder-section">
         <h3>Muss-Kenntnisse</h3>
         <div class="must-pills">
-          <span class="must-pill">Funktionen manuell schreiben</span>
-          <span class="must-pill">Fehler zurückverfolgen</span>
-          <span class="must-pill">Exception-Handling-Muster</span>
-          <span class="must-pill">Debugging mit Print/Breakpoint</span>
+          <span class="must-pill">Variablen &amp; Typen</span>
+          <span class="must-pill">Bedingungen &amp; Schleifen</span>
+          <span class="must-pill">def / return / Scope</span>
+          <span class="must-pill">Listen, Dicts &amp; Sets</span>
+          <span class="must-pill">import &amp; Datei-I/O</span>
         </div>
-        <h3 style="margin-top:10px">Nice-to-Have</h3>
+        <h3 style="margin-top:10px">Wäre ein Plus</h3>
         <div class="must-pills">
           <span class="nice-pill">List Comprehensions</span>
-          <span class="nice-pill">Generatoren &amp; Iteratoren</span>
+          <span class="nice-pill">*args / **kwargs</span>
           <span class="nice-pill">Context Manager</span>
+          <span class="nice-pill">f-String-Formatierung</span>
         </div>
       </div>
 
       <div class="decoder-section">
-        <h3>Themen-Priorität</h3>
+        <h3>Themen-Prioritätsranking</h3>
         <div class="rank-row">
-          <span class="rank-label">Code lesen &amp; Bugs finden</span>
+          <span class="rank-label">Variablen &amp; Datentypen — Basis für alles andere</span>
           <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
           <span class="rank-lbl">🔴 Kritisch</span>
         </div>
         <div class="rank-row">
-          <span class="rank-label">Exception Handling</span>
+          <span class="rank-label">Kontrollfluss — Logik, die jedes Skript antreibt</span>
           <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
           <span class="rank-lbl">🔴 Kritisch</span>
         </div>
         <div class="rank-row">
-          <span class="rank-label">Debugging: Print &amp; Breakpoints</span>
+          <span class="rank-label">Funktionen — Wiederverwendbarkeit und Scope</span>
           <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
           <span class="rank-lbl">🟠 Hoch</span>
         </div>
         <div class="rank-row">
-          <span class="rank-label">Eigenes Modul refaktorieren</span>
+          <span class="rank-label">Datenstrukturen — das richtige Werkzeug wählen</span>
           <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
           <span class="rank-lbl">🟠 Hoch</span>
         </div>
         <div class="rank-row">
-          <span class="rank-label">Funktionen manuell schreiben</span>
+          <span class="rank-label">Module &amp; Datei-I/O — Skripte in echte Systeme einbinden</span>
           <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-medium" style="width:50%"></div></div>
           <span class="rank-lbl">🟡 Mittel</span>
         </div>
       </div>
 
       <div class="decoder-section">
-        <h3>Wo das wichtig wird</h3>
-        <div class="client-tags">
-          <span class="client-tag">Live-Coding-Interviews</span>
-          <span class="client-tag">Code-Review ohne KI</span>
-          <span class="client-tag">Krankenhaus-Datenintegration: HL7-/FHIR-/PACS</span>
-        </div>
+        <p class="decoder-note">
+          💡 <strong>Erfolgskriterien:</strong> Nach diesem Track kannst du ein Skript mit
+          Variablen, Bedingungen und Schleifen schreiben, Funktionen mit Argumenten und
+          Scope definieren, die richtige Datenstruktur für ein Problem wählen
+          sowie Module importieren und Dateien sicher lesen und schreiben.
+        </p>
       </div>
 
     </div>
   </div>
 
   <p class="intro-text">
-    Zum ersten Mal hier? Beginne mit dem <strong>Allgemeinen Überblick</strong> für das
-    „Warum", dann mit der <strong>Mindmap</strong>, um zu sehen, wie die fünf Phasen
-    zusammenhängen. Die Phasen bauen aufeinander auf — arbeite sie der Reihe nach durch —
-    priorisiere aber <strong>Code lesen &amp; Bugs finden</strong> und
-    <strong>Exception Handling</strong>, falls die Zeit vor Beginn der Krankenhaus-Integration knapp ist.
+    Neu hier? Starte mit dem <strong>Allgemeinen Überblick</strong>, um den Umfang zu verstehen,
+    dann die <strong>Mindmap</strong>, um alle Zusammenhänge zu sehen.
+    Arbeite die fünf Themenmodule der Reihe nach durch — die KRITISCHEN Themen
+    (<strong>Variablen &amp; Datentypen</strong> und <strong>Kontrollfluss</strong>)
+    kommen zuerst, da alle späteren Lektionen auf ihnen aufbauen.
   </p>
 
-  <div class="grid-group-label">Orientierung — hier anfangen</div>
+  <div class="grid-group-label">Orientierung — hier beginnen</div>
   <div class="course-grid">
 
-    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/general.html')">
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/general.html')">
       <div class="course-card-top">
         <span class="course-num">00A</span>
         <span class="course-title">Allgemeiner Überblick</span>
       </div>
       <span class="course-subtitle">
-        Kompetenzfrage: Kannst du erklären, was „eigenständiges Coden" bedeutet und warum
-        es wichtig ist, bevor du Krankenhausdaten berührst?
+        Was du bereits weißt, was neu ist und die Erfolgskriterien für den gesamten Track.
       </span>
       <span class="course-open">Lektion öffnen →</span>
     </button>
 
-    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic0-mindmap.html')">
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/topic0-mindmap.html')">
       <div class="course-card-top">
         <span class="course-num">00B</span>
         <span class="course-title">Mindmap</span>
       </div>
       <span class="course-subtitle">
-        Kompetenzfrage: Siehst du, wie sich Schreiben, Lesen, Debuggen und Exception
-        Handling gegenseitig verstärken?
+        Interaktive Karte des gesamten Python-Ökosystems — tippe auf ein Konzept, um mehr zu erfahren.
       </span>
       <span class="course-open">Lektion öffnen →</span>
     </button>
 
   </div>
 
-  <div class="grid-group-label">Lernphasen — 5 Vertiefungen</div>
+  <div class="grid-group-label">Themenmodule — 5 Vertiefungen</div>
   <div class="course-grid">
 
-    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic1-manual-functions.html')">
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/topic1-variables-types.html')">
       <div class="course-card-top">
         <span class="course-num">01</span>
-        <span class="course-title">Funktionen manuell schreiben</span>
+        <span class="course-title">Variablen &amp; Datentypen</span>
       </div>
       <span class="course-subtitle">
-        Kompetenzfrage: Kannst du eine 5–10-zeilige Funktion von Grund auf schreiben —
-        korrekte Typen, Randfälle, ohne KI?
+        Kannst du Variablen zuweisen, die sechs skalaren Typen benennen und sicher zwischen ihnen konvertieren?
       </span>
-      <span class="weight-badge w-medium">📘 MITTEL · ~4 Std.</span>
+      <span class="weight-badge w-critical">⚡ KRITISCH · ~10h</span>
       <span class="course-open">Lektion öffnen →</span>
     </button>
 
-    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic2-reading-bugs.html')">
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/topic2-control-flow.html')">
       <div class="course-card-top">
         <span class="course-num">02</span>
-        <span class="course-title">Code lesen &amp; Bugs finden — kritisches Thema</span>
+        <span class="course-title">Kontrollfluss</span>
       </div>
       <span class="course-subtitle">
-        Kompetenzfrage: Kannst du einen Stacktrace lesen, ihn zur Quelle zurückverfolgen
-        und erklären, warum der Bug auftritt?
+        Kannst du <code>if/elif/else</code>, <code>for</code>- und <code>while</code>-Schleifen schreiben, die Randfälle korrekt behandeln?
       </span>
-      <span class="weight-badge w-critical">⚡ KRITISCH · ~8 Std.</span>
+      <span class="weight-badge w-critical">⚡ KRITISCH · ~10h</span>
       <span class="course-open">Lektion öffnen →</span>
     </button>
 
-    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic3-debugging.html')">
+    <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic3-functions.html')">
       <div class="course-card-top">
         <span class="course-num">03</span>
-        <span class="course-title">Debugging: Print &amp; Breakpoints</span>
+        <span class="course-title">Funktionen</span>
       </div>
       <span class="course-subtitle">
-        Kompetenzfrage: Kannst du eine „läuft, aber falsch"-Funktion mit Print-Statements
-        und danach mit PyCharm-Breakpoints debuggen?
+        Kannst du eine Funktion mit positionalen und keyword-Argumenten definieren und den LEGB-Scope erklären?
       </span>
-      <span class="weight-badge w-high">🔥 HOCH · ~4 Std.</span>
+      <span class="weight-badge w-high">🔥 HOCH · ~8h</span>
       <span class="course-open">Lektion öffnen →</span>
     </button>
 
-    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic4-exceptions.html')">
+    <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic4-data-structures.html')">
       <div class="course-card-top">
         <span class="course-num">04</span>
-        <span class="course-title">Exception Handling — kritisches Thema</span>
+        <span class="course-title">Datenstrukturen</span>
       </div>
       <span class="course-subtitle">
-        Kompetenzfrage: Kannst du eine konkrete Exception abfangen, loggen und sauber
-        zurückfallen, statt abzustürzen?
+        Kannst du zwischen Liste, Tupel, Dict und Set wählen und deine Wahl für ein konkretes Problem begründen?
       </span>
-      <span class="weight-badge w-critical">⚡ KRITISCH · ~4 Std.</span>
+      <span class="weight-badge w-high">🔥 HOCH · ~8h</span>
       <span class="course-open">Lektion öffnen →</span>
     </button>
 
-    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic5-refactor.html')">
+    <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic5-modules-file-io.html')">
       <div class="course-card-top">
         <span class="course-num">05</span>
-        <span class="course-title">Eigenes Modul refaktorieren</span>
+        <span class="course-title">Module &amp; Datei-I/O</span>
       </div>
       <span class="course-subtitle">
-        Kompetenzfrage: Kannst du deine eigene Modul-Logik aus früherer Arbeit in sauberes,
-        typisiertes, getestetes Python übertragen — ohne KI?
+        Kannst du ein Standardbibliotheksmodul importieren und eine Datei sicher öffnen, lesen, schreiben und schließen?
       </span>
-      <span class="weight-badge w-high">🔥 HOCH · ~8 Std.</span>
+      <span class="weight-badge w-medium">📘 MITTEL · ~5h</span>
       <span class="course-open">Lektion öffnen →</span>
     </button>
 
@@ -515,12 +503,14 @@
 </div><!-- /tab-de -->
 
 
-<!-- ═══ ARABIC TAB ═══ -->
+<!-- ═══════════════════════════════════════════════════════
+     ARABIC TAB
+════════════════════════════════════════════════════════ -->
 <div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
 
   <div class="decoder-block">
     <button class="decoder-trigger" onclick="toggleDecoder(this)">
-      <span class="decoder-trigger-label">⚑ دليل أولوية الموضوعات</span>
+      <span class="decoder-trigger-label">⚑ دليل أولويات الموضوعات</span>
       <span class="decoder-chevron">▾</span>
     </button>
     <div class="decoder-body">
@@ -528,158 +518,156 @@
       <div class="decoder-section">
         <h3>المهارات الأساسية المطلوبة</h3>
         <div class="must-pills">
-          <span class="must-pill">كتابة الدوال يدويًا</span>
-          <span class="must-pill">تتبّع الأخطاء</span>
-          <span class="must-pill">أنماط معالجة الاستثناءات</span>
-          <span class="must-pill">التصحيح بالطباعة ونقاط التوقف</span>
+          <span class="must-pill">المتغيرات والأنواع</span>
+          <span class="must-pill">الشروط والحلقات</span>
+          <span class="must-pill">def / return / النطاق</span>
+          <span class="must-pill">القوائم والقواميس والمجموعات</span>
+          <span class="must-pill">استيراد الوحدات وقراءة الملفات</span>
         </div>
         <h3 style="margin-top:10px">ميزة إضافية</h3>
         <div class="must-pills">
-          <span class="nice-pill">تعبيرات القوائم (List Comprehensions)</span>
-          <span class="nice-pill">المولّدات والمكرّرات</span>
-          <span class="nice-pill">مدراء السياق (Context Managers)</span>
+          <span class="nice-pill">تعبيرات القوائم المضغوطة</span>
+          <span class="nice-pill">*args / **kwargs</span>
+          <span class="nice-pill">مديرو السياق</span>
+          <span class="nice-pill">تنسيق f-string</span>
         </div>
       </div>
 
       <div class="decoder-section">
         <h3>ترتيب أولوية الموضوعات</h3>
         <div class="rank-row">
-          <span class="rank-label">قراءة الكود وتحديد الأخطاء</span>
+          <span class="rank-label">المتغيرات وأنواع البيانات — أساس كل شيء</span>
           <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
           <span class="rank-lbl">🔴 بالغ الأهمية</span>
         </div>
         <div class="rank-row">
-          <span class="rank-label">معالجة الاستثناءات</span>
+          <span class="rank-label">تدفق التحكم — المنطق الذي يُشغّل كل سكريبت</span>
           <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
           <span class="rank-lbl">🔴 بالغ الأهمية</span>
         </div>
         <div class="rank-row">
-          <span class="rank-label">التصحيح: الطباعة ونقاط التوقف</span>
+          <span class="rank-label">الدوال — إعادة الاستخدام وإدارة النطاق</span>
           <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
           <span class="rank-lbl">🟠 مرتفع</span>
         </div>
         <div class="rank-row">
-          <span class="rank-label">إعادة هيكلة وحدة حقيقية</span>
+          <span class="rank-label">هياكل البيانات — اختر الأداة المناسبة للمهمة</span>
           <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
           <span class="rank-lbl">🟠 مرتفع</span>
         </div>
         <div class="rank-row">
-          <span class="rank-label">كتابة الدوال يدويًا</span>
+          <span class="rank-label">الوحدات وقراءة/كتابة الملفات — ربط السكريبت بالأنظمة الحقيقية</span>
           <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-medium" style="width:50%"></div></div>
           <span class="rank-lbl">🟡 متوسط</span>
         </div>
       </div>
 
       <div class="decoder-section">
-        <h3>أين يظهر هذا في العمل</h3>
-        <div class="client-tags">
-          <span class="client-tag">مقابلات الترميز المباشر</span>
-          <span class="client-tag">مراجعة الكود بدون ذكاء اصطناعي</span>
-          <span class="client-tag">تكامل بيانات المستشفى: HL7 / FHIR / PACS</span>
-        </div>
+        <p class="decoder-note">
+          💡 <strong>معايير النجاح:</strong> بعد إكمال هذا المسار ستكون قادرًا على كتابة سكريبت
+          بمتغيرات وشروط وحلقات، وتعريف دوال بمعاملات صحيحة، واختيار هيكل البيانات المناسب،
+          واستيراد الوحدات وقراءة الملفات وكتابتها بأمان.
+        </p>
       </div>
 
     </div>
   </div>
 
   <p class="intro-text">
-    هل أنت هنا للمرة الأولى؟ ابدأ بـ<strong>النظرة العامة</strong> لفهم السبب، ثم
-    <strong>الخريطة الذهنية</strong> لترى كيف ترتبط المراحل الخمس ببعضها. تُبنى المراحل
-    فوق بعضها — اعمل عليها بالترتيب — لكن قدّم <strong>قراءة الكود وتحديد الأخطاء</strong>
-    و<strong>معالجة الاستثناءات</strong> إذا كان وقتك محدودًا قبل بدء عمل تكامل بيانات المستشفى.
+    هل أنت هنا للمرة الأولى؟ ابدأ بـ<strong>النظرة العامة</strong> لفهم نطاق المساق،
+    ثم <strong>الخريطة الذهنية</strong> لرؤية كيفية ترابط المفاهيم.
+    اعمل على الدروس الخمسة بالترتيب — الموضوعان البالغان الأهمية
+    (<strong>المتغيرات وأنواع البيانات</strong> و<strong>تدفق التحكم</strong>)
+    يأتيان أولًا لأن كل درس لاحق يبني عليهما.
   </p>
 
   <div class="grid-group-label">التوجيه — ابدأ من هنا</div>
   <div class="course-grid">
 
-    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/general.html')">
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/general.html')">
       <div class="course-card-top">
         <span class="course-num">00A</span>
         <span class="course-title">النظرة العامة</span>
       </div>
       <span class="course-subtitle">
-        سؤال الكفاءة: هل يمكنك شرح معنى "الترميز المستقل" وأهميته قبل التعامل مع بيانات المستشفى؟
+        ما تعرفه بالفعل، ما الجديد هنا، ومعايير النجاح للمسار الكامل.
       </span>
       <span class="course-open">فتح الدرس ←</span>
     </button>
 
-    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic0-mindmap.html')">
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/topic0-mindmap.html')">
       <div class="course-card-top">
         <span class="course-num">00B</span>
         <span class="course-title">الخريطة الذهنية</span>
       </div>
       <span class="course-subtitle">
-        سؤال الكفاءة: هل ترى كيف يعزز الكتابة والقراءة والتصحيح ومعالجة الاستثناءات بعضها بعضًا؟
+        خريطة تفاعلية لكامل نظام Python — اضغط على أي مفهوم لمعرفة أهميته.
       </span>
       <span class="course-open">فتح الدرس ←</span>
     </button>
 
   </div>
 
-  <div class="grid-group-label">مراحل الدراسة — 5 محاور متعمقة</div>
+  <div class="grid-group-label">دروس الموضوعات — 5 محاور متعمقة</div>
   <div class="course-grid">
 
-    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic1-manual-functions.html')">
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/topic1-variables-types.html')">
       <div class="course-card-top">
         <span class="course-num">01</span>
-        <span class="course-title">كتابة الدوال يدويًا</span>
+        <span class="course-title">المتغيرات وأنواع البيانات</span>
       </div>
       <span class="course-subtitle">
-        سؤال الكفاءة: هل يمكنك كتابة دالة من 5 إلى 10 أسطر من الصفر — بأنواع صحيحة وحالات
-        حدّية، بدون ذكاء اصطناعي؟
+        هل يمكنك تعيين المتغيرات وتسمية الأنواع الستة الأساسية والتحويل الآمن بينها؟
       </span>
-      <span class="weight-badge w-medium">📘 متوسط · ~4 س</span>
+      <span class="weight-badge w-critical">⚡ بالغ الأهمية · ~10س</span>
       <span class="course-open">فتح الدرس ←</span>
     </button>
 
-    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic2-reading-bugs.html')">
+    <button class="course-card featured" onclick="openLesson('lms/modules/python-starter/topic2-control-flow.html')">
       <div class="course-card-top">
         <span class="course-num">02</span>
-        <span class="course-title">قراءة الكود وتحديد الأخطاء — موضوع حرج</span>
+        <span class="course-title">تدفق التحكم</span>
       </div>
       <span class="course-subtitle">
-        سؤال الكفاءة: هل يمكنك قراءة تتبّع الاستدعاءات (stack trace) وتتبّعه إلى مصدره
-        وشرح سبب حدوث الخطأ؟
+        هل يمكنك كتابة <code>if/elif/else</code> وحلقات <code>for</code> و<code>while</code> تعالج الحالات الحدية بشكل صحيح؟
       </span>
-      <span class="weight-badge w-critical">⚡ حرج · ~8 س</span>
+      <span class="weight-badge w-critical">⚡ بالغ الأهمية · ~10س</span>
       <span class="course-open">فتح الدرس ←</span>
     </button>
 
-    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic3-debugging.html')">
+    <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic3-functions.html')">
       <div class="course-card-top">
         <span class="course-num">03</span>
-        <span class="course-title">التصحيح: الطباعة ونقاط التوقف</span>
+        <span class="course-title">الدوال</span>
       </div>
       <span class="course-subtitle">
-        سؤال الكفاءة: هل يمكنك تصحيح دالة "تعمل لكنها خاطئة" باستخدام جمل الطباعة، ثم
-        مرة أخرى باستخدام نقاط التوقف في PyCharm؟
+        هل يمكنك تعريف دالة بمعاملات موضعية وكلمات مفتاحية وإعادة قيمة وشرح نطاق LEGB؟
       </span>
-      <span class="weight-badge w-high">🔥 مرتفع · ~4 س</span>
+      <span class="weight-badge w-high">🔥 مرتفع · ~8س</span>
       <span class="course-open">فتح الدرس ←</span>
     </button>
 
-    <button class="course-card featured" onclick="openLesson('lms/modules/python-unaided/topic4-exceptions.html')">
+    <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic4-data-structures.html')">
       <div class="course-card-top">
         <span class="course-num">04</span>
-        <span class="course-title">معالجة الاستثناءات — موضوع حرج</span>
+        <span class="course-title">هياكل البيانات</span>
       </div>
       <span class="course-subtitle">
-        سؤال الكفاءة: هل يمكنك اعتراض استثناء محدد وتسجيله والرجوع إلى حل بديل بدلًا من الانهيار؟
+        هل يمكنك الاختيار بين القائمة والـtuple والقاموس والمجموعة وتبرير اختيارك لمسألة معينة؟
       </span>
-      <span class="weight-badge w-critical">⚡ حرج · ~4 س</span>
+      <span class="weight-badge w-high">🔥 مرتفع · ~8س</span>
       <span class="course-open">فتح الدرس ←</span>
     </button>
 
-    <button class="course-card" onclick="openLesson('lms/modules/python-unaided/topic5-refactor.html')">
+    <button class="course-card" onclick="openLesson('lms/modules/python-starter/topic5-modules-file-io.html')">
       <div class="course-card-top">
         <span class="course-num">05</span>
-        <span class="course-title">إعادة هيكلة وحدة حقيقية</span>
+        <span class="course-title">الوحدات وقراءة/كتابة الملفات</span>
       </div>
       <span class="course-subtitle">
-        سؤال الكفاءة: هل يمكنك نقل منطق إحدى وحداتك من عمل سابق إلى بايثون نظيف ومُنمَّط
-        ومُختبَر — دون مساعدة؟
+        هل يمكنك استيراد وحدة من المكتبة القياسية وفتح ملف وقراءته وكتابته وإغلاقه بأمان؟
       </span>
-      <span class="weight-badge w-high">🔥 مرتفع · ~8 س</span>
+      <span class="weight-badge w-medium">📘 متوسط · ~5س</span>
       <span class="course-open">فتح الدرس ←</span>
     </button>
 
@@ -687,16 +675,21 @@
 
 </div><!-- /tab-ar -->
 
+
 </div><!-- /body -->
 </main>
 
 <script src="../shared/lesson-ui.js"></script>
 <script>
 /**
- * MASTERPLAN INTEGRATION
- * Registered in registry.js as indexRoute for module 'python-unaided', and as the
- * first lesson (progress.type='untracked') so it appears in the sidebar list too.
- * See registry-entry.python-unaided.js for the full module object.
+ * MASTERPLAN — python-starter
+ * Registered in registry.js as:
+ *   id: 'python-starter-masterplan'  progress.type: 'untracked'
+ *   indexRoute: 'lms/modules/python-starter/masterplan.html'
+ *
+ * openLesson() sends a postMessage to the parent shell so clicking any card
+ * navigates within the shell (sidebar highlights, back button works).
+ * The location.href fallback handles standalone / direct-URL access.
  */
 function openLesson(route) {
   if (window.parent !== window) {
@@ -705,9 +698,13 @@ function openLesson(route) {
       return;
     } catch (_) { /* fall through */ }
   }
-  location.href = route.replace('lms/modules/python-unaided/', './');
+  location.href = route.replace('lms/modules/python-starter/', './');
 }
 
+/**
+ * toggleDecoder — opens/closes the amber priority-guide block.
+ * Provided inline so the masterplan is self-contained.
+ */
 function toggleDecoder(btn) {
   btn.classList.toggle('open');
   const body = btn.nextElementSibling;

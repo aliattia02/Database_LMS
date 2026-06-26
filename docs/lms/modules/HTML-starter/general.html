@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>General Overview | HTML Starter</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+.badge { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must   { background:#fef3c7; color:#92400e; }
+.badge-common { background:#dbeafe; color:#1e40af; }
+.badge-tip    { background:#f0fdf4; color:#166534; }
+
+.q-arrow { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel { padding:18px 20px 16px 52px; }
+
+.strategy-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text  { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+
+.answer-box       { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text  { font-size:13.5px; color:#14532d; line-height:1.7; }
+
+.warning-box      { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text { font-size:13px; color:var(--amber-text); line-height:1.55; }
+
+.key-points    { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point     { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+code       { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin:10px 0; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; }
+
+.ask-card    { background:var(--white); border:1px solid var(--border); border-radius:8px; padding:13px 16px; margin-bottom:8px; box-shadow:var(--shadow); display:flex; gap:10px; align-items:flex-start; }
+.ask-icon    { font-size:15px; flex-shrink:0; padding-top:1px; }
+.ask-content { flex:1; }
+.ask-q       { font-size:13.5px; font-weight:600; color:var(--navy); margin-bottom:3px; }
+.ask-why     { font-size:12.5px; color:var(--slate); line-height:1.5; }
+
+.must-block       { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item        { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet      { font-size:15px; flex-shrink:0; }
+
+[dir="rtl"] .q-panel          { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point         { flex-direction:row-reverse; }
+[dir="rtl"] .must-item         { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title  { flex-direction:row-reverse; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .code-block        { direction:ltr; text-align:left; }
+
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="../../../../../../Downloads/masterplan.html">← Back to course index</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">HTML Starter &mdash; General Overview</div>
+    <h1>HTML — The Language of the Web</h1>
+    <p class="header-sub">What HTML is, how it fits into the web platform, and what you'll be able to build by the end of this course.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="progress-bar">
+    <span class="progress-label">Study progress</span>
+    <div class="progress-track"><div class="progress-fill" id="prog-en" style="width:0%"></div></div>
+    <span class="progress-count" id="prog-count-en">0 / 0 opened</span>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📚</div>
+    <div>
+      <div class="section-title">What this course covers</div>
+      <div class="section-subtitle">5 topics — start here, then work through them in order</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>HTML is the skeleton of every web page</h2>
+    <p>HTML (HyperText Markup Language) is the standard language for creating web pages.
+       It describes the <em>structure</em> and <em>meaning</em> of content — not its visual appearance.
+       CSS handles look; JavaScript handles behaviour; HTML defines what everything <em>is</em>.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Every web page your browser loads is, at its core, an HTML document — a plain text file with a <code>.html</code> extension.</div>
+      <div class="key-point"><div class="key-point-dot"></div>HTML uses <strong>elements</strong> (tags like <code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>, <code>&lt;a&gt;</code>) to mark up content with meaning.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Browsers parse HTML into a tree called the <strong>DOM</strong> (Document Object Model) — the live representation CSS and JS operate on.</div>
+      <div class="key-point"><div class="key-point-dot"></div>HTML is not a programming language — it has no logic, loops, or variables. It is a <em>markup</em> language.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Core Conceptual Questions</div>
+      <div class="section-subtitle">Click any question to expand — focus on understanding, not memorising</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">What is the difference between HTML, CSS, and JavaScript?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Think of a building: HTML is the concrete structure (walls, floors, rooms), CSS is the interior design (colours, layout, fonts), and JavaScript is the electrical system (interactivity, movement, data).</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <strong>HTML</strong> defines <em>structure and meaning</em>: what is a heading, what is a paragraph, what is a link.<br><br>
+          <strong>CSS</strong> defines <em>visual presentation</em>: colours, fonts, spacing, layout.<br><br>
+          <strong>JavaScript</strong> defines <em>behaviour</em>: responding to clicks, fetching data, updating the page dynamically.<br><br>
+          All three are separate files (or sections) that the browser loads together. A page can technically exist without CSS or JS, but not without HTML.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>HTML = structure &amp; meaning.</div>
+        <div class="key-point"><div class="key-point-dot"></div>CSS = visual presentation.</div>
+        <div class="key-point"><div class="key-point-dot"></div>JS = dynamic behaviour.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">What is an HTML element, and how does it differ from a tag?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">A <em>tag</em> is the punctuation mark (the angle-bracket syntax); an <em>element</em> is the whole unit — opening tag + content + closing tag.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          A <strong>tag</strong> is the markup notation: <code>&lt;p&gt;</code> or <code>&lt;/p&gt;</code>.<br><br>
+          An <strong>element</strong> is the complete construct: <code>&lt;p&gt;Hello world&lt;/p&gt;</code> — opening tag, content, closing tag.<br><br>
+          Some elements are <strong>void elements</strong> (self-closing) — they have no content or closing tag: <code>&lt;img&gt;</code>, <code>&lt;br&gt;</code>, <code>&lt;input&gt;</code>.
+          <div class="code-block">&lt;!-- Element with content --&gt;
+&lt;p&gt;This is a paragraph.&lt;/p&gt;
+
+&lt;!-- Void element (no closing tag) --&gt;
+&lt;img src="photo.jpg" alt="A description"&gt;</div>
+        </div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ "Self-closing" syntax like <code>&lt;img /&gt;</code> is valid in HTML5 but the slash is optional — <code>&lt;img&gt;</code> is correct. In XHTML/JSX it is required.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Tag = the angle-bracket syntax (<code>&lt;p&gt;</code>).</div>
+        <div class="key-point"><div class="key-point-dot"></div>Element = full unit including content.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Void elements have no closing tag.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">What is an attribute, and how do you use one?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Attributes are settings you pass to an element — they go inside the opening tag and provide extra information the element needs to function or be identified.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          An <strong>attribute</strong> is a name/value pair inside the opening tag: <code>name="value"</code>.
+          <div class="code-block">&lt;a href="https://example.com" target="_blank"&gt;Visit site&lt;/a&gt;
+&lt;!--   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^  --&gt;
+&lt;!--      href attribute               target attribute   --&gt;</div>
+          Common attributes: <code>href</code> (link destination), <code>src</code> (image source), <code>alt</code> (image description), <code>id</code> (unique identifier), <code>class</code> (CSS/JS hook), <code>type</code> (input type).
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Attributes go inside the opening tag, never the closing tag.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Values are quoted (double quotes are conventional).</div>
+        <div class="key-point"><div class="key-point-dot"></div>Some attributes are boolean — their presence alone enables the feature: <code>&lt;input disabled&gt;</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">What is the DOM, and why does it matter?</span>
+      <span class="q-badges"><span class="badge badge-common">● Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">The DOM is the browser's live in-memory representation of your HTML document as a tree of objects. It's what CSS selectors target and what JavaScript reads and modifies.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          When a browser loads an HTML file it <em>parses</em> the markup and constructs a <strong>Document Object Model</strong> — a tree where each element, attribute, and piece of text is a node.<br><br>
+          CSS traverses this tree to apply styles. JavaScript manipulates it via <code>document.querySelector()</code>, <code>element.textContent</code>, etc.<br><br>
+          The DOM is a <em>live</em> representation: changes made by JS are reflected instantly without reloading the HTML file.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>DOM = browser's live tree built from your HTML.</div>
+        <div class="key-point"><div class="key-point-dot"></div>CSS and JS both operate on the DOM, not the raw HTML text.</div>
+        <div class="key-point"><div class="key-point-dot"></div>The DOM can be modified after load — that's how dynamic web apps work.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🔗</div>
+    <div>
+      <div class="section-title">Recommended Resources</div>
+      <div class="section-subtitle">Pick one resource per topic — don't try all at once</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">📖</div>
+    <div class="ask-content">
+      <div class="ask-q">MDN Web Docs — HTML: HyperText Markup Language</div>
+      <div class="ask-why">The authoritative reference for every HTML element and attribute — use it as a lookup tool throughout this course, not as linear reading.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">🎬</div>
+    <div class="ask-content">
+      <div class="ask-q">Kevin Powell — HTML Full Course for Beginners (YouTube)</div>
+      <div class="ask-why">Practical, no-fluff walkthrough that mirrors this course's topic order — ideal if you prefer to watch before reading.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">🛠️</div>
+    <div class="ask-content">
+      <div class="ask-q">CodePen.io — live HTML/CSS/JS sandbox</div>
+      <div class="ask-why">Zero setup — paste any code from this course, see it rendered immediately. Essential for every hands-on challenge.</div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done with the overview when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain in one sentence what HTML does (and what it does <em>not</em> do).</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can describe the difference between an element, a tag, and an attribute.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You know what the DOM is and why CSS/JS care about it.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You have a code editor or sandbox ready for hands-on practice.</div>
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="progress-bar">
+    <span class="progress-label">Lernfortschritt</span>
+    <div class="progress-track"><div class="progress-fill" id="prog-de" style="width:0%"></div></div>
+    <span class="progress-count" id="prog-count-de">0 / 0 geöffnet</span>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📚</div>
+    <div>
+      <div class="section-title">Was dieser Kurs abdeckt</div>
+      <div class="section-subtitle">5 Themen — hier beginnen, dann der Reihe nach durcharbeiten</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>HTML ist das Gerüst jeder Webseite</h2>
+    <p>HTML (HyperText Markup Language) ist die Standardsprache zur Erstellung von Webseiten.
+       Es beschreibt die <em>Struktur</em> und <em>Bedeutung</em> von Inhalten — nicht deren visuelle Erscheinung.
+       CSS kümmert sich um das Aussehen; JavaScript steuert das Verhalten; HTML definiert, was alles <em>ist</em>.</p>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Jede Webseite, die dein Browser lädt, ist im Kern ein HTML-Dokument — eine einfache Textdatei mit der Endung <code>.html</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>HTML verwendet <strong>Elemente</strong> (Tags wie <code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>, <code>&lt;a&gt;</code>), um Inhalten Bedeutung zu geben.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Browser parsen HTML in einen Baum namens <strong>DOM</strong> (Document Object Model) — die lebendige Darstellung, auf die CSS und JS operieren.</div>
+      <div class="key-point"><div class="key-point-dot"></div>HTML ist keine Programmiersprache — es gibt keine Logik, Schleifen oder Variablen. Es ist eine <em>Auszeichnungssprache</em>.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Kernkonzeptfragen</div>
+      <div class="section-subtitle">Klicke eine Frage an — auf Verstehen, nicht Auswendiglernen fokussieren</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Was ist der Unterschied zwischen HTML, CSS und JavaScript?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Stell dir ein Gebäude vor: HTML ist die Betonstruktur (Wände, Böden, Zimmer), CSS ist die Inneneinrichtung (Farben, Layout, Schriften), und JavaScript ist die Elektroanlage (Interaktivität, Bewegung, Daten).</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <strong>HTML</strong> definiert <em>Struktur und Bedeutung</em>: was eine Überschrift ist, was ein Absatz ist, was ein Link ist.<br><br>
+          <strong>CSS</strong> definiert die <em>visuelle Darstellung</em>: Farben, Schriften, Abstände, Layout.<br><br>
+          <strong>JavaScript</strong> definiert das <em>Verhalten</em>: auf Klicks reagieren, Daten abrufen, die Seite dynamisch aktualisieren.<br><br>
+          Alle drei sind separate Dateien (oder Abschnitte), die der Browser gemeinsam lädt. Eine Seite kann technisch ohne CSS oder JS existieren, aber nicht ohne HTML.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>HTML = Struktur &amp; Bedeutung.</div>
+        <div class="key-point"><div class="key-point-dot"></div>CSS = visuelle Darstellung.</div>
+        <div class="key-point"><div class="key-point-dot"></div>JS = dynamisches Verhalten.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Was ist ein HTML-Element, und wie unterscheidet es sich von einem Tag?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Ein <em>Tag</em> ist das Satzzeichen (die Spitzklammer-Syntax); ein <em>Element</em> ist die vollständige Einheit — öffnendes Tag + Inhalt + schließendes Tag.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Ein <strong>Tag</strong> ist die Markup-Notation: <code>&lt;p&gt;</code> oder <code>&lt;/p&gt;</code>.<br><br>
+          Ein <strong>Element</strong> ist das vollständige Konstrukt: <code>&lt;p&gt;Hallo Welt&lt;/p&gt;</code> — öffnendes Tag, Inhalt, schließendes Tag.<br><br>
+          Manche Elemente sind <strong>void-Elemente</strong> (selbstschließend) — sie haben keinen Inhalt oder kein schließendes Tag: <code>&lt;img&gt;</code>, <code>&lt;br&gt;</code>, <code>&lt;input&gt;</code>.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Tag = die Spitzklammer-Syntax.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Element = vollständige Einheit inklusive Inhalt.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Void-Elemente haben kein schließendes Tag.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Was ist ein Attribut und wie wird es verwendet?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Attribute sind Einstellungen, die du einem Element übergibst — sie stehen im öffnenden Tag und liefern zusätzliche Informationen, die das Element zum Funktionieren benötigt.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Ein <strong>Attribut</strong> ist ein Name/Wert-Paar im öffnenden Tag: <code>name="wert"</code>.<br><br>
+          Häufige Attribute: <code>href</code> (Link-Ziel), <code>src</code> (Bildquelle), <code>alt</code> (Bildbeschreibung), <code>id</code> (eindeutiger Bezeichner), <code>class</code> (CSS/JS-Anker), <code>type</code> (Eingabetyp).
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Attribute stehen im öffnenden Tag, niemals im schließenden.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Werte werden in Anführungszeichen gesetzt (doppelte Anführungszeichen sind üblich).</div>
+        <div class="key-point"><div class="key-point-dot"></div>Boolesche Attribute aktivieren ein Merkmal durch ihre bloße Anwesenheit: <code>&lt;input disabled&gt;</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🔗</div>
+    <div>
+      <div class="section-title">Empfohlene Ressourcen</div>
+      <div class="section-subtitle">Eine Ressource pro Thema — nicht alle auf einmal</div>
+    </div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-icon">📖</div>
+    <div class="ask-content">
+      <div class="ask-q">MDN Web Docs — HTML: HyperText Markup Language</div>
+      <div class="ask-why">Die maßgebliche Referenz für jedes HTML-Element und -Attribut — als Nachschlagewerk im gesamten Kurs verwenden, nicht als linearen Lesetext.</div>
+    </div>
+  </div>
+  <div class="ask-card">
+    <div class="ask-icon">🛠️</div>
+    <div class="ask-content">
+      <div class="ask-q">CodePen.io — Live HTML/CSS/JS-Sandbox</div>
+      <div class="ask-why">Kein Setup nötig — Code aus diesem Kurs einfügen und sofort gerendert sehen. Unverzichtbar für alle praktischen Aufgaben.</div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit der Übersicht fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du in einem Satz erklären kannst, was HTML macht (und was es <em>nicht</em> macht).</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du den Unterschied zwischen Element, Tag und Attribut beschreiben kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du weißt, was das DOM ist und warum CSS/JS es brauchen.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du einen Code-Editor oder eine Sandbox für praktische Übungen bereit hast.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+</div><!-- end tab-ar -->
+
+</div><!-- end body -->
+</main>
+
+<script src="../shared/lesson-ui.js"></script>
+<script>
+updateProgress();
+guardLanguageTab('ar');
+</script>
+</body>
+</html>

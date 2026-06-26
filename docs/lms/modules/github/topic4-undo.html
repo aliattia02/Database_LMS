@@ -182,7 +182,7 @@
     <p>You'll constantly need to say "how far back" with both <code>reset</code> and <code>revert</code> — that's what <code>HEAD~1</code>, <code>HEAD~2</code> notation is for. <code>HEAD</code> always points at your current commit; <code>HEAD~1</code> means "one commit before HEAD," <code>HEAD~2</code> means "two commits before HEAD," and so on.</p>
     <div class="code-block">git log --oneline -3
 # a1b2c3d (HEAD -> main) fix: typo in readme
-# e4f5g6h feat: add patient lookup
+# e4f5g6h feat: add search filters
 # i7j8k9l chore: initial commit
 
 git reset --soft HEAD~1   # undoes only the "fix: typo" commit</div>
@@ -213,14 +213,14 @@ git reset --soft HEAD~1   # undoes only the "fix: typo" commit</div>
         <div class="answer-box-label">The fix</div>
         <div class="answer-box-text">
 <div class="code-block"># Discard changes to one file
-git restore src/models/device.py
+git restore src/utils/config.py
 
 # Discard changes to everything in the working directory
 git restore .
 
 # If the change is already staged (git add), restore the staged copy too
-git restore --staged src/models/device.py
-git restore src/models/device.py</div>
+git restore --staged src/utils/config.py
+git restore src/utils/config.py</div>
         </div>
       </div>
       <div class="key-points">
@@ -281,7 +281,7 @@ git log --oneline -5
 git revert a1b2c3d
 
 # Git opens an editor with a pre-filled message:
-# "Revert 'feat: add patient lookup'"
+# "Revert 'feat: add search filters'"
 # Save and close to accept it
 
 git push</div>
@@ -318,12 +318,12 @@ git switch main
 git pull
 
 # Come back and reapply your stashed changes
-git switch feature/patient-lookup
+git switch feature/search-filters
 git stash pop</div>
         </div>
       </div>
       <div class="key-points">
-        <div class="key-point"><div class="key-point-dot"></div><code>git stash push -m "wip: patient lookup"</code> gives the stash a label — helpful once you have more than one saved.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>git stash push -m "wip: search filters"</code> gives the stash a label — helpful once you have more than one saved.</div>
         <div class="key-point"><div class="key-point-dot"></div><code>git stash list</code> shows everything you've stashed. <code>git stash pop</code> applies and removes the most recent one; <code>git stash apply</code> applies it but keeps it in the list, useful if you want to apply the same stash to more than one branch.</div>
         <div class="key-point"><div class="key-point-dot"></div>A stash can conflict on <code>pop</code>, just like a merge — resolve the markers the same way you would a merge conflict (Topic 3).</div>
       </div>
@@ -344,10 +344,10 @@ git stash pop</div>
         <div class="answer-box-label">Pick a commit across branches</div>
         <div class="answer-box-text">
 <div class="code-block"># Find the commit's hash on the other branch
-git log feature/device-model --oneline
+git log feature/data-export --oneline
 
 # Switch to the branch that should receive it
-git switch hotfix/release-1.4
+git switch hotfix/v1-patch
 
 # Apply just that one commit here
 git cherry-pick a1b2c3d</div>
@@ -497,7 +497,7 @@ git log --oneline
     <p>Bei <code>reset</code> und <code>revert</code> musst du ständig sagen "wie weit zurück" — dafür ist die <code>HEAD~1</code>-, <code>HEAD~2</code>-Notation da. <code>HEAD</code> zeigt immer auf deinen aktuellen Commit; <code>HEAD~1</code> bedeutet "ein Commit vor HEAD", <code>HEAD~2</code> bedeutet "zwei Commits vor HEAD" und so weiter.</p>
     <div class="code-block">git log --oneline -3
 # a1b2c3d (HEAD -> main) fix: Tippfehler im Readme
-# e4f5g6h feat: Patient-Lookup hinzufügen
+# e4f5g6h feat: Suchfilter hinzufügen
 # i7j8k9l chore: initialer Commit
 
 git reset --soft HEAD~1   # macht nur den "fix: Tippfehler"-Commit rückgängig</div>
@@ -528,14 +528,14 @@ git reset --soft HEAD~1   # macht nur den "fix: Tippfehler"-Commit rückgängig<
         <div class="answer-box-label">Die Lösung</div>
         <div class="answer-box-text">
 <div class="code-block"># Änderungen an einer Datei verwerfen
-git restore src/models/device.py
+git restore src/utils/config.py
 
 # Änderungen am gesamten Arbeitsverzeichnis verwerfen
 git restore .
 
 # Wenn die Änderung schon gestaged ist (git add), auch die gestagte Kopie zurücksetzen
-git restore --staged src/models/device.py
-git restore src/models/device.py</div>
+git restore --staged src/utils/config.py
+git restore src/utils/config.py</div>
         </div>
       </div>
       <div class="key-points">
@@ -596,7 +596,7 @@ git log --oneline -5
 git revert a1b2c3d
 
 # Git öffnet einen Editor mit vorausgefüllter Nachricht:
-# "Revert 'feat: add patient lookup'"
+# "Revert 'feat: add search filters'"
 # Speichern und schließen, um sie zu übernehmen
 
 git push</div>
@@ -633,12 +633,12 @@ git switch main
 git pull
 
 # Zurückkehren und die gestashten Änderungen wieder anwenden
-git switch feature/patient-lookup
+git switch feature/search-filters
 git stash pop</div>
         </div>
       </div>
       <div class="key-points">
-        <div class="key-point"><div class="key-point-dot"></div><code>git stash push -m "wip: Patient-Lookup"</code> gibt dem Stash eine Beschriftung — hilfreich, sobald du mehr als einen gespeichert hast.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>git stash push -m "wip: Suchfilter"</code> gibt dem Stash eine Beschriftung — hilfreich, sobald du mehr als einen gespeichert hast.</div>
         <div class="key-point"><div class="key-point-dot"></div><code>git stash list</code> zeigt alles, was du gestasht hast. <code>git stash pop</code> wendet den neuesten Stash an und entfernt ihn aus der Liste; <code>git stash apply</code> wendet ihn an, lässt ihn aber in der Liste — nützlich, wenn du denselben Stash auf mehrere Branches anwenden willst.</div>
         <div class="key-point"><div class="key-point-dot"></div>Ein Stash kann beim <code>pop</code> in Konflikt geraten, genau wie ein Merge — löse die Markierungen genauso wie einen Merge-Konflikt (Thema 3).</div>
       </div>
@@ -659,10 +659,10 @@ git stash pop</div>
         <div class="answer-box-label">Einen Commit über Branches hinweg auswählen</div>
         <div class="answer-box-text">
 <div class="code-block"># Den Hash des Commits auf dem anderen Branch finden
-git log feature/device-model --oneline
+git log feature/data-export --oneline
 
 # Zum Branch wechseln, der ihn erhalten soll
-git switch hotfix/release-1.4
+git switch hotfix/v1-patch
 
 # Nur diesen einen Commit hier anwenden
 git cherry-pick a1b2c3d</div>
@@ -812,7 +812,7 @@ git log --oneline
     <p>ستحتاج باستمرار لتحديد "إلى أي مدى للخلف" مع <code dir="ltr">reset</code> و<code dir="ltr">revert</code> — لهذا وُجدت ترميزات <code dir="ltr">HEAD~1</code> و<code dir="ltr">HEAD~2</code>. <code dir="ltr">HEAD</code> يشير دائماً إلى commit-ك الحالي؛ <code dir="ltr">HEAD~1</code> تعني "commit واحد قبل HEAD"، و<code dir="ltr">HEAD~2</code> تعني "commit-ان قبل HEAD"، وهكذا.</p>
     <div class="code-block" dir="ltr">git log --oneline -3
 # a1b2c3d (HEAD -> main) fix: typo in readme
-# e4f5g6h feat: add patient lookup
+# e4f5g6h feat: add search filters
 # i7j8k9l chore: initial commit
 
 git reset --soft HEAD~1   # يتراجع فقط عن commit "fix: typo"</div>
@@ -843,14 +843,14 @@ git reset --soft HEAD~1   # يتراجع فقط عن commit "fix: typo"</div>
         <div class="answer-box-label">الحل</div>
         <div class="answer-box-text">
 <div class="code-block" dir="ltr"># التراجع عن التغييرات في ملف واحد
-git restore src/models/device.py
+git restore src/utils/config.py
 
 # التراجع عن التغييرات في كل مجلد العمل
 git restore .
 
 # إذا كان التغيير مُهيّأ بالفعل (git add)، أعد ضبط النسخة المُهيّأة أيضاً
-git restore --staged src/models/device.py
-git restore src/models/device.py</div>
+git restore --staged src/utils/config.py
+git restore src/utils/config.py</div>
         </div>
       </div>
       <div class="key-points">
@@ -911,7 +911,7 @@ git log --oneline -5
 git revert a1b2c3d
 
 # يفتح Git محرراً برسالة مُعدّة مسبقاً:
-# "Revert 'feat: add patient lookup'"
+# "Revert 'feat: add search filters'"
 # احفظ وأغلق لقبولها
 
 git push</div>
@@ -948,12 +948,12 @@ git switch main
 git pull
 
 # عُد وأعد تطبيق تغييراتك المحفوظة
-git switch feature/patient-lookup
+git switch feature/search-filters
 git stash pop</div>
         </div>
       </div>
       <div class="key-points">
-        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git stash push -m "wip: patient lookup"</code> يعطي الـ stash تسمية — مفيد بعد أن يصبح لديك أكثر من واحد محفوظ.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git stash push -m "wip: search filters"</code> يعطي الـ stash تسمية — مفيد بعد أن يصبح لديك أكثر من واحد محفوظ.</div>
         <div class="key-point"><div class="key-point-dot"></div><code dir="ltr">git stash list</code> يُظهر كل ما حفظته. <code dir="ltr">git stash pop</code> يطبّق الأحدث ويحذفه من القائمة؛ <code dir="ltr">git stash apply</code> يطبّقه لكن يحتفظ به في القائمة — مفيد إن أردت تطبيق نفس الـ stash على أكثر من branch.</div>
         <div class="key-point"><div class="key-point-dot"></div>قد يتعارض الـ stash عند <code dir="ltr">pop</code>، تماماً كالدمج — حلّ العلامات بنفس طريقة حل تعارض الدمج (الموضوع 3).</div>
       </div>
@@ -974,10 +974,10 @@ git stash pop</div>
         <div class="answer-box-label">اختيار commit عبر الـ branches</div>
         <div class="answer-box-text">
 <div class="code-block" dir="ltr"># ابحث عن hash الـ commit على الـ branch الآخر
-git log feature/device-model --oneline
+git log feature/data-export --oneline
 
 # بدّل إلى الـ branch الذي يجب أن يستقبله
-git switch hotfix/release-1.4
+git switch hotfix/v1-patch
 
 # طبّق فقط هذا الـ commit هنا
 git cherry-pick a1b2c3d</div>

@@ -22,7 +22,7 @@ export const LMS_CONFIG = {
       subtitle: 'Databases, server logic, and infrastructure',
       icon: '🗄️',
       theme: { accent: '#2563eb', accentSoft: '#dbeafe' },
-      moduleIds: ['database', 'python', 'python-unaided']
+      moduleIds: ['database', 'python', 'python-unaided', 'python-starter']
     },
     {
       id: 'frontend',
@@ -30,7 +30,7 @@ export const LMS_CONFIG = {
       subtitle: 'Web components, state management, and mobile',
       icon: '⚛️',
       theme: { accent: '#0369a1', accentSoft: '#e0f2fe' },
-      moduleIds: ['react', 'react-native', 'python']
+      moduleIds: ['html-starter', 'react', 'react-native', 'python']
       // python appears here AND in backend — its progress is shared either way
     },
     {
@@ -236,6 +236,136 @@ export const LMS_CONFIG = {
           subtitle: 'Port your own DiaTwin/Morafek logic into clean, unaided Python',
           route: 'lms/modules/python-unaided/topic5-refactor.html',
           progress: { type: 'checklist', storageKey: 'lms_python_unaided_05_done', total: 5, ignoreKeys: ['home'] }
+        }
+      ]
+    },
+    {
+      id: 'python-starter',
+      title: 'Python Course',
+      subtitle: 'Core Python syntax and structures for backend development',
+      theme: { accent: '#0f766e', accentSoft: '#ccfbf1' },
+      indexRoute: 'lms/modules/python-starter/masterplan.html',
+      lessons: [
+        {
+          id: 'python-starter-masterplan',
+          title: 'Masterplan',
+          subtitle: 'Full track overview',
+          route: 'lms/modules/python-starter/masterplan.html',
+          progress: { type: 'untracked', total: 0 }
+        },
+        {
+          id: 'python-starter-general',
+          title: 'General Overview',
+          subtitle: 'Introduction and orientation',
+          route: 'lms/modules/python-starter/general.html',
+          progress: { type: 'untracked', total: 0 }
+        },
+        {
+          id: 'python-starter-mindmap',
+          title: 'Mind Map',
+          subtitle: 'Full topic overview',
+          route: 'lms/modules/python-starter/topic0-mindmap.html',
+          progress: { type: 'untracked', total: 0 }
+        },
+        {
+          id: 'python-starter-topic1',
+          title: 'Variables & Data Types',
+          subtitle: 'Variables, numbers, strings, booleans, and type conversion',
+          route: 'lms/modules/python-starter/topic1-variables-types.html',
+          progress: { type: 'checklist', storageKey: 'lms_python-starter_01_done', total: 7, ignoreKeys: ['home'] }
+        },
+        {
+          id: 'python-starter-topic2',
+          title: 'Control Flow',
+          subtitle: 'Conditionals and loops that handle edge cases correctly',
+          route: 'lms/modules/python-starter/topic2-control-flow.html',
+          progress: { type: 'checklist', storageKey: 'lms_python-starter_02_done', total: 7, ignoreKeys: ['home'] }
+        },
+        {
+          id: 'python-starter-topic3',
+          title: 'Functions',
+          subtitle: 'Arguments, return values, and scope',
+          route: 'lms/modules/python-starter/topic3-functions.html',
+          progress: { type: 'checklist', storageKey: 'lms_python-starter_03_done', total: 6, ignoreKeys: ['home'] }
+        },
+        {
+          id: 'python-starter-topic4',
+          title: 'Data Structures',
+          subtitle: 'Lists, tuples, dictionaries, and sets',
+          route: 'lms/modules/python-starter/topic4-data-structures.html',
+          progress: { type: 'checklist', storageKey: 'lms_python-starter_04_done', total: 7, ignoreKeys: ['home'] }
+        },
+        {
+          id: 'python-starter-topic5',
+          title: 'Modules & File I/O',
+          subtitle: 'Organizing code and reading/writing files safely',
+          route: 'lms/modules/python-starter/topic5-modules-file-io.html',
+          progress: { type: 'checklist', storageKey: 'lms_python-starter_05_done', total: 5, ignoreKeys: ['home'] }
+        }
+      ]
+    },
+    // ── HTML Starter ──────────────────────────────────────────────────────────
+    // Five-topic course covering document structure, text elements, links &
+    // images, forms, and semantic HTML. Lives in lms/modules/HTML-starter/.
+    // storageKey convention: lms_html-starter_<nn>_done
+    // NOTE: topic `total` values default to 6 (matching github/react starter
+    // pattern). Adjust each value once you've counted the actual q-cards in
+    // the topic HTML files.
+    {
+      id: 'html-starter',
+      title: 'HTML Starter',
+      subtitle: 'Document structure, elements, links, forms, and semantic HTML',
+      theme: { accent: '#ea580c', accentSoft: '#fff7ed' },
+      indexRoute: 'lms/modules/HTML-starter/masterplan.html',
+      lessons: [
+        {
+          id: 'html-starter-masterplan',
+          title: 'Masterplan',
+          subtitle: 'Full track overview',
+          route: 'lms/modules/HTML-starter/masterplan.html',
+          progress: { type: 'untracked', total: 0 }
+        },
+        {
+          id: 'html-starter-general',
+          title: 'General Overview',
+          subtitle: 'What HTML is and how it fits into the web platform',
+          route: 'lms/modules/HTML-starter/general.html',
+          progress: { type: 'untracked', total: 0 }
+        },
+        {
+          id: 'html-starter-topic1',
+          title: 'HTML Basics',
+          subtitle: 'Document structure, void elements, and attributes',
+          route: 'lms/modules/HTML-starter/topic1-html-basics.html',
+          progress: { type: 'checklist', storageKey: 'lms_html-starter_01_done', total: 6, ignoreKeys: ['home'] }
+        },
+        {
+          id: 'html-starter-topic2',
+          title: 'Text Elements',
+          subtitle: 'Headings, paragraphs, lists, and inline formatting',
+          route: 'lms/modules/HTML-starter/topic2-text-elements.html',
+          progress: { type: 'checklist', storageKey: 'lms_html-starter_02_done', total: 6, ignoreKeys: ['home'] }
+        },
+        {
+          id: 'html-starter-topic3',
+          title: 'Links & Images',
+          subtitle: 'Anchors, relative vs. absolute paths, and embedding media',
+          route: 'lms/modules/HTML-starter/topic3-links-images.html',
+          progress: { type: 'checklist', storageKey: 'lms_html-starter_03_done', total: 6, ignoreKeys: ['home'] }
+        },
+        {
+          id: 'html-starter-topic4',
+          title: 'Forms',
+          subtitle: 'Inputs, labels, validation attributes, and form structure',
+          route: 'lms/modules/HTML-starter/topic4-forms.html',
+          progress: { type: 'checklist', storageKey: 'lms_html-starter_04_done', total: 6, ignoreKeys: ['home'] }
+        },
+        {
+          id: 'html-starter-topic5',
+          title: 'Semantic HTML',
+          subtitle: 'Meaningful structure for accessibility and SEO',
+          route: 'lms/modules/HTML-starter/topic5-semantic-html.html',
+          progress: { type: 'checklist', storageKey: 'lms_html-starter_05_done', total: 6, ignoreKeys: ['home'] }
         }
       ]
     },

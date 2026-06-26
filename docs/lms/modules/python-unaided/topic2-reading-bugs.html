@@ -123,7 +123,7 @@ code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,mon
       encounter in real projects: a <strong>type mismatch</strong> that crashes at serialisation,
       a <strong>mutation side-effect</strong> that corrupts shared state, and a
       <strong>logic error</strong> where the code runs cleanly but the output is wrong.
-      Each one has been taken from patterns in DiaTwin / Morafek code.
+      Each one has been taken from patterns in real production code.
     </p>
     <div class="key-points">
       <div class="key-point"><div class="key-point-dot"></div><strong>Do not just read the fix.</strong> Copy each broken snippet into a file, run it, and read the error message or wrong output before looking at the explanation.</div>
@@ -208,7 +208,7 @@ print(patient_b["readings"])  # Expected: [105]
     return {"name": name, "readings": readings}</div>
       <div class="key-points">
         <div class="key-point"><div class="key-point-dot"></div>The rule: <strong>never use a mutable value (list, dict, set) as a default argument.</strong> Use <code>None</code> and create the object inside the function body.</div>
-        <div class="key-point"><div class="key-point-dot"></div>This exact pattern appeared in the original Morafek session initialiser — session state was being shared across different users' requests.</div>
+        <div class="key-point"><div class="key-point-dot"></div>This exact pattern has shown up in real session initialisers — session state was being shared across different users' requests.</div>
       </div>
     </div>
 

@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 4 — Forms &amp; Inputs | HTML Starter</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+.section-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.section-intro  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:16px; }
+.section        { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2     { font-size:18px; font-weight:700; margin-bottom:6px; color:var(--navy); }
+.section p      { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+.accordion     { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+.acc-item      { background:var(--white); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.acc-trigger   { width:100%; display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:none; border:none; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--navy); text-align:left; transition:background .12s; }
+.acc-trigger:hover { background:var(--bg); }
+.acc-chevron   { font-size:12px; color:var(--muted); transition:transform .2s; flex-shrink:0; }
+.acc-trigger.open .acc-chevron { transform:rotate(180deg); }
+.acc-body      { display:none; padding:16px; border-top:1px solid var(--border); font-size:13.5px; color:var(--navy); line-height:1.65; }
+.acc-body.open { display:block; }
+
+.concepts       { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.concept        { background:var(--white); border:1px solid var(--border); border-left:3px solid var(--border); border-radius:8px; padding:12px 16px; }
+.concept.blue   { border-left-color:#0284c7; }
+.concept.green  { border-left-color:#059669; }
+.concept.orange { border-left-color:#d97706; }
+.concept.teal   { border-left-color:#0d9488; }
+.concept.purple { border-left-color:#7c3aed; }
+.concept.red    { border-left-color:#dc2626; }
+.concept.indigo { border-left-color:#4338ca; }
+.concept.rose   { border-left-color:#e11d48; }
+.concept-name   { font-size:13px; font-weight:700; color:var(--navy); margin-bottom:4px; }
+.concept-desc   { font-size:12px; color:var(--slate); line-height:1.6; }
+
+.ref-table              { width:100%; border-collapse:collapse; font-size:12px; margin-bottom:16px; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+.ref-table thead tr     { background:#334155; color:#fff; }
+.ref-table thead th     { padding:10px 14px; text-align:left; font-weight:700; }
+.ref-table tbody tr     { border-bottom:1px solid var(--border); }
+.ref-table tbody tr:last-child { border-bottom:none; }
+.ref-table tbody tr:nth-child(even) { background:var(--bg); }
+.ref-table tbody td     { padding:9px 14px; vertical-align:top; line-height:1.55; }
+.ref-table .mono        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:11px; }
+
+.callout      { border-radius:0 8px 8px 0; padding:12px 16px; margin-bottom:16px; border:1px solid transparent; border-left-width:3px; }
+.callout .lbl { font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; margin-bottom:6px; }
+.callout p, .callout li  { font-size:12px; line-height:1.65; }
+.callout ul, .callout ol { padding-left:16px; }
+.callout li              { margin-bottom:4px; }
+.callout.tip       { background:#d1fae5; border-color:#a7f3d0; border-left-color:#059669; }
+.callout.tip .lbl  { color:#059669; }
+.callout.tip p, .callout.tip li { color:#065f46; }
+.callout.warn       { background:#fef3c7; border-color:#fde68a; border-left-color:#b45309; }
+.callout.warn .lbl  { color:#b45309; }
+.callout.warn p, .callout.warn li { color:#78350f; }
+.callout.info       { background:#e0f2fe; border-color:#bae6fd; border-left-color:#0284c7; }
+.callout.info .lbl  { color:#0284c7; }
+.callout.info p, .callout.info li { color:#075985; }
+.callout.interview       { background:#e0e7ff; border-color:#a5b4fc; border-left-color:#4338ca; }
+.callout.interview .lbl  { color:#3730a3; }
+.callout.interview p     { color:#312e81; font-weight:600; }
+
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { background:#f8fafc; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:16px; }
+.code-header         { display:flex; align-items:center; justify-content:space-between; padding:8px 14px; border-bottom:1px solid var(--border); }
+.code-header-left    { display:flex; align-items:center; gap:8px; }
+.code-label          { font-size:10px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.code-label.html     { color:#dc2626; }
+.copy-btn            { font-size:10px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; color:var(--muted); background:none; border:1px solid var(--border); border-radius:5px; padding:3px 8px; cursor:pointer; transition:color .15s,border-color .15s; }
+.copy-btn:hover      { color:var(--navy); }
+.copy-btn.copied     { color:#059669; border-color:#059669; }
+.code-body           { padding:16px 14px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; color:#334155; line-height:1.75; overflow-x:auto; white-space:pre; background:#f8fafc; }
+.kw  { color:#0284c7; font-weight:600; }
+.str { color:#059669; }
+.cm  { color:#94a3b8; }
+
+.challenge                 { background:var(--white); border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:16px; box-shadow:var(--shadow); }
+.challenge-head            { padding:12px 16px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; transition:background .12s; }
+.challenge-head:hover      { background:var(--bg); }
+.challenge-head-left       { display:flex; align-items:center; gap:10px; }
+.challenge-badge           { font-size:10px; font-weight:700; letter-spacing:.08em; background:#fef3c7; color:#b45309; border:1px solid #fde68a; border-radius:99px; padding:2px 8px; }
+.challenge-title           { font-size:13px; font-weight:600; color:var(--navy); }
+.challenge-arrow           { font-size:12px; color:var(--muted); transition:transform .2s; }
+.challenge-arrow.open      { transform:rotate(180deg); }
+.challenge-body            { display:none; padding:16px; border-top:1px solid var(--border); }
+.challenge-body.open       { display:block; }
+.challenge-q               { font-size:13px; color:var(--navy); margin-bottom:12px; line-height:1.6; }
+.answer-toggle             { font-size:11px; color:var(--muted); cursor:pointer; text-decoration:underline; margin-bottom:8px; display:inline-block; }
+.answer-toggle:hover       { color:var(--navy); }
+.answer                    { display:none; }
+.answer.open               { display:block; }
+
+.badge       { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must  { background:#fef3c7; color:#92400e; }
+.badge-common{ background:#dbeafe; color:#1e40af; }
+.q-arrow     { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel           { padding:18px 20px 16px 52px; }
+.strategy-label    { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text     { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+.answer-box        { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label  { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text   { font-size:13.5px; color:#14532d; line-height:1.7; }
+.key-points        { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point         { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot     { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+.must-block                  { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title            { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item       { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet     { font-size:15px; flex-shrink:0; }
+
+.progress-bar   { display:flex; align-items:center; gap:12px; margin-bottom:20px; padding:12px 16px; background:var(--white); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); }
+.progress-label { font-size:12px; font-weight:600; color:var(--muted); white-space:nowrap; }
+.prog-bar       { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+.prog-fill      { height:100%; background:var(--accent); border-radius:3px; transition:width .3s; }
+.prog-label     { font-size:12px; color:var(--muted); white-space:nowrap; }
+
+[dir="rtl"] .acc-trigger    { text-align:right; }
+[dir="rtl"] .callout        { border-radius:8px 0 0 8px; border-left-width:1px; border-right-width:3px; }
+[dir="rtl"] .callout.tip    { border-right-color:#059669; }
+[dir="rtl"] .callout.warn   { border-right-color:#b45309; }
+[dir="rtl"] .callout.info   { border-right-color:#0284c7; }
+[dir="rtl"] .concept        { border-left-width:1px; border-right-width:3px; border-left-color:var(--border); }
+[dir="rtl"] .concept.blue   { border-right-color:#0284c7; }
+[dir="rtl"] .concept.green  { border-right-color:#059669; }
+[dir="rtl"] .concept.orange { border-right-color:#d97706; }
+[dir="rtl"] .concept.teal   { border-right-color:#0d9488; }
+[dir="rtl"] .concept.purple { border-right-color:#7c3aed; }
+[dir="rtl"] .concept.red    { border-right-color:#dc2626; }
+[dir="rtl"] .challenge-head-left { flex-direction:row-reverse; }
+[dir="rtl"] .q-panel        { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point      { flex-direction:row-reverse; }
+[dir="rtl"] .must-item      { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title { flex-direction:row-reverse; }
+[dir="rtl"] .code-block     { direction:ltr; }
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="../../../../../../Downloads/masterplan.html">← Back to course index</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">HTML Starter &mdash; Topic 4 of 5 &middot; High Priority &middot; ~1.5h</div>
+    <h1><span>Forms</span> &amp; Inputs</h1>
+    <p class="header-sub">Every login, search bar, and checkout is a form. Learn to build accessible, well-structured forms with correct input types, labels, and validation attributes.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="progress-bar">
+    <span class="progress-label">Study progress</span>
+    <div class="prog-bar"><div class="prog-fill" id="prog-en" style="width:0%"></div></div>
+    <span id="prog-count-en" class="prog-label">0 / 0 opened</span>
+  </div>
+
+  <!-- LESSON 1: Form Structure -->
+  <div class="section">
+    <div class="section-label">Lesson 1 · ~30 min</div>
+    <h2>Form Structure — The Container &amp; Labels</h2>
+    <p class="section-intro">A form is a data pipeline from the user's browser to a server. Understanding the <code>&lt;form&gt;</code> element's attributes, and the critical relationship between labels and inputs, is the foundation of every form you'll ever build.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>⚡ Why This Matters</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout interview">
+            <div class="lbl">⚓ Core Insight</div>
+            <p>Forms have two jobs: collecting data from users, and submitting it to a server. The <code>action</code> tells the browser <em>where</em> to send the data. The <code>method</code> tells it <em>how</em>. Missing labels make forms unusable for keyboard-only and screen reader users.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Core Concepts — Form Element</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>&lt;form&gt;</code> — Container for all form controls</div>
+              <div class="concept-desc">Wraps all inputs, labels, and buttons. When submitted, collects all fields with a <code>name</code> attribute and sends them as key-value pairs.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>action="/submit"</code> — Where to send data</div>
+              <div class="concept-desc">The URL the form data is sent to on submission. If omitted, the form submits to the current URL. In modern SPAs, this is often handled by JavaScript instead.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>method="GET"</code> vs <code>method="POST"</code></div>
+              <div class="concept-desc"><strong>GET</strong> — appends data to the URL as query parameters (<code>?q=search+term</code>). Bookmarkable, cached. Use for search, filters. <strong>POST</strong> — sends data in the request body, invisible in the URL. Use for login, registration, anything with sensitive data or side effects.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>&lt;fieldset&gt;</code> and <code>&lt;legend&gt;</code></div>
+              <div class="concept-desc">Group related inputs inside a <code>&lt;fieldset&gt;</code> with a <code>&lt;legend&gt;</code> describing the group. Essential for radio groups and checkboxes. Screen readers announce the legend before each control in the group.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Core Concepts — Labels</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept purple">
+              <div class="concept-name"><code>&lt;label for="id"&gt;</code> — Associates label with input</div>
+              <div class="concept-desc">The <code>for</code> attribute matches the <code>id</code> on the input. This creates an association: clicking the label focuses the input. Screen readers read the label when the input receives focus. Every visible input needs a label.</div>
+            </div>
+            <div class="concept red">
+              <div class="concept-name"><code>id</code> and <code>name</code> — Two different purposes</div>
+              <div class="concept-desc"><code>id</code> is for the browser (links label to input, used by CSS/JS). <code>name</code> is for the server (it becomes the key in the submitted data). Both are needed. They can share the same value but serve different systems.</div>
+            </div>
+          </div>
+          <div class="callout warn">
+            <div class="lbl">⚠️ Common Mistake</div>
+            <p>Using <code>placeholder</code> text as a substitute for a label. Once the user starts typing, the placeholder disappears. Screen readers don't reliably announce placeholders. Always use a real <code>&lt;label&gt;</code>, even if it's visually hidden for design reasons.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LESSON 2: Input Types -->
+  <div class="section">
+    <div class="section-label">Lesson 2 · ~30 min</div>
+    <h2>Input Types &amp; Other Form Controls</h2>
+    <p class="section-intro">HTML provides over 20 input types. Choosing the right type triggers the correct mobile keyboard, enables browser validation, and gives users a better experience — all for free.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Core Concepts — Input Types</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <table class="ref-table">
+            <thead><tr><th>Type</th><th>When to use</th><th>Browser behaviour</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">text</td><td>Single-line free text</td><td>Plain text keyboard</td></tr>
+              <tr><td class="mono">email</td><td>Email addresses</td><td>Validates format, shows @ keyboard on mobile</td></tr>
+              <tr><td class="mono">password</td><td>Passwords</td><td>Masks characters, triggers password manager</td></tr>
+              <tr><td class="mono">number</td><td>Numeric values</td><td>Spinner controls, numeric keyboard on mobile</td></tr>
+              <tr><td class="mono">tel</td><td>Phone numbers</td><td>Shows phone keyboard on mobile, no validation</td></tr>
+              <tr><td class="mono">url</td><td>Web addresses</td><td>Validates URL format, shows URL keyboard</td></tr>
+              <tr><td class="mono">checkbox</td><td>True/false, multi-select</td><td>Toggle on/off independently</td></tr>
+              <tr><td class="mono">radio</td><td>Pick one from a set</td><td>Only one selected per name group</td></tr>
+              <tr><td class="mono">date</td><td>Date selection</td><td>Shows native date picker</td></tr>
+              <tr><td class="mono">file</td><td>File upload</td><td>Opens file browser</td></tr>
+              <tr><td class="mono">hidden</td><td>Data to submit silently</td><td>Not visible, not editable by user</td></tr>
+              <tr><td class="mono">range</td><td>Slider within a range</td><td>Shows slider control</td></tr>
+              <tr><td class="mono">color</td><td>Color picker</td><td>Shows native color picker</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Core Concepts — Other Controls</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>&lt;textarea&gt;</code> — Multi-line text</div>
+              <div class="concept-desc">Use for messages, comments, and any long-form text. <code>rows</code> and <code>cols</code> set the visible size (CSS is preferred for sizing). Cannot use <code>value</code> attribute — default text goes between the tags instead.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>&lt;select&gt;</code> + <code>&lt;option&gt;</code> — Dropdown</div>
+              <div class="concept-desc">Presents a list of options in a dropdown menu. The <code>value</code> attribute on each <code>&lt;option&gt;</code> is what gets submitted; the text content is what the user sees. Use <code>&lt;optgroup label="..."&gt;</code> to group related options.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>&lt;button type="submit"&gt;</code> — Submit the form</div>
+              <div class="concept-desc">Preferred over <code>&lt;input type="submit"&gt;</code> because it can contain HTML (icons, formatted text). Any button inside a form defaults to <code>type="submit"</code> — always specify the type explicitly to avoid accidental submissions.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>&lt;button type="button"&gt;</code> — No form action</div>
+              <div class="concept-desc">Does nothing by default — for JavaScript interactions that should not submit the form. Use this for modal toggles, counter buttons, or any interactive UI element inside a form.</div>
+            </div>
+            <div class="concept red">
+              <div class="concept-name"><code>&lt;button type="reset"&gt;</code> — Clear the form</div>
+              <div class="concept-desc">Resets all fields to their initial values. Rarely used in modern UX — users find accidental resets frustrating. Only include if resetting is a genuine workflow need.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Core Concepts — Validation Attributes</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept purple">
+              <div class="concept-name"><code>required</code> — Field must have a value</div>
+              <div class="concept-desc">Prevents form submission if the field is empty. The browser shows a native error message. Boolean attribute — just the word <code>required</code>, no value needed.</div>
+            </div>
+            <div class="concept indigo">
+              <div class="concept-name"><code>minlength</code> / <code>maxlength</code></div>
+              <div class="concept-desc">Character count limits for text inputs. <code>maxlength</code> prevents typing beyond the limit. <code>minlength</code> blocks submission if too short. Show remaining characters with JavaScript for better UX.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>min</code> / <code>max</code> / <code>step</code></div>
+              <div class="concept-desc">Numeric and date range constraints. <code>min="0"</code> prevents negative values. <code>max="100"</code> sets the upper bound. <code>step="0.01"</code> allows two decimal places (useful for prices).</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>pattern</code> — Regex validation</div>
+              <div class="concept-desc">Validates input against a regular expression. Example: <code>pattern="[A-Z]{2}[0-9]{4}"</code> for a product code. Always pair with a descriptive <code>title</code> attribute explaining the expected format — this appears in the browser's error message.</div>
+            </div>
+            <div class="concept blue">
+              <div class="concept-name"><code>disabled</code> and <code>readonly</code></div>
+              <div class="concept-desc"><code>disabled</code> — non-interactive, not submitted with the form, visually greyed out. <code>readonly</code> — user cannot edit, but the value <em>is</em> submitted. Use <code>disabled</code> for options that don't apply; use <code>readonly</code> for values shown for reference.</div>
+            </div>
+          </div>
+          <div class="callout info">
+            <div class="lbl">ℹ️ Important</div>
+            <p>Browser validation is a convenience, not a security measure. Always validate on the server. A user can disable browser validation with <code>novalidate</code> on the form or by using browser dev tools.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🌍 Worked Example — Complete Contact Form</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="kw">&lt;form</span> <span class="str">action=</span><span class="str">"/contact"</span> <span class="str">method=</span><span class="str">"POST"</span><span class="kw">&gt;</span>
+
+  <span class="cm">&lt;!-- Text input with label --&gt;</span>
+  <span class="kw">&lt;label</span> <span class="str">for=</span><span class="str">"name"</span><span class="kw">&gt;</span>Full name<span class="kw">&lt;/label&gt;</span>
+  <span class="kw">&lt;input</span>
+    <span class="str">type=</span><span class="str">"text"</span>
+    <span class="str">id=</span><span class="str">"name"</span>
+    <span class="str">name=</span><span class="str">"name"</span>
+    <span class="str">placeholder=</span><span class="str">"Jane Doe"</span>
+    <span class="str">required</span>
+    <span class="str">minlength=</span><span class="str">"2"</span>
+    <span class="str">maxlength=</span><span class="str">"100"</span>
+    <span class="str">autocomplete=</span><span class="str">"name"</span>
+  <span class="kw">&gt;</span>
+
+  <span class="cm">&lt;!-- Email input --&gt;</span>
+  <span class="kw">&lt;label</span> <span class="str">for=</span><span class="str">"email"</span><span class="kw">&gt;</span>Email address<span class="kw">&lt;/label&gt;</span>
+  <span class="kw">&lt;input</span>
+    <span class="str">type=</span><span class="str">"email"</span>
+    <span class="str">id=</span><span class="str">"email"</span>
+    <span class="str">name=</span><span class="str">"email"</span>
+    <span class="str">required</span>
+    <span class="str">autocomplete=</span><span class="str">"email"</span>
+  <span class="kw">&gt;</span>
+
+  <span class="cm">&lt;!-- Dropdown select --&gt;</span>
+  <span class="kw">&lt;label</span> <span class="str">for=</span><span class="str">"topic"</span><span class="kw">&gt;</span>Topic<span class="kw">&lt;/label&gt;</span>
+  <span class="kw">&lt;select</span> <span class="str">id=</span><span class="str">"topic"</span> <span class="str">name=</span><span class="str">"topic"</span> <span class="str">required</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;option</span> <span class="str">value=</span><span class="str">""</span><span class="kw">&gt;</span>— Select a topic —<span class="kw">&lt;/option&gt;</span>
+    <span class="kw">&lt;option</span> <span class="str">value=</span><span class="str">"support"</span><span class="kw">&gt;</span>Technical support<span class="kw">&lt;/option&gt;</span>
+    <span class="kw">&lt;option</span> <span class="str">value=</span><span class="str">"sales"</span><span class="kw">&gt;</span>Sales enquiry<span class="kw">&lt;/option&gt;</span>
+    <span class="kw">&lt;option</span> <span class="str">value=</span><span class="str">"other"</span><span class="kw">&gt;</span>Other<span class="kw">&lt;/option&gt;</span>
+  <span class="kw">&lt;/select&gt;</span>
+
+  <span class="cm">&lt;!-- Textarea for message --&gt;</span>
+  <span class="kw">&lt;label</span> <span class="str">for=</span><span class="str">"message"</span><span class="kw">&gt;</span>Message<span class="kw">&lt;/label&gt;</span>
+  <span class="kw">&lt;textarea</span>
+    <span class="str">id=</span><span class="str">"message"</span>
+    <span class="str">name=</span><span class="str">"message"</span>
+    <span class="str">rows=</span><span class="str">"5"</span>
+    <span class="str">required</span>
+    <span class="str">minlength=</span><span class="str">"10"</span>
+    <span class="str">placeholder=</span><span class="str">"Describe your question…"</span>
+  <span class="kw">&gt;&lt;/textarea&gt;</span>
+
+  <span class="cm">&lt;!-- Checkbox for consent --&gt;</span>
+  <span class="kw">&lt;label&gt;</span>
+    <span class="kw">&lt;input</span> <span class="str">type=</span><span class="str">"checkbox"</span> <span class="str">name=</span><span class="str">"consent"</span> <span class="str">required</span><span class="kw">&gt;</span>
+    I agree to the privacy policy
+  <span class="kw">&lt;/label&gt;</span>
+
+  <span class="cm">&lt;!-- Submit button --&gt;</span>
+  <span class="kw">&lt;button</span> <span class="str">type=</span><span class="str">"submit"</span><span class="kw">&gt;</span>Send message<span class="kw">&lt;/button&gt;</span>
+
+<span class="kw">&lt;/form&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🌍 Worked Example — Radio Button Group</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout tip">
+            <div class="lbl">✅ Pattern — Fieldset + legend for radio/checkbox groups</div>
+            <p>Radio buttons that belong to the same group share the same <code>name</code> attribute. The browser enforces single-selection within the group. Always wrap in a <code>&lt;fieldset&gt;</code> with a <code>&lt;legend&gt;</code>.</p>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="kw">&lt;fieldset&gt;</span>
+  <span class="kw">&lt;legend&gt;</span>Preferred contact method<span class="kw">&lt;/legend&gt;</span>
+
+  <span class="kw">&lt;label&gt;</span>
+    <span class="kw">&lt;input</span> <span class="str">type=</span><span class="str">"radio"</span> <span class="str">name=</span><span class="str">"contact"</span> <span class="str">value=</span><span class="str">"email"</span> <span class="str">checked</span><span class="kw">&gt;</span>
+    Email
+  <span class="kw">&lt;/label&gt;</span>
+  <span class="kw">&lt;label&gt;</span>
+    <span class="kw">&lt;input</span> <span class="str">type=</span><span class="str">"radio"</span> <span class="str">name=</span><span class="str">"contact"</span> <span class="str">value=</span><span class="str">"phone"</span><span class="kw">&gt;</span>
+    Phone
+  <span class="kw">&lt;/label&gt;</span>
+  <span class="kw">&lt;label&gt;</span>
+    <span class="kw">&lt;input</span> <span class="str">type=</span><span class="str">"radio"</span> <span class="str">name=</span><span class="str">"contact"</span> <span class="str">value=</span><span class="str">"post"</span><span class="kw">&gt;</span>
+    Post
+  <span class="kw">&lt;/label&gt;</span>
+<span class="kw">&lt;/fieldset&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🎯 Challenge</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="challenge">
+            <div class="challenge-head" onclick="togChallenge(this)">
+              <div class="challenge-head-left">
+                <span class="challenge-badge">TRY IT</span>
+                <span class="challenge-title">Build a login form</span>
+              </div>
+              <span class="challenge-arrow">▾</span>
+            </div>
+            <div class="challenge-body">
+              <p class="challenge-q">Build a login form with: an email input, a password input (both required), a "Remember me" checkbox, and a submit button. Every input must have a properly associated label. Form should POST to <code>/login</code>.</p>
+              <span class="answer-toggle" data-show="Show answer ↓" data-hide="Hide answer ↑" onclick="togAnswer(this)">Show answer ↓</span>
+              <div class="answer">
+                <div class="code-block">
+                  <div class="code-header">
+                    <div class="code-header-left"><span class="code-label html">HTML</span></div>
+                    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+                  </div>
+                  <div class="code-body"><span class="kw">&lt;form</span> <span class="str">action=</span><span class="str">"/login"</span> <span class="str">method=</span><span class="str">"POST"</span><span class="kw">&gt;</span>
+
+  <span class="kw">&lt;label</span> <span class="str">for=</span><span class="str">"email"</span><span class="kw">&gt;</span>Email address<span class="kw">&lt;/label&gt;</span>
+  <span class="kw">&lt;input</span>
+    <span class="str">type=</span><span class="str">"email"</span>
+    <span class="str">id=</span><span class="str">"email"</span>
+    <span class="str">name=</span><span class="str">"email"</span>
+    <span class="str">required</span>
+    <span class="str">autocomplete=</span><span class="str">"email"</span>
+  <span class="kw">&gt;</span>
+
+  <span class="kw">&lt;label</span> <span class="str">for=</span><span class="str">"password"</span><span class="kw">&gt;</span>Password<span class="kw">&lt;/label&gt;</span>
+  <span class="kw">&lt;input</span>
+    <span class="str">type=</span><span class="str">"password"</span>
+    <span class="str">id=</span><span class="str">"password"</span>
+    <span class="str">name=</span><span class="str">"password"</span>
+    <span class="str">required</span>
+    <span class="str">autocomplete=</span><span class="str">"current-password"</span>
+  <span class="kw">&gt;</span>
+
+  <span class="kw">&lt;label&gt;</span>
+    <span class="kw">&lt;input</span> <span class="str">type=</span><span class="str">"checkbox"</span> <span class="str">name=</span><span class="str">"remember"</span> <span class="str">value=</span><span class="str">"1"</span><span class="kw">&gt;</span>
+    Remember me
+  <span class="kw">&lt;/label&gt;</span>
+
+  <span class="kw">&lt;button</span> <span class="str">type=</span><span class="str">"submit"</span><span class="kw">&gt;</span>Log in<span class="kw">&lt;/button&gt;</span>
+
+<span class="kw">&lt;/form&gt;</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Q&A SECTION -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">Key questions for this topic — click to expand</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Why must every <code>&lt;input&gt;</code> have a <code>&lt;label&gt;</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Imagine using a form while blindfolded, relying only on a text-to-speech reader. Without labels, you'd hear "text box, text box, text box" — no idea what to type in each. Labels are the names on the boxes.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          A <code>&lt;label&gt;</code> associated with an input (via <code>for</code>/<code>id</code>) does three things:<br><br>
+          1. <strong>Screen readers</strong> announce the label text when the input receives focus — without it, users hear only the input type ("text field").<br>
+          2. <strong>Click target</strong> — clicking the label focuses or toggles the input, making small targets (radio buttons, checkboxes) far easier to use, especially on mobile.<br>
+          3. <strong>Context for everyone</strong> — placeholder text disappears on input; labels remain always visible.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Labels are the primary accessibility requirement for forms.</div>
+        <div class="key-point"><div class="key-point-dot"></div>The <code>for</code> attribute must match the input's <code>id</code> exactly.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Wrapping the input inside the <code>&lt;label&gt;</code> tag is a valid alternative to <code>for</code>/<code>id</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">What is the <code>name</code> attribute and why is it required for form submission?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">When the form is submitted, all inputs are packed into an envelope and sent to the server. The <code>name</code> is the label on the outside of each item in that envelope — without it, the item is simply not included.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          The <code>name</code> attribute becomes the <strong>key</strong> in the submitted key-value pair. If <code>name="email"</code>, the server receives <code>email=user@example.com</code>.<br><br>
+          Any input without a <code>name</code> attribute is <strong>silently excluded</strong> from form submission — no error, no warning. This is a very common bug: a developer forgets <code>name</code>, wonders why the server receives no data.<br><br>
+          The <code>id</code> attribute is separate — it links the label and is used by CSS/JS, but has no role in data submission.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>name</code> = key sent to the server. Without it, the field is ignored on submit.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>id</code> = browser-side identifier for CSS, JS, and label association.</div>
+        <div class="key-point"><div class="key-point-dot"></div>They can share the same value (e.g. <code>id="email" name="email"</code>) but serve different systems.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">What is the difference between GET and POST in a form?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">GET writes the data on a postcard — everyone who handles it can see it, and you can reference it by address. POST puts the data in a sealed envelope — only the recipient opens it.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <strong>GET</strong> — data is appended to the URL as query parameters: <code>/search?q=html+forms&amp;lang=en</code>. The request has no body. The URL can be bookmarked, shared, and cached. Use for search, filter, and navigation — anything idempotent where you want the URL to represent the state.<br><br>
+          <strong>POST</strong> — data is sent in the HTTP request body, not visible in the URL. Not cached. Not bookmarkable in that state. Use for login, registration, payment, and any action with side effects (creating or modifying data on the server).
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>GET: data in URL — bookmarkable, cached. For search and filters.</div>
+        <div class="key-point"><div class="key-point-dot"></div>POST: data in body — not visible in URL. For login, registration, payments.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Never send passwords or sensitive data via GET — they appear in server logs and browser history.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You're done with Topic 4 when…</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can build a complete contact form (name, email, message, submit) with every input correctly labelled.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You know the difference between <code>id</code> and <code>name</code>, and why a form input without <code>name</code> silently disappears on submission.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can choose the correct input type for email, password, phone, and date fields.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain when to use GET vs POST, and why passwords should never go in GET parameters.</div>
+  </div>
+
+</div><!-- /tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="progress-bar">
+    <span class="progress-label">Lernfortschritt</span>
+    <div class="prog-bar"><div class="prog-fill" id="prog-de" style="width:0%"></div></div>
+    <span id="prog-count-de" class="prog-label">0 / 0 geöffnet</span>
+  </div>
+
+  <!-- LEKTION 1: Formularstruktur -->
+  <div class="section">
+    <div class="section-label">Lektion 1 · ~30 Min.</div>
+    <h2>Formularstruktur — Container &amp; Labels</h2>
+    <p class="section-intro">Ein Formular ist eine Datenpipeline vom Browser des Nutzers zu einem Server. Das <code>&lt;form&gt;</code>-Element, die kritische Beziehung zwischen Labels und Inputs sowie die Unterschiede zwischen GET und POST — das sind die Grundlagen jedes Formulars.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>⚡ Warum das wichtig ist</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout interview">
+            <div class="lbl">⚓ Kernaussage</div>
+            <p>Formulare haben zwei Aufgaben: Daten vom Nutzer sammeln und an einen Server übermitteln. <code>action</code> gibt an, <em>wohin</em> die Daten gesendet werden. <code>method</code> gibt an, <em>wie</em>. Fehlende Labels machen Formulare für Tastatur- und Screenreader-Nutzer unbrauchbar.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Kernkonzepte — Formular-Element</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>&lt;form&gt;</code> — Container für alle Formularfelder</div>
+              <div class="concept-desc">Umschließt alle Inputs, Labels und Buttons. Bei der Übermittlung werden alle Felder mit <code>name</code>-Attribut gesammelt und als Schlüssel-Wert-Paare gesendet.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>action="/senden"</code> — Wohin die Daten gehen</div>
+              <div class="concept-desc">Die URL, an die die Formulardaten bei Übermittlung gesendet werden. Wird <code>action</code> weggelassen, wird an die aktuelle URL übermittelt.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>method="GET"</code> vs <code>method="POST"</code></div>
+              <div class="concept-desc"><strong>GET</strong> — hängt Daten als Query-Parameter an die URL an. Verlinkbar, gecacht. Für Suche und Filter verwenden. <strong>POST</strong> — sendet Daten im Request-Body, in der URL unsichtbar. Für Login, Registrierung und alles mit vertraulichen Daten verwenden.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>&lt;fieldset&gt;</code> und <code>&lt;legend&gt;</code></div>
+              <div class="concept-desc">Verwandte Inputs in einem <code>&lt;fieldset&gt;</code> mit beschreibender <code>&lt;legend&gt;</code> gruppieren. Unverzichtbar für Radio-Gruppen und Checkboxen. Screenreader lesen die Legend vor jedem Steuerelement der Gruppe vor.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Kernkonzepte — Labels</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept purple">
+              <div class="concept-name"><code>&lt;label for="id"&gt;</code> — Verknüpft Label mit Input</div>
+              <div class="concept-desc">Das <code>for</code>-Attribut muss mit der <code>id</code> des Inputs übereinstimmen. Dadurch wird eine Verknüpfung hergestellt: Klick auf das Label fokussiert den Input. Screenreader lesen das Label, wenn der Input fokussiert wird.</div>
+            </div>
+            <div class="concept red">
+              <div class="concept-name"><code>id</code> und <code>name</code> — Zwei verschiedene Zwecke</div>
+              <div class="concept-desc"><code>id</code> ist für den Browser (verknüpft Label und Input, für CSS/JS). <code>name</code> ist für den Server (wird zum Schlüssel in den übermittelten Daten). Beide werden benötigt und können denselben Wert haben.</div>
+            </div>
+          </div>
+          <div class="callout warn">
+            <div class="lbl">⚠️ Häufiger Fehler</div>
+            <p><code>placeholder</code>-Text als Label-Ersatz verwenden. Sobald der Nutzer zu tippen beginnt, verschwindet der Placeholder. Screenreader lesen Placeholders nicht zuverlässig vor. Immer ein echtes <code>&lt;label&gt;</code> verwenden.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LEKTION 2: Input-Typen -->
+  <div class="section">
+    <div class="section-label">Lektion 2 · ~30 Min.</div>
+    <h2>Input-Typen &amp; weitere Formularelemente</h2>
+    <p class="section-intro">HTML bietet über 20 Input-Typen. Den richtigen Typ zu wählen, aktiviert die passende mobile Tastatur, ermöglicht Browser-Validierung und verbessert die Nutzererfahrung — kostenlos.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Kernkonzepte — Input-Typen</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <table class="ref-table">
+            <thead><tr><th>Typ</th><th>Verwendung</th><th>Browser-Verhalten</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">text</td><td>Einzeiliger Freitext</td><td>Standard-Texttastatur</td></tr>
+              <tr><td class="mono">email</td><td>E-Mail-Adressen</td><td>Validiert Format, zeigt @-Tastatur auf Mobilgeräten</td></tr>
+              <tr><td class="mono">password</td><td>Passwörter</td><td>Verbirgt Zeichen, aktiviert Passwort-Manager</td></tr>
+              <tr><td class="mono">number</td><td>Numerische Werte</td><td>Spinner-Steuerelemente, Zahlentastatur auf Mobil</td></tr>
+              <tr><td class="mono">tel</td><td>Telefonnummern</td><td>Telefonkästatur auf Mobil, keine Formatvalidierung</td></tr>
+              <tr><td class="mono">checkbox</td><td>Ja/Nein, Mehrfachauswahl</td><td>Unabhängig ein- und ausschaltbar</td></tr>
+              <tr><td class="mono">radio</td><td>Eine Option aus einer Gruppe</td><td>Nur eine Auswahl pro name-Gruppe</td></tr>
+              <tr><td class="mono">date</td><td>Datumsauswahl</td><td>Zeigt nativen Datumsauswähler</td></tr>
+              <tr><td class="mono">file</td><td>Datei-Upload</td><td>Öffnet Datei-Browser</td></tr>
+              <tr><td class="mono">hidden</td><td>Daten still übermitteln</td><td>Nicht sichtbar, nicht bearbeitbar</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Kernkonzepte — Weitere Steuerelemente</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>&lt;textarea&gt;</code> — Mehrzeiliger Text</div>
+              <div class="concept-desc">Für Nachrichten, Kommentare und längere Texteingaben. <code>rows</code> und <code>cols</code> setzen die sichtbare Größe (CSS ist für Styling bevorzugt). Standardtext kommt zwischen die Tags, nicht als <code>value</code>-Attribut.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>&lt;select&gt;</code> + <code>&lt;option&gt;</code> — Dropdown</div>
+              <div class="concept-desc">Zeigt eine Liste von Optionen als Dropdown-Menü. Das <code>value</code>-Attribut bei <code>&lt;option&gt;</code> wird übermittelt; der Text zwischen den Tags ist das, was der Nutzer sieht. <code>&lt;optgroup&gt;</code> zum Gruppieren verwenden.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>&lt;button type="submit"&gt;</code> — Formular absenden</div>
+              <div class="concept-desc">Bevorzugt gegenüber <code>&lt;input type="submit"&gt;</code>, weil er HTML-Inhalt (Icons, formatierten Text) enthalten kann. Jeder Button in einem Formular hat standardmäßig <code>type="submit"</code> — immer explizit angeben, um versehentliches Absenden zu vermeiden.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>&lt;button type="button"&gt;</code> — Keine Formularaktion</div>
+              <div class="concept-desc">Tut standardmäßig nichts — für JavaScript-Interaktionen, die das Formular nicht absenden sollen. Für Modal-Toggle-Buttons, Zähler oder andere UI-Elemente innerhalb eines Formulars verwenden.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Kernkonzepte — Validierungsattribute</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept purple">
+              <div class="concept-name"><code>required</code> — Pflichtfeld</div>
+              <div class="concept-desc">Verhindert das Absenden, wenn das Feld leer ist. Der Browser zeigt eine native Fehlermeldung. Boolesches Attribut — nur das Wort <code>required</code>, kein Wert nötig.</div>
+            </div>
+            <div class="concept indigo">
+              <div class="concept-name"><code>minlength</code> / <code>maxlength</code></div>
+              <div class="concept-desc">Zeichenbegrenzungen für Texteingaben. <code>maxlength</code> verhindert weitere Eingabe. <code>minlength</code> blockiert das Absenden bei zu kurzem Inhalt.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>min</code> / <code>max</code> / <code>step</code></div>
+              <div class="concept-desc">Numerische und Datumsbeschränkungen. <code>min="0"</code> verhindert negative Werte. <code>step="0.01"</code> erlaubt zwei Dezimalstellen (nützlich für Preise).</div>
+            </div>
+            <div class="concept blue">
+              <div class="concept-name"><code>disabled</code> und <code>readonly</code></div>
+              <div class="concept-desc"><code>disabled</code> — nicht interaktiv, wird nicht mit dem Formular übermittelt, visuell ausgegraut. <code>readonly</code> — nicht bearbeitbar, wird aber übermittelt. <code>disabled</code> für nicht anwendbare Optionen; <code>readonly</code> für Referenzwerte verwenden.</div>
+            </div>
+          </div>
+          <div class="callout info">
+            <div class="lbl">ℹ️ Wichtig</div>
+            <p>Browser-Validierung ist eine Bequemlichkeit, kein Sicherheitsmechanismus. Immer serverseitig validieren. Ein Nutzer kann die Browser-Validierung mit <code>novalidate</code> am Formular oder über DevTools deaktivieren.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🌍 Anwendungsbeispiel — Vollständiges Kontaktformular</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="kw">&lt;form</span> <span class="str">action=</span><span class="str">"/kontakt"</span> <span class="str">method=</span><span class="str">"POST"</span><span class="kw">&gt;</span>
+
+  <span class="kw">&lt;label</span> <span class="str">for=</span><span class="str">"name"</span><span class="kw">&gt;</span>Vollständiger Name<span class="kw">&lt;/label&gt;</span>
+  <span class="kw">&lt;input</span>
+    <span class="str">type=</span><span class="str">"text"</span>
+    <span class="str">id=</span><span class="str">"name"</span>
+    <span class="str">name=</span><span class="str">"name"</span>
+    <span class="str">required</span>
+    <span class="str">autocomplete=</span><span class="str">"name"</span>
+  <span class="kw">&gt;</span>
+
+  <span class="kw">&lt;label</span> <span class="str">for=</span><span class="str">"email"</span><span class="kw">&gt;</span>E-Mail-Adresse<span class="kw">&lt;/label&gt;</span>
+  <span class="kw">&lt;input</span>
+    <span class="str">type=</span><span class="str">"email"</span>
+    <span class="str">id=</span><span class="str">"email"</span>
+    <span class="str">name=</span><span class="str">"email"</span>
+    <span class="str">required</span>
+    <span class="str">autocomplete=</span><span class="str">"email"</span>
+  <span class="kw">&gt;</span>
+
+  <span class="kw">&lt;label</span> <span class="str">for=</span><span class="str">"thema"</span><span class="kw">&gt;</span>Thema<span class="kw">&lt;/label&gt;</span>
+  <span class="kw">&lt;select</span> <span class="str">id=</span><span class="str">"thema"</span> <span class="str">name=</span><span class="str">"thema"</span> <span class="str">required</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;option</span> <span class="str">value=</span><span class="str">""</span><span class="kw">&gt;</span>— Thema wählen —<span class="kw">&lt;/option&gt;</span>
+    <span class="kw">&lt;option</span> <span class="str">value=</span><span class="str">"support"</span><span class="kw">&gt;</span>Technischer Support<span class="kw">&lt;/option&gt;</span>
+    <span class="kw">&lt;option</span> <span class="str">value=</span><span class="str">"vertrieb"</span><span class="kw">&gt;</span>Vertriebsanfrage<span class="kw">&lt;/option&gt;</span>
+    <span class="kw">&lt;option</span> <span class="str">value=</span><span class="str">"sonstiges"</span><span class="kw">&gt;</span>Sonstiges<span class="kw">&lt;/option&gt;</span>
+  <span class="kw">&lt;/select&gt;</span>
+
+  <span class="kw">&lt;label</span> <span class="str">for=</span><span class="str">"nachricht"</span><span class="kw">&gt;</span>Nachricht<span class="kw">&lt;/label&gt;</span>
+  <span class="kw">&lt;textarea</span>
+    <span class="str">id=</span><span class="str">"nachricht"</span>
+    <span class="str">name=</span><span class="str">"nachricht"</span>
+    <span class="str">rows=</span><span class="str">"5"</span>
+    <span class="str">required</span>
+    <span class="str">minlength=</span><span class="str">"10"</span>
+  <span class="kw">&gt;&lt;/textarea&gt;</span>
+
+  <span class="kw">&lt;label&gt;</span>
+    <span class="kw">&lt;input</span> <span class="str">type=</span><span class="str">"checkbox"</span> <span class="str">name=</span><span class="str">"zustimmung"</span> <span class="str">required</span><span class="kw">&gt;</span>
+    Ich stimme der Datenschutzrichtlinie zu
+  <span class="kw">&lt;/label&gt;</span>
+
+  <span class="kw">&lt;button</span> <span class="str">type=</span><span class="str">"submit"</span><span class="kw">&gt;</span>Nachricht senden<span class="kw">&lt;/button&gt;</span>
+
+<span class="kw">&lt;/form&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ÜBUNGSFRAGEN -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Klicke eine Frage an, um sie zu öffnen</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Warum muss jedes <code>&lt;input&gt;</code> ein <code>&lt;label&gt;</code> haben?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Stell dir vor, du füllst ein Formular mit verbundenen Augen aus und verlässt dich nur auf eine Sprachausgabe. Ohne Labels würdest du hören: „Textfeld, Textfeld, Textfeld" — ohne Ahnung, was in welches Feld gehört. Labels sind die Beschriftungen auf den Kästchen.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Ein mit einem Input verknüpftes <code>&lt;label&gt;</code> (über <code>for</code>/<code>id</code>) erfüllt drei Aufgaben:<br><br>
+          1. <strong>Screenreader</strong> lesen den Label-Text vor, wenn der Input fokussiert wird — ohne ihn hören Nutzer nur den Input-Typ („Textfeld").<br>
+          2. <strong>Klickziel</strong> — Klick auf das Label fokussiert oder schaltet den Input um, was kleine Ziele (Radio-Buttons, Checkboxen) besser erreichbar macht.<br>
+          3. <strong>Kontext für alle</strong> — Placeholder-Text verschwindet beim Tippen; Labels bleiben immer sichtbar.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Labels sind die wichtigste Barrierefreiheitsanforderung für Formulare.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Das <code>for</code>-Attribut muss exakt mit der <code>id</code> des Inputs übereinstimmen.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Den Input innerhalb des <code>&lt;label&gt;</code>-Tags einzuwickeln ist eine gültige Alternative zu <code>for</code>/<code>id</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Was ist das <code>name</code>-Attribut und warum ist es für die Formularübermittlung erforderlich?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Beim Absenden des Formulars werden alle Inputs in einen Umschlag gepackt und an den Server geschickt. Der <code>name</code> ist das Etikett auf jedem Gegenstand in diesem Umschlag — ohne ihn wird der Gegenstand einfach nicht eingelegt.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          Das <code>name</code>-Attribut wird zum <strong>Schlüssel</strong> im übermittelten Schlüssel-Wert-Paar. Bei <code>name="email"</code> empfängt der Server <code>email=nutzer@beispiel.de</code>.<br><br>
+          Jeder Input ohne <code>name</code>-Attribut wird bei der Formularübermittlung <strong>stillschweigend ausgelassen</strong> — kein Fehler, keine Warnung. Das ist ein sehr häufiger Fehler.<br><br>
+          Das <code>id</code>-Attribut hat eine andere Rolle: es verknüpft Label und Input und wird von CSS/JS verwendet — es hat jedoch keinen Einfluss auf die Datenübermittlung.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>name</code> = Schlüssel, der an den Server gesendet wird. Ohne ihn wird das Feld beim Absenden ignoriert.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>id</code> = Browser-seitiger Bezeichner für CSS, JS und Label-Verknüpfung.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Beide können denselben Wert haben (z.B. <code>id="email" name="email"</code>), dienen aber verschiedenen Zwecken.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Was ist der Unterschied zwischen GET und POST in einem Formular?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">GET schreibt die Daten auf eine Postkarte — jeder, der sie bearbeitet, kann sie lesen, und du kannst sie per Adresse referenzieren. POST legt die Daten in einen versiegelten Umschlag — nur der Empfänger öffnet ihn.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <strong>GET</strong> — Daten werden als Query-Parameter an die URL angehängt: <code>/suche?q=html+formulare&amp;sprache=de</code>. Kein Request-Body. Die URL kann als Lesezeichen gespeichert, geteilt und gecacht werden. Für Suche, Filter und Navigation verwenden — alles, bei dem die URL den Zustand repräsentieren soll.<br><br>
+          <strong>POST</strong> — Daten werden im HTTP-Request-Body gesendet, in der URL nicht sichtbar. Nicht gecacht. Für Login, Registrierung, Bezahlung und alle Aktionen mit Nebenwirkungen (Daten auf dem Server erstellen oder ändern) verwenden.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>GET: Daten in URL — als Lesezeichen speicherbar, gecacht. Für Suche und Filter.</div>
+        <div class="key-point"><div class="key-point-dot"></div>POST: Daten im Body — in URL nicht sichtbar. Für Login, Registrierung, Bezahlung.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Passwörter und vertrauliche Daten niemals per GET senden — sie erscheinen in Server-Logs und im Browser-Verlauf.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit Thema 4 fertig, wenn…</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du ein vollständiges Kontaktformular (Name, E-Mail, Nachricht, Absenden) mit korrekt verknüpften Labels erstellen kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du den Unterschied zwischen <code>id</code> und <code>name</code> kennst und erklären kannst, warum ein Input ohne <code>name</code> beim Absenden stillschweigend ignoriert wird.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du den richtigen Input-Typ für E-Mail, Passwort, Telefon und Datum wählen kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du GET und POST unterscheiden und erklären kannst, warum Passwörter nie als GET-Parameter gesendet werden dürfen.</div>
+  </div>
+
+</div><!-- /tab-de -->
+
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+</div><!-- /tab-ar -->
+
+</div><!-- /body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'lms_html_starter_04_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<script>
+function copyCode(btn) {
+  const body = btn.closest('.code-block').querySelector('.code-body');
+  const text = (body.innerText || body.textContent).replace(/\u00A0/g, ' ');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1800);
+  }).catch(() => { btn.textContent = 'failed'; setTimeout(() => { btn.textContent = 'copy'; }, 1500); });
+}
+function togChallenge(headEl) {
+  const body  = headEl.nextElementSibling;
+  const arrow = headEl.querySelector('.challenge-arrow');
+  body.classList.toggle('open'); arrow.classList.toggle('open');
+}
+function togAnswer(toggleEl) {
+  const ans = toggleEl.nextElementSibling;
+  ans.classList.toggle('open');
+  const isOpen = ans.classList.contains('open');
+  toggleEl.textContent = isOpen
+    ? (toggleEl.dataset.hide || 'Hide answer ↑')
+    : (toggleEl.dataset.show || 'Show answer ↓');
+}
+updateProgress();
+guardLanguageTab('ar');
+</script>
+</body>
+</html>

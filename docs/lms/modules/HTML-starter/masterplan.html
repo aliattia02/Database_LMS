@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Starter — Course Index</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+.intro-text {
+  color: var(--slate);
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 700px;
+  margin-bottom: 26px;
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 14px;
+}
+
+.course-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 18px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: inherit;
+  width: 100%;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.course-card:hover { border-color: var(--blue); transform: translateY(-2px); }
+.course-card:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.course-card-top { display: flex; align-items: center; gap: 10px; }
+.course-num {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: var(--blue-bg); color: var(--blue);
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.course-title    { font-size: 14px; font-weight: 700; color: var(--navy); }
+.course-subtitle { font-size: 12.5px; color: var(--slate); line-height: 1.55; }
+.course-open {
+  margin-top: auto;
+  font-size: 11.5px; font-weight: 600; color: var(--blue);
+  display: flex; align-items: center; gap: 4px;
+}
+
+.course-card.featured { border-color: var(--blue-border); background: var(--blue-bg); }
+.course-card.featured .course-num { background: var(--blue); color: #fff; }
+
+.weight-badge {
+  font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px;
+  white-space: nowrap; display: inline-block; margin-top: 4px; align-self: flex-start;
+}
+.w-critical { background: #fee2e2; color: #b91c1c; }
+.w-high     { background: #ffedd5; color: #c2410c; }
+.w-medium   { background: #dbeafe; color: #1d4ed8; }
+.w-low      { background: #dcfce7; color: #15803d; }
+
+.grid-group-label {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted); margin: 24px 0 10px;
+  display: flex; align-items: center; gap: 10px;
+}
+.grid-group-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.decoder-block {
+  background: var(--amber-bg); border: 1.5px solid var(--amber-border);
+  border-radius: var(--radius); margin-bottom: 28px; overflow: hidden;
+}
+.decoder-trigger {
+  width: 100%; background: none; border: none; text-align: left;
+  padding: 16px 20px; cursor: pointer; display: flex; align-items: center;
+  justify-content: space-between; font-family: inherit;
+}
+.decoder-trigger-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--amber-text);
+  display: flex; align-items: center; gap: 8px;
+}
+.decoder-chevron {
+  font-size: 12px; color: var(--amber-text); transition: transform .2s;
+}
+.decoder-trigger.open .decoder-chevron { transform: rotate(180deg); }
+.decoder-body { display: none; padding: 0 20px 20px; }
+.decoder-body.open { display: block; }
+
+.decoder-section { margin-bottom: 18px; }
+.decoder-section h3 {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--amber-text); margin-bottom: 10px;
+}
+
+.must-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.must-pill  { font-size: 11px; padding: 3px 10px; border-radius: 99px; font-weight: 700; background: #fca5a5; color: #7f1d1d; }
+.nice-pill  { font-size: 11px; padding: 3px 10px; border-radius: 99px; font-weight: 600; background: var(--blue-bg); color: var(--blue); }
+
+.rank-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; }
+.rank-label { font-size: 12px; font-weight: 600; color: var(--navy); min-width: 200px; }
+.rank-bar-wrap { flex: 1; background: #fde68a; border-radius: 99px; height: 7px; overflow: hidden; }
+.rank-bar-fill { height: 7px; border-radius: 99px; }
+.rank-bar-critical { background: #dc2626; }
+.rank-bar-high     { background: #ea580c; }
+.rank-bar-medium   { background: #d97706; }
+.rank-lbl { font-size: 11px; font-weight: 700; min-width: 80px; color: var(--amber-text); }
+
+[dir="rtl"] .course-card       { text-align: right; }
+[dir="rtl"] .course-open       { flex-direction: row-reverse; }
+[dir="rtl"] .grid-group-label  { flex-direction: row-reverse; }
+[dir="rtl"] .grid-group-label::after  { display: none; }
+[dir="rtl"] .grid-group-label::before { content: ''; flex: 1; height: 1px; background: var(--border); }
+[dir="rtl"] .decoder-trigger   { flex-direction: row-reverse; }
+[dir="rtl"] .decoder-trigger-label { flex-direction: row-reverse; }
+[dir="rtl"] .rank-row          { flex-direction: row-reverse; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">HTML Starter &mdash; Course Index</div>
+    <h1>HTML — The Language of the Web</h1>
+    <p class="header-sub">
+      From blank file to structured web pages: learn <code>elements</code>, <code>attributes</code>,
+      semantic markup, forms, links, and media — the bedrock every frontend developer builds on.
+    </p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en', this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de', this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar', this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="decoder-block">
+    <button class="decoder-trigger" onclick="toggleDecoder(this)">
+      <span class="decoder-trigger-label">⚑ Topic Priority Guide</span>
+      <span class="decoder-chevron">▾</span>
+    </button>
+    <div class="decoder-body">
+
+      <div class="decoder-section">
+        <h3>Must-Know Skills</h3>
+        <div class="must-pills">
+          <span class="must-pill">Document structure</span>
+          <span class="must-pill">Elements &amp; attributes</span>
+          <span class="must-pill">Links &amp; images</span>
+          <span class="must-pill">Forms &amp; inputs</span>
+          <span class="must-pill">Semantic HTML</span>
+        </div>
+        <h3 style="margin-top:10px">Nice to Know</h3>
+        <div class="must-pills">
+          <span class="nice-pill">ARIA roles</span>
+          <span class="nice-pill">Meta tags &amp; SEO</span>
+          <span class="nice-pill">HTML entities</span>
+        </div>
+      </div>
+
+      <div class="decoder-section">
+        <h3>Topic Priority Ranking</h3>
+        <div class="rank-row">
+          <span class="rank-label">Topic 1 — HTML Basics &amp; Document Structure</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
+          <span class="rank-lbl">🔴 Critical</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Topic 3 — Links, Images &amp; Media</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:95%"></div></div>
+          <span class="rank-lbl">🔴 Critical</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Topic 4 — Forms &amp; Inputs</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 High</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Topic 2 — Text, Headings &amp; Lists</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:75%"></div></div>
+          <span class="rank-lbl">🟠 High</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Topic 5 — Semantic HTML &amp; Accessibility</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-medium" style="width:55%"></div></div>
+          <span class="rank-lbl">🟡 Medium</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <p class="intro-text">
+    New here? Start with the <strong>General Overview</strong> to understand the big picture,
+    then work through Topic 1 → Topic 5 in order — each lesson builds directly on the previous one.
+    If you're pressed for time, prioritise <strong>Topics 1, 3, and 4</strong> — those cover 80% of
+    real-world HTML you'll write daily.
+  </p>
+
+  <div class="grid-group-label">Orientation — Start Here</div>
+  <div class="course-grid">
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/html-starter/general.html')">
+      <div class="course-card-top">
+        <span class="course-num">GEN</span>
+        <span class="course-title">General Overview</span>
+      </div>
+      <span class="course-subtitle">What HTML is, how it fits with CSS &amp; JS, and what you'll be able to build by the end.</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/html-starter/topic0-mindmap.html')">
+      <div class="course-card-top">
+        <span class="course-num">MAP</span>
+        <span class="course-title">Mind Map</span>
+      </div>
+      <span class="course-subtitle">Visual overview of all HTML concepts and how they connect — revisit after each topic.</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+  </div>
+
+  <div class="grid-group-label">Core Topics — 5 Lessons</div>
+  <div class="course-grid">
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/html-starter/topic1-html-basics.html')">
+      <div class="course-card-top">
+        <span class="course-num">01</span>
+        <span class="course-title">HTML Basics &amp; Document Structure</span>
+      </div>
+      <span class="course-subtitle">Can you write a valid HTML document from scratch and explain what every line of the boilerplate does?</span>
+      <span class="weight-badge w-critical">⚡ Critical · ~1.5h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/html-starter/topic2-text-elements.html')">
+      <div class="course-card-top">
+        <span class="course-num">02</span>
+        <span class="course-title">Text, Headings &amp; Lists</span>
+      </div>
+      <span class="course-subtitle">Can you structure a document with correct heading hierarchy, paragraphs, emphasis, and both list types?</span>
+      <span class="weight-badge w-high">🔥 High · ~1h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/html-starter/topic3-links-images.html')">
+      <div class="course-card-top">
+        <span class="course-num">03</span>
+        <span class="course-title">Links, Images &amp; Media</span>
+      </div>
+      <span class="course-subtitle">Can you create relative and absolute links, embed responsive images, and add alt text correctly?</span>
+      <span class="weight-badge w-critical">⚡ Critical · ~1h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/html-starter/topic4-forms.html')">
+      <div class="course-card-top">
+        <span class="course-num">04</span>
+        <span class="course-title">Forms &amp; Inputs</span>
+      </div>
+      <span class="course-subtitle">Can you build a complete form with text inputs, dropdowns, checkboxes, and a submit button — with proper labels?</span>
+      <span class="weight-badge w-high">🔥 High · ~1.5h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/html-starter/topic5-semantic-html.html')">
+      <div class="course-card-top">
+        <span class="course-num">05</span>
+        <span class="course-title">Semantic HTML &amp; Accessibility</span>
+      </div>
+      <span class="course-subtitle">Can you replace generic divs with semantic elements and explain why screen readers and search engines care?</span>
+      <span class="weight-badge w-medium">📘 Medium · ~1h</span>
+      <span class="course-open">Open lesson →</span>
+    </button>
+
+  </div>
+
+</div><!-- /tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="decoder-block">
+    <button class="decoder-trigger" onclick="toggleDecoder(this)">
+      <span class="decoder-trigger-label">⚑ Themen-Prioritätsführer</span>
+      <span class="decoder-chevron">▾</span>
+    </button>
+    <div class="decoder-body">
+
+      <div class="decoder-section">
+        <h3>Pflicht-Kenntnisse</h3>
+        <div class="must-pills">
+          <span class="must-pill">Dokumentstruktur</span>
+          <span class="must-pill">Elemente &amp; Attribute</span>
+          <span class="must-pill">Links &amp; Bilder</span>
+          <span class="must-pill">Formulare &amp; Eingaben</span>
+          <span class="must-pill">Semantisches HTML</span>
+        </div>
+        <h3 style="margin-top:10px">Gut zu wissen</h3>
+        <div class="must-pills">
+          <span class="nice-pill">ARIA-Rollen</span>
+          <span class="nice-pill">Meta-Tags &amp; SEO</span>
+          <span class="nice-pill">HTML-Entities</span>
+        </div>
+      </div>
+
+      <div class="decoder-section">
+        <h3>Themen-Priorität</h3>
+        <div class="rank-row">
+          <span class="rank-label">Thema 1 — HTML-Grundlagen &amp; Dokumentstruktur</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:100%"></div></div>
+          <span class="rank-lbl">🔴 Kritisch</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Thema 3 — Links, Bilder &amp; Medien</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-critical" style="width:95%"></div></div>
+          <span class="rank-lbl">🔴 Kritisch</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Thema 4 — Formulare &amp; Eingaben</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:80%"></div></div>
+          <span class="rank-lbl">🟠 Hoch</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Thema 2 — Text, Überschriften &amp; Listen</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-high" style="width:75%"></div></div>
+          <span class="rank-lbl">🟠 Hoch</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">Thema 5 — Semantisches HTML &amp; Barrierefreiheit</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill rank-bar-medium" style="width:55%"></div></div>
+          <span class="rank-lbl">🟡 Mittel</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <p class="intro-text">
+    Neu hier? Beginne mit der <strong>Allgemeinen Übersicht</strong>, dann arbeite Thema 1 → Thema 5 der Reihe nach durch.
+    Jede Lektion baut auf der vorherigen auf. Unter Zeitdruck? Priorisiere <strong>Themen 1, 3 und 4</strong> —
+    das deckt 80% des alltäglichen HTML-Schreibens ab.
+  </p>
+
+  <div class="grid-group-label">Orientierung — Hier starten</div>
+  <div class="course-grid">
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/html-starter/general.html')">
+      <div class="course-card-top">
+        <span class="course-num">GEN</span>
+        <span class="course-title">Allgemeine Übersicht</span>
+      </div>
+      <span class="course-subtitle">Was HTML ist, wie es mit CSS &amp; JS zusammenspielt und was du am Ende bauen kannst.</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/html-starter/topic0-mindmap.html')">
+      <div class="course-card-top">
+        <span class="course-num">MAP</span>
+        <span class="course-title">Mindmap</span>
+      </div>
+      <span class="course-subtitle">Visuelle Übersicht aller HTML-Konzepte und ihrer Verbindungen — nach jedem Thema erneut ansehen.</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+  </div>
+
+  <div class="grid-group-label">Kernthemen — 5 Lektionen</div>
+  <div class="course-grid">
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/html-starter/topic1-html-basics.html')">
+      <div class="course-card-top">
+        <span class="course-num">01</span>
+        <span class="course-title">HTML-Grundlagen &amp; Dokumentstruktur</span>
+      </div>
+      <span class="course-subtitle">Kannst du ein gültiges HTML-Dokument von Grund auf schreiben und jede Zeile des Boilerplates erklären?</span>
+      <span class="weight-badge w-critical">⚡ Kritisch · ~1,5h</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/html-starter/topic2-text-elements.html')">
+      <div class="course-card-top">
+        <span class="course-num">02</span>
+        <span class="course-title">Text, Überschriften &amp; Listen</span>
+      </div>
+      <span class="course-subtitle">Kannst du ein Dokument mit korrekter Überschriftenhierarchie, Absätzen, Betonung und Listen strukturieren?</span>
+      <span class="weight-badge w-high">🔥 Hoch · ~1h</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card featured" onclick="openLesson('lms/modules/html-starter/topic3-links-images.html')">
+      <div class="course-card-top">
+        <span class="course-num">03</span>
+        <span class="course-title">Links, Bilder &amp; Medien</span>
+      </div>
+      <span class="course-subtitle">Kannst du relative und absolute Links erstellen, responsive Bilder einbetten und Alt-Text korrekt vergeben?</span>
+      <span class="weight-badge w-critical">⚡ Kritisch · ~1h</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/html-starter/topic4-forms.html')">
+      <div class="course-card-top">
+        <span class="course-num">04</span>
+        <span class="course-title">Formulare &amp; Eingaben</span>
+      </div>
+      <span class="course-subtitle">Kannst du ein vollständiges Formular mit Texteingaben, Dropdowns, Checkboxen und Submit-Button erstellen?</span>
+      <span class="weight-badge w-high">🔥 Hoch · ~1,5h</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+    <button class="course-card" onclick="openLesson('lms/modules/html-starter/topic5-semantic-html.html')">
+      <div class="course-card-top">
+        <span class="course-num">05</span>
+        <span class="course-title">Semantisches HTML &amp; Barrierefreiheit</span>
+      </div>
+      <span class="course-subtitle">Kannst du generische Divs durch semantische Elemente ersetzen und erklären, warum das wichtig ist?</span>
+      <span class="weight-badge w-medium">📘 Mittel · ~1h</span>
+      <span class="course-open">Lektion öffnen →</span>
+    </button>
+
+  </div>
+
+</div><!-- /tab-de -->
+
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar">
+</div><!-- /tab-ar -->
+
+</div><!-- /body -->
+</main>
+
+<script src="../shared/lesson-ui.js"></script>
+<script>
+function openLesson(route) {
+  if (window.parent !== window) {
+    try {
+      window.parent.postMessage({ type: 'lms:openLesson', route: route }, '*');
+      return;
+    } catch (_) { /* fall through */ }
+  }
+  location.href = route.replace('lms/modules/html-starter/', './');
+}
+
+function toggleDecoder(btn) {
+  btn.classList.toggle('open');
+  const body = btn.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+guardLanguageTab('ar');
+</script>
+</body>
+</html>

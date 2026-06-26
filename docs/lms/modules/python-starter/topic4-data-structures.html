@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 4 — Data Structures | Python Starter</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── Topic page-specific styles — copy this block verbatim ── */
+.badge { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must   { background:#fef3c7; color:#92400e; }
+.badge-common { background:#dbeafe; color:#1e40af; }
+.badge-tip    { background:#f0fdf4; color:#166534; }
+
+.q-arrow { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel { padding:18px 20px 16px 52px; }
+
+.strategy-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text  { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+
+.answer-box       { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text  { font-size:13.5px; color:#14532d; line-height:1.7; }
+
+.warning-box      { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text { font-size:13px; color:var(--amber-text); line-height:1.55; }
+
+.key-points    { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point     { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin:10px 0; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; }
+
+.section    { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2 { font-size:18px; font-weight:700; margin-bottom:14px; }
+.section p  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+.type-table { width:100%; border-collapse:collapse; margin:12px 0; font-size:13px; }
+.type-table th { background:#f1f5f9; color:var(--navy); font-weight:700; text-align:left; padding:8px 12px; border:1px solid var(--border); }
+.type-table td { padding:7px 12px; border:1px solid var(--border); color:#334155; vertical-align:top; }
+.type-table tr:nth-child(even) td { background:#fafbfc; }
+.type-badge { font-size:11px; font-weight:700; padding:1px 7px; border-radius:99px; background:#eff6ff; color:#1d4ed8; white-space:nowrap; }
+
+.must-block       { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item        { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet      { font-size:15px; flex-shrink:0; }
+
+/* RTL overrides */
+[dir="rtl"] .q-panel         { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point        { flex-direction:row-reverse; }
+[dir="rtl"] .must-item        { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title { flex-direction:row-reverse; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .section .code-block { direction:ltr; text-align:left; }
+
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Python Starter &mdash; Topic 4 of 5</div>
+    <h1><span>Data</span> Structures</h1>
+    <p class="header-sub">Master Python's four built-in collections — <code>list</code>, <code>tuple</code>, <code>dict</code>, and <code>set</code> — understand how each stores data, and know when to reach for which one.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <!-- SECTION 1: Lists -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📋</div>
+    <div>
+      <div class="section-title">Lists</div>
+      <div class="section-subtitle">Ordered, mutable sequences — Python's most versatile collection</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Creating, indexing, and slicing lists</h2>
+    <p>A list is an <strong>ordered, mutable</strong> sequence that can hold items of any type, including mixed types. It is defined with square brackets. Items are accessed by zero-based index; negative indices count from the end.</p>
+    <div class="code-block">fruits = ["apple", "banana", "cherry", "date"]
+
+# Indexing
+fruits[0]     # → "apple"   (first)
+fruits[-1]    # → "date"    (last)
+fruits[-2]    # → "cherry"  (second from end)
+
+# Slicing  [start : stop : step]  — stop is exclusive
+fruits[1:3]   # → ["banana", "cherry"]
+fruits[:2]    # → ["apple", "banana"]
+fruits[::2]   # → ["apple", "cherry"]   (every 2nd)
+fruits[::-1]  # → ["date", "cherry", "banana", "apple"]  (reversed)</div>
+
+    <h2 style="margin-top:20px;">Mutating lists</h2>
+    <div class="code-block">nums = [3, 1, 4, 1, 5]
+
+nums.append(9)          # add to end → [3, 1, 4, 1, 5, 9]
+nums.insert(0, 0)       # insert at index → [0, 3, 1, 4, 1, 5, 9]
+nums.remove(1)          # removes FIRST occurrence of 1
+nums.pop()              # removes & returns last item → 9
+nums.pop(0)             # removes & returns item at index 0
+nums.sort()             # sorts in place (returns None)
+nums.reverse()          # reverses in place (returns None)
+
+# Non-mutating alternatives
+sorted(nums)            # returns a new sorted list, nums unchanged
+nums + [10, 11]         # concatenation — new list</div>
+
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code>append()</code> is O(1); <code>insert(0, x)</code> is O(n) — inserting at the front shifts every element. Use <code>collections.deque</code> if you need fast front insertions.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>sort()</code> and <code>sorted()</code> accept a <code>key</code> function: <code>sorted(words, key=str.lower)</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>in</code> operator checks membership: <code>"apple" in fruits</code> → <code>True</code>. On a list this is O(n) — use a set when you need frequent membership tests.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">List comprehensions</h2>
+    <p>A list comprehension builds a new list by applying an expression to each item in an iterable, optionally filtered by a condition. It is faster and more readable than an equivalent <code>for</code> loop that calls <code>append()</code>.</p>
+    <div class="code-block"># [expression  for item in iterable  if condition]
+squares   = [x**2 for x in range(1, 6)]        # → [1, 4, 9, 16, 25]
+evens     = [x for x in range(10) if x % 2 == 0] # → [0, 2, 4, 6, 8]
+upper     = [s.upper() for s in ["a", "b", "c"]] # → ["A", "B", "C"]
+
+# Nested comprehension — flatten a 2D list
+matrix = [[1, 2], [3, 4], [5, 6]]
+flat   = [n for row in matrix for n in row]     # → [1, 2, 3, 4, 5, 6]</div>
+  </div>
+
+  <!-- SECTION 2: Tuples -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">📌</div>
+    <div>
+      <div class="section-title">Tuples</div>
+      <div class="section-subtitle">Ordered, immutable sequences — for fixed records and safe return values</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>When to use a tuple instead of a list</h2>
+    <p>A tuple looks like a list but uses parentheses and is <strong>immutable</strong> — its contents cannot be changed after creation. This makes tuples useful for data that should not be modified, as dictionary keys, and as lightweight records with a fixed number of fields.</p>
+    <div class="code-block">point = (3, 7)          # 2D coordinate — semantically fixed
+rgb   = (255, 128, 0)  # colour channel — three distinct roles
+
+# Indexing works the same as lists
+point[0]               # → 3
+
+# Unpacking — assign each element to a name
+x, y = point
+lat, lon = (52.52, 13.40)
+
+# Swap variables without a temp variable
+a, b = 1, 2
+a, b = b, a            # → a=2, b=1
+
+# Single-element tuple requires a trailing comma
+singleton = (42,)      # NOT (42) — that's just an int in parentheses
+
+# Tuples as dictionary keys (lists cannot be keys — they're mutable)
+grid = {(0, 0): "start", (3, 3): "end"}</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Tuples are slightly more memory-efficient and faster to iterate than lists — prefer them for data that is naturally fixed.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Functions that return multiple values actually return a tuple: <code>return x, y</code> is <code>return (x, y)</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Named tuples (<code>collections.namedtuple</code> or <code>typing.NamedTuple</code>) add field names to tuples, making them self-documenting without the overhead of a full class.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Dictionaries -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🗂️</div>
+    <div>
+      <div class="section-title">Dictionaries</div>
+      <div class="section-subtitle">Key-value mappings with O(1) average lookup</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Working with dictionaries</h2>
+    <p>A dictionary maps <strong>immutable keys</strong> to values of any type. Lookups, insertions, and deletions are O(1) on average. Since Python 3.7 dictionaries maintain insertion order.</p>
+    <div class="code-block">user = {"name": "Alice", "age": 30, "role": "admin"}
+
+# Read — two ways
+user["name"]                  # → "Alice"  (KeyError if missing)
+user.get("email")             # → None     (safe, no error)
+user.get("email", "n/a")      # → "n/a"   (custom default)
+
+# Write / update
+user["age"] = 31              # update existing key
+user["city"] = "Berlin"       # add new key
+user.update({"role": "owner", "level": 5})  # bulk update
+
+# Delete
+del user["city"]              # raises KeyError if missing
+user.pop("level")             # removes & returns value
+user.pop("level", None)       # safe pop — no error if missing
+
+# Iterate
+for key in user:                        # iterate keys
+    print(key, user[key])
+for key, value in user.items():         # iterate key-value pairs
+for value in user.values():             # iterate values only</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Always prefer <code>.get(key, default)</code> over bare <code>[key]</code> when the key might be absent — it avoids a <code>KeyError</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>collections.defaultdict</code> automatically creates a default value for missing keys — useful for grouping or counting: <code>defaultdict(list)</code>, <code>defaultdict(int)</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Dict comprehensions follow the same pattern as list comprehensions: <code>{k: v for k, v in pairs}</code>.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">Valid dictionary keys</h2>
+    <p>Only <strong>hashable</strong> (immutable) objects can be dictionary keys — integers, floats, strings, booleans, and tuples of hashable items. Lists, dicts, and sets are mutable and therefore <em>not</em> valid keys.</p>
+    <div class="code-block">valid_keys = {1: "int", 3.14: "float", "x": "str",
+              True: "bool", (0, 0): "tuple"}
+
+{[1, 2]: "list"}   # ❌ TypeError: unhashable type: 'list'</div>
+  </div>
+
+  <!-- SECTION 4: Sets -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">🔵</div>
+    <div>
+      <div class="section-title">Sets</div>
+      <div class="section-subtitle">Unordered collections of unique, hashable items</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Sets for deduplication and membership testing</h2>
+    <p>A set stores only <strong>unique</strong> items with no defined order. Like dictionary keys, set elements must be hashable. Membership testing is O(1) — far faster than scanning a list.</p>
+    <div class="code-block">colours = {"red", "green", "blue", "red"}  # duplicate dropped
+print(colours)       # → {'red', 'green', 'blue'}  (order varies)
+
+# Membership — O(1) vs list's O(n)
+"red" in colours     # → True
+
+# Mutation
+colours.add("yellow")
+colours.discard("green")   # safe — no error if missing
+colours.remove("green")    # raises KeyError if missing
+
+# Deduplication
+nums = [1, 2, 2, 3, 3, 3]
+unique = list(set(nums))   # → [1, 2, 3]  (order not guaranteed)
+
+# Set operations
+a = {1, 2, 3, 4}
+b = {3, 4, 5, 6}
+a | b    # union         → {1, 2, 3, 4, 5, 6}
+a & b    # intersection  → {3, 4}
+a - b    # difference    → {1, 2}
+a ^ b    # symmetric diff → {1, 2, 5, 6}</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Use <code>{}</code> only for non-empty sets; an empty <code>{}</code> creates a <code>dict</code>, not a set. Always write <code>set()</code> for an empty set.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Use <code>.discard()</code> over <code>.remove()</code> when the item may or may not be present — it is the safer default.</div>
+      <div class="key-point"><div class="key-point-dot"></div>A <code>frozenset</code> is an immutable set — it can be used as a dictionary key or stored inside another set.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">Choosing the right collection</h2>
+    <table class="type-table">
+      <tr>
+        <th>Collection</th>
+        <th>Ordered?</th>
+        <th>Mutable?</th>
+        <th>Duplicates?</th>
+        <th>Best for</th>
+      </tr>
+      <tr>
+        <td><span class="type-badge">list</span></td>
+        <td>✅ Yes</td>
+        <td>✅ Yes</td>
+        <td>✅ Yes</td>
+        <td>Sequences you build, sort, or grow over time</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">tuple</span></td>
+        <td>✅ Yes</td>
+        <td>❌ No</td>
+        <td>✅ Yes</td>
+        <td>Fixed records, multi-value returns, dict keys</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">dict</span></td>
+        <td>✅ Yes (3.7+)</td>
+        <td>✅ Yes</td>
+        <td>Keys: ❌</td>
+        <td>Key-based lookup, structured data, counting</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">set</span></td>
+        <td>❌ No</td>
+        <td>✅ Yes</td>
+        <td>❌ No</td>
+        <td>Deduplication, fast membership, set algebra</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Q&A ACCORDION -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">Typical interview and self-check questions on data structures</div>
+    </div>
+  </div>
+
+  <!-- Q01 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">What are the four built-in collection types in Python, and how do you choose between them?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Each collection solves a different problem. Ask yourself: does order matter? do I need to change it? are duplicates meaningful? do I need to look things up by name? Those four questions map directly onto the four types.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">Python's four core collections are: <strong>list</strong> — ordered, mutable, allows duplicates; use when you need a sequence you can grow or sort. <strong>tuple</strong> — ordered, immutable, allows duplicates; use for fixed-structure data, multi-value returns, or dict keys. <strong>dict</strong> — key-value mapping, O(1) lookup; use when items have meaningful names or when you need fast key-based access. <strong>set</strong> — unordered, unique items, O(1) membership; use for deduplication or set algebra.
+        <div class="code-block">my_list  = [1, 2, 2, 3]          # ordered, mutable, duplicates OK
+my_tuple = (1, 2, 2, 3)          # ordered, immutable
+my_dict  = {"a": 1, "b": 2}      # key → value lookup
+my_set   = {1, 2, 3}             # unique items only</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>In practice: if you're unsure, start with a list. Upgrade to a dict when you catch yourself searching a list for a matching field, and to a set when you need to eliminate duplicates or test membership at scale.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>{}</code> alone creates an empty <strong>dict</strong>, not a set — use <code>set()</code> for an empty set.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">How does list slicing work, and what does a negative index mean?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Think of indices as markers between elements, not on them. Slicing cuts between two markers. Negative indices count backward from the right: -1 is always the last element, regardless of list length.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">Slicing syntax is <code>lst[start:stop:step]</code>. The <code>stop</code> index is exclusive. Omitting <code>start</code> defaults to 0; omitting <code>stop</code> defaults to the end. Negative indices wrap around from the end: <code>-1</code> is the last element, <code>-2</code> is second-to-last. A negative step reverses the direction.
+        <div class="code-block">lst = [10, 20, 30, 40, 50]
+lst[1:4]      # → [20, 30, 40]   stop exclusive
+lst[:3]       # → [10, 20, 30]   from start
+lst[2:]       # → [30, 40, 50]   to end
+lst[-1]       # → 50             last element
+lst[-3:]      # → [30, 40, 50]   last 3
+lst[::-1]     # → [50, 40, 30, 20, 10]  reversed copy
+lst[:]        # → [10, 20, 30, 40, 50]  shallow copy</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Slicing never raises an <code>IndexError</code> — out-of-range bounds are silently clamped. But direct indexing like <code>lst[10]</code> will raise one.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>lst[:]</code> creates a shallow copy of the list — useful when you need to iterate and mutate separately.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Slicing works on any sequence type: strings, tuples, and ranges support the same <code>[start:stop:step]</code> syntax.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">How do you safely look up a key in a dictionary that might not exist?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Bracket access <code>d[key]</code> is like demanding a file from a filing cabinet — if it's not there, the cabinet throws an error. <code>.get()</code> is politely asking — if it's not there, you get a quiet <code>None</code> instead of a crash.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">Use <code>dict.get(key)</code> to return <code>None</code> when the key is absent, or <code>dict.get(key, default)</code> to supply your own fallback. The bare <code>dict[key]</code> syntax raises a <code>KeyError</code> if the key does not exist. You can also guard with <code>if key in d:</code> before accessing, or use a <code>try/except KeyError</code> block when a missing key is genuinely exceptional.
+        <div class="code-block">config = {"host": "localhost", "port": 5432}
+
+config["host"]               # → "localhost"
+config["password"]           # ❌ KeyError
+
+config.get("password")       # → None   (safe)
+config.get("password", "")   # → ""     (safe with fallback)
+
+# Pattern: return early on missing key
+host = config.get("host") or "127.0.0.1"</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Use <code>.get()</code> as the default for reading dict values when absence is a normal, expected state.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Use <code>collections.defaultdict</code> when every missing key should automatically get the same starting value: <code>from collections import defaultdict; counts = defaultdict(int)</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">What makes an object a valid dictionary key, and why can lists not be used as keys?</span>
+      <span class="q-badges"><span class="badge badge-common">● Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">A dictionary finds values by computing a hash of the key — a fingerprint. A list's fingerprint would need to change every time the list changes, which would lose the value that was stored under it. Python forbids mutable keys to prevent this.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">A dictionary key must be <strong>hashable</strong> — it must have a stable <code>__hash__</code> value that never changes during its lifetime, and it must support equality comparison. Immutable types — <code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>, <code>tuple</code> (of hashable items), and <code>frozenset</code> — are hashable and valid keys. <code>list</code>, <code>dict</code>, and <code>set</code> are mutable: their hash would need to change when their contents change, which would corrupt the dictionary's internal structure, so Python raises a <code>TypeError</code> if you try.
+        <div class="code-block">d = {}
+d[(1, 2)] = "tuple key — OK"
+d[frozenset({1, 2})] = "frozenset key — OK"
+d[[1, 2]] = "list key"       # ❌ TypeError: unhashable type: 'list'</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>If you need a list as a key, convert it to a tuple first: <code>d[tuple(my_list)] = value</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Custom classes are hashable by default (using their <code>id</code> as hash) unless they define <code>__eq__</code> without <code>__hash__</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">What is a list comprehension, and how does it differ from a <code>for</code> loop with <code>append()</code>?</span>
+      <span class="q-badges"><span class="badge badge-common">● Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">A <code>for</code> loop with <code>append()</code> is like a factory worker adding parts one by one with a separate motion for each. A list comprehension is the same factory but in a single automated pass — faster and more declarative.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">A list comprehension is a compact, single-expression syntax for creating a list: <code>[expr for item in iterable if condition]</code>. It is typically 20–30% faster than an equivalent loop with <code>append()</code> because the list is pre-allocated internally. More importantly, it reads as a declaration of <em>what</em> you want rather than <em>how</em> to build it.
+        <div class="code-block"># for loop with append — imperative
+squares = []
+for x in range(1, 6):
+    squares.append(x ** 2)     # → [1, 4, 9, 16, 25]
+
+# list comprehension — declarative, faster
+squares = [x**2 for x in range(1, 6)]
+
+# with filter
+even_squares = [x**2 for x in range(1, 11) if x % 2 == 0]
+# → [4, 16, 36, 64, 100]
+
+# dict and set comprehensions work the same way
+square_map = {x: x**2 for x in range(5)}   # dict
+unique_lens = {len(w) for w in ["hi", "hello", "hey"]}  # set</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Keep comprehensions to one logical idea. If you need nested logic, side effects, or multiple statements, a plain <code>for</code> loop is clearer than a deeply nested comprehension.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Generator expressions (<code>(expr for item in iterable)</code> with round brackets) produce values lazily — use them when you only need to iterate once and want to save memory.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Dict and set comprehensions share the same syntax with <code>{}</code> instead of <code>[]</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">What is the difference between a shallow copy and a deep copy, and when does it matter?</span>
+      <span class="q-badges"><span class="badge badge-tip">✦ Tip</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">A shallow copy duplicates the outer container but all the inner objects are still shared. A deep copy duplicates everything, all the way down. For flat lists of numbers or strings, shallow is always fine. For nested structures, it depends on whether you need independence.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">A <strong>shallow copy</strong> creates a new container but the elements inside are still references to the same objects as the original. Mutating a nested mutable object through one copy affects the other. A <strong>deep copy</strong> (via <code>copy.deepcopy()</code>) recursively duplicates every nested object so the two copies are fully independent.
+        <div class="code-block">import copy
+
+original = [[1, 2], [3, 4]]
+
+shallow = original[:]           # or list(original) or original.copy()
+deep    = copy.deepcopy(original)
+
+original[0].append(99)
+
+print(shallow)  # → [[1, 2, 99], [3, 4]]  ← inner list is shared!
+print(deep)     # → [[1, 2], [3, 4]]       ← fully independent</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>For flat lists (<code>[1, 2, 3]</code>) shallow copy is always safe — integers and strings are immutable, so sharing references has no side effects.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>dict.copy()</code> and <code>set.copy()</code> are also shallow. Use <code>copy.deepcopy()</code> for any nested structure where independence matters.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA EN -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done with this topic when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can choose the right collection for a given problem and justify the choice in one sentence.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can write a list comprehension with a filter condition, and explain why it is preferred over <code>append()</code> in a loop.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can look up a dict key safely with <code>.get()</code> and explain what makes a valid dictionary key.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can use set operations (<code>|</code>, <code>&amp;</code>, <code>-</code>) and explain why <code>set()</code> is used for an empty set instead of <code>{}</code>.</div>
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <!-- SECTION 1 DE: Lists -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">📋</div>
+    <div>
+      <div class="section-title">Listen</div>
+      <div class="section-subtitle">Geordnete, veränderliche Sequenzen — Pythons vielseitigste Sammlung</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Listen erstellen, indizieren und slicen</h2>
+    <p>Eine Liste ist eine <strong>geordnete, veränderliche</strong> Sequenz, die Elemente beliebigen Typs halten kann, auch gemischte. Sie wird mit eckigen Klammern definiert. Der Zugriff erfolgt per nullbasiertem Index; negative Indizes zählen vom Ende.</p>
+    <div class="code-block">obst = ["Apfel", "Banane", "Kirsche", "Dattel"]
+
+# Indizierung
+obst[0]     # → "Apfel"    (erstes Element)
+obst[-1]    # → "Dattel"   (letztes Element)
+obst[-2]    # → "Kirsche"  (zweitletztes)
+
+# Slicing  [start : stop : schritt]  — stop ist exklusiv
+obst[1:3]   # → ["Banane", "Kirsche"]
+obst[:2]    # → ["Apfel", "Banane"]
+obst[::2]   # → ["Apfel", "Kirsche"]   (jedes 2.)
+obst[::-1]  # → ["Dattel", "Kirsche", "Banane", "Apfel"]  (umgekehrt)</div>
+
+    <h2 style="margin-top:20px;">Listen verändern</h2>
+    <div class="code-block">zahlen = [3, 1, 4, 1, 5]
+
+zahlen.append(9)          # ans Ende → [3, 1, 4, 1, 5, 9]
+zahlen.insert(0, 0)       # an Index → [0, 3, 1, 4, 1, 5, 9]
+zahlen.remove(1)          # entfernt ERSTE Vorkommen von 1
+zahlen.pop()              # entfernt & gibt letztes Element zurück
+zahlen.pop(0)             # entfernt & gibt Element bei Index 0 zurück
+zahlen.sort()             # sortiert in-place (gibt None zurück)
+zahlen.reverse()          # kehrt in-place um (gibt None zurück)
+
+# Nicht-mutierende Alternativen
+sorted(zahlen)            # neue sortierte Liste, zahlen unverändert
+zahlen + [10, 11]         # Verkettung — neue Liste</div>
+
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code>append()</code> ist O(1); <code>insert(0, x)</code> ist O(n) — Einfügen am Anfang verschiebt jedes Element. Für schnelle Front-Einfügungen <code>collections.deque</code> verwenden.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>sort()</code> und <code>sorted()</code> akzeptieren eine <code>key</code>-Funktion: <code>sorted(woerter, key=str.lower)</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Der <code>in</code>-Operator prüft Zugehörigkeit: <code>"Apfel" in obst</code> → <code>True</code>. Bei einer Liste ist das O(n) — ein Set verwenden für häufige Mitgliedschaftstests.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">List Comprehensions</h2>
+    <p>Eine List Comprehension erstellt eine neue Liste, indem ein Ausdruck auf jedes Element eines Iterables angewendet wird, optional gefiltert durch eine Bedingung. Sie ist schneller und lesbarer als eine äquivalente <code>for</code>-Schleife mit <code>append()</code>.</p>
+    <div class="code-block"># [ausdruck  for element in iterable  if bedingung]
+quadrate  = [x**2 for x in range(1, 6)]              # → [1, 4, 9, 16, 25]
+gerade    = [x for x in range(10) if x % 2 == 0]     # → [0, 2, 4, 6, 8]
+gross     = [s.upper() for s in ["a", "b", "c"]]     # → ["A", "B", "C"]
+
+# Verschachtelte Comprehension — 2D-Liste glätten
+matrix = [[1, 2], [3, 4], [5, 6]]
+flach  = [n for zeile in matrix for n in zeile]       # → [1, 2, 3, 4, 5, 6]</div>
+  </div>
+
+  <!-- SECTION 2 DE: Tuples -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">📌</div>
+    <div>
+      <div class="section-title">Tupel</div>
+      <div class="section-subtitle">Geordnete, unveränderliche Sequenzen — für feste Datensätze und sichere Rückgabewerte</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Wann man ein Tupel statt einer Liste verwendet</h2>
+    <p>Ein Tupel sieht aus wie eine Liste, verwendet aber runde Klammern und ist <strong>unveränderlich</strong> — sein Inhalt kann nach der Erstellung nicht mehr geändert werden. Das macht Tupel nützlich für Daten, die nicht verändert werden sollten, als Dictionary-Schlüssel und als leichtgewichtige Datensätze mit einer festen Anzahl von Feldern.</p>
+    <div class="code-block">punkt = (3, 7)             # 2D-Koordinate — semantisch fest
+rgb   = (255, 128, 0)     # Farbkanal — drei klar definierte Rollen
+
+# Indizierung funktioniert wie bei Listen
+punkt[0]                  # → 3
+
+# Entpacken — jedes Element einem Namen zuweisen
+x, y = punkt
+lat, lon = (52.52, 13.40)
+
+# Variablen tauschen ohne Hilfsvariable
+a, b = 1, 2
+a, b = b, a               # → a=2, b=1
+
+# Einelementiges Tupel braucht ein abschließendes Komma
+singleton = (42,)         # NICHT (42) — das ist nur eine geklammerte int
+
+# Tupel als Dictionary-Schlüssel (Listen können keine Schlüssel sein)
+gitter = {(0, 0): "Start", (3, 3): "Ziel"}</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Tupel sind etwas speichereffizienter und schneller zu iterieren als Listen — bevorzuge sie für von Natur aus feste Daten.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Funktionen, die mehrere Werte zurückgeben, geben tatsächlich ein Tupel zurück: <code>return x, y</code> ist <code>return (x, y)</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Named Tuples (<code>collections.namedtuple</code>) fügen Feldnamen zu Tupeln hinzu — selbstdokumentierend ohne den Overhead einer vollständigen Klasse.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 DE: Dictionaries -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff7ed;">🗂️</div>
+    <div>
+      <div class="section-title">Dictionaries</div>
+      <div class="section-subtitle">Schlüssel-Wert-Zuordnungen mit O(1)-Durchschnittszugriff</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Mit Dictionaries arbeiten</h2>
+    <p>Ein Dictionary ordnet <strong>unveränderliche Schlüssel</strong> Werten beliebigen Typs zu. Suchen, Einfügen und Löschen sind durchschnittlich O(1). Seit Python 3.7 behalten Dictionaries die Einfügereihenfolge bei.</p>
+    <div class="code-block">nutzer = {"name": "Alice", "alter": 30, "rolle": "admin"}
+
+# Lesen — zwei Wege
+nutzer["name"]                   # → "Alice"   (KeyError wenn fehlt)
+nutzer.get("email")              # → None      (sicher, kein Fehler)
+nutzer.get("email", "n/a")       # → "n/a"    (eigener Standard)
+
+# Schreiben / aktualisieren
+nutzer["alter"] = 31             # vorhandenen Schlüssel aktualisieren
+nutzer["stadt"] = "Berlin"       # neuen Schlüssel hinzufügen
+nutzer.update({"rolle": "owner", "stufe": 5})  # Massenaktualisierung
+
+# Löschen
+del nutzer["stadt"]              # KeyError wenn nicht vorhanden
+nutzer.pop("stufe")              # entfernt & gibt Wert zurück
+nutzer.pop("stufe", None)        # sicheres pop — kein Fehler wenn fehlt
+
+# Iterieren
+for schluessel in nutzer:                           # Schlüssel
+    print(schluessel, nutzer[schluessel])
+for schluessel, wert in nutzer.items():             # Schlüssel-Wert-Paare
+for wert in nutzer.values():                        # nur Werte</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Immer <code>.get(schluessel, standard)</code> gegenüber <code>[schluessel]</code> bevorzugen, wenn der Schlüssel möglicherweise fehlt.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>collections.defaultdict</code> erstellt automatisch einen Standardwert für fehlende Schlüssel — nützlich zum Gruppieren oder Zählen.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Dict Comprehensions folgen dem gleichen Muster: <code>{k: v for k, v in paare}</code>.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">Gültige Dictionary-Schlüssel</h2>
+    <p>Nur <strong>hashbare</strong> (unveränderliche) Objekte können Dictionary-Schlüssel sein — Integer, Float, Strings, Booleans und Tupel aus hashbaren Elementen. Listen, Dicts und Sets sind veränderlich und daher <em>keine</em> gültigen Schlüssel.</p>
+    <div class="code-block">gueltig = {1: "int", 3.14: "float", "x": "str", (0,0): "tuple"}
+
+{[1, 2]: "liste"}  # ❌ TypeError: unhashable type: 'list'</div>
+  </div>
+
+  <!-- SECTION 4 DE: Sets -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">🔵</div>
+    <div>
+      <div class="section-title">Sets (Mengen)</div>
+      <div class="section-subtitle">Ungeordnete Sammlungen einzigartiger, hashbarer Elemente</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Sets für Deduplizierung und Mitgliedschaftstests</h2>
+    <p>Ein Set speichert nur <strong>einzigartige</strong> Elemente ohne definierte Reihenfolge. Wie Dictionary-Schlüssel müssen Set-Elemente hashbar sein. Mitgliedschaftstests sind O(1) — wesentlich schneller als das Durchsuchen einer Liste.</p>
+    <div class="code-block">farben = {"rot", "grün", "blau", "rot"}  # Duplikat entfernt
+print(farben)        # → {'rot', 'grün', 'blau'}  (Reihenfolge variiert)
+
+# Mitgliedschaft — O(1) vs. O(n) der Liste
+"rot" in farben      # → True
+
+# Verändern
+farben.add("gelb")
+farben.discard("grün")   # sicher — kein Fehler wenn nicht vorhanden
+farben.remove("grün")    # KeyError wenn nicht vorhanden
+
+# Deduplizierung
+zahlen = [1, 2, 2, 3, 3, 3]
+eindeutig = list(set(zahlen))  # → [1, 2, 3]  (Reihenfolge nicht garantiert)
+
+# Mengenoperationen
+a = {1, 2, 3, 4}
+b = {3, 4, 5, 6}
+a | b    # Vereinigung       → {1, 2, 3, 4, 5, 6}
+a & b    # Schnittmenge      → {3, 4}
+a - b    # Differenz         → {1, 2}
+a ^ b    # Sym. Differenz    → {1, 2, 5, 6}</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><code>{}</code> allein erstellt ein leeres <strong>Dict</strong>, kein Set — für ein leeres Set immer <code>set()</code> schreiben.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>.discard()</code> gegenüber <code>.remove()</code> bevorzugen, wenn das Element möglicherweise nicht vorhanden ist.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Ein <code>frozenset</code> ist ein unveränderliches Set — kann als Dictionary-Schlüssel verwendet oder in einem anderen Set gespeichert werden.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">Die richtige Sammlung wählen</h2>
+    <table class="type-table">
+      <tr>
+        <th>Sammlung</th>
+        <th>Geordnet?</th>
+        <th>Veränderlich?</th>
+        <th>Duplikate?</th>
+        <th>Am besten für</th>
+      </tr>
+      <tr>
+        <td><span class="type-badge">list</span></td>
+        <td>✅ Ja</td>
+        <td>✅ Ja</td>
+        <td>✅ Ja</td>
+        <td>Sequenzen, die wachsen, sortiert oder verändert werden</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">tuple</span></td>
+        <td>✅ Ja</td>
+        <td>❌ Nein</td>
+        <td>✅ Ja</td>
+        <td>Feste Datensätze, Mehrfach-Rückgaben, Dict-Schlüssel</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">dict</span></td>
+        <td>✅ Ja (3.7+)</td>
+        <td>✅ Ja</td>
+        <td>Schlüssel: ❌</td>
+        <td>Schlüsselbasierte Suche, strukturierte Daten, Zählen</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">set</span></td>
+        <td>❌ Nein</td>
+        <td>✅ Ja</td>
+        <td>❌ Nein</td>
+        <td>Deduplizierung, schnelle Mitgliedschaft, Mengenalgebra</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Q&A DE -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Typische Interview- und Selbstkontrollfragen zu Datenstrukturen</div>
+    </div>
+  </div>
+
+  <!-- Q01 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Was sind die vier eingebauten Sammlungstypen in Python, und wie wählt man zwischen ihnen?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss man wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Jede Sammlung löst ein anderes Problem. Frag dich: Ist Reihenfolge wichtig? Muss ich sie ändern? Sind Duplikate bedeutsam? Muss ich Dinge beim Namen suchen? Diese vier Fragen entsprechen direkt den vier Typen.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Pythons vier Kernsammlungen: <strong>list</strong> — geordnet, veränderlich, Duplikate erlaubt; wenn man eine wachsende oder zu sortierende Sequenz braucht. <strong>tuple</strong> — geordnet, unveränderlich; für Festdaten, Mehrfach-Rückgaben oder Dict-Schlüssel. <strong>dict</strong> — Schlüssel-Wert-Zuordnung, O(1)-Suche; wenn Elemente sinnvolle Namen haben oder schnellen Schlüsselzugriff benötigen. <strong>set</strong> — ungeordnet, einzigartige Elemente, O(1)-Mitgliedschaft; für Deduplizierung oder Mengenalgebra.
+        <div class="code-block">meine_liste  = [1, 2, 2, 3]          # geordnet, veränderlich, Duplikate OK
+mein_tupel   = (1, 2, 2, 3)          # geordnet, unveränderlich
+mein_dict    = {"a": 1, "b": 2}      # Schlüssel → Wert-Suche
+mein_set     = {1, 2, 3}             # nur einzigartige Elemente</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Wenn unsicher: mit einer Liste anfangen. Zu einem Dict wechseln, wenn man eine Liste nach einem Feld durchsucht; zu einem Set, wenn man Duplikate entfernen oder Mitgliedschaft effizient prüfen muss.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>{}</code> allein erstellt ein leeres <strong>Dict</strong>, kein Set — für ein leeres Set <code>set()</code> schreiben.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Wie funktioniert List-Slicing, und was bedeutet ein negativer Index?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss man wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Stell dir Indizes als Markierungen zwischen den Elementen vor, nicht auf ihnen. Slicing schneidet zwischen zwei Markierungen. Negative Indizes zählen rückwärts vom rechten Ende: -1 ist immer das letzte Element.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Slicing-Syntax: <code>lst[start:stop:schritt]</code>. Der <code>stop</code>-Index ist exklusiv. Fehlt <code>start</code>, beginnt es bei 0; fehlt <code>stop</code>, geht es bis zum Ende. Negative Indizes zählen vom Ende: <code>-1</code> ist das letzte Element. Ein negativer Schritt kehrt die Richtung um.
+        <div class="code-block">lst = [10, 20, 30, 40, 50]
+lst[1:4]      # → [20, 30, 40]   stop exklusiv
+lst[:3]       # → [10, 20, 30]   vom Anfang
+lst[2:]       # → [30, 40, 50]   bis zum Ende
+lst[-1]       # → 50             letztes Element
+lst[-3:]      # → [30, 40, 50]   letzte 3
+lst[::-1]     # → [50, 40, 30, 20, 10]  umgekehrte Kopie
+lst[:]        # → [10, 20, 30, 40, 50]  flache Kopie</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Slicing löst nie einen <code>IndexError</code> aus — außerhalb liegende Grenzen werden still begrenzt. Direkter Zugriff wie <code>lst[10]</code> hingegen schon.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>lst[:]</code> erstellt eine flache Kopie der Liste — nützlich, wenn man gleichzeitig iterieren und verändern möchte.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Slicing funktioniert auf allen Sequenztypen: Strings, Tupel und Ranges unterstützen dieselbe <code>[start:stop:schritt]</code>-Syntax.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Wie greifst du sicher auf einen Dictionary-Schlüssel zu, der möglicherweise nicht vorhanden ist?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss man wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Der Klammerzugriff <code>d[schlüssel]</code> ist wie das Verlangen nach einer Akte — wenn sie nicht da ist, wirft der Schrank einen Fehler. <code>.get()</code> ist höflich nachfragen — wenn sie nicht da ist, bekommst du leise <code>None</code> statt eines Absturzes.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text"><code>dict.get(schluessel)</code> gibt <code>None</code> zurück, wenn der Schlüssel fehlt; <code>dict.get(schluessel, standard)</code> liefert einen eigenen Fallback. Der bloße <code>dict[schluessel]</code>-Zugriff löst einen <code>KeyError</code> aus, wenn der Schlüssel nicht vorhanden ist.
+        <div class="code-block">konfig = {"host": "localhost", "port": 5432}
+
+konfig["host"]                  # → "localhost"
+konfig["passwort"]              # ❌ KeyError
+
+konfig.get("passwort")          # → None   (sicher)
+konfig.get("passwort", "")      # → ""     (sicher mit Fallback)
+
+# Muster: bei fehlendem Schlüssel früh zurückkehren
+host = konfig.get("host") or "127.0.0.1"</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>.get()</code> als Standard verwenden, wenn ein fehlendes Schlüssel ein normaler Zustand ist.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>collections.defaultdict</code> verwenden, wenn jeder fehlende Schlüssel automatisch denselben Startwert bekommen soll: <code>defaultdict(int)</code> für Zähler.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Was macht ein Objekt zu einem gültigen Dictionary-Schlüssel, und warum können Listen keine Schlüssel sein?</span>
+      <span class="q-badges"><span class="badge badge-common">● Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Ein Dictionary findet Werte durch Berechnung eines Hashes des Schlüssels — ein Fingerabdruck. Der Fingerabdruck einer Liste müsste sich jedes Mal ändern, wenn die Liste geändert wird, was den gespeicherten Wert "verlieren" würde. Python verbietet veränderliche Schlüssel, um dies zu verhindern.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Ein Dictionary-Schlüssel muss <strong>hashbar</strong> sein — er muss einen stabilen <code>__hash__</code>-Wert haben, der sich nie ändert. Unveränderliche Typen — <code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>, <code>tuple</code> (aus hashbaren Elementen) und <code>frozenset</code> — sind hashbar. <code>list</code>, <code>dict</code> und <code>set</code> sind veränderlich und würden die interne Struktur des Dicts beschädigen — Python löst einen <code>TypeError</code> aus.
+        <div class="code-block">d = {}
+d[(1, 2)] = "Tupel-Schlüssel — OK"
+d[frozenset({1, 2})] = "frozenset — OK"
+d[[1, 2]] = "listen-schluessel"  # ❌ TypeError: unhashable type: 'list'</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Wenn eine Liste als Schlüssel benötigt wird, zuerst in ein Tupel umwandeln: <code>d[tuple(meine_liste)] = wert</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Eigene Klassen sind standardmäßig hashbar (nutzen ihre <code>id</code> als Hash), außer sie definieren <code>__eq__</code> ohne <code>__hash__</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Was ist eine List Comprehension, und wie unterscheidet sie sich von einer <code>for</code>-Schleife mit <code>append()</code>?</span>
+      <span class="q-badges"><span class="badge badge-common">● Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Eine <code>for</code>-Schleife mit <code>append()</code> ist wie ein Fabrikarbeiter, der Teile einzeln hinzufügt. Eine List Comprehension ist dieselbe Fabrik in einem einzigen automatisierten Durchgang — schneller und deklarativer.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Eine List Comprehension ist eine kompakte, einzeilige Syntax zum Erstellen einer Liste: <code>[ausdruck for element in iterable if bedingung]</code>. Sie ist typischerweise 20–30 % schneller als eine äquivalente Schleife mit <code>append()</code>, weil die Liste intern vorab allokiert wird. Vor allem aber liest sie sich als Aussage über das <em>Was</em> statt über das <em>Wie</em>.
+        <div class="code-block"># for-Schleife mit append — imperativ
+quadrate = []
+for x in range(1, 6):
+    quadrate.append(x ** 2)     # → [1, 4, 9, 16, 25]
+
+# List Comprehension — deklarativ, schneller
+quadrate = [x**2 for x in range(1, 6)]
+
+# mit Filter
+gerade_quadrate = [x**2 for x in range(1, 11) if x % 2 == 0]
+# → [4, 16, 36, 64, 100]
+
+# Dict- und Set-Comprehensions folgen demselben Muster
+quad_map   = {x: x**2 for x in range(5)}               # dict
+laengen    = {len(w) for w in ["hi", "hallo", "hey"]}   # set</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Comprehensions auf eine logische Idee beschränken. Bei verschachtelter Logik, Seiteneffekten oder mehreren Anweisungen ist eine normale <code>for</code>-Schleife klarer.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Generator-Ausdrücke (<code>(ausdruck for element in iterable)</code> mit runden Klammern) liefern Werte lazy — verwenden, wenn nur einmal iteriert wird und Speicher gespart werden soll.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Dict- und Set-Comprehensions verwenden dieselbe Syntax mit <code>{}</code> statt <code>[]</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Was ist der Unterschied zwischen einer flachen und einer tiefen Kopie, und wann ist er relevant?</span>
+      <span class="q-badges"><span class="badge badge-tip">✦ Tipp</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Eine flache Kopie dupliziert nur den äußeren Container — alle inneren Objekte werden noch geteilt. Eine tiefe Kopie dupliziert alles bis in die letzte Ebene. Bei flachen Listen aus Zahlen oder Strings ist flach immer ausreichend. Bei verschachtelten Strukturen kommt es darauf an, ob man Unabhängigkeit braucht.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Eine <strong>flache Kopie</strong> erstellt einen neuen Container, aber die darin enthaltenen Elemente sind noch Referenzen auf dieselben Objekte wie im Original. Mutiert man ein verschachteltes veränderliches Objekt durch eine Kopie, betrifft das auch die andere. Eine <strong>tiefe Kopie</strong> (via <code>copy.deepcopy()</code>) dupliziert rekursiv jedes verschachtelte Objekt, sodass beide Kopien vollständig unabhängig sind.
+        <div class="code-block">import copy
+
+original = [[1, 2], [3, 4]]
+
+flach = original[:]            # oder list(original) oder original.copy()
+tief  = copy.deepcopy(original)
+
+original[0].append(99)
+
+print(flach)  # → [[1, 2, 99], [3, 4]]  ← innere Liste geteilt!
+print(tief)   # → [[1, 2], [3, 4]]       ← vollständig unabhängig</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Für flache Listen (<code>[1, 2, 3]</code>) ist eine flache Kopie immer sicher — Integer und Strings sind unveränderlich.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>dict.copy()</code> und <code>set.copy()</code> sind ebenfalls flach. Für verschachtelte Strukturen <code>copy.deepcopy()</code> verwenden.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA DE -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit diesem Thema fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du die richtige Sammlung für ein gegebenes Problem wählen und die Wahl in einem Satz begründen kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eine List Comprehension mit Filterbedingung schreiben und erklären kannst, warum sie gegenüber <code>append()</code> in einer Schleife bevorzugt wird.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du einen Dict-Schlüssel sicher mit <code>.get()</code> lesen und erklären kannst, was einen gültigen Schlüssel ausmacht.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du Set-Operationen (<code>|</code>, <code>&amp;</code>, <code>-</code>) anwenden und erklären kannst, warum <code>set()</code> statt <code>{}</code> für ein leeres Set nötig ist.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+
+</div><!-- end body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'lms_python-starter_04_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<script>
+/**
+ * No #tab-ar div exists above — Arabic isn't translated yet. Calling
+ * guardLanguageTab('ar') (defined in lesson-ui.js) creates the tab-ar
+ * panel from scratch and fills it with the shared "not yet translated"
+ * card, the same way phase-01-sql-mysql.html does it.
+ */
+guardLanguageTab('ar');
+</script>
+</body>
+</html>

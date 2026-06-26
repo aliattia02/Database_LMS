@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 3 — Functions | Python Starter</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+/* ── Topic page-specific styles — copy this block verbatim ── */
+.badge { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must   { background:#fef3c7; color:#92400e; }
+.badge-common { background:#dbeafe; color:#1e40af; }
+.badge-tip    { background:#f0fdf4; color:#166534; }
+
+.q-arrow { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel { padding:18px 20px 16px 52px; }
+
+.strategy-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text  { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+
+.answer-box       { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text  { font-size:13.5px; color:#14532d; line-height:1.7; }
+
+.warning-box      { background:var(--amber-bg); border:1px solid #fde68a; border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+.warning-box-text { font-size:13px; color:var(--amber-text); line-height:1.55; }
+
+.key-points    { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point     { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; background:#f8fafc; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin:10px 0; color:var(--navy); line-height:1.65; white-space:pre; overflow-x:auto; }
+
+.section    { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2 { font-size:18px; font-weight:700; margin-bottom:14px; }
+.section p  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+.type-table { width:100%; border-collapse:collapse; margin:12px 0; font-size:13px; }
+.type-table th { background:#f1f5f9; color:var(--navy); font-weight:700; text-align:left; padding:8px 12px; border:1px solid var(--border); }
+.type-table td { padding:7px 12px; border:1px solid var(--border); color:#334155; vertical-align:top; }
+.type-table tr:nth-child(even) td { background:#fafbfc; }
+.type-badge { font-size:11px; font-weight:700; padding:1px 7px; border-radius:99px; background:#eff6ff; color:#1d4ed8; white-space:nowrap; }
+
+.must-block       { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item        { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet      { font-size:15px; flex-shrink:0; }
+
+/* RTL overrides */
+[dir="rtl"] .q-panel         { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point        { flex-direction:row-reverse; }
+[dir="rtl"] .must-item        { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title { flex-direction:row-reverse; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .section .code-block { direction:ltr; text-align:left; }
+
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="./lesson_index.html">← Back to main page</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">Python Starter &mdash; Topic 3 of 5</div>
+    <h1><span>Functions</span></h1>
+    <p class="header-sub">Define reusable blocks of logic with <code>def</code>, master positional and keyword arguments, understand how default values work, and learn how Python resolves names using the LEGB rule.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <!-- SECTION 1: Defining Functions -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">⚙️</div>
+    <div>
+      <div class="section-title">Defining Functions</div>
+      <div class="section-subtitle">def, parameters, return values, and docstrings</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>How to define and call a function</h2>
+    <p>A function is a named, reusable block of code defined with the <code>def</code> keyword. The indented body runs only when the function is called. A <code>return</code> statement sends a value back to the caller — a function with no <code>return</code> implicitly returns <code>None</code>.</p>
+    <div class="code-block">def greet(name):
+    """Return a personalised greeting string."""   # docstring
+    return f"Hello, {name}!"
+
+message = greet("Alice")   # call the function
+print(message)             # → Hello, Alice!
+
+# Function with no return value
+def log(text):
+    print(f"[LOG] {text}")
+
+result = log("Starting up")
+print(result)              # → None  (implicit return)</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Docstrings</strong> — a string literal on the first line of the body — are the standard way to document what a function does. Access them with <code>help(greet)</code> or <code>greet.__doc__</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>A function can <code>return</code> multiple values by returning a tuple: <code>return x, y</code> — the caller unpacks it with <code>a, b = func()</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Functions are <strong>first-class objects</strong> in Python — you can assign them to variables, pass them as arguments, and store them in lists.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Arguments -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🧩</div>
+    <div>
+      <div class="section-title">Positional &amp; Keyword Arguments</div>
+      <div class="section-subtitle">How Python matches arguments to parameters — and the default value trap</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Positional, keyword, and default arguments</h2>
+    <p><strong>Positional arguments</strong> are matched to parameters by order. <strong>Keyword arguments</strong> are matched by name and can be passed in any order. <strong>Default values</strong> make a parameter optional — callers who omit it get the default.</p>
+    <div class="code-block">def describe(name, age, city="Unknown"):
+    return f"{name}, {age}, from {city}"
+
+# Positional — order matters
+describe("Alice", 30, "Berlin")     # → Alice, 30, from Berlin
+
+# Keyword — order doesn't matter
+describe(age=25, name="Bob")        # → Bob, 25, from Unknown
+
+# Mix: positional first, then keyword
+describe("Carol", 28, city="Paris") # → Carol, 28, from Paris</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Parameters with defaults must come <strong>after</strong> parameters without defaults in the function signature.</div>
+      <div class="key-point"><div class="key-point-dot"></div>You can force callers to use keyword arguments by placing a bare <code>*</code> in the signature: <code>def func(a, *, b):</code> — <code>b</code> must then be passed as <code>func(1, b=2)</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Keyword arguments improve readability at the call site — <code>connect(host="localhost", port=5432)</code> is far clearer than <code>connect("localhost", 5432)</code>.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">*args and **kwargs — accepting any number of arguments</h2>
+    <p><code>*args</code> collects extra positional arguments into a tuple. <code>**kwargs</code> collects extra keyword arguments into a dictionary. Both are often used to write flexible wrapper functions.</p>
+    <div class="code-block">def total(*args):
+    """Sum any number of values."""
+    return sum(args)
+
+total(1, 2, 3)          # → 6
+total(10, 20)           # → 30
+
+def show_info(**kwargs):
+    """Print any named fields."""
+    for key, value in kwargs.items():
+        print(f"  {key}: {value}")
+
+show_info(name="Alice", role="admin", level=3)
+# → name: Alice
+# → role: admin
+# → level: 3</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>The names <code>args</code> and <code>kwargs</code> are conventions, not keywords — what matters is the <code>*</code> and <code>**</code> prefix.</div>
+      <div class="key-point"><div class="key-point-dot"></div>You can also use <code>*</code> and <code>**</code> at the call site to <em>unpack</em> a list or dict into separate arguments: <code>func(*my_list)</code>, <code>func(**my_dict)</code>.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Scope and LEGB -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">🔭</div>
+    <div>
+      <div class="section-title">Scope &amp; the LEGB Rule</div>
+      <div class="section-subtitle">How Python looks up names — Local → Enclosing → Global → Built-in</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Name resolution order: LEGB</h2>
+    <p>When Python encounters a name, it searches four scopes in order until it finds a match or raises a <code>NameError</code>. Understanding this order prevents subtle bugs where a local variable shadows a global one, or a built-in function is accidentally overwritten.</p>
+    <div class="code-block">x = "global"               # Global scope
+
+def outer():
+    x = "enclosing"        # Enclosing scope
+    def inner():
+        x = "local"        # Local scope
+        print(x)           # → local   (L wins)
+    inner()
+    print(x)               # → enclosing
+
+outer()
+print(x)                   # → global
+
+# Built-in scope — names like len, print, range live here
+print(len("hello"))        # → 5  (found in Built-in)</div>
+    <table class="type-table" style="margin-top:14px;">
+      <tr>
+        <th>Letter</th>
+        <th>Scope</th>
+        <th>Where it lives</th>
+      </tr>
+      <tr>
+        <td><span class="type-badge">L</span></td>
+        <td>Local</td>
+        <td>Inside the current function call</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">E</span></td>
+        <td>Enclosing</td>
+        <td>Any outer functions that wrap the current one</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">G</span></td>
+        <td>Global</td>
+        <td>Top-level of the current module / file</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">B</span></td>
+        <td>Built-in</td>
+        <td>Python's standard built-ins (<code>len</code>, <code>print</code>, <code>range</code>, …)</td>
+      </tr>
+    </table>
+    <div class="key-points" style="margin-top:14px;">
+      <div class="key-point"><div class="key-point-dot"></div>Assigning to a name inside a function always creates a <strong>local</strong> variable — it does not modify the global by default.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Use <code>global x</code> inside a function to explicitly write to a global variable — but prefer returning values instead; <code>global</code> makes code harder to test.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Never shadow built-ins: naming a variable <code>list</code>, <code>str</code>, or <code>input</code> hides the built-in for the rest of that scope.</div>
+    </div>
+  </div>
+
+  <!-- Q&A ACCORDION -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">Typical interview and self-check questions on functions</div>
+    </div>
+  </div>
+
+  <!-- Q01 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">How do you define a function in Python, and what does <code>return</code> do?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">A function is a named recipe: <code>def</code> writes the recipe down, calling it cooks the dish. <code>return</code> is how the kitchen hands the finished dish back to whoever ordered it.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">Use the <code>def</code> keyword followed by the function name, parenthesised parameters, and a colon. The indented body is the function's code. <code>return</code> immediately exits the function and sends a value back to the caller. A function that reaches the end without a <code>return</code> statement implicitly returns <code>None</code>. A single function can have multiple <code>return</code> statements in different branches.
+        <div class="code-block">def add(a, b):
+    return a + b       # exits immediately, value goes to caller
+
+result = add(3, 4)    # result = 7
+
+def nothing():
+    pass               # no return → implicitly returns None
+
+print(nothing())      # → None</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Return multiple values as a tuple: <code>return min_val, max_val</code> — unpack at the call site: <code>lo, hi = bounds(data)</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Functions are objects — <code>type(add)</code> returns <code>&lt;class 'function'&gt;</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">What is the difference between positional and keyword arguments? How do default parameter values work?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Positional arguments fill seats by order — first in, first matched. Keyword arguments fill seats by name tag — you can arrive in any order as long as your name is on the list. Defaults are the seat that's pre-occupied when nobody shows up.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text"><strong>Positional</strong> arguments are matched to parameters left to right by position. <strong>Keyword</strong> arguments use <code>name=value</code> syntax and can appear in any order. <strong>Default values</strong> are specified in the function signature with <code>param=default</code> and are used when the caller omits that argument. Parameters with defaults must follow parameters without them.
+        <div class="code-block">def connect(host, port=5432, timeout=30):
+    print(f"Connecting to {host}:{port} (timeout={timeout}s)")
+
+connect("db.example.com")              # uses both defaults
+connect("db.example.com", 3306)        # positional override
+connect("db.example.com", timeout=10)  # keyword override, port stays 5432</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Once you use a keyword argument at the call site, all subsequent arguments must also be keyword arguments — you cannot switch back to positional.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Keyword arguments make call sites self-documenting — <code>send(to="alice", subject="Hi")</code> is instantly readable.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Default values are evaluated <em>once</em> at function definition time — not each time the function is called. This is the source of the mutable-default trap (see Q04).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">What is the LEGB rule, and in what order does Python look up a name?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Think of Python searching outwards through nested rooms. It checks your own room (Local) first, then any hallways you're in (Enclosing), then the building foyer (Global), and finally the city directory (Built-in). It stops at the first room that has what it needs.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">LEGB stands for <strong>L</strong>ocal → <strong>E</strong>nclosing → <strong>G</strong>lobal → <strong>B</strong>uilt-in. When Python looks up a name, it searches these four scopes in order and uses the first match it finds. If no match is found anywhere, a <code>NameError</code> is raised. Assigning a name inside a function always creates a local variable — it does not modify the global version unless you explicitly declare <code>global name</code>.
+        <div class="code-block">count = 0              # Global
+
+def increment():
+    global count       # tells Python: use the global 'count'
+    count += 1
+
+increment()
+print(count)           # → 1
+
+# Without 'global', count += 1 would raise UnboundLocalError
+# because Python sees the assignment and creates a local 'count'
+# that hasn't been assigned yet before being read.</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Avoid <code>global</code> in production code. Prefer passing values as arguments and returning results — it keeps functions predictable and testable.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Shadowing a built-in is legal but dangerous: <code>list = [1, 2, 3]</code> hides the built-in <code>list</code> type for the rest of that scope.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Inner functions can read variables from their enclosing scope without any keyword — but to <em>write</em> to them, they need <code>nonlocal name</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">What is the mutable default argument trap, and how do you avoid it?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">The default value is created once when Python reads the <code>def</code> statement — not freshly each time you call the function. A mutable default like <code>[]</code> is a single shared object that persists across calls.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">Default argument values are evaluated exactly once at function definition time. If the default is a mutable object (list, dict, set), all calls that use the default share the <em>same</em> object. Mutating it in one call changes it for all future calls — a notoriously surprising bug. The fix is to use <code>None</code> as the default and create the mutable object inside the function body.
+        <div class="code-block"># ❌ Bug — all calls share the same list
+def append_item(item, result=[]):
+    result.append(item)
+    return result
+
+append_item(1)    # → [1]
+append_item(2)    # → [1, 2]  ← unexpected!
+append_item(3)    # → [1, 2, 3]  ← the list was never reset
+
+# ✅ Fix — use None as sentinel, create fresh list each call
+def append_item(item, result=None):
+    if result is None:
+        result = []
+    result.append(item)
+    return result
+
+append_item(1)    # → [1]
+append_item(2)    # → [2]   ← correct, fresh list each time</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ This trap applies to any mutable default: <code>[]</code>, <code>{}</code>, <code>set()</code>, and even custom objects. Immutable defaults like <code>0</code>, <code>""</code>, and <code>None</code> are safe.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>The <code>None</code>-sentinel pattern is the standard Python idiom for optional mutable parameters.</div>
+        <div class="key-point"><div class="key-point-dot"></div>You can inspect a function's defaults: <code>append_item.__defaults__</code> — useful for debugging this trap.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">What are <code>*args</code> and <code>**kwargs</code>, and when would you use them?</span>
+      <span class="q-badges"><span class="badge badge-common">● Common</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text"><code>*args</code> is a catch-all bag for extra positional arguments. <code>**kwargs</code> is a catch-all bag for extra keyword arguments. Both are used when you want a function to accept an open-ended number of inputs.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text"><code>*args</code> collects any number of extra positional arguments into a <strong>tuple</strong>. <code>**kwargs</code> collects any number of extra keyword arguments into a <strong>dict</strong>. Common use cases include building flexible wrapper or decorator functions, forwarding arguments to another function, and creating APIs that accept optional named fields.
+        <div class="code-block">def log(level, *args, **kwargs):
+    print(f"[{level}]", *args)
+    if kwargs:
+        print("  extra:", kwargs)
+
+log("INFO", "Server started", port=8080)
+# → [INFO] Server started
+# →   extra: {'port': 8080}
+
+# Unpacking at the call site
+nums = [1, 2, 3]
+print(*nums)               # same as print(1, 2, 3)
+
+settings = {"sep": " | ", "end": "\n"}
+print("a", "b", **settings)  # same as print("a", "b", sep=" | ", end="\n")</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Signature order rule: <code>def f(normal, *args, keyword_only, **kwargs):</code> — regular params first, then <code>*args</code>, then keyword-only params, then <code>**kwargs</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>The names <code>args</code> and <code>kwargs</code> are conventions, not keywords. <code>*numbers</code> or <code>**options</code> work equally well.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 EN -->
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">What is a lambda, and when should you use one instead of a regular function?</span>
+      <span class="q-badges"><span class="badge badge-tip">✦ Tip</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">A lambda is a throwaway function — useful when you need a simple expression in a place that expects a callable but don't want to pollute the namespace with a named function.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">A <code>lambda</code> creates an anonymous function with a single expression as its body. It is syntactic sugar for a <code>def</code> that only has a <code>return</code> statement. Lambdas are best used inline — most commonly as the <code>key</code> argument to <code>sorted()</code>, <code>min()</code>, and <code>max()</code>, or as short callbacks. If the logic is more than one expression, or if you need to reuse it, use a named <code>def</code> instead.
+        <div class="code-block"># Lambda syntax: lambda parameters: expression
+square = lambda x: x ** 2
+square(5)                  # → 25
+
+# Typical use — inline sort key
+people = [("Alice", 30), ("Bob", 25), ("Carol", 35)]
+sorted(people, key=lambda p: p[1])
+# → [('Bob', 25), ('Alice', 30), ('Carol', 35)]
+
+# Equivalent named function — prefer this if reused
+def by_age(person):
+    return person[1]
+
+sorted(people, key=by_age)</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Never assign a lambda to a variable and reuse it — that is exactly what <code>def</code> is for. PEP 8 discourages <code>f = lambda x: x + 1</code>; use <code>def f(x): return x + 1</code> instead.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Lambdas can take multiple parameters: <code>lambda x, y: x + y</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Lambdas cannot contain statements — no <code>if/else</code> blocks, no <code>for</code> loops, no <code>return</code>. Use <code>def</code> for anything beyond a single expression.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA EN -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done with this topic when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can write a function with positional parameters, keyword arguments, and a default value — and call it three different ways.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can explain the mutable default argument trap and write the correct <code>None</code>-sentinel fix from memory.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can trace through a piece of code with nested functions and predict which value of a name each scope sees.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can use <code>*args</code> and <code>**kwargs</code> in a function definition and unpack a list or dict at a call site.</div>
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <!-- SECTION 1 DE -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#eff6ff;">⚙️</div>
+    <div>
+      <div class="section-title">Funktionen definieren</div>
+      <div class="section-subtitle">def, Parameter, Rückgabewerte und Docstrings</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Wie man eine Funktion definiert und aufruft</h2>
+    <p>Eine Funktion ist ein benannter, wiederverwendbarer Codeblock, der mit dem Schlüsselwort <code>def</code> definiert wird. Der eingerückte Rumpf wird nur ausgeführt, wenn die Funktion aufgerufen wird. Eine <code>return</code>-Anweisung sendet einen Wert zurück an den Aufrufer — eine Funktion ohne <code>return</code> gibt implizit <code>None</code> zurück.</p>
+    <div class="code-block">def begruessen(name):
+    """Gibt einen personalisierten Begrüßungsstring zurück."""  # docstring
+    return f"Hallo, {name}!"
+
+nachricht = begruessen("Alice")   # Funktion aufrufen
+print(nachricht)                   # → Hallo, Alice!
+
+# Funktion ohne Rückgabewert
+def protokollieren(text):
+    print(f"[LOG] {text}")
+
+ergebnis = protokollieren("Startet")
+print(ergebnis)                    # → None  (implizite Rückgabe)</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div><strong>Docstrings</strong> — ein String-Literal in der ersten Zeile des Rumpfes — sind die Standardmethode zur Dokumentation einer Funktion. Abrufbar mit <code>help(begruessen)</code> oder <code>begruessen.__doc__</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Eine Funktion kann mehrere Werte als Tupel zurückgeben: <code>return x, y</code> — der Aufrufer entpackt sie mit <code>a, b = func()</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Funktionen sind <strong>erstklassige Objekte</strong> in Python — sie können Variablen zugewiesen, als Argumente übergeben und in Listen gespeichert werden.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 DE -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f0fdf4;">🧩</div>
+    <div>
+      <div class="section-title">Positions- &amp; Schlüsselwortargumente</div>
+      <div class="section-subtitle">Wie Python Argumente Parametern zuordnet — und die Standardwert-Falle</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Positions-, Schlüsselwort- und Standardargumente</h2>
+    <p><strong>Positionsargumente</strong> werden Parametern der Reihe nach zugeordnet. <strong>Schlüsselwortargumente</strong> werden namentlich zugeordnet und können in beliebiger Reihenfolge übergeben werden. <strong>Standardwerte</strong> machen einen Parameter optional — wer ihn weglässt, erhält den Standard.</p>
+    <div class="code-block">def beschreiben(name, alter, stadt="Unbekannt"):
+    return f"{name}, {alter}, aus {stadt}"
+
+# Positional — Reihenfolge ist wichtig
+beschreiben("Alice", 30, "Berlin")       # → Alice, 30, aus Berlin
+
+# Schlüsselwort — Reihenfolge egal
+beschreiben(alter=25, name="Bob")        # → Bob, 25, aus Unbekannt
+
+# Mix: zuerst positional, dann Schlüsselwort
+beschreiben("Carol", 28, stadt="Paris")  # → Carol, 28, aus Paris</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Parameter mit Standardwerten müssen <strong>nach</strong> Parametern ohne Standardwerte stehen.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Durch ein einzelnes <code>*</code> in der Signatur kannst du erzwingen, dass nachfolgende Parameter als Schlüsselwortargumente übergeben werden müssen: <code>def func(a, *, b):</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Schlüsselwortargumente verbessern die Lesbarkeit — <code>verbinden(host="localhost", port=5432)</code> ist sofort verständlich.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">*args und **kwargs — beliebig viele Argumente</h2>
+    <p><code>*args</code> sammelt zusätzliche Positionsargumente in einem Tupel. <code>**kwargs</code> sammelt zusätzliche Schlüsselwortargumente in einem Dictionary. Beides wird häufig für flexible Wrapper-Funktionen genutzt.</p>
+    <div class="code-block">def summe(*args):
+    """Addiert beliebig viele Werte."""
+    return sum(args)
+
+summe(1, 2, 3)           # → 6
+summe(10, 20)            # → 30
+
+def info_ausgeben(**kwargs):
+    """Gibt beliebige benannte Felder aus."""
+    for schluessel, wert in kwargs.items():
+        print(f"  {schluessel}: {wert}")
+
+info_ausgeben(name="Alice", rolle="Admin", stufe=3)
+# → name: Alice
+# → rolle: Admin
+# → stufe: 3</div>
+    <div class="key-points">
+      <div class="key-point"><div class="key-point-dot"></div>Die Namen <code>args</code> und <code>kwargs</code> sind Konventionen, keine Schlüsselwörter — entscheidend sind nur die Präfixe <code>*</code> und <code>**</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div><code>*</code> und <code>**</code> können auch beim Aufruf genutzt werden, um eine Liste oder ein Dict zu entpacken: <code>func(*meine_liste)</code>, <code>func(**mein_dict)</code>.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 DE -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">🔭</div>
+    <div>
+      <div class="section-title">Scope &amp; die LEGB-Regel</div>
+      <div class="section-subtitle">Wie Python Namen auflöst — Lokal → Einschließend → Global → Eingebaut</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Namensauflösungsreihenfolge: LEGB</h2>
+    <p>Wenn Python auf einen Namen trifft, durchsucht es vier Scopes der Reihe nach, bis es eine Übereinstimmung findet oder einen <code>NameError</code> auslöst. Das Verstehen dieser Reihenfolge verhindert subtile Fehler, bei denen eine lokale Variable eine globale verdeckt oder ein eingebautes Konstrukt versehentlich überschrieben wird.</p>
+    <div class="code-block">x = "global"                # Globaler Scope
+
+def aeussere():
+    x = "einschliessend"    # Einschließender Scope
+    def innere():
+        x = "lokal"         # Lokaler Scope
+        print(x)            # → lokal   (L gewinnt)
+    innere()
+    print(x)                # → einschliessend
+
+aeussere()
+print(x)                    # → global
+
+# Eingebauter Scope — len, print, range usw. leben hier
+print(len("Hallo"))         # → 5  (im Built-in gefunden)</div>
+    <table class="type-table" style="margin-top:14px;">
+      <tr>
+        <th>Buchstabe</th>
+        <th>Scope</th>
+        <th>Wo er lebt</th>
+      </tr>
+      <tr>
+        <td><span class="type-badge">L</span></td>
+        <td>Lokal (Local)</td>
+        <td>Innerhalb des aktuellen Funktionsaufrufs</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">E</span></td>
+        <td>Einschließend (Enclosing)</td>
+        <td>Äußere Funktionen, die die aktuelle umgeben</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">G</span></td>
+        <td>Global</td>
+        <td>Oberste Ebene des aktuellen Moduls / der Datei</td>
+      </tr>
+      <tr>
+        <td><span class="type-badge">B</span></td>
+        <td>Eingebaut (Built-in)</td>
+        <td>Pythons Standard-Built-ins (<code>len</code>, <code>print</code>, <code>range</code>, …)</td>
+      </tr>
+    </table>
+    <div class="key-points" style="margin-top:14px;">
+      <div class="key-point"><div class="key-point-dot"></div>Eine Zuweisung innerhalb einer Funktion erstellt immer eine <strong>lokale</strong> Variable — sie verändert nicht den globalen Wert, außer mit <code>global</code>.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Verwende <code>global x</code> in einer Funktion, um explizit eine globale Variable zu beschreiben — besser aber: Werte als Argumente übergeben und als Rückgabewerte erhalten.</div>
+      <div class="key-point"><div class="key-point-dot"></div>Eingebaute Namen niemals überschatten: eine Variable namens <code>list</code>, <code>str</code> oder <code>input</code> verbirgt das eingebaute Konstrukt für den Rest des Scopes.</div>
+    </div>
+  </div>
+
+  <!-- Q&A DE -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Typische Interview- und Selbstkontrollfragen zu Funktionen</div>
+    </div>
+  </div>
+
+  <!-- Q01 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Wie definiert man eine Funktion in Python, und was macht <code>return</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss man wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Eine Funktion ist ein benanntes Rezept: <code>def</code> schreibt das Rezept auf, der Aufruf kocht das Gericht. <code>return</code> ist die Art, wie die Küche das fertige Gericht zurück an den Besteller übergibt.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Das Schlüsselwort <code>def</code> wird gefolgt vom Funktionsnamen, geklammerten Parametern und einem Doppelpunkt. Der eingerückte Rumpf ist der Code der Funktion. <code>return</code> beendet die Funktion sofort und gibt einen Wert an den Aufrufer zurück. Eine Funktion, die das Ende ohne <code>return</code>-Anweisung erreicht, gibt implizit <code>None</code> zurück.
+        <div class="code-block">def addieren(a, b):
+    return a + b       # beendet sofort, Wert geht an Aufrufer
+
+ergebnis = addieren(3, 4)   # ergebnis = 7
+
+def nichts():
+    pass               # kein return → implizit None
+
+print(nichts())       # → None</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Mehrere Werte als Tupel zurückgeben: <code>return min_val, max_val</code> — beim Aufruf entpacken: <code>lo, hi = grenzen(daten)</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Funktionen sind Objekte — <code>type(addieren)</code> ergibt <code>&lt;class 'function'&gt;</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q02 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">Was ist der Unterschied zwischen Positions- und Schlüsselwortargumenten? Wie funktionieren Standardwerte?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss man wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Positionsargumente belegen Plätze nach Reihenfolge — erste rein, erste zugeordnet. Schlüsselwortargumente belegen Plätze nach Namensschild — die Reihenfolge spielt keine Rolle. Standardwerte sind Plätze, die vorbesetzt sind, wenn niemand erscheint.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text"><strong>Positionsargumente</strong> werden Parametern von links nach rechts nach Position zugeordnet. <strong>Schlüsselwortargumente</strong> verwenden die Syntax <code>name=wert</code> und können in beliebiger Reihenfolge angegeben werden. <strong>Standardwerte</strong> werden in der Funktionssignatur mit <code>param=standard</code> angegeben und genutzt, wenn der Aufrufer das Argument weglässt.
+        <div class="code-block">def verbinden(host, port=5432, timeout=30):
+    print(f"Verbinde mit {host}:{port} (Timeout={timeout}s)")
+
+verbinden("db.example.com")               # beide Standards
+verbinden("db.example.com", 3306)         # positionale Überschreibung
+verbinden("db.example.com", timeout=10)   # Schlüsselwort, port bleibt 5432</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Sobald beim Aufruf ein Schlüsselwortargument verwendet wird, müssen alle nachfolgenden Argumente ebenfalls als Schlüsselwortargumente übergeben werden.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Schlüsselwortargumente machen den Aufruf selbstdokumentierend: <code>senden(an="alice", betreff="Hi")</code> ist sofort lesbar.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Standardwerte werden <em>einmal</em> bei der Funktionsdefinition ausgewertet — nicht bei jedem Aufruf. Daraus entsteht die Mutable-Default-Falle (siehe F04).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q03 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">03</span>
+      <span class="q-text">Was ist die LEGB-Regel, und in welcher Reihenfolge löst Python Namen auf?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss man wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Stell dir Python vor, das konzentrisch nach außen durch verschachtelte Räume sucht: erst dein eigener Raum (Lokal), dann der Flur (Einschließend), dann der Gebäudeeingang (Global), schließlich das Stadtverzeichnis (Eingebaut). Es stoppt beim ersten Raum, der das Gesuchte enthält.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">LEGB steht für <strong>L</strong>okal → <strong>E</strong>inschl. (Enclosing) → <strong>G</strong>lobal → <strong>B</strong>uilt-in. Python durchsucht diese vier Scopes in dieser Reihenfolge und nimmt den ersten Treffer. Gibt es keinen, wird ein <code>NameError</code> ausgelöst. Eine Zuweisung innerhalb einer Funktion erstellt immer eine lokale Variable — um die globale zu beschreiben, braucht man explizit <code>global name</code>.
+        <div class="code-block">zaehler = 0              # Global
+
+def erhoehen():
+    global zaehler       # Python: nutze das globale 'zaehler'
+    zaehler += 1
+
+erhoehen()
+print(zaehler)           # → 1
+
+# Ohne 'global' würde zaehler += 1 einen UnboundLocalError auslösen</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Vermeide <code>global</code> in Produktionscode. Besser: Werte als Argumente übergeben und als Rückgabewerte erhalten — das macht Funktionen vorhersagbar und testbar.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Ein eingebautes Konstrukt zu überschatten ist legal aber gefährlich: <code>list = [1, 2, 3]</code> verbirgt den eingebauten Typ <code>list</code> für den Rest des Scopes.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Innere Funktionen können Variablen aus dem einschließenden Scope lesen — zum <em>Schreiben</em> benötigen sie <code>nonlocal name</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q04 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">04</span>
+      <span class="q-text">Was ist die Mutable-Default-Argument-Falle, und wie vermeidet man sie?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss man wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Der Standardwert wird einmal erstellt, wenn Python die <code>def</code>-Anweisung liest — nicht neu bei jedem Aufruf. Ein veränderliches Objekt wie <code>[]</code> ist ein einziges geteiltes Objekt, das über alle Aufrufe hinweg weiterbesteht.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Standardargumentwerte werden genau einmal bei der Funktionsdefinition ausgewertet. Ist das Standardobjekt veränderlich (Liste, Dict, Set), teilen sich alle Aufrufe, die den Standard nutzen, dasselbe Objekt. Eine Mutation in einem Aufruf verändert es für alle zukünftigen Aufrufe. Die Lösung: <code>None</code> als Standard verwenden und das veränderliche Objekt im Funktionsrumpf anlegen.
+        <div class="code-block"># ❌ Fehler — alle Aufrufe teilen dieselbe Liste
+def element_hinzufuegen(item, ergebnis=[]):
+    ergebnis.append(item)
+    return ergebnis
+
+element_hinzufuegen(1)    # → [1]
+element_hinzufuegen(2)    # → [1, 2]  ← unerwartet!
+
+# ✅ Korrekt — None als Sentinel verwenden
+def element_hinzufuegen(item, ergebnis=None):
+    if ergebnis is None:
+        ergebnis = []
+    ergebnis.append(item)
+    return ergebnis
+
+element_hinzufuegen(1)    # → [1]
+element_hinzufuegen(2)    # → [2]   ← korrekt</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Diese Falle gilt für alle veränderlichen Standards: <code>[]</code>, <code>{}</code>, <code>set()</code> und eigene Objekte. Unveränderliche Standards wie <code>0</code>, <code>""</code> und <code>None</code> sind sicher.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Das <code>None</code>-Sentinel-Muster ist das Standard-Python-Idiom für optionale veränderliche Parameter.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Standardwerte einer Funktion können inspiziert werden: <code>func.__defaults__</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q05 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">05</span>
+      <span class="q-text">Was sind <code>*args</code> und <code>**kwargs</code>, und wann benutzt man sie?</span>
+      <span class="q-badges"><span class="badge badge-common">● Häufig</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text"><code>*args</code> ist eine Auffang-Tasche für zusätzliche Positionsargumente. <code>**kwargs</code> ist eine Auffang-Tasche für zusätzliche Schlüsselwortargumente. Beide werden verwendet, wenn eine Funktion eine offene Anzahl von Eingaben akzeptieren soll.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text"><code>*args</code> sammelt beliebig viele zusätzliche Positionsargumente in einem <strong>Tupel</strong>. <code>**kwargs</code> sammelt beliebig viele zusätzliche Schlüsselwortargumente in einem <strong>Dict</strong>. Typische Anwendungsfälle sind flexible Wrapper-Funktionen, das Weiterleiten von Argumenten an andere Funktionen und APIs, die optionale benannte Felder akzeptieren.
+        <div class="code-block">def protokoll(stufe, *args, **kwargs):
+    print(f"[{stufe}]", *args)
+    if kwargs:
+        print("  extra:", kwargs)
+
+protokoll("INFO", "Server gestartet", port=8080)
+# → [INFO] Server gestartet
+# →   extra: {'port': 8080}
+
+# Entpacken beim Aufruf
+zahlen = [1, 2, 3]
+print(*zahlen)                    # wie print(1, 2, 3)
+
+optionen = {"sep": " | ", "end": "\n"}
+print("a", "b", **optionen)</div></div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Reihenfolge in der Signatur: <code>def f(normal, *args, schluessel, **kwargs):</code> — normale Params zuerst, dann <code>*args</code>, dann schlüsselwortbasierte Params, dann <code>**kwargs</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>args</code> und <code>kwargs</code> sind Konventionen, keine Schlüsselwörter — <code>*zahlen</code> oder <code>**optionen</code> funktionieren genauso.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q06 DE -->
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">06</span>
+      <span class="q-text">Was ist ein Lambda, und wann sollte man es statt einer normalen Funktion verwenden?</span>
+      <span class="q-badges"><span class="badge badge-tip">✦ Tipp</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Ein Lambda ist eine Wegwerf-Funktion — nützlich, wenn an einer Stelle, die ein Callable erwartet, eine einfache Logik benötigt wird, ohne den Namensraum mit einer benannten Funktion zu überladen.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">Ein <code>lambda</code> erzeugt eine anonyme Funktion mit einem einzigen Ausdruck als Rumpf. Es ist syntaktischer Zucker für ein <code>def</code> mit nur einer <code>return</code>-Anweisung. Lambdas eignen sich am besten inline — häufig als <code>key</code>-Argument für <code>sorted()</code>, <code>min()</code> und <code>max()</code>. Für komplexere Logik oder Wiederverwendung ist ein benanntes <code>def</code> vorzuziehen.
+        <div class="code-block"># Lambda-Syntax: lambda parameter: ausdruck
+quadrat = lambda x: x ** 2
+quadrat(5)                   # → 25
+
+# Typischer Einsatz — Sortierschlüssel inline
+personen = [("Alice", 30), ("Bob", 25), ("Carol", 35)]
+sorted(personen, key=lambda p: p[1])
+# → [('Bob', 25), ('Alice', 30), ('Carol', 35)]
+
+# Äquivalente benannte Funktion — bevorzugen, wenn wiederverwendet
+def nach_alter(person):
+    return person[1]
+
+sorted(personen, key=nach_alter)</div></div>
+      </div>
+      <div class="warning-box">
+        <div class="warning-box-text">⚠️ Weise ein Lambda niemals einer Variablen zu und verwende es mehrfach — dafür gibt es <code>def</code>. PEP 8 rät von <code>f = lambda x: x + 1</code> ab; stattdessen <code>def f(x): return x + 1</code>.</div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div>Lambdas können mehrere Parameter haben: <code>lambda x, y: x + y</code>.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Lambdas dürfen keine Anweisungen enthalten — kein <code>if/else</code>-Block, keine <code>for</code>-Schleife, kein <code>return</code>. Für alles außer einem einzigen Ausdruck <code>def</code> verwenden.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CRITERIA DE -->
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit diesem Thema fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eine Funktion mit Positionsparametern, Schlüsselwortargumenten und einem Standardwert schreiben und auf drei verschiedene Arten aufrufen kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du die Mutable-Default-Argument-Falle erklären und die korrekte <code>None</code>-Sentinel-Lösung auswendig aufschreiben kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du Code mit verschachtelten Funktionen durchlesen und vorhersagen kannst, welchen Wert eines Namens jeder Scope sieht.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du <code>*args</code> und <code>**kwargs</code> in einer Funktionsdefinition verwenden und eine Liste oder ein Dict beim Aufruf entpacken kannst.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+</div><!-- end body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'lms_python-starter_03_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<script>
+/**
+ * No #tab-ar div exists above — Arabic isn't translated yet. Calling
+ * guardLanguageTab('ar') (defined in lesson-ui.js) creates the tab-ar
+ * panel from scratch and fills it with the shared "not yet translated"
+ * card, the same way phase-01-sql-mysql.html does it.
+ */
+guardLanguageTab('ar');
+</script>
+</body>
+</html>

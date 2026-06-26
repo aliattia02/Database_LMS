@@ -10,9 +10,9 @@ Always attach these reference files when starting a new module generation sessio
 | File | Purpose |
 |------|---------|
 | `ref-general.html` | Reference template for the General Overview page |
-| `ref-masterplan.html` | Reference template for the Masterplan / Course Index page (module landing) |
-| `sample-lesson-index.html` | Reference template for the in-module lesson list page |
+| `ref-masterplan.html` | Reference template for the Masterplan page (module landing — replaces lesson_index) |
 | `ref-topic.html` | Reference template for a standard Topic page |
+| `ref-mindmap.html` *(optional)* | Reference template for the Mind Map page — only needed for sessions that will generate `topic0-mindmap.html`. Safe to skip otherwise; the "MIND MAP RULES" section below covers the `DATA` shape on its own. |
 | `registry.js` | Core registry — every new module must be added here |
 | `progress.js` | Progress utilities — shows how `storageKey` and `total` are consumed |
 
@@ -30,12 +30,20 @@ Then use one of these trigger phrases to generate files individually or all at o
 |--------------|-------------|
 | All files at once | `"Start generating the full module"` |
 | Masterplan only | `"Start creating the masterplan"` |
-| Lesson index only | `"Start creating the lesson index"` |
 | General overview only | `"Start creating the general overview"` |
 | Mind map only | `"Start creating the mind map"` |
 | A specific topic | `"Start creating topic 1"` / `"Start creating topic 2"` etc. |
 | All topic files | `"Start creating all topic files"` |
 | Registry entry only | `"Generate the registry.js entry"` |
+| **Specific languages only** | Append a language qualifier to any trigger above, e.g. `"Start creating topic 1, English only"` or `"Start creating the full module — English and German only, skip Arabic for now"` |
+| **Add Arabic "not yet translated" card to existing file** | `"Add Arabic tab to [filename]"` |
+| **Add German "not yet translated" card to existing file** | `"Add German tab to [filename]"` |
+
+> When a language qualifier is present, only the named language(s) get full content.
+> Every other language keeps its tab button but gets **no** content div at all — see
+> "Partial / specific-language generation" in the system constraints below. This is not
+> the same as a placeholder — there is a real difference between "no div" and "empty div",
+> and only the first one is correct.
 
 ---
 
@@ -92,20 +100,138 @@ in the Course Brief, a past conversation, or an attached reference file:
   reads `window.LMS_STORAGE_KEY` at parse time to set up the progress bridge; if it is
   missing or placed after the script, "Mark as read" buttons write to an auto-derived key
   that the shell never reads, and the sidebar never updates.
-- Do **not** call `guardLanguageTab('ar')` or `guardLanguageTab('de')` in an inline
-  `<script>` after `lesson-ui.js` — `lesson-ui.js` already calls both inside its own
-  `DOMContentLoaded` listener. Adding them again is a harmless no-op but creates confusion.
+- For a language tab you generate with **full content**, do **not** call
+  `guardLanguageTab('ar')` or `guardLanguageTab('de')` in an inline `<script>` after
+  `lesson-ui.js` — it already calls both inside its own `DOMContentLoaded` listener, so an
+  explicit call on a populated tab is a harmless no-op.
+- For a language the user explicitly asked you to **skip** (see "Partial / specific-language
+  generation" below), the rule flips: DO add an explicit `guardLanguageTab('xx')` call after
+  `lesson-ui.js`, and do **not** create a `#tab-xx` div for that language at all — not even
+  an empty one, and never with a placeholder comment inside it.
 - The `openLesson()` route strings must use the pattern:
   `lms/modules/FOLDER_NAME/filename.html`.
 - The fallback `location.href` in `openLesson()` must use:
   `route.replace('lms/modules/FOLDER_NAME/', './')`.
 
 ### Language requirement
-Every page must contain **three complete language tabs**: English (`tab-en`), German
-(`tab-de`), and Arabic (`tab-ar`). The Arabic tab always has `dir="rtl" lang="ar"`.
+By default, every page must contain **three complete language tabs**: English (`tab-en`),
+German (`tab-de`), and Arabic (`tab-ar`). The Arabic tab always has `dir="rtl" lang="ar"`.
 German and Arabic content must be full translations — no placeholder text.
-`lesson-ui.js` calls `guardLanguageTab('ar')` and `guardLanguageTab('de')` automatically
-on `DOMContentLoaded` — do **not** repeat these calls in an inline `<script>`.
+`lesson-ui.js` calls `guardLanguageTab('ar')` and `guardLanguageTab('de')` automatically on
+`DOMContentLoaded`, so a fully-translated tab needs no extra script for it.
+
+This default changes only when the user explicitly asks for fewer languages — see the next
+section.
+
+### Partial / specific-language generation — when the user asks for fewer languages
+If the request names specific languages only — e.g. `"English only"`, `"English and German
+only, skip Arabic for now"`, `"just give me English"`, or any trigger phrase with a language
+qualifier appended (see the table at the top of this document) — generate full content
+**only** for the named language(s). For every language that was left out, follow these
+rules exactly:
+
+1. **Keep the tab button.** Never remove a `<button class="tab-btn" ...>` for a skipped
+   language. Learners should still see the option exists, even before it's translated.
+2. **Never create a `#tab-xx` div for a skipped language — not even an empty one, and never
+   with a placeholder comment inside it.** This is a verified failure mode, not a theoretical
+   one: `guardLanguageTab(lang)` in `lesson-ui.js` decides whether a tab already has content
+   by checking `existing.innerHTML.trim() !== ''`. An HTML comment still counts as non-blank
+   `innerHTML`, so a stub like the one below is silently treated as "already translated," and
+   the shared not-yet-translated banner never gets injected — the tab just renders empty when
+   clicked:
+   ```html
+   <!-- ❌ WRONG — the comment makes innerHTML non-empty, banner never appears -->
+   <div id="tab-ar" class="tab-content">
+     <!-- Arabic content coming soon -->
+   </div>
+   ```
+   The correct approach is to omit the div entirely. If Arabic wasn't requested, no
+   `#tab-ar` element should appear anywhere in the file — not in the body, and not as a
+   trailing comment block either.
+3. **Add an explicit `guardLanguageTab('xx')` call**, one per skipped language, in the
+   closing `<script>` block immediately after the `lesson-ui.js` `<script>` tag. This is
+   technically redundant with the automatic `DOMContentLoaded` call already inside
+   `lesson-ui.js`, but it matches the verified-working reference pattern
+   (`phase-01-sql-mysql.html`) and makes the intent unambiguous to the next person reading
+   the file. Example, skipping only Arabic:
+   ```html
+   <script>window.LMS_STORAGE_KEY = 'lms_FOLDER_NAME_NN_done';</script>
+   <script src="../shared/lesson-ui.js"></script>
+   <script>
+   guardLanguageTab('ar');
+   </script>
+   ```
+   If both German and Arabic are skipped, call `guardLanguageTab('de')` and
+   `guardLanguageTab('ar')` in that same block.
+4. **Still do not call `guardLanguageTab()` for any language you DID generate with full
+   content** — that case remains fully automatic; an explicit call there is the
+   harmless-but-pointless no-op described in the rule above.
+5. If the user later asks to "add the German version" or "translate Arabic now" for an
+   existing file, add a fully translated `#tab-xx` div in place of the absent one and
+   remove the now-unnecessary explicit `guardLanguageTab('xx')` call for that language.
+
+### Retrofitting a missing language tab to an existing file
+
+Use this workflow when a file was generated **before** this prompt's language-tab rules
+were in place — meaning it has no tab button at all for the missing language (not just a
+missing content div). This is a structural backfill, not a translation.
+
+Three changes are required. Do all three, in this order:
+
+**Step 1 — Tab button** (the critical step)
+Add the button inside `.tabs-inner`, after the last existing button. Without this,
+`guardLanguageTab()` finds no `targetBtn` and returns immediately — the banner is never
+injected, even though `lesson-ui.js` calls `guardLanguageTab()` automatically on load.
+
+```html
+<!-- Arabic -->
+<button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+<!-- German -->
+<button class="tab-btn" onclick="switchTab('de',this)">Deutsch</button>
+```
+
+**Step 2 — RTL CSS block (Arabic only)**
+Add inside the page-level `<style>` block, immediately before the `@media` rule. Check
+first — if the file already has a `/* RTL overrides */` block, skip this step entirely.
+
+`theme.css` already handles `[dir="rtl"] .q-panel { text-align: right }` and
+`[dir="rtl"] .must-item { flex-direction: row-reverse }`, but `.key-point`,
+`.must-block-title`, and the code-block LTR lock are page-specific and must be added here:
+
+```css
+/* RTL overrides */
+[dir="rtl"] .q-panel         { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point        { flex-direction:row-reverse; }
+[dir="rtl"] .must-item        { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title { flex-direction:row-reverse; }
+[dir="rtl"] .answer-box-text .code-block,
+[dir="rtl"] .section .code-block { direction:ltr; text-align:left; }
+```
+
+**Step 3 — Explicit `guardLanguageTab()` call**
+Replace any stale `<!-- NOTE: do NOT call guardLanguageTab … -->` comment with a proper
+closing script block. The explicit call is technically redundant with the automatic
+`DOMContentLoaded` call already in `lesson-ui.js`, but it documents intent unambiguously
+and matches the verified-working reference pattern:
+
+```html
+<script>window.LMS_STORAGE_KEY = 'lms_FOLDER_NAME_NN_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<script>
+/**
+ * No #tab-ar div exists above — Arabic isn't translated yet. Calling
+ * guardLanguageTab('ar') (defined in lesson-ui.js) creates the tab-ar
+ * panel from scratch and fills it with the shared "not yet translated" card.
+ */
+guardLanguageTab('ar');   /* one call per retrofitted language */
+</script>
+```
+
+**What NOT to do during a retrofit:**
+- Do NOT add a `#tab-ar` or `#tab-de` div — not even empty, not even with a comment.
+  The banner is injected dynamically by `guardLanguageTab()`; a stub div defeats it.
+- Do NOT add the RTL block for German — German is LTR; the block is Arabic-only.
+- Do NOT call `guardLanguageTab()` for languages that already have full content divs.
 
 ### Component vocabulary (use these class names exactly)
 | Component | Key classes |
@@ -124,7 +250,7 @@ on `DOMContentLoaded` — do **not** repeat these calls in an inline `<script>`.
 | Badges | `.badge.badge-must` / `.badge.badge-common` / `.badge.badge-tip` |
 | Inline code | `<code>` |
 | Code block | `<div class="code-block">` |
-| Back nav | `<div class="home-nav"><a class="home-link" href="./lesson_index.html">← Back</a></div>` |
+| Back nav | `<div class="home-nav"><a class="home-link" href="./masterplan.html">← Back</a></div>` |
 | Progress bar | `.progress-bar > .progress-label + .progress-track > .progress-fill + .progress-count` |
 | **Masterplan decoder** | `.decoder-block > button.decoder-trigger > .decoder-trigger-label + .decoder-chevron` |
 | **Decoder body** | `.decoder-body` (toggled open by `toggleDecoder()`) |
@@ -159,13 +285,7 @@ Rules:
 - Card subtitles are **competency questions** ("Can you explain…?", "Could you set up…?")
   — not passive descriptions.
 
-### 2. lesson_index.html (module lesson list — shown via `indexRoute` on topic modules)
-
-Used for modules that want a navigable list of lessons rather than a masterplan grid.
-All three language tabs, featured cards for General Overview and Mind Map, numbered regular
-cards for topics. The `openLesson()` function sends `lms:openLesson` postMessage to shell.
-
-### 3. general.html (General Overview page)
+### 2. general.html (General Overview page)
 
 Must have a **progress bar** in all three language tabs. Sections in order:
 1. What this module covers (key-points list)
@@ -174,15 +294,15 @@ Must have a **progress bar** in all three language tabs. Sections in order:
 4. Recommended Resources (ask-cards)
 5. Must-block success criteria
 
-### 4. topic0-mindmap.html (Mind Map)
+### 3. topic0-mindmap.html (Mind Map)
 
 All data in `var DATA = { en: {...}, de: {...}, ar: {...} }`. Call
 `initMindmapAdvanced(DATA)` after the shared script. 5–6 branches, 3–5 children each.
 
-### 5. topicN-slug.html (Topic pages)
+### 4. topicN-slug.html (Topic pages)
 
 Filename: `topic1-slug.html`, `topic2-slug.html`, etc. Each has:
-- `.home-nav` back link to `./lesson_index.html`
+- `.home-nav` back link to `./masterplan.html`
 - 2–4 section-header + section blocks (concept-first, then practice)
 - Q&A accordion with 4–8 questions (no overlap with general.html questions)
 - `.must-block` success criteria block
@@ -312,13 +432,16 @@ If none fit, add a new field object to `LMS_CONFIG.fields[]`.
 
 ## MIND MAP RULES
 
+> If `ref-mindmap.html` was attached (optional — see "FILES TO ATTACH" above), match its
+> markup and `DATA` structure exactly; reuse its patterns, not its Git/GitHub subject matter.
+> If it was not attached, the rules below are sufficient on their own.
+
 - All data in `var DATA = { en: {...}, de: {...}, ar: {...} }`.
 - Each language key: `legendTitle`, `legendMust`, `whyLabel`, `studyLabel`, `mustLabel`,
   `branches[]`.
 - Each branch: `{ color, bg, border, title, children[] }`.
 - Each child: `{ label, mk (bool), info, why, topic }`.
-- The `topic` string must exactly match the card title in `masterplan.html` /
-  `lesson_index.html`.
+- The `topic` string must exactly match the card title in `masterplan.html`.
 - Call `initMindmapAdvanced(DATA)` after the shared script.
 - 5–6 branches, 3–5 children each.
 
@@ -335,6 +458,10 @@ MODULE TAGLINE:        [one sentence: who this is for and what gap it closes]
 TARGET LEARNER:        [background, what they already know]
 FIELD:                 [backend | frontend | career | local-prep]
 PATH:                  [lms/modules/FOLDER | lms/personalied_modules/FOLDER]
+LANGUAGES:              [default: EN, DE, AR — list only the ones to generate now, e.g.
+                        "EN only" or "EN, DE only"; any language left out still gets its
+                        tab button, but no content div and no stub — see Partial /
+                        specific-language generation rules above]
 
 TOPICS (list each with a 1-line description and priority):
   Topic 1: [title] — [description] — Priority: CRITICAL | HIGH | MEDIUM | LOW
@@ -381,7 +508,6 @@ After the brief is provided:
 - **`"Generate the registry.js entry"`** → output only the registry module block + field
   assignment (no HTML files)
 - **`"Start creating the masterplan"`** → generate `masterplan.html` only
-- **`"Start creating the lesson index"`** → generate `lesson_index.html` only
 - **`"Start creating the general overview"`** → generate `general.html` only
 - **`"Start creating the mind map"`** → generate `topic0-mindmap.html` only
 - **`"Start creating topic 1"`** → generate `topic1-[slug].html` only
@@ -389,13 +515,21 @@ After the brief is provided:
 - **`"Start generating the full module"`** → generate ALL files in this order:
   1. registry.js entry block
   2. `masterplan.html`
-  3. `lesson_index.html` (if module uses indexed navigation)
-  4. `general.html`
-  5. `topic0-mindmap.html`
-  6. `topic1-[slug].html` … `topicN-[slug].html`
+  3. `general.html`
+  4. `topic0-mindmap.html`
+  5. `topic1-[slug].html` … `topicN-[slug].html`
 
 When generating a single file, output the **complete, copy-paste-ready HTML** with no
-placeholder comments. Every language tab must be fully written — no stubs.
+placeholder comments. Every language tab you generate content for must be fully written —
+no stubs, no lorem ipsum.
+
+If the trigger includes a language qualifier (e.g. `"Start creating topic 1, English only"`,
+`"...the full module, English and German only"`), apply the **Partial / specific-language
+generation** rules above to every file produced in that run: write full content only for the
+named language(s); for every other language, keep the tab button, omit its `#tab-xx` div
+completely, and add the matching explicit `guardLanguageTab('xx')` call in the closing
+script. "No stubs" still applies here — the correct state for a skipped language is "div
+absent," never "div present but empty."
 
 ---
 
@@ -420,10 +554,19 @@ For the registry entry:
 ### All HTML files
 - [ ] `../shared/theme.css` linked in `<head>`
 - [ ] `../shared/lesson-ui.js` included before `</body>`
-- [ ] All three language tabs present and fully translated (EN / DE / AR)
-- [ ] Arabic tab has `dir="rtl" lang="ar"`
-- [ ] `onclick="switchTab('xx', this)"` on every `.tab-btn`
-- [ ] **No inline `guardLanguageTab()` calls** — `lesson-ui.js` handles both `'ar'` and `'de'` automatically; adding them again causes double-firing bugs
+- [ ] Every **requested** language tab is present and fully translated; every
+      **intentionally skipped** language still has its `.tab-btn` but has **no** `#tab-xx`
+      div anywhere in the file (see Partial / specific-language generation)
+- [ ] Arabic tab, if generated, has `dir="rtl" lang="ar"`
+- [ ] `onclick="switchTab('xx', this)"` on every `.tab-btn`, including buttons for languages
+      that were skipped this run
+- [ ] **No inline `guardLanguageTab()` call for a language tab you wrote full content for**
+      — `lesson-ui.js` handles that automatically. **For every language you intentionally
+      skipped**, an explicit `guardLanguageTab('xx')` call in the closing script IS required
+- [ ] **No comment-only stub divs.** `<div id="tab-ar" class="tab-content"><!-- coming
+      soon --></div>` defeats `guardLanguageTab()`'s `innerHTML.trim() !== ''` empty-check —
+      the comment text makes it look already-translated, so the not-yet-translated banner
+      silently never renders. A skipped language gets no div at all, full stop
 - [ ] No lorem ipsum or placeholder content anywhere
 - [ ] Code blocks use `<div class="code-block">` not `<pre>`
 - [ ] Inline code uses `<code>` not backticks
@@ -461,7 +604,9 @@ For the registry entry:
 - [ ] `.home-nav` back link present (`href="./lesson_index.html"`)
 - [ ] `<script>window.LMS_STORAGE_KEY = 'lms_FOLDER_NAME_NN_done';</script>` present
       **immediately before** the `lesson-ui.js` `<script>` tag, with key matching `registry.js`
-- [ ] No inline `guardLanguageTab()` calls after `lesson-ui.js` (it handles this automatically)
+- [ ] No inline `guardLanguageTab()` call for any language tab written with full content
+      this run (handled automatically); an explicit call IS present for each intentionally
+      skipped language, and that language has no `#tab-xx` div at all
 - [ ] `data-lang` attribute on every `.q-card`
 - [ ] `onclick="toggle(this)"` on every `.q-trigger`
 - [ ] `.must-block` success criteria at end of each language tab
@@ -496,6 +641,39 @@ The `.key-point-dot` div closes immediately with `></div>` — no quote, no spac
 > tabs (DE, AR) to disappear entirely — the browser miscounts open divs and swallows the
 > rest of the document inside the broken tab. After generating any topic file, mentally
 > scan every `.key-point-dot` closing tag and confirm it reads `></div>` not `></div">`.
+
+### Skipped-language tab — canonical pattern (copy exactly)
+When a language is intentionally not generated this run, its tab button stays but its
+content div must be **absent**, not empty:
+
+```html
+<!-- ❌ WRONG — div exists, comment makes innerHTML non-blank, banner never injects -->
+<div id="tab-ar" class="tab-content">
+  <!-- Arabic content coming soon -->
+</div>
+
+<!-- ✅ RIGHT — no #tab-ar element anywhere in the file -->
+<!-- (nothing here at all — the div simply doesn't exist) -->
+```
+
+And the closing script must call `guardLanguageTab()` explicitly for each skipped language:
+
+```html
+<script>window.LMS_STORAGE_KEY = 'lms_FOLDER_NAME_NN_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<script>
+guardLanguageTab('ar');   /* one explicit call per skipped language */
+</script>
+```
+
+> ⚠️ **Known failure mode:** `guardLanguageTab(lang)` only injects the not-yet-translated
+> banner when `document.getElementById('tab-' + lang)` is either missing entirely, or
+> present with `innerHTML.trim() === ''`. An HTML comment inside the div is enough text to
+> make `innerHTML.trim()` non-empty, so the function silently assumes the language is
+> already handled and returns without doing anything — the tab just shows a blank panel
+> when clicked. This was found in production across three separate topic files generated
+> from an earlier version of this prompt. The fix is structural, not cosmetic: don't write
+> the div at all for a skipped language.
 
 ### Color palette for section icons
 - Blue: `background:#eff6ff` | Green: `background:#f0fdf4`
@@ -536,8 +714,23 @@ never reads, and progress bars never update.
 <script src="../shared/lesson-ui.js"></script>
 ```
 
-Do **not** add any `guardLanguageTab()` calls after this — `lesson-ui.js` handles both
-`'ar'` and `'de'` automatically in its `DOMContentLoaded` listener.
+`lesson-ui.js` automatically calls `guardLanguageTab('ar')` and `guardLanguageTab('de')`
+on `DOMContentLoaded`. The rules for what to add after this line are:
+
+- **Language tab with full content** → do NOT add an explicit `guardLanguageTab('xx')`
+  call. The auto-call handles it; an explicit one is a harmless no-op.
+- **Language tab intentionally skipped** (no `#tab-xx` div) → DO add an explicit
+  `guardLanguageTab('xx')` call in a closing `<script>` block. The explicit call is
+  redundant with the auto-call but documents intent and matches the verified reference
+  pattern. One call per skipped language:
+
+```html
+<script>window.LMS_STORAGE_KEY = 'lms_FOLDER_NAME_NN_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<script>
+guardLanguageTab('ar');   /* skipped — no #tab-ar div exists */
+</script>
+```
 
 ### toggleDecoder() — required in masterplan.html scripts
 ```js

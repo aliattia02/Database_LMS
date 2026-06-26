@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 2 — Text, Headings &amp; Lists | HTML Starter</title>
+<link rel="stylesheet" href="../shared/theme.css"/>
+<style>
+.section-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.section-intro  { font-size:14px; color:#334155; line-height:1.65; margin-bottom:16px; }
+.section        { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; box-shadow:var(--shadow); }
+.section h2     { font-size:18px; font-weight:700; margin-bottom:6px; color:var(--navy); }
+.section p      { font-size:14px; color:#334155; line-height:1.65; margin-bottom:12px; }
+.section p:last-child { margin-bottom:0; }
+
+.accordion     { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+.acc-item      { background:var(--white); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.acc-trigger   { width:100%; display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:none; border:none; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--navy); text-align:left; transition:background .12s; }
+.acc-trigger:hover { background:var(--bg); }
+.acc-chevron   { font-size:12px; color:var(--muted); transition:transform .2s; flex-shrink:0; }
+.acc-trigger.open .acc-chevron { transform:rotate(180deg); }
+.acc-body      { display:none; padding:16px; border-top:1px solid var(--border); font-size:13.5px; color:var(--navy); line-height:1.65; }
+.acc-body.open { display:block; }
+
+.concepts       { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.concept        { background:var(--white); border:1px solid var(--border); border-left:3px solid var(--border); border-radius:8px; padding:12px 16px; }
+.concept.blue   { border-left-color:#0284c7; }
+.concept.green  { border-left-color:#059669; }
+.concept.orange { border-left-color:#d97706; }
+.concept.teal   { border-left-color:#0d9488; }
+.concept.purple { border-left-color:#7c3aed; }
+.concept.indigo { border-left-color:#4338ca; }
+.concept-name   { font-size:13px; font-weight:700; color:var(--navy); margin-bottom:4px; }
+.concept-desc   { font-size:12px; color:var(--slate); line-height:1.6; }
+
+.callout      { border-radius:0 8px 8px 0; padding:12px 16px; margin-bottom:16px; border:1px solid transparent; border-left-width:3px; }
+.callout .lbl { font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; margin-bottom:6px; }
+.callout p, .callout li  { font-size:12px; line-height:1.65; }
+.callout ul, .callout ol { padding-left:16px; }
+.callout li              { margin-bottom:4px; }
+.callout.tip       { background:#d1fae5; border-color:#a7f3d0; border-left-color:#059669; }
+.callout.tip .lbl  { color:#059669; }
+.callout.tip p, .callout.tip li { color:#065f46; }
+.callout.warn       { background:#fef3c7; border-color:#fde68a; border-left-color:#b45309; }
+.callout.warn .lbl  { color:#b45309; }
+.callout.warn p, .callout.warn li { color:#78350f; }
+.callout.interview       { background:#e0e7ff; border-color:#a5b4fc; border-left-color:#4338ca; }
+.callout.interview .lbl  { color:#3730a3; }
+.callout.interview p     { color:#312e81; font-weight:600; }
+
+code        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12.5px; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--navy); }
+.code-block { background:#f8fafc; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:16px; }
+.code-header         { display:flex; align-items:center; justify-content:space-between; padding:8px 14px; border-bottom:1px solid var(--border); }
+.code-header-left    { display:flex; align-items:center; gap:8px; }
+.code-label          { font-size:10px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.code-label.html     { color:#dc2626; }
+.code-label.output   { color:#d97706; }
+.copy-btn            { font-size:10px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; color:var(--muted); background:none; border:1px solid var(--border); border-radius:5px; padding:3px 8px; cursor:pointer; transition:color .15s,border-color .15s; }
+.copy-btn:hover      { color:var(--navy); }
+.copy-btn.copied     { color:#059669; border-color:#059669; }
+.code-body           { padding:16px 14px; font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:12px; color:#334155; line-height:1.75; overflow-x:auto; white-space:pre; background:#f8fafc; }
+.kw  { color:#0284c7; font-weight:600; }
+.str { color:#059669; }
+.cm  { color:#94a3b8; }
+
+.ref-table              { width:100%; border-collapse:collapse; font-size:12px; margin-bottom:16px; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+.ref-table thead tr     { background:#334155; color:#fff; }
+.ref-table thead th     { padding:10px 14px; text-align:left; font-weight:700; }
+.ref-table tbody tr     { border-bottom:1px solid var(--border); }
+.ref-table tbody tr:last-child { border-bottom:none; }
+.ref-table tbody tr:nth-child(even) { background:var(--bg); }
+.ref-table tbody td     { padding:9px 14px; vertical-align:top; line-height:1.55; }
+.ref-table .mono        { font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace; font-size:11px; }
+
+.challenge                 { background:var(--white); border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:16px; box-shadow:var(--shadow); }
+.challenge-head            { padding:12px 16px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; transition:background .12s; }
+.challenge-head:hover      { background:var(--bg); }
+.challenge-head-left       { display:flex; align-items:center; gap:10px; }
+.challenge-badge           { font-size:10px; font-weight:700; letter-spacing:.08em; background:#fef3c7; color:#b45309; border:1px solid #fde68a; border-radius:99px; padding:2px 8px; }
+.challenge-title           { font-size:13px; font-weight:600; color:var(--navy); }
+.challenge-arrow           { font-size:12px; color:var(--muted); transition:transform .2s; }
+.challenge-arrow.open      { transform:rotate(180deg); }
+.challenge-body            { display:none; padding:16px; border-top:1px solid var(--border); }
+.challenge-body.open       { display:block; }
+.challenge-q               { font-size:13px; color:var(--navy); margin-bottom:12px; line-height:1.6; }
+.answer-toggle             { font-size:11px; color:var(--muted); cursor:pointer; text-decoration:underline; margin-bottom:8px; display:inline-block; }
+.answer-toggle:hover       { color:var(--navy); }
+.answer                    { display:none; }
+.answer.open               { display:block; }
+
+.badge       { font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+.badge-must  { background:#fef3c7; color:#92400e; }
+.badge-common{ background:#dbeafe; color:#1e40af; }
+.q-arrow     { font-size:12px; color:var(--muted); padding-top:3px; flex-shrink:0; transition:transform .2s; }
+.q-trigger.open .q-arrow { transform:rotate(180deg); }
+.q-panel           { padding:18px 20px 16px 52px; }
+.strategy-label    { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.strategy-text     { font-size:13.5px; color:var(--navy2); line-height:1.65; margin-bottom:14px; }
+.answer-box        { background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.answer-box-label  { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-text); margin-bottom:8px; }
+.answer-box-text   { font-size:13.5px; color:#14532d; line-height:1.7; }
+.key-points        { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.key-point         { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--navy2); line-height:1.55; }
+.key-point-dot     { width:7px; height:7px; border-radius:50%; background:#2563eb; flex-shrink:0; margin-top:7px; }
+
+.must-block                  { background:var(--amber-bg); border:1.5px solid var(--amber-border); border-radius:var(--radius); padding:18px 20px; margin:28px 0 0; }
+.must-block-title            { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--amber-text); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+.must-block .must-item       { display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:#78350f; line-height:1.6; padding:9px 0; border-bottom:1px solid #fde68a; }
+.must-block .must-item:last-child { border-bottom:none; padding-bottom:0; }
+.must-block .must-bullet     { font-size:15px; flex-shrink:0; }
+
+.progress-bar   { display:flex; align-items:center; gap:12px; margin-bottom:20px; padding:12px 16px; background:var(--white); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); }
+.progress-label { font-size:12px; font-weight:600; color:var(--muted); white-space:nowrap; }
+.prog-bar       { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+.prog-fill      { height:100%; background:var(--accent); border-radius:3px; transition:width .3s; }
+.prog-label     { font-size:12px; color:var(--muted); white-space:nowrap; }
+
+[dir="rtl"] .acc-trigger    { text-align:right; }
+[dir="rtl"] .callout        { border-radius:8px 0 0 8px; border-left-width:1px; border-right-width:3px; }
+[dir="rtl"] .concept        { border-left-width:1px; border-right-width:3px; border-left-color:var(--border); }
+[dir="rtl"] .q-panel        { padding:18px 52px 16px 20px; }
+[dir="rtl"] .key-point      { flex-direction:row-reverse; }
+[dir="rtl"] .must-item      { flex-direction:row-reverse; }
+[dir="rtl"] .must-block-title { flex-direction:row-reverse; }
+[dir="rtl"] .code-block     { direction:ltr; }
+@media (max-width:600px) { .q-panel { padding-left:20px; } .q-badges { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="home-nav">
+  <a class="home-link" href="../../../../../../Downloads/masterplan.html">← Back to course index</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">HTML Starter &mdash; Topic 2 of 5 &middot; High &middot; ~1h</div>
+    <h1><span>Text, Headings</span> &amp; Lists</h1>
+    <p class="header-sub">Master the elements that structure written content — headings, paragraphs, emphasis, and both list types — plus when to use each.</p>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('en',this)">English</button>
+    <button class="tab-btn"        onclick="switchTab('de',this)">Deutsch</button>
+    <button class="tab-btn" lang="ar" onclick="switchTab('ar',this)">العربية</button>
+  </div>
+</div>
+
+<main>
+<div class="body">
+
+<!-- ═══ ENGLISH TAB ═══ -->
+<div id="tab-en" class="tab-content active">
+
+  <div class="progress-bar">
+    <span class="progress-label">Study progress</span>
+    <div class="prog-bar"><div class="prog-fill" id="prog-en" style="width:0%"></div></div>
+    <span id="prog-count-en" class="prog-label">0 / 0 opened</span>
+  </div>
+
+  <!-- LESSON 1: Headings & Paragraphs -->
+  <div class="section">
+    <div class="section-label">Lesson 1 · ~30 min</div>
+    <h2>Headings &amp; Paragraphs</h2>
+    <p class="section-intro">Headings create an outline that both users and search engines use to navigate. The correct hierarchy is more important than the visual size.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>⚡ Why This Matters</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <p style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px">Screen readers use heading structure to let blind users jump between sections — just like a sighted user would skim a table of contents. Broken heading hierarchy is one of the most common accessibility failures. Search engines also weight <code>&lt;h1&gt;</code> content heavily for SEO.</p>
+          <div class="callout interview">
+            <div class="lbl">⚓ Core Insight</div>
+            <p>Never choose a heading level based on how it looks — choose it based on the document outline. If you want a heading to look smaller, use CSS, not a lower-level tag.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Core Concepts</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name">Heading Levels <code>h1</code>–<code>h6</code></div>
+              <div class="concept-desc">Six levels of headings where <code>&lt;h1&gt;</code> is the most important (page title) and <code>&lt;h6&gt;</code> the least. Each page should have exactly <strong>one</strong> <code>&lt;h1&gt;</code>. Levels should not be skipped — go from <code>h2</code> to <code>h3</code>, never <code>h2</code> to <code>h4</code>.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name">Paragraph <code>&lt;p&gt;</code></div>
+              <div class="concept-desc">The standard block-level container for a unit of text. Browsers add default top and bottom margins between paragraphs. Never use <code>&lt;br&gt;</code> tags to create fake paragraph spacing — use real <code>&lt;p&gt;</code> elements.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name">Line Break <code>&lt;br&gt;</code></div>
+              <div class="concept-desc">Forces a line break within a block element — for poetry, addresses, or other content where line breaks are part of the meaning. Do <em>not</em> use multiple <code>&lt;br&gt;</code> tags to create vertical spacing — that is a CSS concern.</div>
+            </div>
+          </div>
+
+          <!-- Heading reference table -->
+          <table class="ref-table">
+            <thead><tr><th>Element</th><th>Semantic Role</th><th>Typical Use</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">&lt;h1&gt;</td><td>Page title</td><td>One per page — the main topic</td></tr>
+              <tr><td class="mono">&lt;h2&gt;</td><td>Major section</td><td>Main sections of the page</td></tr>
+              <tr><td class="mono">&lt;h3&gt;</td><td>Sub-section</td><td>Sub-topics within an h2 section</td></tr>
+              <tr><td class="mono">&lt;h4&gt;–&lt;h6&gt;</td><td>Deeper nesting</td><td>Rarely needed; restructure first</td></tr>
+            </tbody>
+          </table>
+
+          <div class="callout warn">
+            <div class="lbl">⚠️ Common Pitfall</div>
+            <p>Using <code>&lt;h3&gt;</code> right after <code>&lt;h1&gt;</code> (skipping <code>&lt;h2&gt;</code>) creates a broken document outline. Screen reader users rely on a continuous heading hierarchy to navigate efficiently.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🌍 Worked Example</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="callout tip">
+            <div class="lbl">✅ Scenario</div>
+            <p>A blog post about French cooking. Structure it with a page title, two sections (Ingredients, Instructions), and a sub-section under Instructions.</p>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="kw">&lt;h1&gt;</span>Classic French Onion Soup<span class="kw">&lt;/h1&gt;</span>   <span class="cm">&lt;!-- Page title --&gt;</span>
+
+<span class="kw">&lt;h2&gt;</span>Ingredients<span class="kw">&lt;/h2&gt;</span>               <span class="cm">&lt;!-- Major section --&gt;</span>
+<span class="kw">&lt;p&gt;</span>You will need the following ingredients for 4 servings.<span class="kw">&lt;/p&gt;</span>
+
+<span class="kw">&lt;h2&gt;</span>Instructions<span class="kw">&lt;/h2&gt;</span>
+<span class="kw">&lt;p&gt;</span>Follow these steps carefully for best results.<span class="kw">&lt;/p&gt;</span>
+
+<span class="kw">&lt;h3&gt;</span>Preparing the Onions<span class="kw">&lt;/h3&gt;</span>      <span class="cm">&lt;!-- Sub-section of Instructions --&gt;</span>
+<span class="kw">&lt;p&gt;</span>Slice the onions thinly and caramelise over low heat.<span class="kw">&lt;/p&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LESSON 2: Text Formatting & Lists -->
+  <div class="section">
+    <div class="section-label">Lesson 2 · ~30 min</div>
+    <h2>Inline Text Formatting &amp; Lists</h2>
+    <p class="section-intro">HTML provides both <em>semantic</em> formatting (which carries meaning) and <em>presentational</em> formatting (which only affects appearance). Understanding the difference affects accessibility and SEO.</p>
+
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Core Concepts — Inline Formatting</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name"><code>&lt;strong&gt;</code> — Strong Importance</div>
+              <div class="concept-desc"><em>Semantic</em>: marks text as critically important. Screen readers emphasise it with a different tone. Visually renders bold by default, but its meaning is "this matters", not "make this bold".</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>&lt;em&gt;</code> — Emphasis</div>
+              <div class="concept-desc"><em>Semantic</em>: marks text with stress emphasis — the kind that changes meaning when spoken aloud. Visually renders italic. "I <em>never</em> said she stole the money" vs "I never said <em>she</em> stole the money" — the meaning shifts.</div>
+            </div>
+            <div class="concept orange">
+              <div class="concept-name"><code>&lt;b&gt;</code> and <code>&lt;i&gt;</code></div>
+              <div class="concept-desc"><em>Presentational</em>: visually bold/italic with no semantic weight. Use <code>&lt;b&gt;</code> for keywords, product names, or UI strings where bold is a convention, not importance. Use <code>&lt;i&gt;</code> for titles of works, technical terms, or phrases in another language.</div>
+            </div>
+            <div class="concept teal">
+              <div class="concept-name"><code>&lt;mark&gt;</code>, <code>&lt;small&gt;</code>, <code>&lt;del&gt;</code>, <code>&lt;ins&gt;</code></div>
+              <div class="concept-desc"><code>&lt;mark&gt;</code> = highlighted/relevant text. <code>&lt;small&gt;</code> = fine print/side comments. <code>&lt;del&gt;</code> = deleted text (strikethrough). <code>&lt;ins&gt;</code> = inserted text (underline). All carry semantic meaning, not just visual style.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Core Concepts — Lists</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept purple">
+              <div class="concept-name"><code>&lt;ul&gt;</code> — Unordered List</div>
+              <div class="concept-desc">A list where order does not matter — items are rendered as bullets. Use for: ingredients, features, navigation menus, collections of items without natural sequence.</div>
+            </div>
+            <div class="concept indigo">
+              <div class="concept-name"><code>&lt;ol&gt;</code> — Ordered List</div>
+              <div class="concept-desc">A list where order <em>does</em> matter — items are rendered numbered. Use for: step-by-step instructions, rankings, legal clauses, anything with a sequence. Supports <code>start</code> and <code>reversed</code> attributes.</div>
+            </div>
+            <div class="concept blue">
+              <div class="concept-name"><code>&lt;li&gt;</code> — List Item</div>
+              <div class="concept-desc">The only valid direct child of <code>&lt;ul&gt;</code> and <code>&lt;ol&gt;</code>. Each item in either list type uses <code>&lt;li&gt;</code>. Lists can be nested: put a full <code>&lt;ul&gt;</code> or <code>&lt;ol&gt;</code> inside an <code>&lt;li&gt;</code> to create sub-lists.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name"><code>&lt;dl&gt;</code>, <code>&lt;dt&gt;</code>, <code>&lt;dd&gt;</code> — Description List</div>
+              <div class="concept-desc">A specialised list for term–definition pairs: <code>&lt;dl&gt;</code> wraps the list, <code>&lt;dt&gt;</code> is the term, <code>&lt;dd&gt;</code> is the description. Perfect for glossaries, metadata tables, or FAQ-style Q&amp;A.</div>
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-left"><span class="code-label html">HTML — List examples</span></div>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+            <div class="code-body"><span class="cm">&lt;!-- Unordered list --&gt;</span>
+<span class="kw">&lt;ul&gt;</span>
+  <span class="kw">&lt;li&gt;</span>Flour<span class="kw">&lt;/li&gt;</span>
+  <span class="kw">&lt;li&gt;</span>Butter<span class="kw">&lt;/li&gt;</span>
+  <span class="kw">&lt;li&gt;</span>Eggs<span class="kw">&lt;/li&gt;</span>
+<span class="kw">&lt;/ul&gt;</span>
+
+<span class="cm">&lt;!-- Ordered list --&gt;</span>
+<span class="kw">&lt;ol&gt;</span>
+  <span class="kw">&lt;li&gt;</span>Preheat oven to 180°C<span class="kw">&lt;/li&gt;</span>
+  <span class="kw">&lt;li&gt;</span>Mix dry ingredients<span class="kw">&lt;/li&gt;</span>
+  <span class="kw">&lt;li&gt;</span>Add wet ingredients and stir<span class="kw">&lt;/li&gt;</span>
+<span class="kw">&lt;/ol&gt;</span>
+
+<span class="cm">&lt;!-- Nested list --&gt;</span>
+<span class="kw">&lt;ul&gt;</span>
+  <span class="kw">&lt;li&gt;</span>Frontend
+    <span class="kw">&lt;ul&gt;</span>
+      <span class="kw">&lt;li&gt;</span>HTML<span class="kw">&lt;/li&gt;</span>
+      <span class="kw">&lt;li&gt;</span>CSS<span class="kw">&lt;/li&gt;</span>
+    <span class="kw">&lt;/ul&gt;</span>
+  <span class="kw">&lt;/li&gt;</span>
+  <span class="kw">&lt;li&gt;</span>Backend<span class="kw">&lt;/li&gt;</span>
+<span class="kw">&lt;/ul&gt;</span></div>
+          </div>
+
+          <div class="callout warn">
+            <div class="lbl">⚠️ Common Pitfall</div>
+            <p>Only <code>&lt;li&gt;</code> elements are valid direct children of <code>&lt;ul&gt;</code> and <code>&lt;ol&gt;</code>. Placing a <code>&lt;p&gt;</code> or <code>&lt;div&gt;</code> directly inside a list (without wrapping it in <code>&lt;li&gt;</code>) is invalid HTML.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🎯 Challenge</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="challenge">
+            <div class="challenge-head" onclick="togChallenge(this)">
+              <div class="challenge-head-left">
+                <span class="challenge-badge">TRY IT</span>
+                <span class="challenge-title">Mark up a recipe page with correct heading hierarchy and lists</span>
+              </div>
+              <span class="challenge-arrow">▾</span>
+            </div>
+            <div class="challenge-body">
+              <p class="challenge-q">Create an HTML snippet for a recipe page. It should include: an <code>h1</code> with the recipe name, an <code>h2</code> for "Ingredients" with an unordered list of at least 3 items, an <code>h2</code> for "Instructions" with an ordered list of at least 3 steps, and one word in the ingredients list made <code>strong</code> (e.g. "unsalted" butter). No <code>&lt;html&gt;</code>/<code>&lt;head&gt;</code> boilerplate needed.</p>
+              <span class="answer-toggle" data-show="Show answer ↓" data-hide="Hide answer ↑" onclick="togAnswer(this)">Show answer ↓</span>
+              <div class="answer">
+                <div class="callout tip">
+                  <div class="lbl">✓ Answer</div>
+                  <p>Key checks: single <code>h1</code>, two sibling <code>h2</code>s (not nested), <code>ul</code> for ingredients (order doesn't matter), <code>ol</code> for instructions (order matters), and <code>&lt;strong&gt;</code> inside an <code>&lt;li&gt;</code> — not around the whole <code>&lt;li&gt;</code>.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PRACTICE QUESTIONS -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Practice Questions</div>
+      <div class="section-subtitle">In-depth questions for this topic</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">What is the difference between <code>&lt;strong&gt;</code> and <code>&lt;b&gt;</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Ask: "Does the bold serve a meaning, or is it just a visual choice?" If meaning → <code>&lt;strong&gt;</code>. If convention → <code>&lt;b&gt;</code>.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          <code>&lt;strong&gt;</code> is <em>semantic</em>: it communicates strong importance or urgency. Screen readers may change tone or volume when reading it. Use it for warnings, critical instructions, or key terms where the emphasis changes the meaning.<br><br>
+          <code>&lt;b&gt;</code> is <em>presentational</em>: it makes text visually bold without implying any special importance. Use it for product names, keywords, or any case where bold is a stylistic convention rather than a semantic signal.<br><br>
+          Both render identically in most browsers. The difference is in meaning for assistive technology and document semantics.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>&lt;strong&gt;</code> = semantic importance (affects screen readers).</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>&lt;b&gt;</code> = visual bold with no extra meaning.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Same rule applies to <code>&lt;em&gt;</code> (semantic stress) vs <code>&lt;i&gt;</code> (visual italic).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="en">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">02</span>
+      <span class="q-text">When should you use <code>&lt;ul&gt;</code> vs <code>&lt;ol&gt;</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Must know</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mental model</div>
+      <div class="strategy-text">Ask: "Would re-ordering these items change their meaning?" If yes → <code>&lt;ol&gt;</code>. If no → <code>&lt;ul&gt;</code>.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">The Answer</div>
+        <div class="answer-box-text">
+          Use <code>&lt;ul&gt;</code> when order doesn't matter — a shopping list, a set of features, a navigation menu.<br><br>
+          Use <code>&lt;ol&gt;</code> when the sequence is meaningful — installation steps, cooking instructions, ranking, legal clauses.<br><br>
+          The browser renders them differently (bullets vs. numbers), but more importantly the choice communicates intent to screen readers and machines parsing your document.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>&lt;ul&gt;</code>: order is irrelevant — bullets.</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>&lt;ol&gt;</code>: order is meaningful — numbers.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Navigation menus are almost always <code>&lt;ul&gt;</code> — even though the order may feel fixed.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> You are done with Topic 2 when...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can create a correctly-hierarchied heading structure (h1 → h2 → h3) without skipping levels.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You know when to use <code>&lt;strong&gt;</code> vs <code>&lt;b&gt;</code> and <code>&lt;em&gt;</code> vs <code>&lt;i&gt;</code>.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can build both a <code>&lt;ul&gt;</code> and <code>&lt;ol&gt;</code> list, and choose the correct one for a given scenario.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>You can nest a list inside another list without introducing invalid markup.</div>
+  </div>
+
+</div><!-- end tab-en -->
+
+
+<!-- ═══ GERMAN TAB ═══ -->
+<div id="tab-de" class="tab-content">
+
+  <div class="progress-bar">
+    <span class="progress-label">Lernfortschritt</span>
+    <div class="prog-bar"><div class="prog-fill" id="prog-de" style="width:0%"></div></div>
+    <span id="prog-count-de" class="prog-label">0 / 0 geöffnet</span>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Lektion 1 · ~30 Min</div>
+    <h2>Überschriften &amp; Absätze</h2>
+    <p class="section-intro">Überschriften erzeugen eine Gliederung, die sowohl Nutzer als auch Suchmaschinen zur Navigation verwenden. Die korrekte Hierarchie ist wichtiger als die visuelle Größe.</p>
+
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Kernkonzepte</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept blue">
+              <div class="concept-name">Überschriftsebenen <code>h1</code>–<code>h6</code></div>
+              <div class="concept-desc">Sechs Ebenen von Überschriften, wobei <code>&lt;h1&gt;</code> am wichtigsten (Seitentitel) und <code>&lt;h6&gt;</code> am wenigsten wichtig ist. Jede Seite sollte genau <strong>eine</strong> <code>&lt;h1&gt;</code> haben. Ebenen dürfen nicht übersprungen werden.</div>
+            </div>
+            <div class="concept green">
+              <div class="concept-name">Absatz <code>&lt;p&gt;</code></div>
+              <div class="concept-desc">Der Standard-Block-Container für eine Texteinheit. Verwende niemals <code>&lt;br&gt;</code>-Tags, um falschen Absatzabstand zu erzeugen — verwende echte <code>&lt;p&gt;</code>-Elemente.</div>
+            </div>
+          </div>
+          <div class="callout warn">
+            <div class="lbl">⚠️ Häufiger Fehler</div>
+            <p><code>&lt;h3&gt;</code> direkt nach <code>&lt;h1&gt;</code> zu verwenden (wobei <code>&lt;h2&gt;</code> übersprungen wird) erzeugt eine fehlerhafte Dokumentgliederung. Screenreader-Nutzer verlassen sich auf eine durchgehende Überschriftenhierarchie.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span>🧠 Kernkonzepte — Listen</span><span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="concepts">
+            <div class="concept purple">
+              <div class="concept-name"><code>&lt;ul&gt;</code> — Ungeordnete Liste</div>
+              <div class="concept-desc">Eine Liste, bei der die Reihenfolge keine Rolle spielt — Elemente werden als Aufzählungspunkte gerendert. Verwendung für: Zutaten, Funktionen, Navigationsmenüs.</div>
+            </div>
+            <div class="concept indigo">
+              <div class="concept-name"><code>&lt;ol&gt;</code> — Geordnete Liste</div>
+              <div class="concept-desc">Eine Liste, bei der die Reihenfolge <em>wichtig</em> ist — Elemente werden nummeriert gerendert. Verwendung für: Schritt-für-Schritt-Anleitungen, Rankings, alles mit einer Sequenz.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon" style="background:#f5f3ff;">❓</div>
+    <div>
+      <div class="section-title">Übungsfragen</div>
+      <div class="section-subtitle">Vertiefende Fragen zu diesem Thema</div>
+    </div>
+  </div>
+
+  <div class="q-card" data-lang="de">
+    <button class="q-trigger" onclick="toggle(this)">
+      <span class="q-num">01</span>
+      <span class="q-text">Was ist der Unterschied zwischen <code>&lt;strong&gt;</code> und <code>&lt;b&gt;</code>?</span>
+      <span class="q-badges"><span class="badge badge-must">⚑ Muss wissen</span></span>
+      <span class="q-arrow">▾</span>
+    </button>
+    <div class="q-panel">
+      <div class="strategy-label">Mentales Modell</div>
+      <div class="strategy-text">Frage: „Dient die Fettschrift einer Bedeutung oder ist es nur eine visuelle Wahl?" Wenn Bedeutung → <code>&lt;strong&gt;</code>. Wenn Konvention → <code>&lt;b&gt;</code>.</div>
+      <div class="answer-box">
+        <div class="answer-box-label">Die Antwort</div>
+        <div class="answer-box-text">
+          <code>&lt;strong&gt;</code> ist <em>semantisch</em>: Es vermittelt starke Wichtigkeit oder Dringlichkeit. Screenreader können Ton oder Lautstärke beim Vorlesen ändern.<br><br>
+          <code>&lt;b&gt;</code> ist <em>präsentational</em>: Es macht Text visuell fett, ohne besondere Wichtigkeit zu implizieren. Verwende es für Produktnamen, Keywords oder Fälle, bei denen Fettschrift eine stilistische Konvention ist.
+        </div>
+      </div>
+      <div class="key-points">
+        <div class="key-point"><div class="key-point-dot"></div><code>&lt;strong&gt;</code> = semantische Wichtigkeit (beeinflusst Screenreader).</div>
+        <div class="key-point"><div class="key-point-dot"></div><code>&lt;b&gt;</code> = visuelle Fettschrift ohne zusätzliche Bedeutung.</div>
+        <div class="key-point"><div class="key-point-dot"></div>Gleiche Regel gilt für <code>&lt;em&gt;</code> (semantische Betonung) vs <code>&lt;i&gt;</code> (visuelle Kursivschrift).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="must-block">
+    <div class="must-block-title"><span>✓</span> Du bist mit Thema 2 fertig, wenn...</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du eine korrekte Überschriftenhierarchie (h1 → h2 → h3) ohne Überspringen von Ebenen erstellen kannst.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du weißt, wann <code>&lt;strong&gt;</code> vs <code>&lt;b&gt;</code> und <code>&lt;em&gt;</code> vs <code>&lt;i&gt;</code> verwendet wird.</div>
+    <div class="must-item"><span class="must-bullet">✓</span>Du sowohl eine <code>&lt;ul&gt;</code>- als auch eine <code>&lt;ol&gt;</code>-Liste erstellen und für ein gegebenes Szenario die richtige auswählen kannst.</div>
+  </div>
+
+</div><!-- end tab-de -->
+
+<!-- ═══ ARABIC TAB ═══ -->
+<div id="tab-ar" class="tab-content" dir="rtl" lang="ar"></div>
+
+</div><!-- end body -->
+</main>
+
+<script>window.LMS_STORAGE_KEY = 'lms_html_starter_02_done';</script>
+<script src="../shared/lesson-ui.js"></script>
+<script>
+function copyCode(btn) {
+  const body = btn.closest('.code-block').querySelector('.code-body');
+  const text = (body.innerText || body.textContent).replace(/\u00A0/g, ' ');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1800);
+  }).catch(() => { btn.textContent = 'failed'; setTimeout(() => { btn.textContent = 'copy'; }, 1500); });
+}
+function togChallenge(headEl) {
+  const body  = headEl.nextElementSibling;
+  const arrow = headEl.querySelector('.challenge-arrow');
+  body.classList.toggle('open'); arrow.classList.toggle('open');
+}
+function togAnswer(toggleEl) {
+  const ans = toggleEl.nextElementSibling;
+  ans.classList.toggle('open');
+  const isOpen = ans.classList.contains('open');
+  toggleEl.textContent = isOpen ? (toggleEl.dataset.hide || 'Hide answer ↑') : (toggleEl.dataset.show || 'Show answer ↓');
+}
+updateProgress();
+guardLanguageTab('ar');
+</script>
+</body>
+</html>
