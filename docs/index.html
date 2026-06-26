@@ -256,7 +256,8 @@
       right: 28px;
       z-index: 50;
     }
-    [dir="rtl"] .landing-account { right: auto; left: 28px; }
+    /* Intentionally NOT flipping .landing-account in RTL — the sign-in button
+       stays in the top-right corner in all languages to match the English layout. */
 
     .landing-account-trigger {
       display: flex;
@@ -341,7 +342,7 @@
       box-shadow: 0 18px 44px rgba(30,41,59,.18);
       overflow: hidden;
     }
-    [dir="rtl"] .la-panel { right: auto; left: 0; }
+    /* Intentionally NOT flipping .la-panel in RTL — panel anchors to right edge of button. */
 
     .la-panel-inner { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
 
@@ -440,10 +441,61 @@
 
     @media (max-width: 720px) {
       .landing-account { top: 14px; right: 16px; }
-      [dir="rtl"] .landing-account { right: auto; left: 16px; }
       .landing-account-trigger { padding: 10px 16px; font-size: 13.5px; gap: 9px; }
       .la-name { max-width: 110px; }
       .la-panel { width: 270px; }
+    }
+
+    /* ── Floating language switcher — fields-landing / field-overview pages ──
+         Mirrors .landing-account exactly: fixed widget shown on the same two
+         pre-shell pages, hidden once #app-shell (with its own sidebar
+         .lang-switcher) takes over — see app.js render(), right next to the
+         existing `landingAccount.hidden = !appShell.hidden` line.
+         Sits on the OPPOSITE corner from .landing-account on purpose (left
+         vs. right) so the two never overlap; both swap sides together in
+         RTL, so they still never collide.
+         Buttons reuse the .lang-btn class from the sidebar switcher, so
+         app.js's existing `querySelectorAll('.lang-btn')` wiring (click
+         handlers + active-state sync) picks these up automatically — no
+         extra JS event wiring needed, just the show/hide line. ───────────── */
+    .landing-lang-switcher {
+      position: fixed;
+      top: 22px;
+      left: 28px;
+      z-index: 50;
+      display: flex;
+      gap: 3px;
+      padding: 5px;
+      border-radius: 999px;
+      border: 1px solid var(--border, #e2e8f0);
+      background: var(--surface, #ffffff);
+      box-shadow: 0 2px 10px rgba(30,41,59,.10);
+    }
+    /* Intentionally NOT flipping .landing-lang-switcher in RTL — it stays
+       top-left in all languages to match the English layout. */
+
+    .landing-lang-switcher .lang-btn {
+      border: none;
+      background: none;
+      color: var(--muted, #64748b);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      padding: 7px 13px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .landing-lang-switcher .lang-btn:hover { background: var(--bg, #f0f4f8); }
+    .landing-lang-switcher .lang-btn.active {
+      background: var(--accent, #4f46e5);
+      color: #fff;
+    }
+
+    @media (max-width: 720px) {
+      .landing-lang-switcher { top: 14px; left: 16px; padding: 4px; gap: 2px; }
+      .landing-lang-switcher .lang-btn { padding: 6px 10px; font-size: 11.5px; }
     }
   </style>
 
@@ -453,6 +505,18 @@
   <!-- Account panel now lives inside the sidebar footer — see #sidebar-account
        below. All element IDs (#auth-signed-out, #auth-signed-in, #auth-email …)
        are unchanged so app.js requires zero edits. ──────────────────────────── -->
+
+  <!-- Floating language switcher — fields-landing / field-overview pages ────
+       Single shared widget for both pre-shell pages, same pattern as
+       #landing-account just below (shown/hidden together by app.js). Sits
+       on the opposite corner from #landing-account so the two never
+       overlap. Buttons share the .lang-btn class with the sidebar's own
+       switcher (inside #app-shell), so app.js wires them up for free. ───── -->
+  <div id="landing-lang-switcher" class="landing-lang-switcher" hidden>
+    <button data-lang="en" class="lang-btn active" type="button">EN</button>
+    <button data-lang="ar" class="lang-btn" type="button">AR</button>
+    <button data-lang="de" class="lang-btn" type="button">DE</button>
+  </div>
 
   <!-- ⓪  Floating account widget — fields-landing / field-overview pages ─────
        The sidebar account section only exists inside #app-shell, so before a
@@ -549,7 +613,7 @@
     <!-- ── Hero header ──────────────────────────────────────────────────────── -->
     <header class="fields-header">
       <div class="fields-brand-lockup">
-        <span class="fields-by">by</span>
+        <span class="fields-by" data-i18n="fields.by">by</span>
         <a href="https://clidatech.com" target="_blank" rel="noopener" class="fields-clidatech-link">
           <span class="fields-clidatech-logo">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -565,10 +629,10 @@
 
       <!-- Feature pills row -->
       <div class="fields-feature-pills">
-        <span class="fpill">🔐 Per-user access control</span>
-        <span class="fpill">📈 Real-time progress sync</span>
-        <span class="fpill">✨ Personalized lesson blueprints</span>
-        <span class="fpill">🌍 EN · AR · DE lessons</span>
+        <span class="fpill" data-i18n="fields.pill.access">🔐 Per-user access control</span>
+        <span class="fpill" data-i18n="fields.pill.progress">📈 Real-time progress sync</span>
+        <span class="fpill" data-i18n="fields.pill.personalized">✨ Personalized lesson blueprints</span>
+        <span class="fpill" data-i18n="fields.pill.languages">🌍 EN · AR · DE lessons</span>
       </div>
     </header>
 
@@ -577,29 +641,29 @@
       <div class="ffeature">
         <div class="ffeature-icon">📚</div>
         <div class="ffeature-body">
-          <strong>Ready-made Tracks</strong>
-          <span>Curated paths covering SQL, Python, React, React Native, and Interview Prep — each with measurable, lesson-level progress.</span>
+          <strong data-i18n="fields.feature.tracks.title">Ready-made Tracks</strong>
+          <span data-i18n="fields.feature.tracks.body">Curated paths covering SQL, Python, React, React Native, and Interview Prep — each with measurable, lesson-level progress.</span>
         </div>
       </div>
       <div class="ffeature">
         <div class="ffeature-icon">✨</div>
         <div class="ffeature-body">
-          <strong>Personalized Lessons</strong>
-          <span>Tell us what you want to learn, where you're starting from, and what you need to do by when. We turn that into a lesson built just for you.</span>
+          <strong data-i18n="fields.feature.personalized.title">Personalized Lessons</strong>
+          <span data-i18n="fields.feature.personalized.body">Tell us what you want to learn, where you're starting from, and what you need to do by when. We turn that into a lesson built just for you.</span>
         </div>
       </div>
       <div class="ffeature">
         <div class="ffeature-icon">☁️</div>
         <div class="ffeature-body">
-          <strong>Cloud-synced Progress</strong>
-          <span>Sign in with Google or email to sync progress across devices via Firestore. Access is enforced per-user, at the database level.</span>
+          <strong data-i18n="fields.feature.cloud.title">Cloud-synced Progress</strong>
+          <span data-i18n="fields.feature.cloud.body">Sign in with Google or email to sync progress across devices via Firestore. Access is enforced per-user, at the database level.</span>
         </div>
       </div>
       <div class="ffeature">
         <div class="ffeature-icon">🌍</div>
         <div class="ffeature-body">
-          <strong>Multilingual Content</strong>
-          <span>Lessons available in English, German, and Arabic. Language preference is saved per-user and applied instantly.</span>
+          <strong data-i18n="fields.feature.multilingual.title">Multilingual Content</strong>
+          <span data-i18n="fields.feature.multilingual.body">Lessons available in English, German, and Arabic. Language preference is saved per-user and applied instantly.</span>
         </div>
       </div>
     </div>
@@ -609,7 +673,7 @@
 
     <!-- ── Section label ────────────────────────────────────────────────────── -->
     <div class="fields-section-label">
-      <span>Choose your learning track</span>
+      <span data-i18n="fields.sectionLabel">Choose your learning track</span>
     </div>
 
     <!-- ── Field cards ──────────────────────────────────────────────────────── -->
@@ -622,9 +686,11 @@
       <div class="fields-page-footer-inner">
         <span class="fpf-brand">SkillMap<span>·LMS</span></span>
         <span class="fpf-sep">·</span>
-        <span class="fpf-by">Built by <a href="https://clidatech.com" target="_blank" rel="noopener">Clidatech</a></span>
+        <span class="fpf-by"><span data-i18n="fields.footer.builtBy">Built by</span> <a href="https://clidatech.com" target="_blank" rel="noopener">Clidatech</a></span>
         <span class="fpf-sep">·</span>
-        <span class="fpf-tagline">A course that fits you is worth more than a hundred that don't</span>
+        <a href="mailto:contact@clidatech.com" class="fpf-contact">contact@clidatech.com</a>
+        <span class="fpf-sep">·</span>
+        <span class="fpf-tagline" data-i18n="fields.footer.tagline">A course that fits you is worth more than a hundred that don't</span>
       </div>
     </footer>
 
@@ -646,7 +712,7 @@
 
     <div class="field-overview-topbar">
       <button id="btn-back-to-fields" class="pl-back-btn" type="button">
-        ← <span data-i18n="shell.backToFields">All fields</span>
+        <span data-i18n="shell.backToFields">All tracks</span>
       </button>
     </div>
 
@@ -660,6 +726,9 @@
     <div class="fields-section-label">
       <span data-i18n="field.chooseModule">Choose a module to start</span>
     </div>
+
+    <!-- ── Lock notice — shown when a locked module card is clicked ────────── -->
+    <div id="module-lock-notice" class="lock-notice" hidden></div>
 
     <!-- ── Module cards ─────────────────────────────────────────────────────── -->
     <div id="module-overview-grid" class="fields-grid">
@@ -689,7 +758,7 @@
         ───────────────────────────────────────────────────────────────── -->
         <button id="btn-back-fields" class="back-btn" type="button">
           <span class="back-btn-arrow" aria-hidden="true">←</span>
-          <span id="back-fields-label" data-i18n="shell.backToFields">Fields</span>
+          <span id="back-fields-label" data-i18n="shell.backToFields">Tracks</span>
         </button>
 
         <!-- Brand ────────────────────────────────────────────────────────── -->

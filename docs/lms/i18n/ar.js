@@ -5,15 +5,40 @@
 
 export const translations = {
   // ── Fields landing ──────────────────────────────────────────────────────
-  'fields.tagline':        'اختر مجالاً للبدء',
+  'fields.tagline':        'معظم الدورات مصممة لمتعلم متوسط. SkillMap يستمع أولاً، ثم يبني الدورة التي تحتاجها بالفعل.',
+  'fields.by':              'بواسطة',
+  'fields.sectionLabel':    'اختر مسار تعلّمك',
+
+  // ── Feature pills (hero) ──────────────────────────────────────────────────
+  'fields.pill.access':       '🔐 تحكم في الوصول لكل مستخدم',
+  'fields.pill.progress':     '📈 مزامنة التقدم في الوقت الحقيقي',
+  'fields.pill.personalized': '✨ خطط دروس مخصصة لك',
+  'fields.pill.languages':    '🌍 دروس: EN · AR · DE',
+
+  // ── Feature strip (hero) ──────────────────────────────────────────────────
+  'fields.feature.tracks.title':         'مسارات جاهزة',
+  'fields.feature.tracks.body':          'مسارات منسقة تغطي SQL وبايثون وReact وReact Native والتحضير للمقابلات — كل واحدة بتقدم قابل للقياس على مستوى الدرس.',
+  'fields.feature.personalized.title':   'دروس مخصصة',
+  'fields.feature.personalized.body':    'أخبرنا بما تريد تعلّمه، ومن أين تبدأ، وما تحتاج إنجازه وبحلول متى. سنحوّل ذلك إلى درس مصمم خصيصاً لك.',
+  'fields.feature.cloud.title':          'تقدم متزامن عبر السحابة',
+  'fields.feature.cloud.body':           'سجّل الدخول بـ Google أو البريد الإلكتروني لمزامنة تقدمك عبر الأجهزة باستخدام Firestore. يتم تطبيق صلاحيات الوصول لكل مستخدم على مستوى قاعدة البيانات.',
+  'fields.feature.multilingual.title':   'محتوى متعدد اللغات',
+  'fields.feature.multilingual.body':    'الدروس متوفرة بالإنجليزية والألمانية والعربية. يتم حفظ تفضيل اللغة لكل مستخدم وتطبيقه فوراً.',
+
+  // ── Footer ──────────────────────────────────────────────────────────────
+  'fields.footer.builtBy':  'بُني بواسطة',
+  'fields.footer.tagline':  'دورة واحدة تناسبك تساوي أكثر من مئة لا تناسبك',
 
   // ── Field card labels (used via t() in renderFieldsLanding) ─────────────
   'field.modules':         'وحدات',
   'field.complete':        'مكتمل',
   'field.locked':          'لا يوجد وصول',
+  'field.lessons':         'دروس',
+  'field.chooseModule':    'اختر وحدة للبدء',
 
   // ── Shell sidebar ────────────────────────────────────────────────────────
-  'shell.backToFields':    'المجالات',
+  'shell.backToFields':    'مسارات',
+  'shell.backToModules':   'الوحدات',
   'shell.modulesTitle':    'الوحدات',
   'shell.lessonsTitle':    'الدروس',
   'shell.currentModule':   'الوحدة الحالية',
@@ -45,6 +70,13 @@ export const translations = {
   'module.lessons':        'دروس',
   'shell.backToField':     'الوحدات',
   'shell.chooseLesson':    'اختر درساً',
+
+  // ── Personalized Lessons entry (fields-landing card) ─────────────────────
+  'pl.fieldTitle':         'دروس مخصصة',
+  'pl.fieldSubtitle':      'دروس مصممة خصيصاً لك',
+  'pl.signInRequired':     'تسجيل الدخول مطلوب',
+  'pl.lessonsReady':       'دروس جاهزة',
+
 
   // ── Field titles & subtitles (registry) ──────────────────────────────────
   'field.backend.title':            'تطوير الواجهة الخلفية',

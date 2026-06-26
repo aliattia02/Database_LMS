@@ -57,6 +57,7 @@ const fieldOverviewIcon      = document.getElementById('field-overview-icon');
 const fieldOverviewTitle     = document.getElementById('field-overview-title');
 const fieldOverviewSubtitle  = document.getElementById('field-overview-subtitle');
 const moduleOverviewGrid     = document.getElementById('module-overview-grid');
+const moduleLockNotice       = document.getElementById('module-lock-notice');
 const backToFieldsFromOverviewButton = document.getElementById('btn-back-to-fields');
 const personalizedPanel     = document.getElementById('personalized-panel');
 // Auth panel elements
@@ -71,6 +72,7 @@ const authError             = document.getElementById('auth-error');
 // the sidebar auth panel above; see showSignedIn()/showSignedOut() below,
 // which update both in lock-step). Shown/hidden by render().
 const landingAccount        = document.getElementById('landing-account');
+const landingLangSwitcher   = document.getElementById('landing-lang-switcher');
 const landingSignedOut      = document.getElementById('landing-auth-signed-out');
 const landingSignedIn       = document.getElementById('landing-auth-signed-in');
 const landingAvatar         = document.getElementById('landing-auth-avatar');
@@ -118,6 +120,14 @@ let visibleModules = (LMS_CONFIG.accessControl?.mode ?? 'open') === 'open'
 // at the lesson level as an additional guard.
 let courseModules = [];
 
+// Published dynamic courses the current user can SEE but can't open — metadata
+// only (title/subtitle/fieldId), never their lessons. Kept separate from
+// courseModules (which stays strictly "accessible") so nothing that resolves
+// real lesson content can accidentally pick these up; only the field/module
+// picker UI (getAllFieldModulesWithLock) reads this list. Populated alongside
+// courseModules in loadCourseModules() below.
+let lockedCourseModules = [];
+
 // ── PERSONALIZED LESSONS STATE ──────────────────────────────────────────────
 // This field is special-cased (see NEW_FIELD_PERSONALIZED_LESSONS_PROMPT.md):
 // it is NOT in LMS_CONFIG.fields because its content is per-user Firestore
@@ -128,6 +138,7 @@ let personalizedRequests     = [];     // all requests for the current user (fro
 let personalizedView         = 'list'; // 'list' | 'form' — which sub-view the main panel shows
 let personalizedFormPrefill  = null;   // topic string to pre-fill when "Request again" is clicked
 let lessonBlobURL      = null;   // Blob URL currently loaded into the iframe (for revocation)
+let moduleLockNoticeTimer = null; // auto-hide timer for the field-overview lock notice
 
 const PL_MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB — see §5 of the governance prompt
 const PL_ALLOWED_FILE_TYPES = [
@@ -246,9 +257,16 @@ async function migrateLocalStorageToFirestore(uid) {
  * Failures are logged, not thrown — a Firestore error here degrades to
  * "no dynamic courses this load" rather than breaking the whole boot.
  *
+ * Returns BOTH lists: `accessible` courses (fully hydrated with lessons, as
+ * before) and `locked` courses (metadata only — id/title/subtitle/fieldId,
+ * lessons always `[]`). Locked courses are never sent to getCourseLessons(),
+ * so no protected lesson content is ever fetched for a course the current
+ * user can't open; the locked list exists purely so the field/module picker
+ * can show "this exists, but you don't have access yet" cards.
+ *
  * @param {string|null} uid   — current user uid, or null if signed out
  * @param {string|null} tier  — current user tier ('free'|'pro'|…), or null
- * @returns {Promise<Array<object>>}
+ * @returns {Promise<{ accessible: object[], locked: object[] }>}
  */
 async function loadCourseModules(uid = null, tier = null) {
   const accessMode = LMS_CONFIG.accessControl?.mode ?? 'open';
@@ -258,7 +276,7 @@ async function loadCourseModules(uid = null, tier = null) {
     courses = await getPublishedCourses();
   } catch (err) {
     console.warn('[LMS] boot: published courses fetch failed', err);
-    return [];
+    return { accessible: [], locked: [] };
   }
 
   // Fetch the per-user and tier access maps in parallel.
@@ -270,13 +288,16 @@ async function loadCourseModules(uid = null, tier = null) {
     tier ? getTierAccess(tier).catch(() => null)  : Promise.resolve(null)
   ]);
 
-  // Filter: keep only courses this user is allowed to see.
-  // Precedence: per-user override → tier default → accessControl.mode.
-  const visibleCourses = courses.filter(course => {
+  // Split: courses this user is allowed to see vs. ones that exist but are
+  // currently locked to them. Precedence: per-user override → tier default
+  // → accessControl.mode.
+  const isCourseVisible = course => {
     if (accessMap !== null && course.id in accessMap) return accessMap[course.id];
     if (tierMap   !== null && course.id in tierMap)   return tierMap[course.id];
     return accessMode === 'open';
-  });
+  };
+  const visibleCourses = courses.filter(isCourseVisible);
+  const lockedCourses  = courses.filter(c => !isCourseVisible(c));
 
   const lessonsByCourse = await Promise.all(
     visibleCourses.map(course =>
@@ -287,7 +308,7 @@ async function loadCourseModules(uid = null, tier = null) {
     )
   );
 
-  return visibleCourses.map((course, i) => ({
+  const accessible = visibleCourses.map((course, i) => ({
     id:           course.id,
     title:        course.title,
     subtitle:     course.subtitle,
@@ -299,21 +320,35 @@ async function loadCourseModules(uid = null, tier = null) {
       requiresPro:  course.requiresPro  || lesson.requiresPro
     }))
   }));
+
+  const locked = lockedCourses.map(course => ({
+    id:       course.id,
+    title:    course.title,
+    subtitle: course.subtitle,
+    fieldId:  course.fieldId ?? null,
+    dynamic:  true,
+    lessons:  []
+  }));
+
+  return { accessible, locked };
 }
 
 // ── FIELD / MODULE SCOPING ─────────────────────────────────────────────────
 
 /**
  * Returns every module — static LMS_CONFIG modules AND published dynamic
- * courses — that belongs to a given field. When fieldId is falsy (or
- * doesn't match a configured field — e.g. it was removed from the registry),
- * falls back to ALL static modules plus every dynamic course that isn't
- * assigned to any field, mirroring the original "show everything" fallback.
+ * courses — that belongs to a given field AND is currently accessible to
+ * the signed-in/anonymous user. When fieldId is falsy (or doesn't match a
+ * configured field — e.g. it was removed from the registry), falls back to
+ * all accessible static modules plus every accessible dynamic course that
+ * isn't assigned to any field, mirroring the original "show everything"
+ * fallback.
  *
- * Single source of truth for field membership: both renderFieldsLanding()
- * (module counts/progress on the landing cards) and getActiveFieldModules()
- * (the in-field nav once a field is entered) call this, so they can never
- * disagree about what's inside a field.
+ * This is the function the module SHELL trusts: getActiveFieldModules()
+ * (sidebar nav, lesson nav, openLesson(), renderModuleLanding()) calls this
+ * so nothing can ever be entered/loaded that the user doesn't have access
+ * to. The landing/overview picker pages use getAllFieldModulesWithLock()
+ * below instead, which additionally lists locked modules for browsing.
  *
  * @param {string|null} fieldId
  * @returns {Array<object>}
@@ -330,6 +365,46 @@ function getFieldModules(fieldId) {
     : courseModules.filter(c => !c.fieldId);
 
   return [...staticMods, ...dynamicMods];
+}
+
+/**
+ * Like getFieldModules(), but returns EVERY module that belongs to the
+ * field — including ones the current user can't access — each annotated
+ * with a `locked` boolean. Used only by the landing-page field cards and
+ * the field-overview module picker, so people can see what's inside a
+ * track/module before they have access to it.
+ *
+ * This never grants access to anything: the module SHELL still resolves
+ * exclusively through getFieldModules()/getActiveFieldModules(), so a
+ * `locked: true` entry from here can only ever be displayed, not entered.
+ * Static modules are annotated by checking membership in `visibleModules`
+ * (no extra Firestore read needed — that list is already the source of
+ * truth for "accessible"); dynamic courses are annotated by which of the
+ * two lists populated by loadCourseModules() they came from.
+ *
+ * @param {string|null} fieldId
+ * @returns {Array<object & { locked: boolean }>}
+ */
+function getAllFieldModulesWithLock(fieldId) {
+  const field = fieldId ? LMS_CONFIG.fields?.find(f => f.id === fieldId) : null;
+
+  const staticIds = field ? field.moduleIds : LMS_CONFIG.modules.map(m => m.id);
+  const staticMods = staticIds
+    .map(id => LMS_CONFIG.modules.find(m => m.id === id))
+    .filter(Boolean)
+    .map(mod => ({ ...mod, locked: !visibleModules.some(v => v.id === mod.id) }));
+
+  const unlockedDynamic = (field
+    ? courseModules.filter(c => c.fieldId === fieldId)
+    : courseModules.filter(c => !c.fieldId)
+  ).map(mod => ({ ...mod, locked: false }));
+
+  const lockedDynamic = (field
+    ? lockedCourseModules.filter(c => c.fieldId === fieldId)
+    : lockedCourseModules.filter(c => !c.fieldId)
+  ).map(mod => ({ ...mod, locked: true }));
+
+  return [...staticMods, ...unlockedDynamic, ...lockedDynamic];
 }
 
 function getActiveFieldModules() {
@@ -712,21 +787,36 @@ function renderFieldsLanding() {
   fieldsGrid.innerHTML = '';
 
   (LMS_CONFIG.fields || []).forEach(field => {
-    const fieldModules = getFieldModules(field.id);
+    // ALL modules in this field, including ones the user can't access yet —
+    // so the card can show an honest module count and stay browsable even
+    // when the person currently has zero accessible modules inside it.
+    const allMods      = getAllFieldModulesWithLock(field.id);
+    const unlockedMods = allMods.filter(mod => !mod.locked);
 
-    const totals = fieldModules.reduce((acc, mod) => {
+    const totals = unlockedMods.reduce((acc, mod) => {
       const p = computeModuleProgress(mod);
       return { done: acc.done + p.done, total: acc.total + p.total };
     }, { done: 0, total: 0 });
     const pct = totals.total > 0 ? Math.round((totals.done / totals.total) * 100) : 0;
 
-    const isLocked = fieldModules.length === 0;
+    // "No access yet" is informational only now — the card stays clickable
+    // so people can browse what's inside a track before they have access.
+    // A genuinely empty field (zero modules configured at all) is the only
+    // case that's actually a dead end.
+    const isEmpty     = allMods.length === 0;
+    const noAccessYet = !isEmpty && unlockedMods.length === 0;
 
     const card = document.createElement('button');
     card.type      = 'button';
-    card.className = `field-card${isLocked ? ' locked' : ''}`;
+    card.className = `field-card${noAccessYet ? ' locked' : ''}`;
     card.style.setProperty('--field-accent', field.theme?.accent     ?? 'var(--accent)');
     card.style.setProperty('--field-soft',   field.theme?.accentSoft ?? 'var(--accent-soft)');
+    if (isEmpty) {
+      card.disabled = true;
+      card.title    = t('field.empty', 'No modules configured yet');
+    } else if (noAccessYet) {
+      card.title = t('field.locked', 'Access required — sign in or upgrade to unlock. Click to preview what’s inside.');
+    }
 
     card.innerHTML = `
       <div class="field-card-icon">${field.icon ?? '📚'}</div>
@@ -734,17 +824,20 @@ function renderFieldsLanding() {
         <strong class="field-card-title">${t(`field.${field.id}.title`, field.title)}</strong>
         <p    class="field-card-sub">${t(`field.${field.id}.subtitle`, field.subtitle)}</p>
         <div  class="field-card-meta">
-          <span>${fieldModules.length} ${t('field.modules', 'modules')}</span>
+          <span>${allMods.length} ${t('field.modules', 'modules')}</span>
           <span class="field-card-pct">${pct}% ${t('field.complete', 'complete')}</span>
         </div>
         <div class="field-card-bar">
           <div class="field-card-fill" style="width:${pct}%"></div>
         </div>
       </div>
-      ${isLocked ? `<div class="field-locked-badge" title="${t('field.locked', 'No access')}">🔒</div>` : ''}
+      ${noAccessYet ? `<div class="field-locked-badge" title="${t('field.locked', 'No access')}">🔒</div>` : ''}
     `;
 
-    if (!isLocked) card.addEventListener('click', () => enterField(field.id));
+    // Clickable even when locked — clicking now always opens the
+    // field-overview module picker, where individual locked modules show
+    // their own lock state when clicked (see renderFieldOverview()).
+    if (!isEmpty) card.addEventListener('click', () => enterField(field.id));
     fieldsGrid.appendChild(card);
   });
 
@@ -755,7 +848,11 @@ function renderFieldsLanding() {
   if (fieldsFooter) {
     fieldsFooter.innerHTML = '';
     const plCard = renderPersonalizedFieldCard();
-    plCard.classList.add('pl-entry-btn--featured');
+    // The returned element is a .pl-entry-wrap div; mark it as featured so
+    // the inner .pl-entry-btn picks up the --featured styles via the parent.
+    plCard.classList.add('pl-entry-wrap--featured');
+    // Also mark the inner button if present
+    plCard.querySelector('.pl-entry-btn')?.classList.add('pl-entry-btn--featured');
     fieldsFooter.appendChild(plCard);
   }
 }
@@ -769,6 +866,9 @@ function renderFieldsLanding() {
 function renderPersonalizedFieldCard() {
   const isLocked = !currentUser;
 
+  const wrap = document.createElement('div');
+  wrap.className = 'pl-entry-wrap';
+
   const btn = document.createElement('button');
   btn.type      = 'button';
   btn.className = `pl-entry-btn${isLocked ? ' locked' : ''}`;
@@ -780,8 +880,8 @@ function renderPersonalizedFieldCard() {
   btn.innerHTML = `
     <span class="pl-entry-icon">✨</span>
     <span class="pl-entry-body">
-      <strong class="pl-entry-title">${t('pl.fieldTitle', 'Personalized Lessons')}</strong>
-      <span  class="pl-entry-sub">${t('pl.fieldSubtitle', 'Lessons built just for you')} · <em>${statusText}</em></span>
+      <strong class="pl-entry-title">${t('pl.fieldTitle', 'Personalisierte Lektionen')}</strong>
+      <span  class="pl-entry-sub">${t('pl.fieldSubtitle', 'Lektionen, die für dich gemacht sind')} · <em>${statusText}</em></span>
     </span>
     <span class="pl-entry-cta" aria-hidden="true">
       ${isLocked ? '🔒' : '→'}
@@ -789,7 +889,59 @@ function renderPersonalizedFieldCard() {
   `;
 
   if (!isLocked) btn.addEventListener('click', () => enterField('personalized'));
-  return btn;
+  wrap.appendChild(btn);
+
+  // When locked, append a discreet sign-in / sign-up nudge row
+  if (isLocked) {
+    const nudge = document.createElement('p');
+    nudge.className = 'pl-auth-nudge';
+    nudge.innerHTML = `${t('pl.authNudge', 'Anmeldung erforderlich')} 🔒 —
+      <button type="button" class="pl-auth-nudge-btn" data-pl-action="signin">${t('auth.signInButton', 'Einloggen')}</button>
+      ${t('pl.authOr', 'oder')}
+      <button type="button" class="pl-auth-nudge-btn" data-pl-action="signup">${t('auth.signUpButton', 'Registrieren')}</button>`;
+
+    // Wire both buttons to open the landing auth panel (same as the top-right widget)
+    nudge.querySelectorAll('[data-pl-action]').forEach(nudgeBtn => {
+      nudgeBtn.addEventListener('click', (e) => {
+        // Stop this click from bubbling to the document-level "click outside
+        // #landing-account closes the panel" listener (wireLandingAccount) —
+        // without this, the panel opens and is immediately closed again in
+        // the same click, since this button lives outside #landing-account.
+        e.stopPropagation();
+
+        // Open the landing account panel if it exists (fields-landing page)
+        const trigger = document.getElementById('landing-account-trigger');
+        const panel   = document.getElementById('landing-account-panel');
+        if (trigger && panel) {
+          panel.hidden = false;
+          trigger.setAttribute('aria-expanded', 'true');
+          trigger.classList.add('open');
+          // Pre-focus the appropriate input
+          const action = nudgeBtn.dataset.plAction;
+          setTimeout(() => {
+            const el = document.getElementById(
+              action === 'signup' ? 'landing-auth-email' : 'landing-auth-email'
+            );
+            el?.focus();
+          }, 100);
+        } else {
+          // Fallback — open the sidebar auth panel
+          const sidebarTrigger = document.getElementById('sidebar-account-trigger');
+          const sidebarPanel   = document.getElementById('auth-panel');
+          if (sidebarPanel && sidebarPanel.hidden) {
+            sidebarPanel.hidden = false;
+            sidebarTrigger?.setAttribute('aria-expanded', 'true');
+            sidebarTrigger?.classList.add('open');
+          }
+          setTimeout(() => document.getElementById('auth-email')?.focus(), 150);
+        }
+      });
+    });
+
+    wrap.appendChild(nudge);
+  }
+
+  return wrap;
 }
 
 /**
@@ -807,6 +959,10 @@ function renderFieldOverview() {
   appShell.hidden      = true;
   fieldOverview.hidden = false;
 
+  // Clear any lock notice left over from a previous visit/module click —
+  // this is a fresh render of the picker, so any stale message should go.
+  hideModuleLockNotice();
+
   const field      = LMS_CONFIG.fields?.find(f => f.id === activeFieldId);
   const accent     = field?.theme?.accent     ?? 'var(--accent)';
   const accentSoft = field?.theme?.accentSoft ?? 'var(--accent-soft)';
@@ -823,14 +979,23 @@ function renderFieldOverview() {
 
   moduleOverviewGrid.innerHTML = '';
 
-  getActiveFieldModules().forEach(mod => {
-    const p = computeModuleProgress(mod);
+  // Every module in the field, including locked ones — see
+  // getAllFieldModulesWithLock(). Locked cards are still rendered (with a
+  // 🔒 badge) and still clickable, but clicking shows a lock notice instead
+  // of entering the module — the real module shell only ever opens via
+  // enterModule(), which getActiveFieldModules() keeps restricted to
+  // accessible modules.
+  getAllFieldModulesWithLock(activeFieldId).forEach(mod => {
+    const p = mod.locked ? { pct: 0 } : computeModuleProgress(mod);
 
     const card = document.createElement('button');
     card.type      = 'button';
-    card.className = 'field-card';
+    card.className = `field-card${mod.locked ? ' locked' : ''}`;
     card.style.setProperty('--field-accent', accent);
     card.style.setProperty('--field-soft',   accentSoft);
+    if (mod.locked) {
+      card.title = t('module.locked', 'Access required — sign in or upgrade to unlock');
+    }
 
     card.innerHTML = `
       <div class="field-card-icon">${mod.icon ?? '📘'}</div>
@@ -839,17 +1004,80 @@ function renderFieldOverview() {
         <p    class="field-card-sub">${t(`module.${mod.id}.subtitle`, mod.subtitle)}</p>
         <div  class="field-card-meta">
           <span>${mod.lessons?.length ?? 0} ${t('field.lessons', 'lessons')}</span>
-          <span class="field-card-pct">${p.pct}% ${t('field.complete', 'complete')}</span>
+          <span class="field-card-pct">${
+            mod.locked
+              ? t('module.lockedLabel', 'Locked')
+              : `${p.pct}% ${t('field.complete', 'complete')}`
+          }</span>
         </div>
         <div class="field-card-bar">
-          <div class="field-card-fill" style="width:${p.pct}%"></div>
+          <div class="field-card-fill" style="width:${mod.locked ? 0 : p.pct}%"></div>
         </div>
       </div>
+      ${mod.locked ? `<div class="field-locked-badge" title="${t('module.locked', 'No access')}">🔒</div>` : ''}
     `;
 
-    card.addEventListener('click', () => enterModule(mod.id));
+    card.addEventListener('click', () => {
+      if (mod.locked) {
+        showModuleLockNotice(mod);
+      } else {
+        enterModule(mod.id);
+      }
+    });
     moduleOverviewGrid.appendChild(card);
   });
+}
+
+/**
+ * Surfaces a contextual lock message on the field-overview page when the
+ * person clicks a module they can't access yet. Mirrors the *lesson*-level
+ * gate prompt (showLessonGatePrompt) one level up, but deliberately never
+ * enters the module shell — so nothing requests that module's real lesson
+ * content for someone who isn't allowed to open it.
+ *
+ * @param {object & { locked: true }} mod
+ */
+function showModuleLockNotice(mod) {
+  if (!moduleLockNotice) return;
+  clearTimeout(moduleLockNoticeTimer);
+
+  const title = t(`module.${mod.id}.title`, mod.title);
+
+  if (!currentUser) {
+    moduleLockNotice.innerHTML = `
+      <span class="lock-notice-icon">🔒</span>
+      <span class="lock-notice-text">${t('module.lockNotice.signIn', 'Sign in to see if you have access to')} <strong>${title}</strong>.</span>
+      <button type="button" class="lock-notice-cta" id="module-lock-notice-cta">${t('auth.signInButton', 'Sign in')}</button>
+    `;
+    moduleLockNotice.querySelector('#module-lock-notice-cta')?.addEventListener('click', (e) => {
+      // Stop this click from bubbling to the document-level "click outside
+      // #landing-account closes the panel" listener — without this, the
+      // panel opens and is immediately closed again in the same click.
+      e.stopPropagation();
+
+      const trigger = document.getElementById('landing-account-trigger');
+      const panel   = document.getElementById('landing-account-panel');
+      if (trigger && panel) {
+        panel.hidden = false;
+        trigger.setAttribute('aria-expanded', 'true');
+        trigger.classList.add('open');
+        setTimeout(() => document.getElementById('landing-auth-email')?.focus(), 100);
+      }
+    });
+  } else {
+    moduleLockNotice.innerHTML = `
+      <span class="lock-notice-icon">🔒</span>
+      <span class="lock-notice-text"><strong>${title}</strong> ${t('module.lockNotice.noAccess', "isn't included in your current plan yet.")}</span>
+    `;
+  }
+
+  moduleLockNotice.hidden = false;
+  moduleLockNoticeTimer = setTimeout(() => { moduleLockNotice.hidden = true; }, 6000);
+}
+
+function hideModuleLockNotice() {
+  clearTimeout(moduleLockNoticeTimer);
+  if (moduleLockNotice) moduleLockNotice.hidden = true;
 }
 
 function renderBrandSubtitle() {
@@ -927,7 +1155,7 @@ function renderShell() {
     if (activeFieldId && activeFieldId !== 'personalized') {
       backLabel.textContent = t('shell.backToModules', 'Modules');
     } else {
-      backLabel.textContent = t('shell.backToFields', 'Fields');
+      backLabel.textContent = t('shell.backToFields', 'Tracks');
     }
   }
 
@@ -988,7 +1216,7 @@ function renderPersonalizedShell() {
 
   // Back button in personalized mode always exits all the way to Fields.
   const backLabel = document.getElementById('back-fields-label');
-  if (backLabel) backLabel.textContent = t('shell.backToFields', 'Fields');
+  if (backLabel) backLabel.textContent = t('shell.backToFields', 'Tracks');
 
   if (!currentUser) {
     renderPersonalizedSignedOutPrompt();
@@ -1527,6 +1755,7 @@ function render() {
   // its own sidebar account section takes over, so hide the floating one to
   // avoid showing two sign-in entry points at once.
   if (landingAccount) landingAccount.hidden = !appShell.hidden;
+  if (landingLangSwitcher) landingLangSwitcher.hidden = !appShell.hidden;
 }
 
 // ── AUTH UI HELPERS ────────────────────────────────────────────────────────
@@ -1756,7 +1985,8 @@ onAuthChange(async (user) => {
     }) : Promise.resolve([])
   ]);
   visibleModules       = visible;
-  courseModules        = courses;
+  courseModules        = courses.accessible;
+  lockedCourseModules  = courses.locked;
   personalizedLessons  = plLessons;
   personalizedRequests = plRequests;
 
@@ -1814,6 +2044,20 @@ async function switchLanguage(lang) {
     btn.classList.toggle('active', btn.dataset.lang === lang);
   });
 
+  // When switching back to English, applyTranslations() alone won't reset
+  // static data-i18n elements because the English translation map is empty
+  // (English is the source of truth in the HTML, not a separate i18n file).
+  // Explicitly restore each element's text from its data-i18n-en attribute
+  // (set on first render below) or from the t() fallback via render().
+  if (lang === 'en') {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      // Restore the original English text stored when the page first loaded.
+      if (el.dataset.i18nEn !== undefined) {
+        el.textContent = el.dataset.i18nEn;
+      }
+    });
+  }
+
   applyTranslations();
   render();
 
@@ -1828,6 +2072,14 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
 });
 
 // ── STARTUP ────────────────────────────────────────────────────────────────
+// Snapshot the English (source-of-truth) text for every static data-i18n
+// element before any language override is applied. Stored in data-i18n-en so
+// switchLanguage('en') can restore them instantly without needing a separate
+// English translation file (English lives in the HTML, not in i18n/en.js).
+document.querySelectorAll('[data-i18n]').forEach(el => {
+  el.dataset.i18nEn = el.textContent;
+});
+
 // Restore state from URL params. This is the entry point for:
 //   • Direct deep links (e.g. bookmarks to ?field=backend&module=database)
 //   • Redirects from the legacy field.html and module.html shim pages

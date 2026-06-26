@@ -462,6 +462,16 @@ html, body {
 .welcome-panel h3, .welcome h3 { margin-top: 0; color: var(--text); }
 .welcome-panel p,  .welcome p  { color: var(--muted); max-width: 680px; line-height: 1.65; }
 
+/* First paragraph lead text — make it stand out slightly */
+.welcome-panel p:first-of-type,
+.welcome p:first-of-type {
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 500;
+  line-height: 1.7;
+  margin-top: 0;
+}
+
 #lesson-frame {
   grid-row: 2;
   width: 100%;
@@ -711,6 +721,12 @@ html, body {
   font-weight: 600;
 }
 .fpf-by a:hover { text-decoration: underline; }
+.fpf-contact {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.fpf-contact:hover { text-decoration: underline; }
 .fpf-tagline { color: var(--muted); font-style: italic; }
 
 /* ── FIELD GRID — strict 2-column layout ─────────────────────────────────── */
@@ -773,7 +789,7 @@ html, body {
   border-color: color-mix(in srgb, var(--field-accent, var(--accent)) 60%, transparent);
 }
 .field-card:hover:not(.locked)::after { opacity: 1; }
-.field-card.locked { opacity: .55; cursor: not-allowed; }
+/* NOTE: .field-card.locked full rule is defined below in "Locked field cards" section */
 
 .field-card-icon {
   font-size: 36px;
@@ -825,10 +841,64 @@ html, body {
   background: var(--field-accent, var(--accent));
   transition: width .4s ease;
 }
+/* Locked field/module cards — visible AND clickable (clicking shows a lock
+   notice / takes you to the overview to preview what's inside), just muted
+   so they read as "not yet available" rather than fully active. */
+.field-card.locked {
+  opacity: 0.52;
+  cursor: pointer;
+  filter: grayscale(0.35);
+}
+.field-card.locked:hover { transform: none; box-shadow: none; }
+
 .field-locked-badge {
   position: absolute;
   top: 16px; right: 16px;
   font-size: 14px;
+}
+
+/* ── LOCK NOTICE ──────────────────────────────────────────────────────────
+   Transient banner shown on the field-overview page when a locked module
+   card is clicked. Sits above #module-overview-grid; see
+   showModuleLockNotice() in app.js. */
+.lock-notice {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto 18px;
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: 1.5px dashed #fbbf24;
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  color: #78350f;
+  font-size: 13.5px;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+  animation: lockNoticeIn .2s ease;
+}
+.lock-notice-icon { font-size: 16px; flex-shrink: 0; }
+.lock-notice-text { flex: 1; }
+.lock-notice-text strong { font-weight: 700; }
+.lock-notice-cta {
+  flex-shrink: 0;
+  border: none;
+  background: #b45309;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s;
+}
+.lock-notice-cta:hover { background: #92400e; }
+@keyframes lockNoticeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── FIELDS FOOTER ────────────────────────────────────────────────────────── */
@@ -934,6 +1004,34 @@ html, body {
   font-weight: 700;
 }
 
+/* Wrapper for the PL featured card + optional auth nudge row */
+.pl-entry-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Auth nudge row shown below the locked PL card */
+.pl-auth-nudge {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
+.pl-auth-nudge-btn {
+  background: none;
+  border: none;
+  padding: 0 2px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color .15s;
+}
+.pl-auth-nudge-btn:hover { color: #7c3aed; }
+
 /* ══════════════════════════════════════════════════════════════════════════
    FIELD OVERVIEW — module picker sub-page
    Sits between Fields landing and the module shell: shown once a field is
@@ -983,6 +1081,7 @@ html, body {
 [dir="rtl"] .field-card       { text-align: right; }
 [dir="rtl"] .field-card-meta  { flex-direction: row-reverse; }
 [dir="rtl"] .field-locked-badge { left: 16px; right: auto; }
+[dir="rtl"] .lock-notice       { flex-direction: row-reverse; text-align: right; }
 [dir="rtl"] .field-page-nav   { flex-direction: row-reverse; }
 [dir="rtl"] .back-link        { flex-direction: row-reverse; }
 
@@ -1191,10 +1290,38 @@ a.field-card {
 }
 
 .pl-back-btn {
-  background: none; border: none; padding: 0; margin-bottom: 14px;
-  font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; transition: color .15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  padding: 9px 18px 9px 14px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s, box-shadow .15s, transform .12s;
+  box-shadow: 0 1px 4px rgba(30,41,59,.06);
+  letter-spacing: .01em;
 }
-.pl-back-btn:hover { color: var(--accent); }
+.pl-back-btn::before {
+  content: '←';
+  font-size: 15px;
+  line-height: 1;
+  display: inline-block;
+  transition: transform .15s;
+}
+.pl-back-btn:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-mid);
+  color: var(--accent);
+  box-shadow: 0 3px 10px rgba(79,70,229,.12);
+  transform: translateY(-1px);
+}
+.pl-back-btn:hover::before { transform: translateX(-3px); }
+.pl-back-btn:active { transform: translateY(0); }
 
 .pl-form { display: flex; flex-direction: column; margin-top: 22px; }
 

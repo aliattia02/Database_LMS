@@ -6,12 +6,36 @@
 export const translations = {
 
   // ── Fields landing ──────────────────────────────────────────────────────
-  'fields.tagline':        'Wähle ein Fachgebiet, um zu starten',
+  'fields.tagline':        'Die meisten Kurse sind für einen durchschnittlichen Lerner gemacht. SkillMap hört zuerst zu und erstellt dann genau den Kurs, der dir fehlt.',
+  'fields.by':              'von',
+  'fields.sectionLabel':    'Wähle deinen Lernpfad',
+
+  // ── Feature pills (hero) ──────────────────────────────────────────────────
+  'fields.pill.access':       '🔐 Zugriffskontrolle pro Nutzer',
+  'fields.pill.progress':     '📈 Echtzeit-Fortschrittssynchronisierung',
+  'fields.pill.personalized': '✨ Personalisierte Lektionspläne',
+  'fields.pill.languages':    '🌍 Lektionen: EN · AR · DE',
+
+  // ── Feature strip (hero) ──────────────────────────────────────────────────
+  'fields.feature.tracks.title':         'Fertige Lernpfade',
+  'fields.feature.tracks.body':          'Kuratierte Pfade zu SQL, Python, React, React Native und Interview-Vorbereitung — jeweils mit messbarem Fortschritt auf Lektionsebene.',
+  'fields.feature.personalized.title':   'Personalisierte Lektionen',
+  'fields.feature.personalized.body':    'Sag uns, was du lernen willst, wo du gerade stehst und bis wann du es brauchst. Wir machen daraus eine Lektion, die genau auf dich zugeschnitten ist.',
+  'fields.feature.cloud.title':          'Cloud-synchronisierter Fortschritt',
+  'fields.feature.cloud.body':           'Melde dich mit Google oder per E-Mail an, um deinen Fortschritt geräteübergreifend über Firestore zu synchronisieren. Der Zugriff wird pro Nutzer auf Datenbankebene durchgesetzt.',
+  'fields.feature.multilingual.title':   'Mehrsprachige Inhalte',
+  'fields.feature.multilingual.body':    'Lektionen verfügbar auf Englisch, Deutsch und Arabisch. Die Sprachpräferenz wird pro Nutzer gespeichert und sofort angewendet.',
+
+  // ── Footer ──────────────────────────────────────────────────────────────
+  'fields.footer.builtBy':  'Entwickelt von',
+  'fields.footer.tagline':  'Ein Kurs, der zu dir passt, ist mehr wert als hundert, die es nicht tun',
 
   // ── Field card labels ────────────────────────────────────────────────────
   'field.modules':         'Module',
   'field.complete':        'abgeschlossen',
   'field.locked':          'Kein Zugriff',
+  'field.lessons':         'Lektionen',
+  'field.chooseModule':    'Wähle ein Modul zum Starten',
 
   // ── Field titles & subtitles (registry) ─────────────────────────────────
   'field.backend.title':    'Backend-Entwicklung',
@@ -139,7 +163,8 @@ export const translations = {
   'lesson.ukm-hoffmann-questions.subtitle': 'Ihre Fragen, Dokumentenanforderungen & heikle Momente',
 
   // ── Shell sidebar ────────────────────────────────────────────────────────
-  'shell.backToFields':    'Fachgebiete',
+  'shell.backToFields':    'Pfade',
+  'shell.backToModules':   'Module',
   'shell.modulesTitle':    'Module',
   'shell.lessonsTitle':    'Lektionen',
   'shell.currentModule':   'Aktuelles Modul',
@@ -153,6 +178,12 @@ export const translations = {
   // ── Welcome panel ────────────────────────────────────────────────────────
   'welcome.heading': 'Deine Lernplattform',
   'welcome.body':    'Wähle ein Modul aus der linken Seitenleiste und dann eine Lektion zum Starten.',
+
+  // ── Personalized Lessons entry (fields-landing card) ─────────────────────
+  'pl.fieldTitle':      'Personalisierte Lektionen',
+  'pl.fieldSubtitle':   'Lektionen, die für dich gemacht sind',
+  'pl.signInRequired':  'Anmeldung erforderlich',
+  'pl.lessonsReady':    'Lektionen bereit',
 
   // ── Auth panel ───────────────────────────────────────────────────────────
   'auth.accountMenu':  'Konto',

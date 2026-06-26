@@ -30,8 +30,7 @@ export const LMS_CONFIG = {
       subtitle: 'Web components, state management, and mobile',
       icon: '⚛️',
       theme: { accent: '#0369a1', accentSoft: '#e0f2fe' },
-      moduleIds: ['html-starter', 'react', 'react-native', 'python']
-      // python appears here AND in backend — its progress is shared either way
+      moduleIds: ['html-starter', 'react', 'react-native']
     },
     {
       id: 'career',
@@ -54,7 +53,7 @@ export const LMS_CONFIG = {
       subtitle: 'Personalised local courses tailored for you',
       icon: '🧑‍💻',
       theme: { accent: '#7c3aed', accentSoft: '#ede9fe' },
-      moduleIds: ['database-pers', 'ukm-prep', 'interview-local']
+      moduleIds: ['database-pers', 'interview-local']
     }
   ],
 
@@ -72,6 +71,7 @@ export const LMS_CONFIG = {
       title: 'Database Engineering',
       subtitle: 'SQL, MariaDB, Galera, MaxScale',
       theme: { accent: '#2563eb', accentSoft: '#dbeafe' },
+      indexRoute: 'lms/modules/database/db-masterplan-v2.html',
       lessons: [
         {
           id: 'db-masterplan',
@@ -519,36 +519,6 @@ export const LMS_CONFIG = {
           route: 'lms/modules/github/topic5-team-workflow.html',
           progress: { type: 'checklist', storageKey: 'lms_github_05_done', total: 6, ignoreKeys: ['home'] }
         }
-      ]
-    },
-    {
-      id: 'ukm-prep',
-      title: 'UKM Job Start',
-      subtitle: 'Contract signing, onboarding, and first weeks at UKM Münster',
-      theme: { accent: '#0284c7', accentSoft: '#e0f9ff' },
-      lessons: [
-        {
-          id: 'ukm-hoffmann',
-          title: 'Meeting: Frau Hoffmann',
-          subtitle: 'Contract signing & §16 TV-L Stufe request',
-          route: 'lms/personalied_modules/UKM_pers/topic1-meeting-hoffmann.html',
-          progress: { type: 'untracked', total: 0 }
-        },
-        {
-          id: 'ukm-self-introduction',
-          title: 'Self-Introduction',
-          subtitle: 'How to introduce yourself at UKM',
-          route: 'lms/personalied_modules/UKM_pers/topic2-self-introduction.html',
-          progress: { type: 'untracked', total: 0 }
-        },
-        {
-          id: 'ukm-hoffmann-questions',
-          title: 'Frau Hoffmann — Her Side',
-          subtitle: 'Her questions, document requests & tricky moments',
-          route: 'lms/personalied_modules/UKM_pers/topic3-hoffmann-questions.html',
-          progress: { type: 'untracked', total: 0 }
-        }
-        // Add new UKM lessons here as the module grows
       ]
     },
     {
