@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkillMap LMS — Clidatech · AI Health Education Platform</title>
+  <meta name="description" content="SkillMap LMS — Firebase-backed learning platform with AI-generated personalised lesson blueprints, per-user Firestore Security Rules, and multilingual support. By Clidatech." />
+  <link rel="canonical" href="https://clidatech.com/skillmap" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── Page-level accent: blue (SkillMap) ─────────────────────────────── */
+    :root {
+      --acc:        var(--blue);
+      --acc-dim:    rgba(37,99,235,.07);
+      --acc-border: rgba(37,99,235,.22);
+      --acc-glow:   0 0 28px rgba(37,99,235,.15);
+    }
+
+    /* Override label accent to blue sitewide on this page */
+    .label          { color: var(--blue); }
+    .label::before  { background: var(--blue); }
+    .stat-num       { color: var(--blue); }
+
+    /* Hero gradient */
+    .skillmap-hero { background: linear-gradient(160deg, var(--bg) 45%, #eff6ff 100%); }
+
+    /* ── Project number row ── */
+    .proj-number {
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      color: var(--text-3);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: .5rem;
+    }
+
+    /* ── Stack spectrum ── */
+    .stack-spectrum {
+      display: flex;
+      align-items: stretch;
+      margin-top: 2.5rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--bg-2);
+    }
+    .stack-layer {
+      flex: 1;
+      padding: 1rem .75rem;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+    .stack-layer:last-child { border-right: none; }
+    .stack-layer.active     { background: rgba(37,99,235,.05); }
+    .stack-layer .layer-icon { font-size: 1.1rem; margin-bottom: .4rem; }
+    .stack-layer .layer-name {
+      font-family: var(--font-mono);
+      font-size: .65rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-3);
+      display: block;
+      margin-bottom: .2rem;
+    }
+    .stack-layer .layer-tag          { font-size: .72rem; color: var(--text-2); }
+    .stack-layer.active .layer-name  { color: var(--blue); font-weight: 700; }
+    .stack-layer.active .layer-tag   { color: var(--white); font-weight: 600; }
+
+    /* ── Architecture diagram ── */
+    .arch-diagram {
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.75rem;
+      font-family: var(--font-mono);
+    }
+    .arch-row { display: flex; gap: .5rem; align-items: center; margin-bottom: .5rem; }
+    .arch-row:last-child { margin-bottom: 0; }
+    .arch-box {
+      flex: 1;
+      padding: .55rem .75rem;
+      border-radius: 6px;
+      font-size: .72rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: .03em;
+    }
+    .arch-box.blue  { background: rgba(37,99,235,.07); border: 1px solid rgba(37,99,235,.22); color: var(--blue); }
+    .arch-box.teal  { background: rgba(0,137,123,.07); border: 1px solid rgba(0,137,123,.22); color: var(--teal); }
+    .arch-box.amber { background: rgba(217,119,6,.07); border: 1px solid rgba(217,119,6,.20); color: var(--amber); }
+    .arch-box.gray  { background: var(--bg-2); border: 1px solid var(--border); color: var(--text-2); }
+    .arch-sep   { text-align: center; color: var(--text-3); font-size: .72rem; margin: .2rem 0; }
+    .arch-label {
+      font-size: .6rem;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    /* ── "How it works" step rows ── */
+    .how-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: 1px solid;
+      margin-bottom: 10px;
+    }
+    .how-row:last-child { margin-bottom: 0; }
+    .how-row.blue  { background: rgba(37,99,235,.04); border-color: rgba(37,99,235,.16); }
+    .how-row.teal  { background: rgba(0,137,123,.04);  border-color: rgba(0,137,123,.16); }
+    .how-row.amber { background: rgba(217,119,6,.04);  border-color: rgba(217,119,6,.16); }
+
+    .how-step {
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: .75rem; font-weight: 700;
+      margin-top: 2px;
+    }
+    .how-row.blue  .how-step { background: var(--blue);  color: #fff; }
+    .how-row.teal  .how-step { background: var(--teal);  color: #fff; }
+    .how-row.amber .how-step { background: var(--amber); color: #fff; }
+
+    .how-heading {
+      font-family: var(--font-head);
+      font-size: .95rem; font-weight: 700; margin-bottom: .2rem;
+    }
+    .how-row.blue  .how-heading { color: var(--blue); }
+    .how-row.teal  .how-heading { color: var(--teal); }
+    .how-row.amber .how-heading { color: var(--amber); }
+    .how-desc { font-size: .9rem; color: var(--text-2); line-height: 1.5; }
+
+    /* ── Learning track items ── */
+    .track-list { display: flex; flex-direction: column; gap: .75rem; }
+    .track-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: .85rem 1.1rem;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      transition: border-color .2s, transform .2s;
+    }
+    .track-item:hover { border-color: var(--blue); transform: translateX(4px); }
+    .track-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .track-icon.blue  { background: rgba(37,99,235,.1); border: 1px solid rgba(37,99,235,.2); }
+    .track-icon.teal  { background: rgba(0,137,123,.1);  border: 1px solid rgba(0,137,123,.2); }
+    .track-icon.amber { background: rgba(217,119,6,.1);  border: 1px solid rgba(217,119,6,.2); }
+    .track-icon.red   { background: rgba(220,38,38,.1);  border: 1px solid rgba(220,38,38,.2); }
+    .track-name  { font-family: var(--font-head); font-size: .95rem; font-weight: 700; color: var(--white); margin-bottom: .1rem; }
+    .track-desc  { font-family: var(--font-mono); font-size: .65rem; color: var(--text-3); text-transform: uppercase; letter-spacing: .05em; }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .55rem 1rem; border-radius: 8px;
+      font-family: var(--font-mono); font-size: .72rem; font-weight: 600;
+    }
+    .badge.blue { background: rgba(37,99,235,.07); border: 1px solid rgba(37,99,235,.22); color: var(--blue); }
+    .badge.teal { background: rgba(0,137,123,.07); border: 1px solid rgba(0,137,123,.22); color: var(--teal); }
+
+    /* ── Contact link items ── */
+    .contact-item {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-family: var(--font-mono); font-size: .78rem;
+      color: var(--text-2); background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .75rem 1.25rem;
+      transition: all .25s;
+    }
+    .contact-item:hover { color: var(--blue); border-color: rgba(37,99,235,.4); transform: translateY(-2px); }
+
+    /* ── Feature icon override (blue tint) ── */
+    .feature-icon.blue  { background: rgba(37,99,235,.1); border-color: rgba(37,99,235,.25); }
+    .feature-icon.teal  { background: rgba(0,137,123,.1);  border-color: rgba(0,137,123,.25); }
+    .feature-icon.amber { background: rgba(217,119,6,.1);  border-color: rgba(217,119,6,.25); }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .stack-spectrum { flex-wrap: wrap; }
+      .arch-label { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ───────────────────────────────────────────────────────────── -->
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Clida<span>.</span>Tech</a>
+      <ul class="nav-links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#skills">Capabilities</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+        <li>
+          <a href="mailto:contact@clidatech.com"
+             style="color:var(--blue); font-weight:700; letter-spacing:.02em;">
+            ✉ contact@clidatech.com
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── HERO ──────────────────────────────────────────────────────────── -->
+  <section class="proj-hero skillmap-hero">
+    <div class="container">
+      <a href="index.html" class="back-link">← Back to Portfolio</a>
+
+      <div class="label fade-up">LMS Platform · Health Education</div>
+
+      <h1 class="fade-up-2">
+        SkillMap<br>
+        <em style="font-style:normal; color:var(--blue);">LMS</em>
+      </h1>
+
+      <p class="lead fade-up-3">
+        A Firebase-backed learning platform with AI-generated personalised lesson blueprints,
+        per-user Firestore Security Rules, multilingual support (EN · AR · DE), and a full
+        admin console — no npm dependencies at the core.
+      </p>
+
+      <div class="proj-links fade-up-3">
+        <a href="https://skillmap-lms.clidatech.com" target="_blank" rel="noopener" class="btn btn-primary">Live Platform ↗</a>
+        <a href="https://skillmap-lms.clidatech.com/lms/admin/" target="_blank" rel="noopener" class="btn btn-outline">Admin Console ↗</a>
+        <a href="mailto:contact@clidatech.com" class="btn btn-ghost">✉ contact@clidatech.com</a>
+      </div>
+
+      <div class="fade-up-4" style="display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:2rem;">
+        <span class="tag blue">Firebase</span>
+        <span class="tag blue">AI-Powered</span>
+        <span class="tag">Multilingual</span>
+        <span class="tag">Zero npm core</span>
+        <span class="tag amber">Health Education</span>
+      </div>
+
+      <div class="badge teal fade-up-4">
+        ⚡ Firebase-backed · OTA content updates · No npm core deps · RTL-ready
+      </div>
+
+      <!-- Stack spectrum -->
+      <div class="stack-spectrum fade-up-4">
+        <div class="stack-layer active">
+          <div class="layer-icon">👤</div>
+          <span class="layer-name">Learner</span>
+          <span class="layer-tag">Goal Input</span>
+        </div>
+        <div class="stack-layer active">
+          <div class="layer-icon">🔐</div>
+          <span class="layer-name">Auth</span>
+          <span class="layer-tag">Firebase Auth</span>
+        </div>
+        <div class="stack-layer active">
+          <div class="layer-icon">🗄️</div>
+          <span class="layer-name">Store</span>
+          <span class="layer-tag">Firestore + Rules</span>
+        </div>
+        <div class="stack-layer active">
+          <div class="layer-icon">🤖</div>
+          <span class="layer-name">AI Engine</span>
+          <span class="layer-tag">Lesson Blueprint</span>
+        </div>
+        <div class="stack-layer active">
+          <div class="layer-icon">📚</div>
+          <span class="layer-name">Content</span>
+          <span class="layer-tag">OTA Lessons</span>
+        </div>
+      </div>
+      <p style="font-family:var(--font-mono); font-size:.72rem; color:var(--text-3); margin-top:1rem; letter-spacing:.06em;" class="fade-up-4">
+        ↑ END-TO-END: LEARNER GOAL → AUTH → RULES → AI ENGINE → LESSON DELIVERY
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       SECTION — PLATFORM OVERVIEW
+  ══════════════════════════════════════════════ -->
+  <section id="skillmap-main">
+    <div class="container">
+
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:2rem; margin-bottom:2.5rem; flex-wrap:wrap;">
+        <div>
+          <span class="proj-number fade-up">Platform · Firebase · AI-Powered</span>
+          <h2 class="fade-up-2">
+            SkillMap<br>
+            <em style="font-style:normal; color:var(--blue);">LMS Platform</em>
+          </h2>
+          <p class="fade-up-3" style="color:var(--text-2); max-width:520px; font-size:1rem; margin-top:.75rem;">
+            Personalised health education built on Firebase — every lesson shaped to the learner's
+            goal and role, access enforced at the database level, content deployable without a
+            redeploy.
+          </p>
+          <div style="display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.25rem;" class="fade-up-4">
+            <span class="tag blue">Firebase Auth</span>
+            <span class="tag blue">Firestore</span>
+            <span class="tag">Firebase Storage</span>
+            <span class="tag">GitHub Pages</span>
+            <span class="tag amber">Health Education</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:.75rem; align-items:center; flex-shrink:0;" class="fade-up-3">
+          <a href="https://skillmap-lms.clidatech.com" target="_blank" rel="noopener" class="btn btn-primary">Live Platform ↗</a>
+          <a href="mailto:contact@clidatech.com" class="btn btn-outline">✉ Contact</a>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stat-grid" style="margin-bottom:3rem;">
+        <div class="stat-block">
+          <span class="stat-num">3</span>
+          <span class="stat-label">Languages — EN · AR · DE</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">5</span>
+          <span class="stat-label">Learning Tracks</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num" style="font-size:1.5rem; line-height:1.3;">DB&#8209;level</span>
+          <span class="stat-label">Access Control</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">0</span>
+          <span class="stat-label">npm Deps (Core)</span>
+        </div>
+      </div>
+
+      <!-- Architecture + How It Works -->
+      <div class="two-col" style="gap:3rem; margin:3rem 0; align-items:start;">
+
+        <!-- Left: architecture diagram -->
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">Architecture</div>
+          <h3 style="font-size:1.4rem; margin-bottom:1rem;">Request lifecycle, owned end-to-end</h3>
+          <p style="color:var(--text-2); margin-bottom:1.5rem; font-size:.95rem;">
+            Every layer from user authentication through Firestore security rules, AI lesson
+            generation, and OTA content delivery is built in-house — no middleware abstractions,
+            no vendor lock-in.
+          </p>
+          <div class="arch-diagram">
+            <div class="arch-row">
+              <span class="arch-label">Interface</span>
+              <div class="arch-box blue">Lesson Pages · Progress Tracker · i18next</div>
+            </div>
+            <div class="arch-sep">↕</div>
+            <div class="arch-row">
+              <span class="arch-label">Auth</span>
+              <div class="arch-box blue">Firebase Auth · Email Sign-in · Session Token</div>
+            </div>
+            <div class="arch-sep">↕</div>
+            <div class="arch-row">
+              <span class="arch-label">DB Rules</span>
+              <div class="arch-box teal">Firestore Security Rules — per-user, server-side</div>
+            </div>
+            <div class="arch-sep">↕</div>
+            <div class="arch-row">
+              <span class="arch-label">Data</span>
+              <div class="arch-box gray">Firestore Collections · Firebase Storage</div>
+            </div>
+            <div class="arch-sep">↕</div>
+            <div class="arch-row">
+              <span class="arch-label">Admin</span>
+              <div class="arch-box amber">Admin Console · Access Control · Course Builder</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: how it works -->
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">How It Works</div>
+          <h3 style="font-size:1.4rem; margin-bottom:.75rem;">Goal to lesson in three steps</h3>
+          <p style="color:var(--text-2); font-size:.95rem; margin-bottom:1.5rem;">
+            No generic courses. Every lesson is shaped to the learner's specific gap, role, and
+            timeline — generated once access is confirmed at the database level.
+          </p>
+
+          <div class="how-row blue">
+            <div class="how-step">1</div>
+            <div>
+              <div class="how-heading">Tell us your goal</div>
+              <div class="how-desc">What you want to learn, where you're starting, and what you need to achieve by when.</div>
+            </div>
+          </div>
+          <div class="how-row teal">
+            <div class="how-step">2</div>
+            <div>
+              <div class="how-heading">AI builds your lesson</div>
+              <div class="how-desc">A personalised lesson blueprint is generated for your specific gap — not a generic course catalogue.</div>
+            </div>
+          </div>
+          <div class="how-row amber">
+            <div class="how-step">3</div>
+            <div>
+              <div class="how-heading">Track your progress</div>
+              <div class="how-desc">Cloud-synced across devices. Access enforced at database level — not just the frontend.</div>
+            </div>
+          </div>
+
+          <div class="badge blue" style="margin-top:1.5rem;">
+            🔐 Firestore rules enforce access — no client-side bypass possible
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- ══════════════════════════════════════════════
+       SECTION — FEATURES
+  ══════════════════════════════════════════════ -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Key Features</div>
+      <h2 style="font-size:clamp(1.8rem,3.5vw,2.5rem); margin-bottom:3rem;">
+        Built for real learners,<br>
+        <em style="font-style:normal; color:var(--blue);">enforced at the database.</em>
+      </h2>
+
+      <div class="feature-grid" style="margin-bottom:3rem;">
+
+        <div class="feature-card">
+          <div class="feature-icon blue">🤖</div>
+          <h4>AI Lesson Blueprints</h4>
+          <p>Every lesson is AI-generated to match the learner's stated goal, starting level, and
+          target timeline — a personalised path, not a catalogue you scroll through.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon blue">🔐</div>
+          <h4>Firestore Security Rules</h4>
+          <p>Per-user access enforced at the database layer, not the frontend. A user can only read
+          the content their tier and role permit — server-side, with no client-side bypass.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon blue">🖥️</div>
+          <h4>Admin Console</h4>
+          <p>Full interface for user management, role and tier assignment, module access toggles,
+          course authoring, and access request fulfilment — all from one panel.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon teal">🔄</div>
+          <h4>OTA Content Updates</h4>
+          <p>Lesson HTML is served from Firebase Storage. Content can be added, updated, or
+          swapped without a redeploy — content lifecycle is fully decoupled from platform code.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon teal">🌍</div>
+          <h4>Multilingual — EN · AR · DE</h4>
+          <p>Full i18next integration with RTL layout for Arabic. The platform interface and lesson
+          metadata are fully translatable at runtime without a page reload.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon amber">🏷️</div>
+          <h4>White-label Ready</h4>
+          <p>SkillMap is available as a branded deployment for health education providers and
+          clinical training teams. Contact us to discuss your organisation's requirements.</p>
+          <a href="mailto:contact@clidatech.com"
+             class="tag blue"
+             style="margin-top:.75rem; display:inline-flex; text-transform:none;
+                    letter-spacing:0; font-size:.72rem; font-weight:600;">
+            ✉ contact@clidatech.com
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       LEARNING TRACKS BAND
+  ══════════════════════════════════════════════ -->
+  <div style="background:var(--bg-3); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:5rem 0;">
+    <div class="container">
+      <div class="two-col" style="gap:3rem; align-items:center;">
+
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">Ready-made Tracks</div>
+          <h3 style="font-size:1.4rem; margin-bottom:.75rem;">5 structured tracks, each with mindmap and masterplan</h3>
+          <p style="color:var(--text-2); font-size:.95rem; margin-bottom:1.5rem;">
+            Each track ships with a visual mindmap, a lesson masterplan, and structured topic pages.
+            Available as standard modules or as AI-personalised variants per learner.
+          </p>
+          <div class="track-list">
+            <div class="track-item">
+              <div class="track-icon blue">🗄️</div>
+              <div>
+                <div class="track-name">SQL &amp; Database</div>
+                <div class="track-desc">Fundamentals · MariaDB · Galera · MaxScale</div>
+              </div>
+            </div>
+            <div class="track-item">
+              <div class="track-icon teal">🐍</div>
+              <div>
+                <div class="track-name">Python</div>
+                <div class="track-desc">Scripting · data analysis · starter + unaided tracks</div>
+              </div>
+            </div>
+            <div class="track-item">
+              <div class="track-icon blue">⚛️</div>
+              <div>
+                <div class="track-name">React + React Native</div>
+                <div class="track-desc">Components · state · effects · mobile navigation</div>
+              </div>
+            </div>
+            <div class="track-item">
+              <div class="track-icon amber">🐙</div>
+              <div>
+                <div class="track-name">GitHub</div>
+                <div class="track-desc">Branches · PRs · merge conflicts · team workflow</div>
+              </div>
+            </div>
+            <div class="track-item">
+              <div class="track-icon red">🎯</div>
+              <div>
+                <div class="track-name">Interview Prep</div>
+                <div class="track-desc">Technical + clinical roles · MII · GICS · HDSIG</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">Track Structure</div>
+          <div class="img-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <path d="M21 15l-5-5-9 9"/>
+            </svg>
+            <p>Lesson track screenshot<br>
+              <span style="font-size:.65rem; color:var(--text-3);">docs/screenshots/skillmap/track.png</span>
+            </p>
+          </div>
+          <div class="badge blue" style="margin-top:1rem;">
+            📚 Mindmap + Masterplan + Topics per track
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SECTION — PERSONALISED MODULES
+  ══════════════════════════════════════════════ -->
+  <section>
+    <div class="container">
+      <div class="two-col reverse" style="gap:3rem; align-items:center;">
+
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">Personalised Modules</div>
+          <h3 style="font-size:1.4rem; margin-bottom:.75rem;">AI-generated lessons, specific to each learner</h3>
+          <p style="color:var(--text-2); font-size:.95rem; margin-bottom:1rem;">
+            Beyond the standard tracks, SkillMap generates bespoke lesson blueprints based on the
+            learner's questionnaire: current role, target job, existing knowledge, and deadline.
+            These personalised modules live in isolated Firestore collections, accessible only to
+            the user they were generated for.
+          </p>
+          <p style="color:var(--text-2); font-size:.95rem; margin-bottom:1.25rem;">
+            Admins review access requests, author lesson HTML in the admin console, and publish
+            directly to the learner — no redeploy, no waiting.
+          </p>
+          <div class="chips">
+            <span class="chip">Per-learner content</span>
+            <span class="chip">Admin-authored HTML</span>
+            <span class="chip">Access request workflow</span>
+            <span class="chip">OTA publish</span>
+            <span class="chip">Isolated Firestore collection</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="img-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <path d="M21 15l-5-5-9 9"/>
+            </svg>
+            <p>Admin console screenshot<br>
+              <span style="font-size:.65rem; color:var(--text-3);">docs/screenshots/skillmap/admin.png</span>
+            </p>
+          </div>
+          <div class="badge teal" style="margin-top:1rem;">
+            🛠️ Admin console · Request workflow · OTA lesson publisher
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- ══════════════════════════════════════════════
+       TECH BAND
+  ══════════════════════════════════════════════ -->
+  <div style="background:var(--bg-3); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:3rem 0;">
+    <div class="container">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:start;">
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">SkillMap LMS — Stack</div>
+          <div class="chips">
+            <span class="chip">Vanilla JS (ES2020+)</span>
+            <span class="chip">Firebase Auth</span>
+            <span class="chip">Firestore</span>
+            <span class="chip">Firebase Storage</span>
+            <span class="chip">GitHub Pages</span>
+            <span class="chip">i18next</span>
+            <span class="chip">No bundler</span>
+            <span class="chip">0 npm core deps</span>
+          </div>
+        </div>
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">Design Principles</div>
+          <div class="chips">
+            <span class="chip">Per-user Firestore Rules</span>
+            <span class="chip">OTA content</span>
+            <span class="chip">DB-level access</span>
+            <span class="chip">RTL-ready</span>
+            <span class="chip">White-label</span>
+            <span class="chip">Offline-capable</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       CONTACT
+  ══════════════════════════════════════════════ -->
+  <section id="contact" style="text-align:center;">
+    <div class="container">
+      <div class="label" style="margin-bottom:1rem; justify-content:center;">Work With Us</div>
+      <h2 style="font-size:clamp(2rem,4vw,3rem); margin-bottom:1rem;">
+        Personalised health education,<br>
+        <em style="font-style:normal; color:var(--blue);">built for your team.</em>
+      </h2>
+      <p style="color:var(--text-2); max-width:500px; margin:0 auto 2.5rem;">
+        SkillMap is available as a white-label platform for health education providers and clinical
+        training teams across the EU. Open to consulting engagements and partnerships.
+      </p>
+      <div style="display:flex; justify-content:center; flex-wrap:wrap; gap:1rem;">
+        <a href="mailto:contact@clidatech.com" class="contact-item">✉ contact@clidatech.com</a>
+        <a href="https://skillmap-lms.clidatech.com" target="_blank" rel="noopener" class="contact-item">↗ skillmap-lms.clidatech.com</a>
+        <a href="https://clidatech.com" target="_blank" rel="noopener" class="contact-item">◈ clidatech.com</a>
+        <a href="https://github.com/aliattia02" target="_blank" rel="noopener" class="contact-item">⌥ github.com/aliattia02</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────────────── -->
+  <footer>
+    <div class="container">
+      <p>
+        © 2025 Clidatech · Developed by <strong>Ali Attia</strong> · 2023–Jun 2025 · AI &amp; HealthTech Studio · Germany ·
+        <a href="mailto:contact@clidatech.com">contact@clidatech.com</a> ·
+        <a href="index.html">Portfolio</a>
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

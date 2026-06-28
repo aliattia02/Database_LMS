@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Morafek CareMate — FHIR-Native Care Coordination · Clidatech</title>
+  <meta name="description" content="FHIR R4 care coordination platform with ISiK Stage 1 compliance, DSGVO-ready patient consent, and AI-assisted ICD-10-GM clinical coding." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .proj-hero { background: linear-gradient(160deg, var(--bg) 50%, #081525 100%); }
+
+    .fhir-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .fhir-resource {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-family: var(--font-mono);
+      transition: all .25s;
+    }
+
+    .fhir-resource:hover {
+      border-color: var(--blue);
+      box-shadow: var(--glow-blue);
+    }
+
+    .fhir-resource-name {
+      font-size: .8rem;
+      color: var(--blue);
+      font-weight: 700;
+      margin-bottom: .35rem;
+    }
+
+    .fhir-resource-desc {
+      font-family: var(--font-body);
+      font-size: .85rem;
+      color: var(--text-3);
+    }
+
+    .compliance-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: .75rem;
+    }
+
+    .compliance-label {
+      font-family: var(--font-mono);
+      font-size: .78rem;
+      color: var(--text-2);
+    }
+
+    .compliance-status {
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      color: var(--teal);
+      background: rgba(0,137,123,.08);
+      border: 1px solid rgba(0,137,123,.2);
+      padding: .2rem .65rem;
+      border-radius: 99px;
+    }
+
+    @media (max-width: 768px) {
+      .fhir-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Clida<span>.</span>Tech</a>
+      <ul class="nav-links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="proj-hero">
+    <div class="container">
+      <a href="index.html" class="back-link">← Back to Portfolio</a>
+
+      <div class="label" style="margin-bottom:1.25rem;">Full-Stack · Production · 2024</div>
+      <h1 class="fade-up">Morafek<br>CareMate</h1>
+      <p class="lead fade-up-2">
+        FHIR-native care coordination platform built for the German healthcare market.
+        Manually implemented FHIR R4 resources, ISiK Stage 1 compliance, AI-assisted
+        clinical coding, and DSGVO-ready patient consent — no pre-built FHIR server.
+      </p>
+
+      <div class="proj-links fade-up-3">
+        <a href="https://morafek.clidatech.com" target="_blank" rel="noopener" class="btn btn-primary">Live Demo ↗</a>
+        <a href="https://github.com/aliattia02" target="_blank" rel="noopener" class="btn btn-outline">GitHub ↗</a>
+      </div>
+
+      <div class="chips fade-up-4">
+        <span class="tag blue">FHIR R4</span>
+        <span class="tag blue">ISiK Stage 1</span>
+        <span class="tag">ICD-10-GM 2026</span>
+        <span class="tag">DSGVO / GDPR</span>
+        <span class="tag amber">LOINC-coded</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN SCREENSHOT -->
+  <section style="padding:3rem 0;">
+    <div class="container">
+      <img src="docs/screenshots/morafek/morafek-doctor-dashboard.png"
+           alt="Morafek CareMate — Patient dashboard"
+           class="proj-screenshot" style="aspect-ratio:16/7;">
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section style="padding:3rem 0;">
+    <div class="container">
+      <div class="stat-grid">
+        <div class="stat-block">
+          <span class="stat-num">6</span>
+          <span class="stat-label">FHIR R4 Resource Types Implemented</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">35+</span>
+          <span class="stat-label">REST Endpoints Across 5 Modules</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">14,370</span>
+          <span class="stat-label">ICD-10-GM Codes (AI-assisted)</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">7</span>
+          <span class="stat-label">LOINC Codes for Vital Signs</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- FHIR RESOURCES -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">FHIR R4 Implementation</div>
+      <h2 style="font-size:2rem; margin-bottom:1rem;">6 Resource Types — Manual, No Pre-Built Server</h2>
+      <p style="color:var(--text-2); max-width:620px; margin-bottom:2rem;">
+        Every FHIR resource was hand-coded to the specification, giving full control over
+        validation logic, German locale rules (GKV IDs, LANR), and OMOP CDM-ready schema design.
+      </p>
+
+      <div class="fhir-grid" style="margin-bottom:3rem;">
+        <div class="fhir-resource">
+          <div class="fhir-resource-name">Observation</div>
+          <div class="fhir-resource-desc">LOINC-coded vital signs — HR, SpO₂, glucose, blood pressure</div>
+        </div>
+        <div class="fhir-resource">
+          <div class="fhir-resource-name">Encounter</div>
+          <div class="fhir-resource-desc">Clinical visits with ICD-10-GM 2026 diagnoses</div>
+        </div>
+        <div class="fhir-resource">
+          <div class="fhir-resource-name">Condition</div>
+          <div class="fhir-resource-desc">Structured problem list with active / resolved status</div>
+        </div>
+        <div class="fhir-resource">
+          <div class="fhir-resource-name">DocumentReference</div>
+          <div class="fhir-resource-desc">LOINC-categorised clinical documents via Cloudinary</div>
+        </div>
+        <div class="fhir-resource">
+          <div class="fhir-resource-name">Communication</div>
+          <div class="fhir-resource-desc">Secure patient–clinician message threads</div>
+        </div>
+        <div class="fhir-resource">
+          <div class="fhir-resource-name">Bundle</div>
+          <div class="fhir-resource-desc">Full patient record export on demand</div>
+        </div>
+      </div>
+
+      <!-- Two-col: Dashboard -->
+      <div class="two-col" style="gap:3rem; margin-bottom:4rem; align-items:center;">
+        <div>
+          <div class="label" style="margin-bottom:1rem;">Doctor Dashboard</div>
+          <h3 style="font-size:1.6rem; margin-bottom:1rem;">Role-based clinical workspace</h3>
+          <p style="color:var(--text-2); margin-bottom:1rem;">
+            Per-patient views for vitals, visits, documents, and exercise prescriptions.
+            Automated severity thresholds flag abnormal vitals (HR/Glucose/SpO₂/BP) in real time.
+            Real-time BP classification from Normal to Hypertensive Crisis.
+          </p>
+          <div class="chips">
+            <span class="chip">RBAC · JWT</span>
+            <span class="chip">Vitals alerting</span>
+            <span class="chip">Inline profile editor</span>
+          </div>
+        </div>
+        <img src="docs/screenshots/morafek/morafek-doctor-dashboard.png"
+             alt="Morafek CareMate — Doctor dashboard and patient queue"
+             class="proj-screenshot">
+      </div>
+
+      <!-- Two-col: AI coding -->
+      <div class="two-col reverse" style="gap:3rem; align-items:center;">
+        <div>
+          <div class="label" style="margin-bottom:1rem;">AI Clinical Coding</div>
+          <h3 style="font-size:1.6rem; margin-bottom:1rem;">Gemini-assisted ICD-10-GM across 14,370 codes</h3>
+          <p style="color:var(--text-2); margin-bottom:1rem;">
+            Clinicians describe an encounter in plain text; Gemini AI suggests the correct
+            ICD-10-GM 2026 code from 14,370 options. Offline SQLite queue ensures no data
+            loss during connectivity gaps.
+          </p>
+          <div class="chips">
+            <span class="chip">Gemini AI</span>
+            <span class="chip">ICD-10-GM 2026</span>
+            <span class="chip">Offline SQLite queue</span>
+          </div>
+        </div>
+        <img src="docs/screenshots/morafek/morafek-icd-coding.png"
+             alt="Morafek CareMate — AI-assisted ICD-10-GM coding interface"
+             class="proj-screenshot">
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPLIANCE -->
+  <section style="background:var(--bg-2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Compliance &amp; Standards</div>
+      <h2 style="font-size:2rem; margin-bottom:2rem;">ISiK Stage 1 · DSGVO · German HIS Standards</h2>
+
+      <div style="max-width:680px;">
+        <div class="compliance-row">
+          <span class="compliance-label">HL7 FHIR R4 — manual implementation</span>
+          <span class="compliance-status">✓ Compliant</span>
+        </div>
+        <div class="compliance-row">
+          <span class="compliance-label">ISiK Stage 1 — GKV IDs &amp; LANR numbers</span>
+          <span class="compliance-status">✓ Compliant</span>
+        </div>
+        <div class="compliance-row">
+          <span class="compliance-label">ICD-10-GM 2026 diagnosis coding</span>
+          <span class="compliance-status">✓ Implemented</span>
+        </div>
+        <div class="compliance-row">
+          <span class="compliance-label">LOINC-coded vital signs (7 codes)</span>
+          <span class="compliance-status">✓ Implemented</span>
+        </div>
+        <div class="compliance-row">
+          <span class="compliance-label">DSGVO — right-to-erasure &amp; explicit consent model</span>
+          <span class="compliance-status">✓ Compliant</span>
+        </div>
+        <div class="compliance-row">
+          <span class="compliance-label">JWT tokens stored in secure mobile keystores</span>
+          <span class="compliance-status">✓ Implemented</span>
+        </div>
+        <div class="compliance-row">
+          <span class="compliance-label">OMOP CDM-ready schema design</span>
+          <span class="compliance-status">✓ Ready</span>
+        </div>
+        <div class="compliance-row">
+          <span class="compliance-label">FHIR Bundle full patient record export</span>
+          <span class="compliance-status">✓ On-demand</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOBILE SCREENSHOTS -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Mobile App</div>
+      <h2 style="font-size:2rem; margin-bottom:2rem;">React Native · Expo Router · TypeScript</h2>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; margin-bottom:2.5rem;">
+        <img src="docs/screenshots/morafek/morafek-mobile-vitals.png"
+             alt="Morafek CareMate — Patient vitals view"
+             class="proj-screenshot" style="aspect-ratio:9/19;">
+        <img src="docs/screenshots/morafek/morafek-mobile-visit.png"
+             alt="Morafek CareMate — Clinical visit entry"
+             class="proj-screenshot" style="aspect-ratio:9/19;">
+        <img src="docs/screenshots/morafek/morafek-mobile-docs.png"
+             alt="Morafek CareMate — Document and media view"
+             class="proj-screenshot" style="aspect-ratio:9/19;">
+      </div>
+
+      <img src="docs/screenshots/morafek/morafek-desktop-dashboard.png"
+           alt="Morafek CareMate — Full doctor dashboard desktop view"
+           class="proj-screenshot" style="aspect-ratio:16/7;">
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>© 2025 Clidatech · <a href="index.html">Portfolio</a> · <a href="mailto:contact@clidatech.com">contact@clidatech.com</a> · Developed by <strong>Ali Attia</strong> · 2023–Jun 2025</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — Clidatech · AI &amp; HealthTech Studio</title>
+  <meta name="description" content="Clidatech — Full-stack healthtech, FHIR R4, clinical AI, LMS platforms, and more. All projects built by Ali Attia." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── Page accent colours ── */
+    :root {
+      --acc1:        var(--blue);
+      --acc1-dim:    rgba(37,99,235,.07);
+      --acc1-border: rgba(37,99,235,.25);
+      --acc1-glow:   0 0 24px rgba(37,99,235,.15);
+
+      --acc2:        var(--teal);
+      --acc2-dim:    rgba(0,137,123,.07);
+      --acc2-border: rgba(0,137,123,.25);
+    }
+
+    .proj-hero { background: linear-gradient(160deg, var(--bg) 45%, #eef4ff 100%); }
+
+    /* ── Project number / header row ── */
+    .proj-number {
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      color: var(--text-3);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: .5rem;
+    }
+    .proj-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .proj-actions { display: flex; gap: .75rem; align-items: center; flex-shrink: 0; }
+
+    /* Accent label overrides per project */
+    #db-engine .label, #db-engine .label::before { color: var(--acc1); }
+    #db-engine .label::before { background: var(--acc1); }
+    #deutschmind .label, #deutschmind .label::before { color: var(--acc2); }
+    #deutschmind .label::before { background: var(--acc2); }
+
+    /* ── Stack spectrum (hero) ── */
+    .stack-spectrum {
+      display: flex;
+      align-items: stretch;
+      margin-top: 3rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--bg-2);
+    }
+    .stack-layer {
+      flex: 1;
+      padding: 1rem .75rem;
+      border-right: 1px solid var(--border);
+      text-align: center;
+      transition: background .2s;
+    }
+    .stack-layer:last-child { border-right: none; }
+    .stack-layer.active { background: rgba(0,137,123,.06); }
+    .stack-layer.semi { background: rgba(0,137,123,.03); }
+    .stack-layer .layer-icon { font-size: 1.1rem; margin-bottom: .4rem; }
+    .stack-layer .layer-name {
+      font-family: var(--font-mono);
+      font-size: .65rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-3);
+      display: block;
+      margin-bottom: .2rem;
+    }
+    .stack-layer .layer-tag { font-size: .72rem; color: var(--text-2); }
+    .stack-layer.active .layer-name { color: var(--teal); }
+    .stack-layer.active .layer-tag { color: var(--white); font-weight: 600; }
+
+    /* ── Architecture diagram ── */
+    .arch-diagram {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2rem;
+      font-family: var(--font-mono);
+    }
+    .arch-row { display: flex; gap: .5rem; align-items: center; margin-bottom: .5rem; }
+    .arch-box {
+      flex: 1;
+      padding: .6rem .75rem;
+      border-radius: 6px;
+      font-size: .75rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: .04em;
+    }
+    .arch-box.teal  { background: rgba(0,137,123,.08);  border: 1px solid rgba(0,137,123,.25);  color: var(--teal); }
+    .arch-box.blue  { background: rgba(37,99,235,.07);  border: 1px solid rgba(37,99,235,.22);  color: var(--blue); }
+    .arch-box.amber { background: rgba(217,119,6,.08);  border: 1px solid rgba(217,119,6,.2);   color: var(--amber); }
+    .arch-box.gray  { background: var(--bg-3); border: 1px solid var(--border); color: var(--text-2); }
+    .arch-sep { text-align: center; color: var(--text-3); font-size: .7rem; margin: .25rem 0; }
+    .arch-label {
+      font-size: .62rem;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    /* ── CEFR grid ── */
+    .cefr-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: .75rem; }
+    .cefr-level {
+      text-align: center;
+      padding: 1rem .5rem;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: border-color .25s, transform .25s;
+    }
+    .cefr-level:hover { border-color: var(--teal); transform: translateY(-2px); }
+    .cefr-code {
+      font-family: var(--font-head);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--teal);
+      display: block;
+    }
+    .cefr-label {
+      font-family: var(--font-mono);
+      font-size: .62rem;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    /* ── Gender pills ── */
+    .gender-legend { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1.25rem; }
+    .gender-pill {
+      display: flex; align-items: center; gap: .4rem;
+      padding: .35rem .85rem; border-radius: 99px;
+      font-family: var(--font-mono); font-size: .75rem; font-weight: 700;
+    }
+    .gender-pill.der { background: rgba(37,99,235,.07); border: 1px solid rgba(37,99,235,.25); color: var(--blue); }
+    .gender-pill.die { background: rgba(220,38,38,.07); border: 1px solid rgba(220,38,38,.25); color: var(--red); }
+    .gender-pill.das { background: rgba(0,137,123,.07);  border: 1px solid rgba(0,137,123,.25);  color: var(--teal); }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .55rem 1rem; border-radius: 8px;
+      font-family: var(--font-mono); font-size: .72rem; font-weight: 600;
+    }
+    .badge.amber { background: rgba(217,119,6,.06); border: 1px solid rgba(217,119,6,.22); color: var(--amber); }
+    .badge.teal  { background: rgba(0,137,123,.06);  border: 1px solid rgba(0,137,123,.22);  color: var(--teal); }
+
+    /* ── Bridge section ── */
+    .bridge-card {
+      display: flex; align-items: center; gap: 1rem;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1rem 1.25rem;
+    }
+    .bridge-card .bridge-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .bridge-card .bridge-title { font-weight: 700; font-size: .9rem; color: var(--white); }
+    .bridge-card .bridge-sub { font-size: .75rem; color: var(--text-3); font-family: var(--font-mono); }
+    .bridge-arrow {
+      text-align: center; color: var(--text-3);
+      font-family: var(--font-mono); font-size: .7rem;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .stack-spectrum { flex-wrap: wrap; }
+      .cefr-grid { grid-template-columns: repeat(3, 1fr); }
+      .proj-header { flex-direction: column; }
+      .arch-label { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Clida<span>.</span>Tech</a>
+      <ul class="nav-links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="#db-engine">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="proj-hero">
+    <div class="container">
+      <a href="index.html" class="back-link">← Back to Portfolio</a>
+      <div class="label fade-up">Full-Stack Builder · Storage to Product</div>
+      <h1 class="fade-up-2">
+        Built from the<br><em style="font-style:normal; color: var(--teal);">metal up.</em>
+      </h1>
+      <p class="lead fade-up-3">
+        I don't just build on top of abstractions — I build the abstractions.
+        From a custom database storage engine to a fully static LMS platform,
+        every layer of the stack has been written by hand, deliberately.
+      </p>
+
+      <div class="proj-links fade-up-3">
+        <a href="#db-engine" class="btn btn-primary">Storage Engine ↓</a>
+        <a href="#deutschmind" class="btn btn-outline">DeutschMind LMS ↓</a>
+        <a href="https://github.com/aliattia02" target="_blank" rel="noopener" class="btn btn-ghost">GitHub ↗</a>
+      </div>
+
+      <div class="stack-spectrum fade-up-4">
+        <div class="stack-layer active">
+          <div class="layer-icon">🗄️</div>
+          <span class="layer-name">Storage</span>
+          <span class="layer-tag">DB Engine</span>
+        </div>
+        <div class="stack-layer semi">
+          <div class="layer-icon">⚙️</div>
+          <span class="layer-name">Engine</span>
+          <span class="layer-tag">Query / I/O</span>
+        </div>
+        <div class="stack-layer semi">
+          <div class="layer-icon">🧠</div>
+          <span class="layer-name">Logic</span>
+          <span class="layer-tag">Data Model</span>
+        </div>
+        <div class="stack-layer semi">
+          <div class="layer-icon">🌐</div>
+          <span class="layer-name">Interface</span>
+          <span class="layer-tag">Vanilla JS</span>
+        </div>
+        <div class="stack-layer active">
+          <div class="layer-icon">📚</div>
+          <span class="layer-name">Product</span>
+          <span class="layer-tag">LMS / DeutschMind</span>
+        </div>
+      </div>
+
+      <p class="fade-up-4" style="font-family:var(--font-mono); font-size:.72rem; color:var(--text-3); margin-top:1rem; letter-spacing:.06em;">
+        ↑ BOTH LAYERS OWNED END-TO-END, ZERO FRAMEWORKS REQUIRED
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       PROJECT 01 — DATABASE ENGINE
+  ═══════════════════════════════════════════ -->
+  <section id="db-engine" style="padding-top: 4rem;">
+    <div class="container">
+
+      <div class="proj-header">
+        <div>
+          <span class="proj-number fade-up">Project 01 · Database Engine</span>
+          <h2 class="fade-up-2">Storage<br><em style="font-style:normal; color: var(--acc1);">Engine</em></h2>
+          <p class="fade-up-3" style="color:var(--text-2); max-width:520px; font-size:1rem; margin-top:.75rem;">
+            A custom-built database storage engine written from scratch —
+            implementing core data structures, disk I/O, indexing, and query
+            resolution without relying on any existing database library.
+          </p>
+          <div class="tags fade-up-4" style="display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.25rem;">
+            <span class="tag">Built from Scratch</span>
+            <span class="tag">Storage Engine</span>
+            <span class="tag blue">Custom Indexing</span>
+            <span class="tag">Disk I/O</span>
+            <span class="tag amber">Low-Level</span>
+          </div>
+        </div>
+        <div class="proj-actions fade-up-3">
+          <a href="https://github.com/aliattia02" target="_blank" rel="noopener" class="btn btn-primary">GitHub ↗</a>
+          <a href="#db-details" class="btn btn-outline">Details ↓</a>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stat-grid" id="db-details">
+        <div class="stat-block">
+          <span class="stat-num">0</span>
+          <span class="stat-label">External DB Libraries</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">B-Tree</span>
+          <span class="stat-label">Index Structure</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">ACID</span>
+          <span class="stat-label">Transaction Model</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">Raw</span>
+          <span class="stat-label">Disk Page I/O</span>
+        </div>
+      </div>
+
+      <!-- Architecture Diagram -->
+      <div class="two-col" style="gap:3rem; margin:3rem 0; align-items:start;">
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">Architecture</div>
+          <h3 style="font-size:1.4rem; margin-bottom:1rem;">Layered storage model, built layer by layer</h3>
+          <p style="color:var(--text-2); margin-bottom:1.5rem; font-size:.95rem;">
+            The engine is structured as discrete, replaceable layers —
+            from raw byte pages on disk through the indexing and query
+            planner, up to a clean API surface. Each layer was implemented
+            and tested independently.
+          </p>
+          <div class="arch-diagram">
+            <div class="arch-row">
+              <span class="arch-label">API Layer</span>
+              <div class="arch-box teal">Query Interface / API</div>
+            </div>
+            <div class="arch-sep">↕</div>
+            <div class="arch-row">
+              <span class="arch-label">Query Layer</span>
+              <div class="arch-box blue">Query Planner &amp; Executor</div>
+            </div>
+            <div class="arch-sep">↕</div>
+            <div class="arch-row">
+              <span class="arch-label">Index Layer</span>
+              <div class="arch-box amber">B-Tree Index Manager</div>
+            </div>
+            <div class="arch-sep">↕</div>
+            <div class="arch-row">
+              <span class="arch-label">Storage Layer</span>
+              <div class="arch-box gray">Page Cache &amp; Buffer Pool</div>
+            </div>
+            <div class="arch-sep">↕</div>
+            <div class="arch-row">
+              <span class="arch-label">Disk Layer</span>
+              <div class="arch-box gray">Raw File I/O · Fixed-Size Pages</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">Screenshot / Demo</div>
+          <div class="img-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg>
+            <p>Add your engine screenshot here<br><span style="font-size:.65rem; color:var(--text-3);">docs/screenshots/dbengine/hero.png</span></p>
+          </div>
+          <div class="badge amber" style="margin-top:1rem;">
+            ⚙️ No ORM · No SQLite · No existing DB library
+          </div>
+        </div>
+      </div>
+
+      <!-- Features -->
+      <div class="label" style="margin-bottom:.75rem;">Core Capabilities</div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🌳</div>
+          <h4>B-Tree Indexing</h4>
+          <p>Self-balancing B-tree index structure implemented from scratch, enabling O(log n) lookups and range queries over large datasets stored on disk.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📄</div>
+          <h4>Page-Based Storage</h4>
+          <p>Fixed-size page layout for all on-disk data. The page cache and buffer pool manage reads and writes, reducing disk I/O through intelligent eviction.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h4>Transaction Support</h4>
+          <p>ACID-aligned transaction model — operations are atomic, consistent, and durable. Write-ahead logging ensures data is recoverable after crashes.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h4>Query Planning</h4>
+          <p>A query planner that decides between full table scans and index-based lookups depending on selectivity — without relying on any external query engine.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🧪</div>
+          <h4>Test Suite</h4>
+          <p>End-to-end test coverage for insert, delete, update, and range queries — verifying correctness at every layer independently before integration.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📐</div>
+          <h4>Schema Management</h4>
+          <p>Table schema definitions with typed columns, constraints, and serialisation — all handled without an ORM, mapping directly to page-level byte layout.</p>
+        </div>
+      </div>
+
+      <!-- Tech -->
+      <div style="margin-top:2.5rem;">
+        <div class="label" style="margin-bottom:.75rem;">Technology</div>
+        <div class="chips">
+          <span class="chip">Zero external DB libs</span>
+          <span class="chip">B-Tree index</span>
+          <span class="chip">Page-based I/O</span>
+          <span class="chip">Buffer pool</span>
+          <span class="chip">Write-ahead log</span>
+          <span class="chip">Custom query planner</span>
+          <span class="chip">ACID transactions</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- ═══════════════════════════════════════════
+       BRIDGE SECTION
+  ═══════════════════════════════════════════ -->
+  <div style="padding:4rem 0; background:var(--bg-2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+    <div class="container">
+      <div style="display:flex; align-items:center; gap:2rem; flex-wrap:wrap;">
+        <div style="flex:1; min-width:260px;">
+          <div class="label" style="margin-bottom:.75rem;">The Throughline</div>
+          <h3 style="font-size:1.5rem; margin-bottom:.75rem;">
+            Same philosophy.<br>Different layers.
+          </h3>
+          <p style="color:var(--text-2); font-size:.95rem; line-height:1.7;">
+            The database engine and DeutschMind are built with the same ethos:
+            own every layer, add no unnecessary dependencies, and make it run
+            forever without maintenance overhead. One operates at the byte level.
+            The other ships a product used by real learners. Both prove the same thing.
+          </p>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:.75rem; flex-shrink:0;">
+          <div class="bridge-card">
+            <span class="bridge-icon">🗄️</span>
+            <div>
+              <div class="bridge-title">DB Storage Engine</div>
+              <div class="bridge-sub">Storage Layer — Bytes &amp; Pages</div>
+            </div>
+          </div>
+          <div class="bridge-arrow">↕ same builder, opposite ends</div>
+          <div class="bridge-card">
+            <span class="bridge-icon">📚</span>
+            <div>
+              <div class="bridge-title">DeutschMind LMS</div>
+              <div class="bridge-sub">Product Layer — UI &amp; Learning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PROJECT 02 — DEUTSCHMIND LMS
+  ═══════════════════════════════════════════ -->
+  <section id="deutschmind" style="padding-top:5rem;">
+    <div class="container">
+
+      <div class="proj-header">
+        <div>
+          <span class="proj-number fade-up">Project 02 · LMS Platform</span>
+          <h2 class="fade-up-2">DeutschMind<br><em style="font-style:normal; color: var(--acc2);">Language Platform</em></h2>
+          <p class="fade-up-3" style="color:var(--text-2); max-width:560px; font-size:1rem; margin-top:.75rem;">
+            A fully static, browser-native German language learning platform — no npm,
+            no bundlers, no CDN imports. 3,000+ vocabulary entries, 60+ grammar topics,
+            and a specialised FSP module for healthcare professionals.
+          </p>
+          <div class="tags fade-up-4" style="display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.25rem;">
+            <span class="tag">Zero Dependencies</span>
+            <span class="tag">CEFR A1 – C2</span>
+            <span class="tag amber">FSP Healthcare Module</span>
+            <span class="tag blue">Web Speech API</span>
+          </div>
+        </div>
+        <div class="proj-actions fade-up-3">
+          <a href="https://deutschmind.clidatech.com" target="_blank" rel="noopener" class="btn btn-primary">Live Platform ↗</a>
+          <a href="https://github.com/aliattia02" target="_blank" rel="noopener" class="btn btn-outline">GitHub ↗</a>
+        </div>
+      </div>
+
+      <div class="badge teal" style="margin-bottom:2rem;">
+        ⚡ No npm · No bundlers · No CDN · Pure browser — runs anywhere, forever
+      </div>
+
+      <!-- Stats -->
+      <div class="stat-grid">
+        <div class="stat-block">
+          <span class="stat-num">3,000+</span>
+          <span class="stat-label">Vocabulary Entries</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">60+</span>
+          <span class="stat-label">Grammar Topics</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">200+</span>
+          <span class="stat-label">Interactive Exercises</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">10</span>
+          <span class="stat-label">FSP Professional Topics</span>
+        </div>
+      </div>
+
+      <!-- CEFR -->
+      <div style="margin:3rem 0;">
+        <div class="label" style="margin-bottom:.5rem;">Coverage</div>
+        <h3 style="font-size:1.4rem; margin-bottom:.75rem;">Full CEFR spectrum, filterable in real time</h3>
+        <p style="color:var(--text-2); font-size:.95rem; margin-bottom:1.5rem; max-width:520px;">
+          From absolute beginner A1 to C2 mastery — all content is CEFR-tagged and
+          filterable without a page reload.
+        </p>
+        <div class="cefr-grid">
+          <div class="cefr-level"><span class="cefr-code">A1</span><span class="cefr-label">Beginner</span></div>
+          <div class="cefr-level"><span class="cefr-code">A2</span><span class="cefr-label">Elementary</span></div>
+          <div class="cefr-level"><span class="cefr-code">B1</span><span class="cefr-label">Intermediate</span></div>
+          <div class="cefr-level"><span class="cefr-code">B2</span><span class="cefr-label">Upper-Int.</span></div>
+          <div class="cefr-level"><span class="cefr-code">C1</span><span class="cefr-label">Advanced</span></div>
+          <div class="cefr-level"><span class="cefr-code">C2</span><span class="cefr-label">Mastery</span></div>
+        </div>
+      </div>
+
+      <!-- Features -->
+      <div class="feature-grid" style="margin-bottom:3rem;">
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h4>Gender Colour-Coding (DerDieDas)</h4>
+          <p>Every noun displays its grammatical gender visually — consistently applied across all 3,000+ entries to build intuitive gender recognition through colour association.</p>
+          <div class="gender-legend">
+            <span class="gender-pill der">der — Blue</span>
+            <span class="gender-pill die">die — Red</span>
+            <span class="gender-pill das">das — Green</span>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔊</div>
+          <h4>Native Voice Controls</h4>
+          <p>Text-to-speech via the Web Speech API with customisable speed, pitch, and voice selection. Zero server calls for privacy and speed. Keyboard shortcuts for hands-free study.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🏥</div>
+          <h4>FSP Specialised Module</h4>
+          <p>Dedicated Fachsprachenpüfung preparation for pharmacy and healthcare professionals seeking language certification for medical licensing in Germany. 10 domain-specific topics.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⌨️</div>
+          <h4>Interactive JS Engines</h4>
+          <p>Modular vanilla JS engines for drilling vocabulary and grammar — real-time CEFR filtering, thematic grouping, and progress tracking with zero npm packages.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌐</div>
+          <h4>Zero-Dependency Architecture</h4>
+          <p>Pure HTML5, CSS3, and vanilla JavaScript. Loads instantly, works offline, forkable on any static host, and will keep running indefinitely without dependency rot.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📚</div>
+          <h4>25 Thematic Groups</h4>
+          <p>Vocabulary organised into 25 thematic categories — from everyday conversation to medical and legal terminology — all filterable in real-time for targeted study.</p>
+        </div>
+      </div>
+
+      <!-- Grammar + FSP two-col -->
+      <div class="two-col" style="gap:3rem; margin-bottom:3rem; align-items:center;">
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">Grammar Engine</div>
+          <h3 style="font-size:1.4rem; margin-bottom:.75rem;">60+ topics, immediate feedback</h3>
+          <p style="color:var(--text-2); font-size:.95rem; margin-bottom:1rem;">
+            Each topic includes a structured explanation, worked examples, and interactive
+            exercises covering Kasus, verb conjugation, Konjunktiv, Passiv, and all major
+            grammar structures up to C2.
+          </p>
+          <div class="chips">
+            <span class="chip">60+ grammar topics</span>
+            <span class="chip">200+ exercises</span>
+            <span class="chip">CEFR-filtered</span>
+          </div>
+        </div>
+        <div class="img-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg>
+          <p>Grammar interface screenshot<br><span style="font-size:.65rem; color:var(--text-3);">docs/screenshots/deutschmind/grammar.png</span></p>
+        </div>
+      </div>
+
+      <div class="two-col reverse" style="gap:3rem; align-items:center;">
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">FSP Module</div>
+          <h3 style="font-size:1.4rem; margin-bottom:.75rem;">Fachsprachenpüfung for healthcare professionals</h3>
+          <p style="color:var(--text-2); font-size:.95rem; margin-bottom:1rem;">
+            A specialised section for foreign-trained pharmacists and doctors seeking
+            Approbation in Germany. Domain-specific vocabulary and scenario training across
+            10 legal and professional topics.
+          </p>
+          <div class="chips">
+            <span class="chip">10 FSP topics</span>
+            <span class="chip">Medical German</span>
+            <span class="chip">Approbation prep</span>
+          </div>
+        </div>
+        <div class="img-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg>
+          <p>FSP module screenshot<br><span style="font-size:.65rem; color:var(--text-3);">docs/screenshots/deutschmind/fsp.png</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH BAND -->
+  <div style="background:var(--bg-3); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:3rem 0;">
+    <div class="container">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:start;">
+        <div>
+          <div class="label" style="margin-bottom:.75rem; color:var(--acc1);">DB Engine — Stack</div>
+          <div class="chips">
+            <span class="chip">Zero DB libs</span>
+            <span class="chip">B-Tree</span>
+            <span class="chip">Page I/O</span>
+            <span class="chip">Buffer pool</span>
+            <span class="chip">WAL</span>
+            <span class="chip">ACID</span>
+            <span class="chip">Custom query planner</span>
+          </div>
+        </div>
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">DeutschMind — Stack</div>
+          <div class="chips">
+            <span class="chip">HTML5</span>
+            <span class="chip">CSS3</span>
+            <span class="chip">Vanilla JS (ES2020+)</span>
+            <span class="chip">Web Speech API</span>
+            <span class="chip">GitHub Pages</span>
+            <span class="chip">No build step</span>
+            <span class="chip">0 npm deps</span>
+            <span class="chip">Offline capable</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <p>© 2025 Clidatech · <a href="index.html">Portfolio</a> · <a href="mailto:contact@clidatech.com">contact@clidatech.com</a> · Developed by <strong>Ali Attia</strong> · 2023–Jun 2025</p>
+    </div>
+  </footer>
+
+</body>
+</html>

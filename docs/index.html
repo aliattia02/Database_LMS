@@ -3,946 +3,849 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SkillMap LMS — by Clidatech</title>
-  <link rel="stylesheet" href="lms/core/styles.css" />
-  <link rel="stylesheet" href="lms/core/styles_enhanced.css" />
+  <title>Clidatech — AI & HealthTech Development Studio</title>
+  <meta name="description" content="Clidatech builds production-grade medical platforms — FHIR R4 interoperability, clinical AI, and full-stack healthtech engineered to clinical standards." />
+  <link rel="canonical" href="https://clidatech.com" />
+  <meta property="og:title" content="Clidatech — AI &amp; HealthTech Studio" />
+  <meta property="og:url" content="https://clidatech.com" />
+  <meta property="og:description" content="Clidatech builds production-grade medical platforms — FHIR R4 interoperability, clinical AI, and full-stack healthtech engineered to clinical standards." />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="style.css" />
   <style>
-    /* ── Sidebar account section ─────────────────────────────────────────────
-       Replaces the old floating top-right .account-bar <details> pill.
-       All element IDs are unchanged so app.js needs zero edits.
-    ──────────────────────────────────────────────────────────────────────── */
-
-    /* Container — sits above the progress bars in .sidebar-footer */
-    .sidebar-account {
-      border-bottom: 1px solid var(--sb-border-med, rgba(255,255,255,.08));
-      margin-bottom: 2px;
+    /* ── Hero ─────────────────────────────── */
+    .hero {
+      padding: 11rem 0 7rem;
+      position: relative;
     }
 
-    /* Trigger row — always visible, looks like a sidebar row */
-    .sidebar-account-trigger {
-      width: 100%;
+    .hero-eyebrow {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 11px 20px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--sb-text, #e2e8f0);
-      font-size: 13px;
-      font-family: inherit;
-      text-align: left;
-      transition: background .15s;
-      border-radius: 0;
-    }
-    .sidebar-account-trigger:hover,
-    .sidebar-account-trigger.open {
-      background: var(--sb-surface, rgba(255,255,255,.06));
+      gap: 1rem;
+      margin-bottom: 2rem;
     }
 
-    /* Signed-out state inside trigger */
-    .sa-signed-out {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: 1;
-      min-width: 0;
-      color: var(--sb-muted-soft, #94a3b8);
-      font-weight: 600;
-      font-size: 12.5px;
-    }
-    .sa-icon { flex-shrink: 0; opacity: .7; }
-    .sa-label { }
-
-    /* Signed-in state inside trigger */
-    .sa-signed-in {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      flex: 1;
-      min-width: 0;
-    }
-    .sa-avatar {
-      width: 28px;
-      height: 28px;
+    .online-dot {
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: var(--sb-surface, rgba(255,255,255,.12));
-      object-fit: cover;
-      flex-shrink: 0;
-      border: 1.5px solid var(--sb-border-med, rgba(255,255,255,.15));
+      background: var(--teal);
+      animation: pulse 2.5s ease infinite;
     }
-    .sa-info {
+
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 6rem);
+      margin-bottom: 1.5rem;
+      line-height: 1;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--teal);
+    }
+
+    .hero-sub {
+      font-size: 1.2rem;
+      color: var(--text-2);
+      max-width: 560px;
+      margin-bottom: 3rem;
+    }
+
+    .hero-cta {
       display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 0;
-    }
-    .sa-name {
-      font-weight: 600;
-      font-size: 12.5px;
-      color: var(--sb-text, #e2e8f0);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
 
-    /* Chevron — rotates 180° when the panel is open */
-    .sa-chevron {
-      flex-shrink: 0;
-      color: var(--sb-muted-soft, #94a3b8);
-      transition: transform .2s;
-    }
-    .sidebar-account-trigger.open .sa-chevron { transform: rotate(180deg); }
-
-    /* Expandable auth panel */
-    .sa-panel {
-      border-top: 1px solid var(--sb-border-med, rgba(255,255,255,.06));
-      padding: 0;
-      background: var(--sb-surface, rgba(255,255,255,.04));
-    }
-    .sa-panel-inner {
-      padding: 14px 16px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-
-    /* Auth buttons & inputs — reuse existing .auth-btn / .auth-divider
-       classes already styled in styles.css. Add sidebar-specific overrides. */
-    .sa-panel-inner .auth-btn {
-      font-size: 12px;
-      padding: .5rem .7rem;
-      border-radius: 8px;
-      border: 1px solid var(--sb-border-med, rgba(255,255,255,.12));
-      background: var(--sb-surface, rgba(255,255,255,.06));
-      color: var(--sb-text, #e2e8f0);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      width: 100%;
-      font-weight: 600;
-      transition: background .15s;
-    }
-    .sa-panel-inner .auth-btn:hover { background: var(--sb-surface-2, rgba(255,255,255,.10)); }
-
-    .sa-panel-inner .auth-divider {
-      text-align: center;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-      color: var(--sb-muted, #475569);
-      margin: 0;
-    }
-
-    .sa-panel-inner input {
-      display: block;
-      width: 100%;
-      box-sizing: border-box;
-      padding: .45rem .6rem;
-      border-radius: 7px;
-      border: 1px solid var(--sb-border-med, rgba(255,255,255,.12));
-      background: var(--sb-bg, #0f172a);
-      color: var(--sb-text, #e2e8f0);
-      font-size: 12px;
-      font-family: inherit;
-    }
-    .sa-panel-inner input::placeholder { color: var(--sb-muted, #475569); }
-    .sa-panel-inner input:focus { outline: none; border-color: var(--accent, #4f46e5); }
-
-    .sa-panel-inner .auth-actions {
-      display: flex;
-      gap: 5px;
-    }
-    .sa-panel-inner .auth-actions button {
-      flex: 1;
-      padding: .45rem;
-      border-radius: 7px;
-      border: 1px solid var(--accent, #4f46e5);
-      background: var(--accent, #4f46e5);
-      color: #fff;
-      font-weight: 700;
-      font-size: 11.5px;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    .sa-panel-inner .auth-actions button:last-child {
-      background: transparent;
-      color: var(--accent, #818cf8);
-      border-color: rgba(129,140,248,.35);
-    }
-    .sa-panel-inner .auth-actions button:hover { opacity: .85; }
-
-    .sa-panel-inner .auth-error {
-      font-size: 11px;
-      color: #f87171;
-      margin: 0;
-      line-height: 1.4;
-    }
-
-    .sa-panel-inner .admin-link {
-      display: block;
-      font-size: 11.5px;
-      font-weight: 600;
-      color: var(--accent, #818cf8);
-      text-decoration: none;
-    }
-    .sa-panel-inner .admin-link:hover { text-decoration: underline; }
-
-    .sa-signout-btn {
-      width: 100%;
-      padding: .6rem;
-      border-radius: 8px;
-      border: 1px solid rgba(248,113,113,.35);
-      background: rgba(248,113,113,.1);
-      color: #f87171;
-      font-weight: 700;
-      font-size: 12px;
-      cursor: pointer;
-      font-family: inherit;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-    .sa-signout-btn:hover { background: rgba(248,113,113,.18); }
-
-    /* IMPORTANT: styles.css has a `.sidebar-footer .danger-btn { margin: 0 20px
-       18px; width: calc(100% - 40px); }` rule meant for the "Reset all
-       progress" button, a direct child of .sidebar-footer. #btn-signout is
-       ALSO a .danger-btn, and is ALSO (more deeply) nested inside
-       .sidebar-footer → that rule was unintentionally matching it too,
-       overriding its width/margin and making it render squeezed/offset to
-       the point of looking like it wasn't there at all. Reset both back to
-       the correct values here — same specificity (two classes), but this
-       block is declared later (inline <style>, after the styles.css <link>),
-       so it wins the cascade. */
-    .sa-panel-inner .danger-btn {
-      margin: 0;
-      width: 100%;
-    }
-
-    /* tier-badge inside the sidebar trigger */
-    .sidebar-account-trigger .tier-badge {
-      font-size: .62rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      padding: .1rem .4rem;
-      border-radius: 999px;
-      background: rgba(129,140,248,.18);
-      color: #a5b4fc;
-    }
-    .sidebar-account-trigger .tier-badge.pro { background: rgba(251,191,36,.15); color: #fbbf24; }
-
-    /* ── Floating account widget — fields-landing / field-overview pages ─────
-         The sidebar account section above only exists inside #app-shell.
-         Before a module is opened (on the landing page and the module-
-         picker page) there was no way to sign in at all, so this adds a
-         floating account widget, fixed to the top-right corner of the
-         viewport, shown on those two pages and hidden once the app-shell
-         (which has its own, smaller account section) takes over. Sized and
-         styled to read as a clear, prominent call-to-action — bold gradient
-         pill while signed out, larger avatar/name once signed in — since
-         it's the only sign-in entry point on these two pages.
-         Light-themed to match those pages' white/lavender background.
-         Element IDs are new (landing-*) so app.js's showSignedIn()/
-         showSignedOut() can update this widget in lock-step with the
-         sidebar one — same Firebase auth state, two places it's reflected.
-    ──────────────────────────────────────────────────────────────────────── */
-    .landing-account {
-      position: fixed;
-      top: 22px;
-      right: 28px;
-      z-index: 50;
-    }
-    /* Intentionally NOT flipping .landing-account in RTL — the sign-in button
-       stays in the top-right corner in all languages to match the English layout. */
-
-    .landing-account-trigger {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 13px 22px;
-      border-radius: 999px;
-      border: 1px solid var(--border, #e2e8f0);
-      background: var(--surface, #ffffff);
-      color: var(--text, #1e293b);
-      font-family: inherit;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 2px 10px rgba(30,41,59,.10);
-      transition: border-color .15s, box-shadow .15s, transform .15s, background .15s;
-    }
-    .landing-account-trigger:hover { transform: translateY(-1px); }
-
-    /* Signed-out: bold brand-gradient CTA — this is the one button on the
-       page meant to grab attention, so it gets the same gradient treatment
-       as the "LMS" wordmark instead of blending in with the white cards. */
-    .landing-account-trigger:has(#landing-auth-signed-out:not([hidden])) {
-      border: none;
-      background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
-      color: #fff;
-      box-shadow: 0 6px 20px rgba(79,70,229,.32);
-    }
-    .landing-account-trigger:has(#landing-auth-signed-out:not([hidden])):hover {
-      box-shadow: 0 10px 26px rgba(79,70,229,.4);
-    }
-    .landing-account-trigger:has(#landing-auth-signed-out:not([hidden])) .la-chevron {
-      color: rgba(255,255,255,.85);
-    }
-    .landing-account-trigger.open {
-      box-shadow: 0 10px 26px rgba(79,70,229,.4);
-    }
-
-    .la-signed-out { display: flex; align-items: center; gap: 9px; }
-    .la-signed-out svg { flex-shrink: 0; }
-
-    .la-signed-in { display: flex; align-items: center; gap: 11px; }
-    .la-avatar {
-      width: 36px; height: 36px; border-radius: 50%;
-      object-fit: cover; background: var(--accent-soft, #eef2ff);
-      border: 2px solid var(--accent-mid, #c7d2fe);
-    }
-    .la-info { display: flex; flex-direction: column; gap: 2px; align-items: flex-start; }
-    .la-name {
-      font-size: 14.5px; font-weight: 700; color: var(--text, #1e293b);
-      max-width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-
-    .la-chevron {
-      flex-shrink: 0;
-      color: var(--muted, #64748b);
-      transition: transform .2s;
-      margin-inline-start: 2px;
-    }
-    .landing-account-trigger.open .la-chevron { transform: rotate(180deg); }
-
-    .landing-account-trigger .tier-badge {
-      font-size: .66rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      padding: .12rem .45rem;
-      border-radius: 999px;
-      background: var(--accent-soft, #eef2ff);
-      color: var(--accent, #4f46e5);
-    }
-    .landing-account-trigger .tier-badge.pro { background: rgba(251,191,36,.18); color: #b45309; }
-
-    /* Expandable panel — Google + email/password form, or admin/sign-out */
-    .la-panel {
+    /* Right-side floating card */
+    .hero-card {
       position: absolute;
-      top: calc(100% + 12px);
       right: 0;
-      width: 310px;
-      background: var(--surface, #ffffff);
-      border: 1px solid var(--border, #e2e8f0);
-      border-radius: 16px;
-      box-shadow: 0 18px 44px rgba(30,41,59,.18);
+      top: 50%;
+      transform: translateY(-50%);
+      width: 320px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+    }
+
+    .hero-card-title {
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      color: var(--text-3);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-stat-row {
+      display: flex;
+      justify-content: space-between;
+      padding: .85rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-stat-row:last-child { border-bottom: none; }
+
+    .hero-stat-key {
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      color: var(--text-3);
+    }
+
+    .hero-stat-val {
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      color: var(--teal);
+      font-weight: 700;
+    }
+
+    /* ── About ────────────────────────────── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .about-left h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 1.5rem;
+    }
+
+    .about-left p {
+      color: var(--text-2);
+      margin-bottom: 1rem;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin-top: 1.5rem;
+    }
+
+    .about-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+    }
+
+    .timeline-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--teal);
+      margin-top: .5rem;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(0,137,123,.5);
+    }
+
+    .timeline-year {
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      color: var(--teal);
+      margin-bottom: .25rem;
+      font-weight: 700;
+    }
+
+    .timeline-title {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--white);
+      margin-bottom: .2rem;
+    }
+
+    .timeline-org {
+      font-size: .9rem;
+      color: var(--text-3);
+    }
+
+    /* ── Skills ───────────────────────────── */
+    .skills-section { background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .skill-group h4 {
+      font-size: .8rem;
+      font-family: var(--font-mono);
+      color: var(--text-3);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .skill-group .chips { gap: .4rem; }
+
+    /* ── Projects ─────────────────────────── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.75rem;
+    }
+
+    .project-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
       overflow: hidden;
-    }
-    /* Intentionally NOT flipping .la-panel in RTL — panel anchors to right edge of button. */
-
-    .la-panel-inner { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-
-    /* Reuse existing .auth-btn / .auth-divider / .auth-actions / .auth-error /
-       .admin-link / .danger-btn classes (already styled in styles.css for the
-       dark sidebar) but override colors + sizing here for this bigger,
-       light-themed panel. */
-    .la-panel-inner .auth-btn {
-      border: 1px solid var(--border, #e2e8f0);
-      background: var(--surface-2, #f8fafc);
-      color: var(--text, #1e293b);
-      padding: 11px 14px;
-      font-size: 13.5px;
-      border-radius: 10px;
-    }
-    .la-panel-inner .auth-btn:hover {
-      background: var(--bg, #f0f4f8);
-      border-color: var(--accent, #4f46e5);
-    }
-
-    .la-panel-inner .auth-divider { color: var(--muted, #64748b); margin: 3px 0; font-size: 11px; }
-
-    .la-panel-inner input {
-      display: block;
-      width: 100%;
-      box-sizing: border-box;
-      padding: .65rem .8rem;
-      border-radius: 10px;
-      border: 1px solid var(--border, #e2e8f0);
-      background: var(--bg, #f0f4f8);
-      color: var(--text, #1e293b);
-      font-size: 13.5px;
-      font-family: inherit;
-    }
-    .la-panel-inner input::placeholder { color: var(--muted, #64748b); }
-    .la-panel-inner input:focus { outline: none; border-color: var(--accent, #4f46e5); }
-
-    .la-panel-inner .auth-actions { display: flex; gap: 7px; }
-    .la-panel-inner .auth-actions button {
-      flex: 1;
-      padding: .65rem;
-      border-radius: 10px;
-      border: 1px solid var(--accent, #4f46e5);
-      background: var(--accent, #4f46e5);
-      color: #fff;
-      font-weight: 700;
-      font-size: 13px;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    .la-panel-inner .auth-actions button:last-child {
-      background: transparent;
-      color: var(--accent, #4f46e5);
-      border-color: var(--accent-mid, #c7d2fe);
-    }
-    .la-panel-inner .auth-actions button:hover { opacity: .85; }
-
-    .la-panel-inner .auth-error {
-      font-size: 12px;
-      color: var(--danger, #ef4444);
-      margin: 0;
-      line-height: 1.4;
-    }
-
-    .la-panel-inner .admin-link {
-      display: block;
-      text-align: center;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--accent, #4f46e5);
-      background: var(--accent-soft, #eef2ff);
-      border: 1px solid var(--accent-mid, #c7d2fe);
+      transition: all .35s;
       text-decoration: none;
-      padding: 9px;
-      border-radius: 10px;
+      display: block;
     }
-    .la-panel-inner .admin-link:hover { background: var(--accent-mid, #c7d2fe); }
 
-    .la-panel-inner .danger-btn {
+    .project-card:hover {
+      border-color: var(--teal-dim);
+      transform: translateY(-6px);
+      box-shadow: var(--glow);
+    }
+
+    .project-card.featured {
+      grid-column: 1 / -1;
+    }
+
+    .project-thumb {
       width: 100%;
-      padding: .65rem;
-      border-radius: 10px;
-      border: 1px solid rgba(239,68,68,.25);
-      background: rgba(239,68,68,.07);
-      color: var(--danger, #ef4444);
-      font-weight: 700;
-      font-size: 13px;
-      cursor: pointer;
-      font-family: inherit;
+      aspect-ratio: 16/7;
+      background: var(--bg-3);
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-    }
-    .la-panel-inner .danger-btn:hover { background: rgba(239,68,68,.14); }
-
-    @media (max-width: 720px) {
-      .landing-account { top: 14px; right: 16px; }
-      .landing-account-trigger { padding: 10px 16px; font-size: 13.5px; gap: 9px; }
-      .la-name { max-width: 110px; }
-      .la-panel { width: 270px; }
+      position: relative;
+      overflow: hidden;
     }
 
-    /* ── Floating language switcher — fields-landing / field-overview pages ──
-         Mirrors .landing-account exactly: fixed widget shown on the same two
-         pre-shell pages, hidden once #app-shell (with its own sidebar
-         .lang-switcher) takes over — see app.js render(), right next to the
-         existing `landingAccount.hidden = !appShell.hidden` line.
-         Sits on the OPPOSITE corner from .landing-account on purpose (left
-         vs. right) so the two never overlap; both swap sides together in
-         RTL, so they still never collide.
-         Buttons reuse the .lang-btn class from the sidebar switcher, so
-         app.js's existing `querySelectorAll('.lang-btn')` wiring (click
-         handlers + active-state sync) picks these up automatically — no
-         extra JS event wiring needed, just the show/hide line. ───────────── */
-    .landing-lang-switcher {
-      position: fixed;
-      top: 22px;
-      left: 28px;
-      z-index: 50;
+    .project-thumb-inner {
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      color: var(--text-3);
+      text-align: center;
+    }
+
+    .project-thumb-icon {
+      font-size: 2.5rem;
+      margin-bottom: .5rem;
+      display: block;
+    }
+
+    /* Gradient accents per project */
+    .project-card[data-color="teal"] .project-thumb {
+      background: linear-gradient(135deg, #e8f5f3 0%, #b2dfdb 60%, #80cbc4 100%);
+    }
+    .project-card[data-color="blue"] .project-thumb {
+      background: linear-gradient(135deg, #e8f0fe 0%, #c5d8f8 60%, #93b8f4 100%);
+    }
+    .project-card[data-color="amber"] .project-thumb {
+      background: linear-gradient(135deg, #fef9e8 0%, #fde8b0 60%, #fcd57a 100%);
+    }
+    .project-card[data-color="green"] .project-thumb {
+      background: linear-gradient(135deg, #e8f5e9 0%, #b3ddb6 60%, #81c784 100%);
+    }
+    .project-card[data-color="crisis"] .project-thumb {
+      background: linear-gradient(135deg, #fdf0ea 0%, #f5c9b0 60%, #e8622a 100%);
+    }
+    .project-card[data-color="indigo"] .project-thumb {
+      background: linear-gradient(135deg, #eef1ff 0%, #c7d2fe 60%, #818cf8 100%);
+    }
+
+    .project-body {
+      padding: 1.75rem;
+    }
+
+    .project-meta {
       display: flex;
-      gap: 3px;
-      padding: 5px;
-      border-radius: 999px;
-      border: 1px solid var(--border, #e2e8f0);
-      background: var(--surface, #ffffff);
-      box-shadow: 0 2px 10px rgba(30,41,59,.10);
-    }
-    /* Intentionally NOT flipping .landing-lang-switcher in RTL — it stays
-       top-left in all languages to match the English layout. */
-
-    .landing-lang-switcher .lang-btn {
-      border: none;
-      background: none;
-      color: var(--muted, #64748b);
-      font-family: inherit;
-      font-size: 12.5px;
-      font-weight: 700;
-      letter-spacing: .02em;
-      padding: 7px 13px;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: background .15s, color .15s;
-    }
-    .landing-lang-switcher .lang-btn:hover { background: var(--bg, #f0f4f8); }
-    .landing-lang-switcher .lang-btn.active {
-      background: var(--accent, #4f46e5);
-      color: #fff;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
     }
 
-    @media (max-width: 720px) {
-      .landing-lang-switcher { top: 14px; left: 16px; padding: 4px; gap: 2px; }
-      .landing-lang-switcher .lang-btn { padding: 6px 10px; font-size: 11.5px; }
+    .project-body h3 {
+      font-size: 1.4rem;
+      margin-bottom: .5rem;
+      color: var(--white);
+    }
+
+    .project-body p {
+      font-size: .98rem;
+      color: var(--text-2);
+      margin-bottom: 1.25rem;
+    }
+
+    .project-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .project-arrow {
+      font-family: var(--font-mono);
+      font-size: .75rem;
+      color: var(--teal);
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    /* ── Contact ──────────────────────────── */
+    .contact-section {
+      text-align: center;
+      padding: 6rem 0;
+    }
+
+    .contact-section h2 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 1rem;
+    }
+
+    .contact-section p {
+      color: var(--text-2);
+      max-width: 500px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: var(--font-mono);
+      font-size: .78rem;
+      color: var(--text-2);
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .75rem 1.25rem;
+      transition: all .25s;
+    }
+
+    .contact-item:hover {
+      color: var(--teal);
+      border-color: var(--teal-dim);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .project-card.featured { grid-column: auto; }
+      .hero-card { display: none; }
+      .hero h1 { font-size: 2.8rem; }
     }
   </style>
-
 </head>
 <body>
 
-  <!-- Account panel now lives inside the sidebar footer — see #sidebar-account
-       below. All element IDs (#auth-signed-out, #auth-signed-in, #auth-email …)
-       are unchanged so app.js requires zero edits. ──────────────────────────── -->
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-logo">Clida<span>.</span>Tech</div>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Capabilities</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
 
-  <!-- Floating language switcher — fields-landing / field-overview pages ────
-       Single shared widget for both pre-shell pages, same pattern as
-       #landing-account just below (shown/hidden together by app.js). Sits
-       on the opposite corner from #landing-account so the two never
-       overlap. Buttons share the .lang-btn class with the sidebar's own
-       switcher (inside #app-shell), so app.js wires them up for free. ───── -->
-  <div id="landing-lang-switcher" class="landing-lang-switcher" hidden>
-    <button data-lang="en" class="lang-btn active" type="button">EN</button>
-    <button data-lang="ar" class="lang-btn" type="button">AR</button>
-    <button data-lang="de" class="lang-btn" type="button">DE</button>
-  </div>
-
-  <!-- ⓪  Floating account widget — fields-landing / field-overview pages ─────
-       The sidebar account section only exists inside #app-shell, so before a
-       module is opened there was no sign-in entry point at all. This floating
-       pill is shown (via app.js render()) whenever #app-shell is hidden — i.e.
-       on the fields landing page and the field-overview module picker — and
-       hidden once a module is opened, since the sidebar takes over from there.
-       Uses the SAME Firebase auth flow as the sidebar (signInWithGoogle /
-       signInWithEmail / signUpWithEmail / signOutUser / onAuthChange); IDs are
-       new (landing-*) so app.js's showSignedIn()/showSignedOut() can update
-       both this widget and the sidebar one in lock-step. ─────────────────── -->
-  <div id="landing-account" class="landing-account" hidden>
-
-    <button
-      id="landing-account-trigger"
-      class="landing-account-trigger"
-      type="button"
-      aria-expanded="false"
-      aria-controls="landing-account-panel">
-
-      <!-- Signed-out state: icon + label ─────────────────────────────────── -->
-      <div id="landing-auth-signed-out" class="la-signed-out">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
-          <path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <span data-i18n="auth.accountMenu">Sign in</span>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container" style="position:relative;">
+      <div class="hero-eyebrow fade-up">
+        <div class="online-dot"></div>
+        <span class="label" style="margin:0; font-size:.7rem;">Open to New Projects &amp; Partnerships</span>
       </div>
 
-      <!-- Signed-in state: avatar + name + tier ────────────────────────────  -->
-      <div id="landing-auth-signed-in" class="la-signed-in" hidden>
-        <img id="landing-auth-avatar" src="" alt="" class="la-avatar" />
-        <span class="la-info">
-          <span id="landing-auth-display-name" class="la-name"></span>
-          <span id="landing-auth-tier-badge" class="tier-badge"></span>
-        </span>
+      <h1 class="fade-up-2">
+        Clinical AI<br>
+        <em>&amp; HealthTech</em><br>
+        Studio.
+      </h1>
+
+      <p class="hero-sub fade-up-3">
+        Clidatech builds production-grade medical platforms — FHIR R4 interoperability,
+        clinical AI engines, and full-stack healthtech engineered to the standards
+        clinicians and regulators actually require.
+      </p>
+
+      <div class="hero-cta fade-up-4">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="#contact" class="btn btn-outline">Work With Us</a>
+        <a href="https://github.com/aliattia02" target="_blank" rel="noopener" class="btn btn-ghost">GitHub ↗</a>
       </div>
 
-      <!-- Chevron — rotates 180° when the panel is open ───────────────────── -->
-      <svg class="la-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
+      <div class="hero-card fade-up-4">
+        <div class="hero-card-title">// Studio</div>
+        <div class="hero-stat-row">
+          <span class="hero-stat-key">Lead Developer</span>
+          <span class="hero-stat-val">Ali Attia · 2023–Jun 2025</span>
+        </div>
+        <div class="hero-stat-row">
+          <span class="hero-stat-key">Location</span>
+          <span class="hero-stat-val">Germany (CET)</span>
+        </div>
+        <div class="hero-stat-row">
+          <span class="hero-stat-key">Projects Shipped</span>
+          <span class="hero-stat-val">7 · Production</span>
+        </div>
+        <div class="hero-stat-row">
+          <span class="hero-stat-key">FHIR / Clinical AI</span>
+          <span class="hero-stat-val">€40–60 /hr</span>
+        </div>
+        <div class="hero-stat-row">
+          <span class="hero-stat-key">Clinical Validation</span>
+          <span class="hero-stat-val">8.7/10 · LMU Munich</span>
+        </div>
+        <div class="hero-stat-row">
+          <span class="hero-stat-key">Standards</span>
+          <span class="hero-stat-val">FHIR R4 · ISiK · DSGVO</span>
+        </div>
+        <div class="hero-stat-row">
+          <span class="hero-stat-key">Engagements</span>
+          <span class="hero-stat-val">Remote / Hybrid · EU</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Expandable auth panel ─────────────────────────────────────────────── -->
-    <section id="landing-account-panel" class="la-panel" hidden>
-      <div class="la-panel-inner">
-
-        <!-- Google sign-in -->
-        <button id="landing-btn-google-signin" class="auth-btn google-btn" type="button">
-          <svg width="17" height="17" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908C16.658 14.018 17.64 11.71 17.64 9.2z" fill="#4285F4"/>
-            <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-            <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
-            <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
-          </svg>
-          <span data-i18n="auth.googleButton">Continue with Google</span>
-        </button>
-
-        <div class="auth-divider" data-i18n="auth.orDivider">or</div>
-
-        <input id="landing-auth-email"    type="email"    placeholder="Email"    autocomplete="email" />
-        <input id="landing-auth-password" type="password" placeholder="Password" autocomplete="current-password" />
-
-        <div class="auth-actions">
-          <button id="landing-btn-email-signin" type="button" data-i18n="auth.signInButton">Sign in</button>
-          <button id="landing-btn-email-signup" type="button" data-i18n="auth.signUpButton">Sign up</button>
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-left">
+          <div class="label" style="margin-bottom:1.25rem;">About Clidatech</div>
+          <h2>Where clinical depth<br>meets engineering precision.</h2>
+          <p>
+            Clidatech is a healthcare technology studio. All projects on this platform were
+            designed and developed by <strong style="color:var(--white)">Ali Attia</strong> —
+            a licensed pharmacist and M.Sc. Digital Health graduate, serving as Lead Developer
+            from 2023 through June 2025.
+          </p>
+          <p>
+            Flagship product DiaTwin received a clinical validation score of
+            <strong style="color:var(--teal)">8.7/10</strong> from clinical diabetologists
+            at LMU Munich, and is on a CE Class IIa + DiGA Fast-Track pathway.
+          </p>
+          <p style="color:var(--text-3); font-family:var(--font-mono); font-size:.72rem; margin-top:1.25rem; letter-spacing:.05em;">
+            White-label solutions &amp; consulting → <a href="mailto:contact@clidatech.com" style="color:var(--teal);">contact@clidatech.com</a>
+          </p>
+          <div class="badge-row">
+            <span class="tag">🇩🇪 Based in Germany</span>
+            <span class="tag amber">§11 BApO Licensed</span>
+            <span class="tag">M.Sc. Digital Health</span>
+            <span class="tag">🌍 Remote-Ready · EU</span>
+          </div>
         </div>
 
-        <p id="landing-auth-error" class="auth-error" hidden></p>
+        <div class="about-timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div>
+              <div class="timeline-year">2025</div>
+              <div class="timeline-title">E·OVR — Healthcare Incident Platform</div>
+              <div class="timeline-org">5-tier RBAC · NLP triage · CSFLE · JCI compliance</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div>
+              <div class="timeline-year">2024–2025</div>
+              <div class="timeline-title">DiaTwin — Clinical AI Insulin Dosing</div>
+              <div class="timeline-org">M.Sc. Thesis · CE IIa Pathway · LMU Munich validated</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div>
+              <div class="timeline-year">2024</div>
+              <div class="timeline-title">Morafek CareMate — FHIR Care Platform</div>
+              <div class="timeline-org">FHIR R4 · ISiK Stage 1 · DSGVO · ICD-10-GM 2026</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div>
+              <div class="timeline-year">2024</div>
+              <div class="timeline-title">DailyDeals — Live on Google Play</div>
+              <div class="timeline-org">Bilingual shopping companion · 5 Egyptian governorates</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div>
+              <div class="timeline-year">2021 – 2023</div>
+              <div class="timeline-title">National EHR Rollout · Egypt Healthcare Authority</div>
+              <div class="timeline-org">Digital Transformation at national scale</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <!-- Signed-in actions (admin link + sign out) ────────────────────── -->
-        <a id="landing-btn-admin-panel" href="lms/admin/" target="_blank"
-           class="admin-link" hidden data-i18n="auth.adminPanel">Admin panel ↗</a>
-        <button id="landing-btn-signout" type="button" class="danger-btn" hidden>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <span data-i18n="auth.signOut">Sign out</span>
-        </button>
+  <!-- SKILLS -->
+  <section id="skills" class="skills-section">
+    <div class="container">
+      <div class="label" style="margin-bottom:2.5rem;">Our Capabilities</div>
+      <div class="skills-grid">
+        <div class="skill-group">
+          <h4>Languages &amp; Frameworks</h4>
+          <div class="chips">
+            <span class="chip">Python</span>
+            <span class="chip">TypeScript</span>
+            <span class="chip">Flask</span>
+            <span class="chip">React</span>
+            <span class="chip">React Native</span>
+            <span class="chip">Expo</span>
+            <span class="chip">Vanilla JS</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <h4>AI &amp; Data</h4>
+          <div class="chips">
+            <span class="chip">TensorFlow</span>
+            <span class="chip">scikit-learn</span>
+            <span class="chip">Gemini 2.5 API</span>
+            <span class="chip">PK/PD Modelling</span>
+            <span class="chip">Pandas</span>
+            <span class="chip">Power BI</span>
+            <span class="chip">ETL</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <h4>Clinical Standards</h4>
+          <div class="chips">
+            <span class="chip">HL7 FHIR R4</span>
+            <span class="chip">ICD-10-GM</span>
+            <span class="chip">SNOMED CT</span>
+            <span class="chip">LOINC</span>
+            <span class="chip">ATC · DRG · CPT</span>
+            <span class="chip">OMOP CDM</span>
+            <span class="chip">DiGA · CE IIa</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <h4>Infrastructure</h4>
+          <div class="chips">
+            <span class="chip">MongoDB Atlas</span>
+            <span class="chip">Firebase</span>
+            <span class="chip">Redis</span>
+            <span class="chip">Vercel</span>
+            <span class="chip">Render</span>
+            <span class="chip">Cloudinary</span>
+            <span class="chip">JWT · Fernet</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">What We Build</div>
+      <h2 style="font-size:clamp(2rem,4vw,3rem); margin-bottom:3rem;">Our Projects</h2>
+
+      <div class="projects-grid">
+
+        <!-- DiaTwin — featured -->
+        <a href="diatwin.html" class="project-card featured" data-color="teal">
+          <div class="project-thumb">
+            <img src="docs/screenshots/diatwin/diatwin-hero.png" alt="DiaTwin — Clinical AI Insulin Dosing" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="tag">M.Sc. Thesis · Live Product</span>
+              <span class="tag amber">TRL 4–5 · CE IIa Pathway</span>
+            </div>
+            <h3>DiaTwin — Clinical AI Insulin Dosing</h3>
+            <p>
+              AI-powered T1D management platform with proprietary PK/PD engine, Gemini Vision
+              food-scanning, Abbott FreeStyle Libre CGM integration, and RL layer trained on
+              50,000+ real meal-outcome pairs. Clinically validated 8.7/10 by Prof. Dr. Parhofer, LMU Munich.
+            </p>
+            <div class="chips" style="margin-bottom:1.25rem;">
+              <span class="chip">Python</span><span class="chip">Flask</span><span class="chip">React</span>
+              <span class="chip">React Native</span><span class="chip">MongoDB</span>
+              <span class="chip">TensorFlow</span><span class="chip">Gemini API</span>
+            </div>
+            <div class="project-footer">
+              <div class="chips">
+                <span class="tag">diatwin.clidatech.com ↗</span>
+              </div>
+              <span class="project-arrow">View Case Study →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Morafek CareMate -->
+        <a href="morafek.html" class="project-card" data-color="blue">
+          <div class="project-thumb">
+            <img src="docs/screenshots/morafek/morafek-doctor-dashboard.png" alt="Morafek CareMate — Doctor Dashboard" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="tag blue">Full-Stack · Production</span>
+            </div>
+            <h3>Morafek CareMate</h3>
+            <p>
+              FHIR-native care coordination platform. 6 manually-implemented FHIR R4 resource types,
+              ISiK Stage 1 compliance, DSGVO-ready, and AI-assisted ICD-10-GM coding across 14,370 codes.
+            </p>
+            <div class="chips" style="margin-bottom:1.25rem;">
+              <span class="chip">FHIR R4</span><span class="chip">Flask</span>
+              <span class="chip">React Native</span><span class="chip">Gemini</span>
+            </div>
+            <div class="project-footer">
+              <span class="tag blue">morafek.clidatech.com ↗</span>
+              <span class="project-arrow">View Case Study →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- E·OVR -->
+        <a href="eovr.html" class="project-card" data-color="indigo">
+          <div class="project-thumb">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:2rem;padding:1.5rem;flex-wrap:wrap;">
+              <div style="text-align:center;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:800;color:#4f6ef7;line-height:1;">5</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:.58rem;color:rgba(79,110,247,.7);letter-spacing:.1em;text-transform:uppercase;margin-top:.3rem;">RBAC Tiers</div>
+              </div>
+              <div style="width:1px;height:48px;background:rgba(79,110,247,.2);"></div>
+              <div style="text-align:center;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:800;color:#4f6ef7;line-height:1;">50+</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:.58rem;color:rgba(79,110,247,.7);letter-spacing:.1em;text-transform:uppercase;margin-top:.3rem;">REST Endpoints</div>
+              </div>
+              <div style="width:1px;height:48px;background:rgba(79,110,247,.2);"></div>
+              <div style="text-align:center;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:800;color:#4f6ef7;line-height:1;">7</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:.58rem;color:rgba(79,110,247,.7);letter-spacing:.1em;text-transform:uppercase;margin-top:.3rem;">CSFLE Fields</div>
+              </div>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="tag" style="background:rgba(79,110,247,.09);color:#4f6ef7;border-color:rgba(79,110,247,.22);">Full-Stack · Healthcare · Production</span>
+              <span class="tag" style="background:rgba(79,110,247,.09);color:#4f6ef7;border-color:rgba(79,110,247,.22);">JCI Compliance</span>
+            </div>
+            <h3>E·OVR — Incident Reporting Platform</h3>
+            <p>
+              Electronic Occurrence &amp; Variance Reporting with 5-tier RBAC, NLP-powered
+              narrative analysis, ML-driven automated triage, TOTP MFA, multi-field AES-256
+              CSFLE encryption, and Arabic PDF exports.
+            </p>
+            <div class="chips" style="margin-bottom:1.25rem;">
+              <span class="chip">React 18</span><span class="chip">FastAPI</span>
+              <span class="chip">MongoDB CSFLE</span><span class="chip">NLP · ML</span>
+              <span class="chip">JWT + MFA</span>
+            </div>
+            <div class="project-footer">
+              <span class="tag" style="background:rgba(79,110,247,.09);color:#4f6ef7;border-color:rgba(79,110,247,.22);">eovr.clidatech.com ↗</span>
+              <span class="project-arrow">View Case Study →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- DailyDeals -->
+        <a href="dailydeals.html" class="project-card" data-color="amber">
+          <div class="project-thumb">
+            <img src="docs/screenshots/dailydeals/dailydeals-hero.png" alt="DailyDeals — Smart Shopping Companion" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="tag amber">Live · Google Play Store</span>
+            </div>
+            <h3>DailyDeals</h3>
+            <p>
+              Bilingual Arabic/English shopping companion for Egypt. Three-tier caching,
+              RTL support, Leaflet branch maps, live on Google Play serving 5 governorates.
+            </p>
+            <div class="chips" style="margin-bottom:1.25rem;">
+              <span class="chip">React Native</span><span class="chip">Expo</span>
+              <span class="chip">Redux</span><span class="chip">Firebase</span>
+            </div>
+            <div class="project-footer">
+              <span class="tag amber">Google Play ↗</span>
+              <span class="project-arrow">View Case Study →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- DeutschMind -->
+        <a href="deutschmind.html" class="project-card" data-color="green">
+          <div class="project-thumb">
+            <img src="docs/screenshots/deutschmind/deutschmind-hero.png" alt="DeutschMind — German Learning Platform" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="tag">Zero Dependencies · Open Source</span>
+            </div>
+            <h3>DeutschMind</h3>
+            <p>
+              Zero-dependency German learning platform. 3,000+ vocabulary entries, 60+ grammar topics,
+              CEFR A1–C2, FSP module for healthcare professionals. No npm, no bundlers — pure browser.
+            </p>
+            <div class="chips" style="margin-bottom:1.25rem;">
+              <span class="chip">Vanilla JS</span><span class="chip">HTML5</span>
+              <span class="chip">Web Speech API</span><span class="chip">CSS3</span>
+            </div>
+            <div class="project-footer">
+              <span class="tag">deutschmind.clidatech.com ↗</span>
+              <span class="project-arrow">View Case Study →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- SkillMap LMS -->
+        <a href="skillmap.html" class="project-card" data-color="blue">
+          <div class="project-thumb">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:2rem;padding:1.5rem;flex-wrap:wrap;">
+              <div style="text-align:center;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:800;color:#2563eb;line-height:1;">5</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:.58rem;color:rgba(37,99,235,.7);letter-spacing:.1em;text-transform:uppercase;margin-top:.3rem;">Learning Tracks</div>
+              </div>
+              <div style="width:1px;height:48px;background:rgba(37,99,235,.2);"></div>
+              <div style="text-align:center;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:800;color:#2563eb;line-height:1;">3</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:.58rem;color:rgba(37,99,235,.7);letter-spacing:.1em;text-transform:uppercase;margin-top:.3rem;">Languages EN·AR·DE</div>
+              </div>
+              <div style="width:1px;height:48px;background:rgba(37,99,235,.2);"></div>
+              <div style="text-align:center;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:800;color:#2563eb;line-height:1;">0</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:.58rem;color:rgba(37,99,235,.7);letter-spacing:.1em;text-transform:uppercase;margin-top:.3rem;">npm Core Deps</div>
+              </div>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="tag blue">LMS · Health Education</span>
+              <span class="tag blue">White-label Ready</span>
+            </div>
+            <h3>SkillMap LMS</h3>
+            <p>
+              Firebase-backed learning platform with AI-generated personalised lesson blueprints,
+              per-user Firestore Security Rules, multilingual support (EN·AR·DE), and a full
+              admin console. Zero npm core dependencies — available as a white-label deployment.
+            </p>
+            <div class="chips" style="margin-bottom:1.25rem;">
+              <span class="chip">Vanilla JS</span><span class="chip">Firebase Auth</span>
+              <span class="chip">Firestore</span><span class="chip">AI Blueprints</span>
+              <span class="chip">i18next · RTL</span>
+            </div>
+            <div class="project-footer">
+              <span class="tag blue">skillmap-lms.clidatech.com ↗</span>
+              <span class="project-arrow">View Case Study →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- CrisisScope — spans full width -->
+        <a href="crisis.html" class="project-card" data-color="crisis" style="grid-column:1/-1;">
+          <div class="project-thumb" style="aspect-ratio:16/5; position:relative; overflow:hidden;">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:2.5rem;padding:2rem;flex-wrap:wrap;">
+              <div style="text-align:center;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:2.5rem;font-weight:800;color:#e8622a;line-height:1;">14,370+</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;color:rgba(232,98,42,.75);letter-spacing:.1em;text-transform:uppercase;margin-top:.4rem;">NLP-Coded Records</div>
+              </div>
+              <div style="width:1px;height:60px;background:rgba(232,98,42,.25);"></div>
+              <div style="text-align:center;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:2.5rem;font-weight:800;color:#e8622a;line-height:1;">6</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;color:rgba(232,98,42,.75);letter-spacing:.1em;text-transform:uppercase;margin-top:.4rem;">Data Domains</div>
+              </div>
+              <div style="width:1px;height:60px;background:rgba(232,98,42,.25);"></div>
+              <div style="text-align:center;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:2.5rem;font-weight:800;color:#e8622a;line-height:1;">195KB</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;color:rgba(232,98,42,.75);letter-spacing:.1em;text-transform:uppercase;margin-top:.4rem;">Custom JS · No Framework</div>
+              </div>
+              <div style="width:1px;height:60px;background:rgba(232,98,42,.25);"></div>
+              <div style="text-align:center;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:2.5rem;font-weight:800;color:#e8622a;line-height:1;">3+</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;color:rgba(232,98,42,.75);letter-spacing:.1em;text-transform:uppercase;margin-top:.4rem;">Languages · RTL-Ready</div>
+              </div>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="tag" style="background:rgba(232,98,42,.1);color:#e8622a;border-color:rgba(232,98,42,.28);">Data Engineering · NLP · Production</span>
+              <span class="tag" style="background:rgba(232,98,42,.1);color:#e8622a;border-color:rgba(232,98,42,.28);">GDPR-Ready · OMOP CDM</span>
+            </div>
+            <h3>CrisisScope — Humanitarian Crisis Data Platform</h3>
+            <p>
+              End-to-end humanitarian crisis data platform with NLP-powered incident extraction (spaCy NER),
+              interactive dual-timeline visualization, Leaflet geo-mapping, and structured evidence archival
+              across 6 data domains. 195 KB of custom JS — no framework. Demonstrates real-world data engineering,
+              pipeline architecture, and clinical-grade data governance standards.
+            </p>
+            <div class="chips" style="margin-bottom:1.25rem;">
+              <span class="chip">Python · Flask</span><span class="chip">spaCy NER</span>
+              <span class="chip">SQLite</span><span class="chip">Leaflet.js</span>
+              <span class="chip">D3</span><span class="chip">Vanilla JS ES6</span>
+              <span class="chip">GDPR</span><span class="chip">OMOP CDM</span>
+            </div>
+            <div class="project-footer">
+              <span class="tag" style="background:rgba(232,98,42,.1);color:#e8622a;border-color:rgba(232,98,42,.28);">clidatech.com/crisis ↗</span>
+              <span class="project-arrow">View Case Study →</span>
+            </div>
+          </div>
+        </a>
 
       </div>
-    </section>
-  </div>
-  <!-- end #landing-account ────────────────────────────────────────────────── -->
+    </div>
+  </section>
 
-  <!-- ①  Fields landing ─────────────────────────────────────────────────────
-       Shown when activeFieldId is null (i.e. no field has been entered yet).
-       Hidden by renderShell(); revealed by renderFieldsLanding() / exitToFields().
-  ─────────────────────────────────────────────────────────────────────────── -->
-  <div id="fields-landing" class="fields-landing">
-
-    <!-- ── Hero header ──────────────────────────────────────────────────────── -->
-    <header class="fields-header">
-      <div class="fields-brand-lockup">
-        <span class="fields-by" data-i18n="fields.by">by</span>
-        <a href="https://clidatech.com" target="_blank" rel="noopener" class="fields-clidatech-link">
-          <span class="fields-clidatech-logo">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-              <path d="M8 12h8M12 8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            Clidatech
-          </span>
+  <!-- CONTACT -->
+  <section id="contact" class="contact-section">
+    <div class="container">
+      <div class="label" style="margin-bottom:1rem; justify-content:center;">Work With Us</div>
+      <h2>Let's build something<br>clinically meaningful.</h2>
+      <p>
+        Open to consulting, white-label partnerships, and collaborative projects in FHIR interoperability,
+        clinical AI, and full-stack healthtech development across the EU.
+        Reach us at <a href="mailto:contact@clidatech.com" style="color:var(--teal);">contact@clidatech.com</a> for white-label solutions.
+      </p>
+      <div class="contact-links">
+        <a href="mailto:contact@clidatech.com" class="contact-item">
+          ✉ contact@clidatech.com
+        </a>
+        <a href="https://github.com/aliattia02" target="_blank" rel="noopener" class="contact-item">
+          ⌥ github.com/aliattia02
+        </a>
+        <a href="https://linkedin.com/in/ali-attia-74748bb4" target="_blank" rel="noopener" class="contact-item">
+          ⊞ linkedin.com/in/ali-attia
+        </a>
+        <a href="https://clidatech.com" target="_blank" rel="noopener" class="contact-item">
+          ◈ clidatech.com
         </a>
       </div>
-      <h1 id="fields-brand">SkillMap<span>·LMS</span></h1>
-      <p id="fields-tagline" data-i18n="fields.tagline">Most courses are built for an average learner. SkillMap listens first, then builds the course you're actually missing.</p>
-
-      <!-- Feature pills row -->
-      <div class="fields-feature-pills">
-        <span class="fpill" data-i18n="fields.pill.access">🔐 Per-user access control</span>
-        <span class="fpill" data-i18n="fields.pill.progress">📈 Real-time progress sync</span>
-        <span class="fpill" data-i18n="fields.pill.personalized">✨ Personalized lesson blueprints</span>
-        <span class="fpill" data-i18n="fields.pill.languages">🌍 EN · AR · DE lessons</span>
-      </div>
-    </header>
-
-    <!-- ── Feature strip ────────────────────────────────────────────────────── -->
-    <div class="fields-features-strip">
-      <div class="ffeature">
-        <div class="ffeature-icon">📚</div>
-        <div class="ffeature-body">
-          <strong data-i18n="fields.feature.tracks.title">Ready-made Tracks</strong>
-          <span data-i18n="fields.feature.tracks.body">Curated paths covering SQL, Python, React, React Native, and Interview Prep — each with measurable, lesson-level progress.</span>
-        </div>
-      </div>
-      <div class="ffeature">
-        <div class="ffeature-icon">✨</div>
-        <div class="ffeature-body">
-          <strong data-i18n="fields.feature.personalized.title">Personalized Lessons</strong>
-          <span data-i18n="fields.feature.personalized.body">Tell us what you want to learn, where you're starting from, and what you need to do by when. We turn that into a lesson built just for you.</span>
-        </div>
-      </div>
-      <div class="ffeature">
-        <div class="ffeature-icon">☁️</div>
-        <div class="ffeature-body">
-          <strong data-i18n="fields.feature.cloud.title">Cloud-synced Progress</strong>
-          <span data-i18n="fields.feature.cloud.body">Sign in with Google or email to sync progress across devices via Firestore. Access is enforced per-user, at the database level.</span>
-        </div>
-      </div>
-      <div class="ffeature">
-        <div class="ffeature-icon">🌍</div>
-        <div class="ffeature-body">
-          <strong data-i18n="fields.feature.multilingual.title">Multilingual Content</strong>
-          <span data-i18n="fields.feature.multilingual.body">Lessons available in English, German, and Arabic. Language preference is saved per-user and applied instantly.</span>
-        </div>
-      </div>
     </div>
+  </section>
 
-    <!-- ── Personalized Lessons entry (featured, above field cards) ─────────── -->
-    <div id="fields-footer" class="fields-footer"></div>
-
-    <!-- ── Section label ────────────────────────────────────────────────────── -->
-    <div class="fields-section-label">
-      <span data-i18n="fields.sectionLabel">Choose your learning track</span>
+  <footer>
+    <div class="container">
+      <p>© 2025 Clidatech · AI &amp; HealthTech Studio · Germany · Developed by <strong>Ali Attia</strong> · 2023–Jun 2025 · <a href="mailto:contact@clidatech.com">contact@clidatech.com</a></p>
     </div>
-
-    <!-- ── Field cards ──────────────────────────────────────────────────────── -->
-    <div id="fields-grid" class="fields-grid">
-      <!-- Field cards injected by renderFieldsLanding() in app.js. -->
-    </div>
-
-    <!-- ── Page footer ──────────────────────────────────────────────────────── -->
-    <footer class="fields-page-footer">
-      <div class="fields-page-footer-inner">
-        <span class="fpf-brand">SkillMap<span>·LMS</span></span>
-        <span class="fpf-sep">·</span>
-        <span class="fpf-by"><span data-i18n="fields.footer.builtBy">Built by</span> <a href="https://clidatech.com" target="_blank" rel="noopener">Clidatech</a></span>
-        <span class="fpf-sep">·</span>
-        <a href="mailto:contact@clidatech.com" class="fpf-contact">contact@clidatech.com</a>
-        <span class="fpf-sep">·</span>
-        <span class="fpf-tagline" data-i18n="fields.footer.tagline">A course that fits you is worth more than a hundred that don't</span>
-      </div>
-    </footer>
-
-  </div>
-
-  <!-- ①.5  Field overview — module picker sub-page ──────────────────────────
-       Shown after a field has been entered (enterField) but before a
-       specific module has been chosen — i.e. activeFieldId is set and
-       activeModuleId is still null. Lets the person see what's inside a
-       field, and pick a module deliberately, instead of landing straight
-       in the module shell the moment they click a field card.
-
-       Reuses the .fields-landing / .fields-header / .fields-grid /
-       .field-card classes from section ① above on purpose: same visual
-       language, one level down. Hidden by renderFieldsLanding()/
-       renderShell(); revealed by renderFieldOverview() in app.js.
-  ─────────────────────────────────────────────────────────────────────────── -->
-  <div id="field-overview" class="fields-landing" hidden>
-
-    <div class="field-overview-topbar">
-      <button id="btn-back-to-fields" class="pl-back-btn" type="button">
-        <span data-i18n="shell.backToFields">All tracks</span>
-      </button>
-    </div>
-
-    <header class="fields-header">
-      <div class="field-overview-icon" id="field-overview-icon">📚</div>
-      <h1 id="field-overview-title">Field title</h1>
-      <p  id="field-overview-subtitle">Field subtitle</p>
-    </header>
-
-    <!-- ── Section label ────────────────────────────────────────────────────── -->
-    <div class="fields-section-label">
-      <span data-i18n="field.chooseModule">Choose a module to start</span>
-    </div>
-
-    <!-- ── Lock notice — shown when a locked module card is clicked ────────── -->
-    <div id="module-lock-notice" class="lock-notice" hidden></div>
-
-    <!-- ── Module cards ─────────────────────────────────────────────────────── -->
-    <div id="module-overview-grid" class="fields-grid">
-      <!-- Module cards injected by renderFieldOverview() in app.js. -->
-    </div>
-
-  </div>
-
-  <!-- ②  App shell ──────────────────────────────────────────────────────────
-       Hidden until a field AND a module have been picked (or when no
-       fields are configured, renderShell() shows it immediately on load —
-       backward-compat mode).
-  ─────────────────────────────────────────────────────────────────────────── -->
-  <div id="app-shell" class="app-shell" hidden>
-
-    <aside class="sidebar">
-
-      <div class="sidebar-header">
-
-        <!-- Back to modules/fields (Phase 0, enhanced) ───────────────────
-             Label + destination are context-aware, set in app.js:
-               • Inside a normal field → "Modules", returns to the
-                 field-overview module picker (exitToFieldOverview()).
-               • Inside Personalized Lessons → "Fields", returns all the
-                 way out (exitToFields()) since that field has no
-                 module-overview step of its own.
-        ───────────────────────────────────────────────────────────────── -->
-        <button id="btn-back-fields" class="back-btn" type="button">
-          <span class="back-btn-arrow" aria-hidden="true">←</span>
-          <span id="back-fields-label" data-i18n="shell.backToFields">Tracks</span>
-        </button>
-
-        <!-- Brand ────────────────────────────────────────────────────────── -->
-        <div class="brand">
-          <h2 id="brand-name">SkillMap<span>·LMS</span></h2>
-          <p  id="brand-subtitle" class="brand-subtitle"></p>
-          <!-- Subtitle populated at runtime from active module titles (app.js) -->
-        </div>
-
-        <!-- Language switcher (Phase 2) ────────────────────────────────── -->
-        <div class="lang-switcher">
-          <button data-lang="en" class="lang-btn active">EN</button>
-          <button data-lang="ar" class="lang-btn">AR</button>
-          <button data-lang="de" class="lang-btn">DE</button>
-        </div>
-
-      </div><!-- end .sidebar-header -->
-
-      <div class="sidebar-scroll">
-        <section class="panel-block">
-          <div class="panel-title" id="module-nav-label" data-i18n="shell.modulesTitle">Modules</div>
-          <nav id="module-nav" class="module-nav">
-            <!-- Just the active module, injected by renderModuleNav() in
-                 app.js — picking a different module now happens one level
-                 up, on the field-overview page, not here. Clicking this
-                 card returns there. In Personalized Lessons mode,
-                 renderPersonalizedSidebarNav() replaces this content with
-                 lessons + pending request entries instead. -->
-          </nav>
-        </section>
-
-        <!-- Lesson navigation ──────────────────────────────────────────── -->
-        <section class="panel-block" id="lesson-nav-block">
-          <div class="panel-title" data-i18n="shell.lessonsTitle">Lessons</div>
-          <nav id="lesson-nav" class="lesson-nav">
-            <!-- Lesson buttons injected by renderLessonNav() in app.js.
-                 Hidden in Personalized Lessons mode (no sub-lesson nav). -->
-          </nav>
-        </section>
-
-      </div><!-- end .sidebar-scroll -->
-
-      <!-- Sticky footer: progress + reset — always visible, never scrolls
-           out of view, regardless of how long the lesson list above is. -->
-      <div class="sidebar-footer">
-
-        <!-- ── Sidebar account section ──────────────────────────────────────
-             Replaces the old floating top-right <details> pill. Two states:
-               • Signed out → compact "Sign in" row (click expands auth form)
-               • Signed in  → avatar + name + tier row (click expands panel)
-             The expandable panel (#auth-panel) slides open inline below the
-             trigger row. All IDs are UNCHANGED from the original account-bar
-             implementation so app.js needs zero edits.
-        ─────────────────────────────────────────────────────────────────── -->
-        <div id="sidebar-account" class="sidebar-account">
-
-          <!-- Trigger row: always visible, toggles the panel below ──────── -->
-          <button
-            id="sidebar-account-trigger"
-            class="sidebar-account-trigger"
-            type="button"
-            aria-expanded="false"
-            aria-controls="auth-panel">
-
-            <!-- Signed-out state: icon + label ─────────────────────────── -->
-            <div id="auth-signed-out" class="sa-signed-out">
-              <svg class="sa-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
-                <path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-              <span class="sa-label" data-i18n="auth.accountMenu">Sign in</span>
-            </div>
-
-            <!-- Signed-in state: avatar + name + tier ──────────────────── -->
-            <div id="auth-signed-in" class="sa-signed-in" hidden>
-              <img id="auth-avatar" src="" alt="" class="sa-avatar" />
-              <span class="sa-info">
-                <span id="auth-display-name" class="sa-name"></span>
-                <span id="auth-tier-badge" class="tier-badge"></span>
-              </span>
-            </div>
-
-            <!-- Chevron, rotates when open ──────────────────────────────── -->
-            <svg class="sa-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-
-          <!-- Expandable auth panel ───────────────────────────────────────
-               Hidden by default; toggled by #sidebar-account-trigger.
-               In signed-out mode: Google button + email/password form.
-               In signed-in mode: admin link + sign-out button.
-          ─────────────────────────────────────────────────────────────────  -->
-          <section id="auth-panel" class="sa-panel" hidden>
-
-            <!-- Signed-out form is inside #auth-signed-out (the trigger)
-                 but the inputs need to be accessible when the panel is
-                 open, so they live here in the panel body instead. ────── -->
-            <div class="sa-panel-inner">
-
-              <!-- Google sign-in -->
-              <button id="btn-google-signin" class="auth-btn google-btn" type="button">
-                <svg width="16" height="16" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908C16.658 14.018 17.64 11.71 17.64 9.2z" fill="#4285F4"/>
-                  <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-                  <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
-                  <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
-                </svg>
-                <span data-i18n="auth.googleButton">Continue with Google</span>
-              </button>
-
-              <div class="auth-divider" data-i18n="auth.orDivider">or</div>
-
-              <input id="auth-email"    type="email"    placeholder="Email"    autocomplete="email" />
-              <input id="auth-password" type="password" placeholder="Password" autocomplete="current-password" />
-
-              <div class="auth-actions">
-                <button id="btn-email-signin" type="button" data-i18n="auth.signInButton">Sign in</button>
-                <button id="btn-email-signup" type="button" data-i18n="auth.signUpButton">Sign up</button>
-              </div>
-
-              <p id="auth-error" class="auth-error" hidden></p>
-
-              <!-- Signed-in actions (admin link + sign out) ────────────── -->
-              <a id="btn-admin-panel" href="lms/admin/" target="_blank"
-                 class="admin-link" hidden data-i18n="auth.adminPanel">Admin panel ↗</a>
-              <button id="btn-signout" type="button" class="danger-btn sa-signout-btn" hidden>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span data-i18n="auth.signOut">Sign out</span>
-              </button>
-
-            </div>
-          </section>
-        </div>
-        <!-- end #sidebar-account ─────────────────────────────────────────── -->
-
-        <!-- Progress stats ───────────────────────────────────────────────── -->
-        <section class="panel-block stats-block">
-          <div id="progress-bars">
-            <!-- Progress rows injected by renderProgressBars() in app.js -->
-          </div>
-        </section>
-
-        <!-- Reset progress (always visible) ─────────────────────────────── -->
-        <button id="reset-progress" class="danger-btn" type="button" data-i18n="shell.resetButton">
-          Reset all progress
-        </button>
-
-      </div><!-- end .sidebar-footer -->
-
-    </aside><!-- end .sidebar -->
-
-    <!-- Lesson frame area ─────────────────────────────────────────────────── -->
-    <main class="main">
-
-      <!-- Welcome panel — visible until a lesson is loaded ──────────────── -->
-      <div id="welcome-panel" class="welcome-panel">
-        <h3 id="welcome-heading" data-i18n="welcome.heading">Your learning platform</h3>
-        <p  id="welcome-body"    data-i18n="welcome.body">Select a module to begin.</p>
-      </div>
-
-      <!-- ✨  Personalized Lessons panel ─────────────────────────────────────
-           Shown in the main content area when activeFieldId === 'personalized'
-           and no lesson is open in the iframe. Hidden otherwise.
-           Content is injected entirely by renderPersonalizedMainPanel() in app.js.
-           The form markup is generated programmatically — nothing is static here
-           so that the request list and form stay in sync with live Firestore data.
-      ──────────────────────────────────────────────────────────────────────── -->
-      <div id="personalized-panel" class="personalized-panel" hidden>
-        <!-- Populated by renderPersonalizedMainPanel() -->
-      </div>
-
-      <!-- Lesson iframe ──────────────────────────────────────────────────── -->
-      <iframe id="lesson-frame" class="lesson-frame" src="" title="Lesson content"></iframe>
-
-    </main>
-
-  </div><!-- end #app-shell -->
-
-  <!-- Entry point ────────────────────────────────────────────────────────── -->
-  <script type="module" src="lms/core/app.js"></script>
+  </footer>
 
 </body>
 </html>

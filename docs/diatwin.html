@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DiaTwin — Clinical AI Insulin Dosing · Clidatech</title>
+  <meta name="description" content="AI-powered T1D management platform with PK/PD engine, Gemini Vision food scanning, and CGM integration. M.Sc. thesis + live production product." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .proj-hero { background: linear-gradient(160deg, var(--bg) 50%, #081a15 100%); }
+
+    .validation-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(0,137,123,.07);
+      border: 1px solid rgba(0,137,123,.2);
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .validation-score {
+      font-family: var(--font-head);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--teal);
+      flex-shrink: 0;
+    }
+
+    .validation-bar p {
+      font-size: .95rem;
+      color: var(--text-2);
+    }
+
+    .validation-bar strong { color: var(--white); }
+
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .arch-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+
+    .arch-card .arch-label {
+      font-family: var(--font-mono);
+      font-size: .65rem;
+      color: var(--teal);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: .75rem;
+    }
+
+    .arch-card h4 {
+      font-size: 1rem;
+      margin-bottom: .5rem;
+    }
+
+    .arch-card p {
+      font-size: .88rem;
+      color: var(--text-2);
+      line-height: 1.55;
+    }
+
+    .arch-stack {
+      margin-top: .75rem;
+      font-family: var(--font-mono);
+      font-size: .67rem;
+      color: var(--text-3);
+    }
+
+    @media (max-width: 768px) {
+      .arch-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Clida<span>.</span>Tech</a>
+      <ul class="nav-links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="proj-hero">
+    <div class="container">
+      <a href="index.html" class="back-link">← Back to Portfolio</a>
+
+      <div class="label" style="margin-bottom:1.25rem;">M.Sc. Thesis · Live Product · 2023–2025</div>
+      <h1 class="fade-up">DiaTwin</h1>
+      <p class="lead fade-up-2">
+        Clinical AI insulin dosing support system for Type 1 Diabetes — integrating a
+        proprietary PK/PD engine, Gemini Vision food scanning, and real-time CGM
+        monitoring into a production-grade monorepo platform.
+      </p>
+
+      <div class="proj-links fade-up-3">
+        <a href="https://diatwin.clidatech.com" target="_blank" rel="noopener" class="btn btn-primary">Live Demo ↗</a>
+        <a href="https://github.com/aliattia02" target="_blank" rel="noopener" class="btn btn-outline">GitHub ↗</a>
+      </div>
+
+      <div class="chips fade-up-4">
+        <span class="tag">CE Class IIa Pathway</span>
+        <span class="tag amber">DiGA Fast-Track</span>
+        <span class="tag blue">TRL 4–5</span>
+        <span class="tag">AWMF S3 Guideline 057-013</span>
+      </div>
+
+      <div class="validation-bar fade-up-4">
+        <div class="validation-score">8.7<span style="font-size:1.2rem;">/10</span></div>
+        <p>
+          Clinical utility score by <strong> LMU Munich</strong>.
+          Dual-platform PK/PD engine with bit-for-bit identical Python + TypeScript implementations.
+          RL layer trained on <strong>50,000+ real meal-outcome pairs.</strong>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN SCREENSHOT -->
+  <section style="padding:3rem 0;">
+    <div class="container">
+      <img src="docs/screenshots/diatwin/diatwin-hero.png"
+           alt="DiaTwin — Main app interface"
+           class="proj-screenshot" style="aspect-ratio:16/7;">
+    </div>
+  </section>
+
+  <!-- KEY STATS -->
+  <section style="padding:3rem 0;">
+    <div class="container">
+      <div class="stat-grid">
+        <div class="stat-block">
+          <span class="stat-num">8.7</span>
+          <span class="stat-label">Clinical Utility Score / 10</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">50k+</span>
+          <span class="stat-label">Meal-Outcome Pairs (RL Layer)</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">14</span>
+          <span class="stat-label">Insulin Analogues Supported</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">3</span>
+          <span class="stat-label">Platforms (API, Web PWA, Mobile)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- FEATURES -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Core Features</div>
+      <h2 style="font-size:2rem; margin-bottom:2.5rem;">What DiaTwin Does</h2>
+
+      <div class="feature-grid" style="margin-bottom:3rem;">
+        <div class="feature-card">
+          <div class="feature-icon">⚗️</div>
+          <h4>Proprietary PK/PD Engine</h4>
+          <p>Dual-platform gamma engine (Python + TypeScript, bit-for-bit identical) modelling Insulin on Board (IOB) and Meal on Board (MOB) with circadian baseline correction. Covers 14 insulin analogues per AWMF S3 guideline 057-013.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📸</div>
+          <h4>AI-Powered Nutrition Scanning</h4>
+          <p>Gemini 2.5 Flash Vision pipeline converts food photos into structured nutrition data instantly — carbohydrates, protein, fat, glycaemic index — no manual entry required.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📡</div>
+          <h4>Real-Time CGM Integration</h4>
+          <p>Abbott FreeStyle Libre / LibreLinkUp integration with automatic unit conversion and token caching. Glucose trends fed directly into the dosing algorithm.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🧠</div>
+          <h4>Reinforcement Learning Layer</h4>
+          <p>RL model trained on 50,000+ real meal-outcome pairs personalises dosing suggestions over time, adapting to individual patient response patterns.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h4>Security &amp; Encryption</h4>
+          <p>JWT HS256 authentication and Fernet symmetric encryption for CGM credentials at rest and in transit. SecureStore for mobile credential management.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h4>Performance Optimisation</h4>
+          <p>60-second in-process LRU cache for patient constants to absorb mobile cold-start bursts. Redis-backed session management and Vercel edge deployment.</p>
+        </div>
+      </div>
+
+      <!-- Screenshot: Food scanning -->
+      <div class="two-col" style="gap:3rem; margin-bottom:4rem; align-items:center;">
+        <div>
+          <div class="label" style="margin-bottom:1rem;">AI Food Scanning</div>
+          <h3 style="font-size:1.6rem; margin-bottom:1rem;">From photo to nutrition data in seconds</h3>
+          <p style="color:var(--text-2); margin-bottom:1.25rem;">
+            Point the camera at any meal — the Gemini 2.5 Flash Vision pipeline extracts
+            a full nutritional breakdown and calculates the optimal carbohydrate-insulin ratio
+            based on the patient's personal PK/PD profile.
+          </p>
+          <div class="chips">
+            <span class="chip">Gemini 2.5 Flash</span>
+            <span class="chip">Vision API</span>
+            <span class="chip">Structured JSON output</span>
+          </div>
+        </div>
+        <img src="docs/screenshots/diatwin/diatwin-food-scan.png"
+             alt="DiaTwin — AI food scanning interface"
+             class="proj-screenshot">
+      </div>
+
+      <!-- Screenshot: CGM Dashboard -->
+      <div class="two-col reverse" style="gap:3rem; align-items:center;">
+        <div>
+          <div class="label" style="margin-bottom:1rem;">CGM Monitoring</div>
+          <h3 style="font-size:1.6rem; margin-bottom:1rem;">Real-time glucose trends &amp; IOB overlay</h3>
+          <p style="color:var(--text-2); margin-bottom:1.25rem;">
+            Live glucose data from Abbott FreeStyle Libre is overlaid with the calculated
+            Insulin on Board curve, giving patients and clinicians a clear picture of
+            the active insulin-glucose interplay at any moment.
+          </p>
+          <div class="chips">
+            <span class="chip">Abbott LibreLinkUp</span>
+            <span class="chip">Auto unit conversion</span>
+            <span class="chip">Token caching</span>
+          </div>
+        </div>
+        <img src="docs/screenshots/diatwin/diatwin-cgm-dashboard.png"
+             alt="DiaTwin — CGM dashboard and IOB graph"
+             class="proj-screenshot">
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section style="background:var(--bg-2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Technical Architecture</div>
+      <h2 style="font-size:2rem; margin-bottom:2.5rem;">Scalable · Secure · Monorepo</h2>
+
+      <div class="arch-grid">
+        <div class="arch-card">
+          <div class="arch-label">// Backend</div>
+          <h4>Python / Flask REST API</h4>
+          <p>35+ REST endpoints. PK/PD computation, RL inference, CGM proxy, and nutrition parsing all server-side. JWT middleware on every protected route.</p>
+          <div class="arch-stack">Flask · MongoDB Atlas · Redis · Render</div>
+        </div>
+        <div class="arch-card">
+          <div class="arch-label">// Web</div>
+          <h4>React 18 PWA</h4>
+          <p>Progressive Web App with offline capability, service workers, and responsive layouts. Deployed on Vercel with edge caching.</p>
+          <div class="arch-stack">React 18 · TypeScript · Zustand · Vercel</div>
+        </div>
+        <div class="arch-card">
+          <div class="arch-label">// Mobile</div>
+          <h4>Expo / React Native</h4>
+          <p>Cross-platform mobile app (iOS + Android) with SecureStore for credential management, Expo Camera for food scanning, and EAS Build.</p>
+          <div class="arch-stack">React Native · Expo · EAS · SecureStore</div>
+        </div>
+      </div>
+
+      <div style="margin-top:2.5rem;">
+        <div class="img-placeholder" style="aspect-ratio:21/9;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/>
+            <rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/>
+          </svg>
+          <p>[ DiaTwin Monorepo Architecture Diagram ]</p>
+          <p style="font-size:.65rem; color:var(--text-3); margin-top:.25rem;">Add your own architecture diagram here</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOBILE SCREENSHOTS -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Mobile Experience</div>
+      <h2 style="font-size:2rem; margin-bottom:2.5rem;">iOS &amp; Android App</h2>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem;">
+        <img src="docs/screenshots/diatwin/diatwin-mobile-home.png"
+             alt="DiaTwin — Mobile home screen"
+             class="proj-screenshot" style="aspect-ratio:9/19;">
+        <img src="docs/screenshots/diatwin/diatwin-mobile-foodscan.png"
+             alt="DiaTwin — Mobile food scan screen"
+             class="proj-screenshot" style="aspect-ratio:9/19;">
+        <img src="docs/screenshots/diatwin/diatwin-mobile-cgm.png"
+             alt="DiaTwin — Mobile CGM dashboard"
+             class="proj-screenshot" style="aspect-ratio:9/19;">
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>© 2025 Clidatech · <a href="index.html">Portfolio</a> · <a href="mailto:contact@clidatech.com">contact@clidatech.com</a> · Developed by <strong>Ali Attia</strong> · 2023–Jun 2025</p>
+    </div>
+  </footer>
+
+</body>
+</html>

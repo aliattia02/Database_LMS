@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E·OVR — Healthcare Incident Reporting &amp; Analytics · Clidatech</title>
+  <meta name="description" content="Production-grade healthcare incident reporting platform with 5-tier RBAC, NLP + ML triage, CSFLE encryption, MFA, Excel/PDF exports, JCI compliance, and scope-gated analytics." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── OVR accent colour ── */
+    :root {
+      --ovr:        #4f6ef7;
+      --ovr-dim:    rgba(79,110,247,.09);
+      --ovr-border: rgba(79,110,247,.22);
+      --ovr-glow:   0 0 24px rgba(79,110,247,.2);
+    }
+
+    .proj-hero { background: linear-gradient(160deg, var(--bg) 45%, #eef1ff 100%); }
+    .proj-hero .label { color: var(--ovr); }
+    .proj-hero .label::before { background: var(--ovr); }
+
+    /* ── OVR-tinted variants of shared classes ── */
+    .stat-block { transition: border-color .2s; }
+    .stat-block:hover { border-color: var(--ovr-border); }
+
+    /* ── Highlight bar ── */
+    .highlight-bar {
+      display: flex; align-items: flex-start; gap: 1.25rem;
+      background: var(--ovr-dim); border: 1px solid var(--ovr-border);
+      border-radius: 10px; padding: 1.25rem 1.5rem; margin-top: 2rem;
+    }
+    .highlight-bar p { font-size: .95rem; color: var(--text-2); line-height: 1.65; }
+    .highlight-bar strong { color: var(--white); }
+
+    /* ── Session hardening badge ── */
+    .session-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .35rem .85rem; border-radius: 99px;
+      font-family: var(--font-mono); font-size: .68rem; font-weight: 700;
+      letter-spacing: .05em;
+    }
+    .session-badge.done  { background: rgba(0,137,123,.1); border: 1px solid rgba(0,137,123,.3); color: var(--teal); }
+    .session-badge.todo  { background: rgba(217,119,6,.1);  border: 1px solid rgba(217,119,6,.3);  color: var(--amber); }
+    .session-badge.future{ background: rgba(79,110,247,.08); border: 1px solid var(--ovr-border); color: var(--ovr); }
+
+    /* ── Tier strip ── */
+    .tier-strip {
+      display: flex; border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden; margin: 2.5rem 0;
+    }
+    .tier-cell {
+      flex: 1; padding: .9rem .75rem; text-align: center;
+      border-right: 1px solid var(--border); background: var(--bg-2);
+      transition: background .2s;
+    }
+    .tier-cell:last-child { border-right: none; }
+    .tier-cell:hover { background: var(--ovr-dim); }
+    .tier-num  { font-family: var(--font-mono); font-size: .65rem; color: var(--ovr); letter-spacing: .1em; text-transform: uppercase; margin-bottom: .3rem; }
+    .tier-name { font-size: .82rem; font-weight: 700; color: var(--white); margin-bottom: .2rem; }
+    .tier-scope{ font-size: .72rem; color: var(--text-3); }
+
+    /* ── Workflow state machine ── */
+    .flow-wrap {
+      display: flex; align-items: center; justify-content: center;
+      flex-wrap: wrap; gap: .5rem; padding: 2rem;
+      background: var(--bg-2); border: 1px solid var(--border);
+      border-radius: 12px; margin-top: 1.5rem;
+    }
+    .flow-state {
+      padding: .45rem 1rem; border-radius: 6px;
+      font-family: var(--font-mono); font-size: .78rem; font-weight: 600; border: 1px solid;
+    }
+    .flow-state.created   { background: rgba(100,116,139,.1); border-color: rgba(100,116,139,.35); color: #64748b; }
+    .flow-state.inprog    { background: rgba(79,110,247,.1);  border-color: rgba(79,110,247,.35);  color: var(--ovr); }
+    .flow-state.eval      { background: rgba(217,119,6,.1);   border-color: rgba(217,119,6,.35);   color: var(--amber); }
+    .flow-state.moreinfo  { background: rgba(234,88,12,.1);   border-color: rgba(234,88,12,.35);   color: #ea580c; }
+    .flow-state.action    { background: rgba(0,137,123,.1);   border-color: rgba(0,137,123,.35);   color: var(--teal); }
+    .flow-state.completed { background: rgba(0,137,123,.18);  border-color: rgba(0,137,123,.5);    color: #007a70; }
+    .flow-arrow  { font-size: .9rem; color: var(--text-3); }
+    .flow-branch { display: flex; flex-direction: column; align-items: center; gap: .35rem; }
+    .flow-branch-label { font-size: .62rem; color: var(--text-3); font-family: var(--font-mono); }
+
+    /* ── Architecture 3-col ── */
+    .arch-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; }
+    .arch-card {
+      background: var(--bg-2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.5rem; transition: border-color .2s;
+    }
+    .arch-card:hover { border-color: var(--ovr-border); box-shadow: var(--ovr-glow); }
+    .arch-card .arch-label {
+      font-family: var(--font-mono); font-size: .65rem; color: var(--ovr);
+      letter-spacing: .12em; text-transform: uppercase; margin-bottom: .75rem;
+    }
+    .arch-card h4 { font-size: 1rem; margin-bottom: .5rem; }
+    .arch-card p  { font-size: .88rem; color: var(--text-2); line-height: 1.55; }
+    .arch-stack { margin-top: .75rem; font-family: var(--font-mono); font-size: .67rem; color: var(--text-3); line-height: 1.9; }
+
+    /* ── Security grid ── */
+    .security-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; margin-top: 2rem; }
+    .security-item {
+      display: flex; gap: 1rem; align-items: flex-start;
+      padding: 1.25rem; background: var(--bg-2);
+      border: 1px solid var(--border); border-radius: 10px;
+    }
+    .security-item h5 { font-size: .92rem; margin-bottom: .3rem; }
+    .security-item p  { font-size: .83rem; color: var(--text-2); line-height: 1.5; }
+
+    /* ── AI provider pills ── */
+    .provider-row  { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1rem; }
+    .provider-pill {
+      display: flex; align-items: center; gap: .4rem;
+      padding: .35rem .85rem; border-radius: 99px;
+      border: 1px solid var(--ovr-border); background: var(--ovr-dim);
+      font-family: var(--font-mono); font-size: .75rem; color: #4f6ef7;
+    }
+    .provider-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ovr); }
+
+    /* ── Analytics table ── */
+    .analytics-table { width: 100%; border-collapse: collapse; font-size: .85rem; margin-top: 1.5rem; }
+    .analytics-table th {
+      text-align: left; padding: .6rem 1rem;
+      font-family: var(--font-mono); font-size: .68rem;
+      letter-spacing: .1em; color: var(--ovr); text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+    .analytics-table td { padding: .65rem 1rem; color: var(--text-2); border-bottom: 1px solid var(--border); }
+    .analytics-table tr:last-child td { border-bottom: none; }
+    .analytics-table tr:hover td { background: var(--ovr-dim); }
+    .check { color: var(--teal); font-weight: 700; }
+    .dash  { color: var(--text-3); }
+
+    /* ── API endpoints ── */
+    .endpoint-group { margin-bottom: 2rem; }
+    .endpoint-group-label { font-family: var(--font-mono); font-size: .68rem; color: var(--ovr); letter-spacing: .12em; text-transform: uppercase; margin-bottom: .75rem; }
+    .endpoint-row {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .55rem .9rem; border-radius: 6px;
+      border: 1px solid transparent; margin-bottom: .3rem;
+      transition: border-color .15s, background .15s;
+    }
+    .endpoint-row:hover { background: var(--ovr-dim); border-color: var(--ovr-border); }
+    .method {
+      font-family: var(--font-mono); font-size: .7rem; font-weight: 700;
+      padding: .15rem .5rem; border-radius: 4px; min-width: 46px; text-align: center;
+    }
+    .method.get   { background: rgba(0,137,123,.12);  color: var(--teal); }
+    .method.post  { background: rgba(79,110,247,.12); color: var(--ovr); }
+    .method.patch { background: rgba(217,119,6,.1);   color: var(--amber); }
+    .endpoint-path { font-family: var(--font-mono); font-size: .78rem; color: var(--text-2); }
+    .endpoint-desc { font-size: .78rem; color: var(--text-3); margin-left: auto; }
+
+    /* ── Risk Matrix ── */
+    .risk-matrix { display: grid; grid-template-columns: repeat(3,1fr); gap: 3px; max-width: 320px; }
+    .risk-cell {
+      aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: .2rem; border-radius: 6px;
+      font-family: var(--font-mono); font-size: .68rem; font-weight: 700;
+      text-align: center; padding: .5rem;
+    }
+    .risk-cell .score { font-size: 1.1rem; line-height: 1; }
+    .risk-low  { background: rgba(0,137,123,.1);  color: #007a70; }
+    .risk-med  { background: rgba(217,119,6,.1);  color: var(--amber); }
+    .risk-high { background: rgba(220,38,38,.1);  color: var(--red); }
+    .risk-axis-label { font-family: var(--font-mono); font-size: .65rem; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; }
+
+    /* ── Route map table ── */
+    .route-table { width: 100%; border-collapse: collapse; font-size: .83rem; }
+    .route-table th {
+      text-align: left; padding: .55rem 1rem;
+      font-family: var(--font-mono); font-size: .65rem; letter-spacing: .1em;
+      color: var(--ovr); text-transform: uppercase; border-bottom: 1px solid var(--border);
+    }
+    .route-table td { padding: .55rem 1rem; color: var(--text-2); border-bottom: 1px solid var(--border); vertical-align: top; }
+    .route-table tr:last-child td { border-bottom: none; }
+    .route-table tr:hover td { background: var(--ovr-dim); }
+    .route-path { font-family: var(--font-mono); font-size: .78rem; color: var(--ovr); }
+    .access-badge {
+      display: inline-block; font-family: var(--font-mono); font-size: .62rem;
+      padding: .15rem .5rem; border-radius: 4px; font-weight: 600;
+    }
+    .access-public   { background: rgba(100,116,139,.1); color: #64748b; }
+    .access-protected{ background: rgba(79,110,247,.1);  color: var(--ovr); }
+    .access-role     { background: rgba(217,119,6,.1);   color: var(--amber); }
+
+    /* ── Data model code block ── */
+    .model-block {
+      background: var(--bg-3); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.5rem; font-family: var(--font-mono);
+      font-size: .75rem; color: var(--text-2); line-height: 2;
+      overflow-x: auto;
+    }
+    .model-block .field { color: var(--ovr); }
+    .model-block .type  { color: var(--teal); }
+    .model-block .note  { color: var(--text-3); }
+    .model-block .enc   { color: var(--amber); font-weight: 700; }
+
+    /* ── Deployment stack row ── */
+    .deploy-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-top: 1.5rem; }
+    .deploy-card {
+      background: var(--bg-2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.25rem; text-align: center;
+    }
+    .deploy-card .deploy-icon { font-size: 1.5rem; margin-bottom: .5rem; }
+    .deploy-card .deploy-label { font-family: var(--font-mono); font-size: .65rem; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .25rem; }
+    .deploy-card .deploy-val   { font-size: .85rem; font-weight: 700; color: var(--white); }
+
+    /* ── Gap tracker ── */
+    .gap-row { display: flex; align-items: baseline; gap: .75rem; padding: .55rem 0; border-bottom: 1px solid var(--border); font-size: .88rem; }
+    .gap-row:last-child { border-bottom: none; }
+    .gap-num { font-family: var(--font-mono); font-size: .65rem; color: var(--text-3); min-width: 28px; }
+    .gap-text { flex: 1; color: var(--text-2); }
+    .gap-text s { color: var(--text-3); }
+
+    /* ── CSFLE badge ── */
+    .csfle-list { list-style: none; margin-top: .75rem; }
+    .csfle-list li {
+      display: flex; align-items: center; gap: .5rem;
+      font-family: var(--font-mono); font-size: .75rem; color: var(--text-2);
+      padding: .3rem 0; border-bottom: 1px solid var(--border);
+    }
+    .csfle-list li:last-child { border-bottom: none; }
+    .csfle-list .enc-type {
+      font-size: .62rem; padding: .1rem .4rem; border-radius: 4px; font-weight: 700;
+    }
+    .enc-det { background: rgba(79,110,247,.1);  color: var(--ovr); }
+    .enc-rnd { background: rgba(217,119,6,.1);   color: var(--amber); }
+
+    /* ── MFA flow ── */
+    .mfa-flow { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-top: 1.25rem; }
+    .mfa-step {
+      display: flex; align-items: center; gap: .4rem;
+      background: var(--bg-2); border: 1px solid var(--border);
+      border-radius: 6px; padding: .4rem .75rem;
+      font-family: var(--font-mono); font-size: .72rem; color: var(--text-2);
+    }
+    .mfa-step.active { border-color: var(--ovr-border); background: var(--ovr-dim); color: var(--ovr); }
+    .mfa-arrow { color: var(--text-3); font-size: .75rem; }
+
+    /* ── Export cards ── */
+    .export-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1.5rem; }
+    .export-card {
+      background: var(--bg-2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.5rem; transition: border-color .2s;
+    }
+    .export-card:hover { border-color: var(--ovr-border); }
+    .export-card h4 { font-size: .95rem; margin-bottom: .5rem; }
+    .export-card p { font-size: .85rem; color: var(--text-2); line-height: 1.55; margin-bottom: .75rem; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .arch-grid    { grid-template-columns: 1fr; }
+      .security-grid{ grid-template-columns: 1fr; }
+      .export-grid  { grid-template-columns: 1fr; }
+      .deploy-grid  { grid-template-columns: repeat(2,1fr); }
+      .tier-strip   { flex-direction: column; }
+      .tier-cell    { border-right: none; border-bottom: 1px solid var(--border); }
+      .tier-cell:last-child { border-bottom: none; }
+      .endpoint-desc { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Clida<span>.</span>Tech</a>
+      <ul class="nav-links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════ -->
+  <section class="proj-hero">
+    <div class="container">
+      <a href="index.html" class="back-link">← Back to Portfolio</a>
+      <div class="label" style="margin-bottom:1.25rem;">Full-Stack System · Healthcare · 2024–2025</div>
+      <h1 class="fade-up">E·OVR</h1>
+      <p class="lead fade-up-2">
+        Electronic Occurrence &amp; Variance Reporting — a production-grade healthcare
+        incident reporting platform with 5-tier role architecture, NLP-powered narrative
+        analysis, ML-driven automated triage, TOTP-based MFA, multi-field CSFLE encryption,
+        scope-gated analytics, Excel &amp; Arabic PDF exports, and JCI compliance tracking.
+      </p>
+
+      <div class="proj-links fade-up-3">
+        <a href="https://eovr.clidatech.com" target="_blank" rel="noopener" class="btn btn-primary">Live Demo ↗</a>
+        <a href="https://github.com/aliattia02" target="_blank" rel="noopener" class="btn btn-outline">GitHub ↗</a>
+        <a href="#architecture" class="btn btn-ghost">Architecture ↓</a>
+      </div>
+
+      <div class="chips fade-up-4">
+        <span class="tag">React 18 + FastAPI</span>
+        <span class="tag amber">MongoDB CSFLE · 7 Encrypted Fields</span>
+        <span class="tag blue">NLP · Free-text Analysis</span>
+        <span class="tag blue">Automated Triage ML</span>
+        <span class="tag">JWT + MFA (TOTP)</span>
+        <span class="tag">5-Tier RBAC</span>
+        <span class="tag">Excel + Arabic PDF Export</span>
+        <span class="tag">JCI Compliance</span>
+      </div>
+
+      <div class="highlight-bar fade-up-4">
+        <div style="font-size:2rem; flex-shrink:0;">🏥</div>
+        <p>
+          End-to-end incident lifecycle: anonymous <strong>patient submission via QR link</strong>
+          → AI-assisted triage → controlled <strong>6-state workflow</strong> → risk matrix → CAPA
+          → JCI compliance → final report → export.
+          Scope-filtered analytics served to <strong>5 organisational tiers</strong>.
+          <strong>7 medical fields</strong> protected with client-side AES-256 field-level encryption.
+        </p>
+      </div>
+
+      <div style="display:flex; gap:.75rem; flex-wrap:wrap; margin-top:1.5rem;" class="fade-up-4">
+        <span class="session-badge done">✓ Session 1 Hardened</span>
+        <span class="session-badge todo">⏳ Session 2 — Frontend Completeness</span>
+        <span class="session-badge todo">⏳ Session 3 — Testing Suite</span>
+        <span class="session-badge future">🔮 Vector Search (future)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section style="padding:3rem 0;">
+    <div class="container">
+      <div class="stat-grid">
+        <div class="stat-block"><span class="stat-num">5</span><span class="stat-label">Organisational Tiers</span></div>
+        <div class="stat-block"><span class="stat-num">6</span><span class="stat-label">Workflow States</span></div>
+        <div class="stat-block"><span class="stat-num">3</span><span class="stat-label">AI Providers</span></div>
+        <div class="stat-block"><span class="stat-num">50+</span><span class="stat-label">REST API Endpoints</span></div>
+        <div class="stat-block"><span class="stat-num">7</span><span class="stat-label">CSFLE-Encrypted Fields</span></div>
+        <div class="stat-block"><span class="stat-num">14</span><span class="stat-label">Frontend Routes</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- ══════════════════════════════════════════
+       ROLE TIERS
+  ══════════════════════════════════════════ -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Access Control</div>
+      <h2 style="font-size:2rem; margin-bottom:.75rem;">Five-Tier Role Architecture</h2>
+      <p style="color:var(--text-2); max-width:600px; margin-bottom:1rem;">
+        Every API endpoint and analytics query is gated by tier. Scope filters cascade
+        automatically from JWT claims — a facility user only ever sees their own incidents;
+        national management sees all.
+      </p>
+
+      <div class="tier-strip">
+        <div class="tier-cell">
+          <div class="tier-num">Tier 1–2</div>
+          <div class="tier-name">Staff Reporter</div>
+          <div class="tier-scope">Own incidents · Submit · Read</div>
+        </div>
+        <div class="tier-cell">
+          <div class="tier-num">Tier 2</div>
+          <div class="tier-name">Quality Admin</div>
+          <div class="tier-scope">Facility · Workflow · AI review · MFA</div>
+        </div>
+        <div class="tier-cell">
+          <div class="tier-num">Tier 3</div>
+          <div class="tier-name">Administration Mgr</div>
+          <div class="tier-scope">Administration · Analytics trends</div>
+        </div>
+        <div class="tier-cell">
+          <div class="tier-num">Tier 4</div>
+          <div class="tier-name">Governorate Mgr</div>
+          <div class="tier-scope">Governorate · Comparison charts</div>
+        </div>
+        <div class="tier-cell">
+          <div class="tier-num">Tier 5</div>
+          <div class="tier-name">Top Management</div>
+          <div class="tier-scope">National · Provision · QR links · AI admin</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- ══════════════════════════════════════════
+       CORE FEATURES
+  ══════════════════════════════════════════ -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Core Features</div>
+      <h2 style="font-size:2rem; margin-bottom:2.5rem;">What E·OVR Does</h2>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🔄</div>
+          <h4>6-State Controlled Workflow</h4>
+          <p>Strict state machine: Created → InProgress → Evaluating ⇄ MoreInfoNeeded → ActionTaken → Completed. Every transition is validated server-side against <code style="font-family:var(--font-mono);font-size:.8rem;">_ALLOWED_TRANSITIONS</code> and appended to an immutable audit trail with user ID, old status, and timestamp.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <h4>NLP + Automated Triage</h4>
+          <p>Two distinct AI capabilities: <strong>NLP</strong> reads free-text narratives to extract context beyond rigid drop-downs. <strong>Automated triage</strong> ML-scores and flags high-risk events at submission time. Provider-agnostic: OpenAI, Anthropic, or Google — hot-swappable via env var. AI failure never blocks submission.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔐</div>
+          <h4>Multi-Field CSFLE Encryption</h4>
+          <p>MongoDB Client-Side Field Level Encryption protects 7 fields before they ever leave the application — deterministic AES-256 for searchable fields, random AEAD for all others. Works independently of server-side encryption; plaintext never transits the wire.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h4>Scope-Gated Analytics</h4>
+          <p>Aggregation pipelines serve status/severity breakdowns, 12-month trend series, and cross-facility comparison charts. Three analytics endpoints each enforce a minimum tier — tier 2 for summary, tier 3 for trends, tier 4 for comparison.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🏥</div>
+          <h4>JCI Compliance Tracking</h4>
+          <p>Dedicated JCI compliance panel covering chapter, standard, measurable element, compliance status (Met/PartiallyMet/NotMet/N/A), evidence, gap analysis, and action plan — all editable by quality admins and above via a dedicated <code style="font-family:var(--font-mono);font-size:.8rem;">PATCH /jci-fields</code> endpoint.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📁</div>
+          <h4>Excel &amp; Arabic PDF Exports</h4>
+          <p>Scoped incident export to Excel (openpyxl) and per-incident PDF reports (reportlab) with full Arabic RTL support via <code style="font-family:var(--font-mono);font-size:.8rem;">arabic-reshaper</code> and <code style="font-family:var(--font-mono);font-size:.8rem;">python-bidi</code>. Both streams are scoped by the requesting user's role claims.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔗</div>
+          <h4>Anonymous Patient Reporting + QR</h4>
+          <p>Each facility has a UUID v4 patient link. Patients submit incidents without any login. Top management generates QR codes (qrcode.react) for facility reception desks. Incidents enter the same 6-state workflow tagged <code style="font-family:var(--font-mono);font-size:.8em;">reporter_type=patient</code>.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h4>TOTP MFA + Dual-Token Auth</h4>
+          <p>Opt-in TOTP MFA via <code style="font-family:var(--font-mono);font-size:.8rem;">pyotp</code>. Login returns a <code style="font-family:var(--font-mono);font-size:.8em;">temp_token</code> when MFA is enabled; full access token issued only after TOTP verification. Short-lived access token in memory + httpOnly refresh cookie with 15-min idle timeout.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📧</div>
+          <h4>SendGrid Email Notifications</h4>
+          <p>Automated email alerts on incident submission and status changes via SendGrid. Email service degrades gracefully — if <code style="font-family:var(--font-mono);font-size:.8em;">SENDGRID_API_KEY</code> is absent or placeholder, notifications are silently skipped; workflows continue unaffected.</p>
+        </div>
+      </div>
+
+      <!-- Session 1 hardening callout -->
+      <div class="highlight-bar" style="margin-top:2.5rem;">
+        <div style="font-size:1.5rem; flex-shrink:0;">⚙️</div>
+        <div>
+          <p style="font-size:.9rem; margin-bottom:.5rem;">
+            <strong>Session 1 hardening applied (2026-05-04):</strong> <code style="font-family:var(--font-mono);font-size:.8em;">UserInDB</code> refactored — no plain-text password field. Startup validation with fail-fast env var checks. <code style="font-family:var(--font-mono);font-size:.8em;">GET /health</code> endpoint added. CORS parsing fixed. <code style="font-family:var(--font-mono);font-size:.8em;">render.yaml</code> and <code style="font-family:var(--font-mono);font-size:.8em;">Dockerfile</code> hardened. Duplicate AI feedback endpoint removed. <code style="font-family:var(--font-mono);font-size:.8em;">requirements.txt</code> fully pinned.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- ══════════════════════════════════════════
+       STATE MACHINE
+  ══════════════════════════════════════════ -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Incident Lifecycle</div>
+      <h2 style="font-size:2rem; margin-bottom:.5rem;">6-State Machine</h2>
+      <p style="color:var(--text-2); max-width:560px; font-size:.95rem;">
+        Invalid transitions return HTTP 400. Every valid transition appends a timestamped audit entry — user ID, old status, new status. The <code style="font-family:var(--font-mono);">MoreInfoNeeded</code> loop allows quality admins to request clarification before evaluation continues.
+      </p>
+      <div class="flow-wrap">
+        <div class="flow-state created">Created</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-state inprog">In Progress</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-branch">
+          <div class="flow-state eval">Evaluating</div>
+          <div style="display:flex; align-items:center; gap:.35rem; margin-top:.3rem;">
+            <div class="flow-branch-label">⇅ loop</div>
+            <div class="flow-state moreinfo">More Info Needed</div>
+          </div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-state action">Action Taken</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-state completed">Completed</div>
+      </div>
+
+      <!-- Risk matrix -->
+      <div class="two-col" style="gap:4rem; margin-top:3.5rem; align-items:flex-start;">
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">Risk Assessment</div>
+          <h3 style="font-size:1.4rem; margin-bottom:.75rem;">3×3 Risk Matrix</h3>
+          <p style="color:var(--text-2); font-size:.9rem; margin-bottom:1.5rem;">
+            Quality admins assign Severity × Probability to compute a <code style="font-family:var(--font-mono);">risk_score</code> server-side. The matrix is rendered as a clickable 3×3 grid (<code style="font-family:var(--font-mono);">RiskMatrix.jsx</code>). Human score and AI risk score are stored and displayed side-by-side.
+          </p>
+          <div style="display:flex; gap:2rem; align-items:flex-start; flex-wrap:wrap;">
+            <div>
+              <div class="risk-axis-label" style="margin-bottom:.5rem; text-align:center;">Probability →</div>
+              <div style="display:flex; gap:4px; align-items:center;">
+                <div style="writing-mode:vertical-lr; transform:rotate(180deg); margin-right:4px;">
+                  <span class="risk-axis-label">Severity ↑</span>
+                </div>
+                <div class="risk-matrix">
+                  <div class="risk-cell risk-low"><span class="score">2</span><span>Low</span></div>
+                  <div class="risk-cell risk-med"><span class="score">4</span><span>Med</span></div>
+                  <div class="risk-cell risk-high"><span class="score">6</span><span>High</span></div>
+                  <div class="risk-cell risk-med"><span class="score">4</span><span>Med</span></div>
+                  <div class="risk-cell risk-high"><span class="score">6</span><span>High</span></div>
+                  <div class="risk-cell risk-high"><span class="score">9</span><span>Critical</span></div>
+                  <div class="risk-cell risk-low"><span class="score">3</span><span>Low</span></div>
+                  <div class="risk-cell risk-med"><span class="score">4</span><span>Med</span></div>
+                  <div class="risk-cell risk-med"><span class="score">6</span><span>Med</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">Classification Enums</div>
+          <h3 style="font-size:1.4rem; margin-bottom:.75rem;">Error Types &amp; Event Categories</h3>
+          <div class="chips" style="margin-bottom:1rem;">
+            <span class="chip">Medication</span>
+            <span class="chip">Administrative</span>
+            <span class="chip">Clinical</span>
+            <span class="chip">Equipment</span>
+            <span class="chip">InfectionControl</span>
+            <span class="chip">Falls</span>
+            <span class="chip">Documentation</span>
+            <span class="chip">Behavior</span>
+            <span class="chip">WorkplaceViolence</span>
+            <span class="chip">Environmental</span>
+          </div>
+          <div class="label" style="margin-bottom:.5rem; margin-top:1rem;">Event Types</div>
+          <div class="chips">
+            <span class="chip">IncidentEvent</span>
+            <span class="chip">NearMiss</span>
+            <span class="chip">AdverseEvent</span>
+            <span class="chip">SignificantEvent</span>
+            <span class="chip tag amber" style="border-radius:99px;">SentinelEvent</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- ══════════════════════════════════════════
+       AI LAYER
+  ══════════════════════════════════════════ -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">AI &amp; Machine Learning</div>
+      <h2 style="font-size:1.8rem; margin-bottom:.5rem;">Two Distinct AI Capabilities</h2>
+      <p style="color:var(--text-2); max-width:620px; margin-bottom:2.5rem;">
+        E·OVR uses ML for two independent, named purposes. Each solves a different problem in the incident reporting lifecycle. AI is provider-agnostic and fully disabled until activation.
+      </p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:3rem;">
+        <div class="arch-card" style="border-color:var(--ovr-border); background:var(--ovr-dim); padding:2rem;">
+          <div class="arch-label">// Capability 01</div>
+          <div style="font-size:1.4rem; margin-bottom:.75rem;">🧠</div>
+          <h3 style="font-size:1.1rem; margin-bottom:.75rem;">Natural Language Processing</h3>
+          <p style="color:var(--text-2); font-size:.88rem; line-height:1.65; margin-bottom:1rem;">
+            Reads and analyses the <strong style="color:var(--white);">free-text narrative</strong> — extracting nuanced context, contributing factors, and edge cases that checkbox forms miss.
+          </p>
+          <div style="font-family:var(--font-mono); font-size:.72rem; color:var(--text-3); line-height:2;">
+            Populates → <span style="color:var(--ovr);">auto_classification</span> ·
+            <span style="color:var(--ovr);">auto_event_type</span> ·
+            <span style="color:var(--ovr);">signal_flags</span>
+          </div>
+        </div>
+        <div class="arch-card" style="border-color:var(--ovr-border); background:var(--ovr-dim); padding:2rem;">
+          <div class="arch-label">// Capability 02</div>
+          <div style="font-size:1.4rem; margin-bottom:.75rem;">⚡</div>
+          <h3 style="font-size:1.1rem; margin-bottom:.75rem;">Automated Triage &amp; Categorisation</h3>
+          <p style="color:var(--text-2); font-size:.88rem; line-height:1.65; margin-bottom:1rem;">
+            ML algorithms <strong style="color:var(--white);">compute a risk score</strong> at submission time — instantly flagging critical or high-risk events. Complements, never replaces, the human risk matrix.
+          </p>
+          <div style="font-family:var(--font-mono); font-size:.72rem; color:var(--text-3); line-height:2;">
+            Populates → <span style="color:var(--ovr);">ai_risk_score</span> ·
+            <span style="color:var(--ovr);">classification_score</span> ·
+            <span style="color:var(--ovr);">signal_flags</span> ·
+            <span style="color:var(--ovr);">embedding_vector</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col" style="gap:3rem; align-items:flex-start;">
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">Human-in-the-Loop</div>
+          <h3 style="font-size:1.2rem; margin-bottom:.75rem;">QA Review &amp; Labelled Feedback</h3>
+          <p style="color:var(--text-2); font-size:.9rem; line-height:1.65; margin-bottom:1rem;">
+            Quality admins review NLP and triage outputs via the <strong style="color:var(--white);">AIBadge</strong> — accepting or overriding the classification. Every review stores the AI suggestion alongside the human choice, creating a labelled dataset for model refinement.
+          </p>
+          <div class="provider-row">
+            <div class="provider-pill"><div class="dot"></div>OpenAI</div>
+            <div class="provider-pill"><div class="dot"></div>Anthropic</div>
+            <div class="provider-pill"><div class="dot"></div>Google Gemini</div>
+            <div class="provider-pill" style="opacity:.5;"><div class="dot" style="background:var(--text-3);"></div>Disabled (none)</div>
+          </div>
+        </div>
+        <div>
+          <div class="arch-card">
+            <div class="arch-label">// ai_metadata schema</div>
+            <div style="font-family:var(--font-mono); font-size:.72rem; color:var(--text-2); line-height:2;">
+              <span style="color:var(--ovr);">auto_classification</span>     · string, optional<br>
+              <span style="color:var(--ovr);">auto_event_type</span>          · string, optional<br>
+              <span style="color:var(--ovr);">classification_score</span>     · float [0.0–1.0]<br>
+              <span style="color:var(--ovr);">ai_risk_score</span>            · int [1–9]<br>
+              <span style="color:var(--ovr);">similar_incident_ids</span>     · string[]<br>
+              <span style="color:var(--ovr);">signal_flags</span>             · string[]<br>
+              <span style="color:var(--ovr);">embedding_vector</span>         · float[1536]<br>
+              <span style="color:var(--ovr);">model_version</span>            · string<br>
+              <span style="color:var(--ovr);">human_reviewed</span>           · bool<br>
+              <span style="color:var(--ovr);">feedback.ai_suggested</span>   · string<br>
+              <span style="color:var(--ovr);">feedback.human_chose</span>    · string<br>
+            </div>
+          </div>
+          <p style="font-size:.78rem; color:var(--text-3); margin-top:.75rem;">
+            AI failure never blocks incident save — fields remain null and the form submits successfully.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- ══════════════════════════════════════════
+       ANALYTICS
+  ══════════════════════════════════════════ -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Data &amp; Analytics</div>
+      <h2 style="font-size:2rem; margin-bottom:.75rem;">Tier-Gated Analytics Dashboard</h2>
+      <p style="color:var(--text-2); max-width:580px; margin-bottom:.5rem;">
+        MongoDB aggregation pipelines serve summary cards, 12-month trend series, and cross-facility comparison charts. Backend scope filters ensure each tier only sees data it is authorised to access. <code style="font-family:var(--font-mono);font-size:.85rem;">high_risk</code> and <code style="font-family:var(--font-mono);font-size:.85rem;">pending_ai_review</code> are derived on the frontend.
+      </p>
+
+      <table class="analytics-table">
+        <thead>
+          <tr>
+            <th>Endpoint</th><th>Min. Tier</th>
+            <th>Staff</th><th>Quality Admin</th><th>Admin Mgr</th><th>Gov. Mgr</th><th>Top Mgmt</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code style="font-family:var(--font-mono);font-size:.8rem;">GET /analytics/summary</code></td>
+            <td>Tier 2</td>
+            <td class="dash">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td>
+          </tr>
+          <tr>
+            <td><code style="font-family:var(--font-mono);font-size:.8rem;">GET /analytics/trends</code></td>
+            <td>Tier 3</td>
+            <td class="dash">—</td><td class="dash">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td>
+          </tr>
+          <tr>
+            <td><code style="font-family:var(--font-mono);font-size:.8rem;">GET /analytics/compare</code></td>
+            <td>Tier 4</td>
+            <td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td><td class="check">✓</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="chips" style="margin-top:1.5rem;">
+        <span class="chip">Status breakdown</span>
+        <span class="chip">Severity pie chart</span>
+        <span class="chip">12-month trend line</span>
+        <span class="chip">Facility comparison bar</span>
+        <span class="chip">Recharts</span>
+        <span class="chip">?dimension=facility|governorate</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- ══════════════════════════════════════════
+       SECURITY MODEL
+  ══════════════════════════════════════════ -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Security</div>
+      <h2 style="font-size:2rem; margin-bottom:.5rem;">Defence in Depth</h2>
+
+      <!-- MFA flow -->
+      <h3 style="font-size:1.2rem; margin:.75rem 0 .5rem;">TOTP MFA Login Flow</h3>
+      <div class="mfa-flow">
+        <div class="mfa-step">POST /auth/login</div>
+        <div class="mfa-arrow">→</div>
+        <div class="mfa-step active">requires_mfa: true + temp_token</div>
+        <div class="mfa-arrow">→</div>
+        <div class="mfa-step">POST /auth/mfa/verify</div>
+        <div class="mfa-arrow">→</div>
+        <div class="mfa-step active">access_token + httpOnly cookie</div>
+      </div>
+      <p style="color:var(--text-2); font-size:.85rem; margin-top:.75rem; max-width:600px;">
+        TOTP secret generated via <code style="font-family:var(--font-mono);">pyotp.random_base32()</code>, stored on user document.
+        <code style="font-family:var(--font-mono);">mfa_pending</code> claims are rejected by <code style="font-family:var(--font-mono);">get_current_user</code>.
+        15-min idle timeout dispatches session expiry warning via <code style="font-family:var(--font-mono);">CustomEvent</code>.
+      </p>
+
+      <div class="security-grid">
+        <div class="security-item">
+          <div style="font-size:1.4rem; flex-shrink:0;">🔑</div>
+          <div>
+            <h5>Dual-Token JWT</h5>
+            <p>15-min access token in memory + 30-day refresh token in httpOnly cookie (SameSite=Lax, Secure in prod). Refresh tokens are bcrypt-hashed in DB; up to 10 retained per user. Logout invalidates hash. Silent refresh on 401 via Axios interceptor.</p>
+          </div>
+        </div>
+        <div class="security-item">
+          <div style="font-size:1.4rem; flex-shrink:0;">🧬</div>
+          <div>
+            <h5>CSFLE — 7 Encrypted Fields</h5>
+            <p><code style="font-family:var(--font-mono);font-size:.8em;">medical_file_number</code> — deterministic AES-256 (searchable). <code style="font-family:var(--font-mono);font-size:.8em;">involved_person, responsible_manager, disclosure_responsible, description, specific_error, notes</code> — random AEAD (non-searchable). Local KMS master key; plaintext never reaches the server wire.</p>
+          </div>
+        </div>
+        <div class="security-item">
+          <div style="font-size:1.4rem; flex-shrink:0;">🛂</div>
+          <div>
+            <h5>Role Gating + Scope Filter</h5>
+            <p><code style="font-family:var(--font-mono);font-size:.8em;">require_role()</code> FastAPI dependency at every router. <code style="font-family:var(--font-mono);font-size:.8em;">get_scope_filter()</code> builds MongoDB queries dynamically from JWT claims — facility / administration / governorate / all — ensuring data never leaks across tiers.</p>
+          </div>
+        </div>
+        <div class="security-item">
+          <div style="font-size:1.4rem; flex-shrink:0;">🚀</div>
+          <div>
+            <h5>Startup Validation + Health Check</h5>
+            <p><code style="font-family:var(--font-mono);font-size:.8em;">startup_checks.py</code> runs before DB connection — fails hard on missing <code style="font-family:var(--font-mono);font-size:.8em;">MONGO_URL</code>, <code style="font-family:var(--font-mono);font-size:.8em;">JWT_SECRET</code>, or invalid CSFLE key. <code style="font-family:var(--font-mono);font-size:.8em;">GET /health</code> returns DB, AI, and SendGrid status; used as Render healthCheckPath.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CSFLE field list -->
+      <div class="two-col" style="gap:3rem; margin-top:2.5rem; align-items:flex-start;">
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">CSFLE Field Map</div>
+          <h3 style="font-size:1.2rem; margin-bottom:.75rem;">Encrypted incident fields</h3>
+          <ul class="csfle-list">
+            <li><span class="enc-type enc-det">DET</span> <code style="font-family:var(--font-mono);font-size:.8rem;">medical_file_number</code> <span style="color:var(--text-3); font-size:.72rem;">— deterministic, searchable</span></li>
+            <li><span class="enc-type enc-rnd">RND</span> <code style="font-family:var(--font-mono);font-size:.8rem;">involved_person</code></li>
+            <li><span class="enc-type enc-rnd">RND</span> <code style="font-family:var(--font-mono);font-size:.8rem;">responsible_manager</code></li>
+            <li><span class="enc-type enc-rnd">RND</span> <code style="font-family:var(--font-mono);font-size:.8rem;">disclosure_responsible</code></li>
+            <li><span class="enc-type enc-rnd">RND</span> <code style="font-family:var(--font-mono);font-size:.8rem;">description</code></li>
+            <li><span class="enc-type enc-rnd">RND</span> <code style="font-family:var(--font-mono);font-size:.8rem;">specific_error</code></li>
+            <li><span class="enc-type enc-rnd">RND</span> <code style="font-family:var(--font-mono);font-size:.8rem;">notes</code></li>
+          </ul>
+          <p style="font-size:.78rem; color:var(--text-3); margin-top:.75rem;">
+            DET = AEAD-AES-256-CBC-HMAC-SHA-512 deterministic · RND = AEAD random
+          </p>
+        </div>
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">JWT Claims</div>
+          <h3 style="font-size:1.2rem; margin-bottom:.75rem;">Access token payload</h3>
+          <div class="model-block">
+            <span class="field">user_id</span>      · <span class="type">str</span>  <span class="note">— user document ID</span><br>
+            <span class="field">sub</span>           · <span class="type">str</span>  <span class="note">— same as user_id</span><br>
+            <span class="field">role</span>          · <span class="type">str</span>  <span class="note">— UserRole enum</span><br>
+            <span class="field">facility</span>      · <span class="type">str</span>  <span class="note">— scope filter</span><br>
+            <span class="field">administration</span>· <span class="type">str</span>  <span class="note">— scope filter</span><br>
+            <span class="field">governorate</span>   · <span class="type">str</span>  <span class="note">— scope filter</span><br>
+            <span class="field">tier</span>          · <span class="type">int</span>  <span class="note">— analytics gate</span><br>
+            <span class="field">mfa_pending</span>   · <span class="type">bool</span> <span class="note">— temp token only</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- ══════════════════════════════════════════
+       EXPORTS
+  ══════════════════════════════════════════ -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Export Engine</div>
+      <h2 style="font-size:2rem; margin-bottom:.75rem;">Excel &amp; Arabic PDF Reports</h2>
+      <p style="color:var(--text-2); max-width:580px;">
+        Both export endpoints are scoped to the requesting user's role — a facility user only
+        exports their facility's incidents; top management exports everything.
+      </p>
+      <div class="export-grid">
+        <div class="export-card">
+          <div style="font-size:1.5rem; margin-bottom:.75rem;">📊</div>
+          <h4>Excel Export</h4>
+          <p>Scoped incident list exported as a formatted <code style="font-family:var(--font-mono);font-size:.8rem;">.xlsx</code> file streamed directly from FastAPI. Built with <strong>openpyxl</strong> — full column formatting, auto-width, and header rows. Auth-scoped via <code style="font-family:var(--font-mono);font-size:.8em;">get_scope_filter</code>.</p>
+          <div class="chips"><span class="chip">openpyxl</span><span class="chip">GET /exports/excel</span><span class="chip">Scoped</span></div>
+        </div>
+        <div class="export-card">
+          <div style="font-size:1.5rem; margin-bottom:.75rem;">📄</div>
+          <h4>Arabic PDF Report</h4>
+          <p>Per-incident PDF generated with <strong>reportlab</strong>. Full Arabic RTL support: text is reshaped via <code style="font-family:var(--font-mono);font-size:.8rem;">arabic-reshaper</code> and bidi-reordered via <code style="font-family:var(--font-mono);font-size:.8rem;">python-bidi</code> before rendering. Font path configurable via <code style="font-family:var(--font-mono);font-size:.8em;">PDF_ARABIC_FONT_PATH</code> env var.</p>
+          <div class="chips"><span class="chip">reportlab</span><span class="chip">arabic-reshaper</span><span class="chip">python-bidi</span><span class="chip">RTL</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- ══════════════════════════════════════════
+       JCI COMPLIANCE
+  ══════════════════════════════════════════ -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">JCI Compliance</div>
+      <h2 style="font-size:2rem; margin-bottom:.75rem;">Joint Commission International Tracking</h2>
+      <p style="color:var(--text-2); max-width:580px; margin-bottom:2rem;">
+        Each incident carries an optional JCI compliance panel editable by quality admins and top management via <code style="font-family:var(--font-mono);">PATCH /incidents/{id}/jci-fields</code>. Covers all 14 JCI chapters with structured compliance evidence.
+      </p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:flex-start;">
+        <div>
+          <div class="label" style="margin-bottom:.75rem;">JCI Chapters (14)</div>
+          <div class="chips">
+            <span class="chip">IPSG</span><span class="chip">ACC</span><span class="chip">PFR</span>
+            <span class="chip">AOP</span><span class="chip">COP</span><span class="chip">ASC</span>
+            <span class="chip">MMU</span><span class="chip">PFE</span><span class="chip">QPS</span>
+            <span class="chip">PCI</span><span class="chip">GLD</span><span class="chip">FMS</span>
+            <span class="chip">SQE</span><span class="chip">MCI</span>
+          </div>
+          <div class="label" style="margin-top:1.5rem; margin-bottom:.5rem;">Compliance Status</div>
+          <div class="chips">
+            <span class="chip">Met</span>
+            <span class="chip" style="color:var(--amber); border-color:rgba(217,119,6,.3);">PartiallyMet</span>
+            <span class="chip" style="color:var(--red); border-color:rgba(220,38,38,.3);">NotMet</span>
+            <span class="chip">NotApplicable</span>
+          </div>
+        </div>
+        <div>
+          <div class="model-block">
+            <span class="note">// Group A — read-only disclosure fields</span><br>
+            <span class="field">disclosure_date</span>         · date<br>
+            <span class="field">disclosure_method</span>       · verbal | written | not_yet<br>
+            <span class="field">vulnerable_patient</span>      · bool<br>
+            <span class="field">medication_error_merp_category</span> · str<br>
+            <span class="note">// Group B — editable JCI fields</span><br>
+            <span class="field">jci_chapter</span>             · JCIChapter<br>
+            <span class="field">jci_standard</span>            · str<br>
+            <span class="field">jci_measurable_element</span>  · str<br>
+            <span class="field">jci_compliance_status</span>   · JCIComplianceStatus<br>
+            <span class="field">jci_evidence</span>            · str<br>
+            <span class="field">jci_gap_analysis</span>        · str<br>
+            <span class="field">jci_action_plan</span>         · str
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- ══════════════════════════════════════════
+       ARCHITECTURE
+  ══════════════════════════════════════════ -->
+  <section id="architecture" style="background:var(--bg-3); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Technical Architecture</div>
+      <h2 style="font-size:2rem; margin-bottom:2.5rem;">Full-Stack Monorepo</h2>
+
+      <div class="arch-grid">
+        <div class="arch-card">
+          <div class="arch-label">// Frontend · Vercel</div>
+          <h4>React 18 SPA</h4>
+          <p>Role-driven sidebar routing, React Query (5-min staleTime) for server state, React Hook Form for incident submission, Recharts for analytics. Axios base URL <code style="font-family:var(--font-mono);font-size:.8em;">/api</code> proxied to backend in dev.</p>
+          <div class="arch-stack">React 18 · React Router 6 · React Query 5<br>Recharts · React Hook Form · qrcode.react · Vite</div>
+        </div>
+        <div class="arch-card">
+          <div class="arch-label">// Backend · Render</div>
+          <h4>FastAPI + Motor</h4>
+          <p>Async MongoDB driver (Motor) with FastAPI lifespan. 7 routers: auth, incidents, analytics, facilities, exports, users, ai, health. CSFLE auto-encryption applied at startup. Non-root Docker user, HEALTHCHECK configured.</p>
+          <div class="arch-stack">FastAPI · Motor · Pydantic · python-jose<br>passlib · pyotp · openpyxl · reportlab · SendGrid · httpx</div>
+        </div>
+        <div class="arch-card">
+          <div class="arch-label">// Data Layer · Atlas</div>
+          <h4>MongoDB Atlas</h4>
+          <p>5 collections: incidents, facilities, users, model_registry, counters. Collision-free incident IDs via atomic counter. CSFLE schema map on 7 fields. Aggregation pipelines for all analytics. 7 indexes created at startup.</p>
+          <div class="arch-stack">MongoDB Atlas · CSFLE · Aggregation Pipelines<br>Motor async driver · counters collection</div>
+        </div>
+      </div>
+
+      <!-- Deployment row -->
+      <div style="margin-top:3rem;">
+        <div class="label" style="margin-bottom:.75rem;">Deployment Topology</div>
+        <div class="deploy-grid">
+          <div class="deploy-card">
+            <div class="deploy-icon">▲</div>
+            <div class="deploy-label">Frontend</div>
+            <div class="deploy-val">Vercel SPA</div>
+          </div>
+          <div class="deploy-card">
+            <div class="deploy-icon">⬡</div>
+            <div class="deploy-label">Backend</div>
+            <div class="deploy-val">Render · Starter</div>
+          </div>
+          <div class="deploy-card">
+            <div class="deploy-icon">🍃</div>
+            <div class="deploy-label">Database</div>
+            <div class="deploy-val">MongoDB Atlas</div>
+          </div>
+          <div class="deploy-card">
+            <div class="deploy-icon">🐳</div>
+            <div class="deploy-label">Docker</div>
+            <div class="deploy-val">python:3.11-slim</div>
+          </div>
+        </div>
+        <p style="font-family:var(--font-mono); font-size:.72rem; color:var(--text-3); margin-top:1rem;">
+          Build: <code>pip install -r requirements.txt &amp;&amp; python scripts/seed_model_registry.py</code> ·
+          Start: <code>uvicorn app.main:app --host 0.0.0.0 --port $PORT</code> ·
+          Health: <code>GET /health</code>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       FRONTEND ROUTE MAP
+  ══════════════════════════════════════════ -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Frontend</div>
+      <h2 style="font-size:2rem; margin-bottom:.75rem;">14-Route Application Map</h2>
+      <p style="color:var(--text-2); max-width:560px; margin-bottom:1.5rem;">
+        Protected routes require a valid access token. RoleRoutes further restrict by allowed roles. Session restore calls <code style="font-family:var(--font-mono);">/auth/refresh</code> then <code style="font-family:var(--font-mono);">/auth/me</code> on mount.
+      </p>
+      <div style="overflow-x:auto;">
+        <table class="route-table">
+          <thead>
+            <tr><th>Route</th><th>Component</th><th>Access</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="route-path">/login</td><td>LoginForm</td><td><span class="access-badge access-public">Public</span></td><td style="color:var(--text-3); font-size:.8rem;">MFA routing from here</td></tr>
+            <tr><td class="route-path">/mfa/verify</td><td>MFAVerify</td><td><span class="access-badge access-public">Public</span></td><td style="color:var(--text-3); font-size:.8rem;">Uses sessionStorage temp token</td></tr>
+            <tr><td class="route-path">/report/:uuid</td><td>PatientReport</td><td><span class="access-badge access-public">Public</span></td><td style="color:var(--text-3); font-size:.8rem;">Anonymous patient submission</td></tr>
+            <tr><td class="route-path">/change-password</td><td>ChangePassword</td><td><span class="access-badge access-public">Public</span></td><td style="color:var(--text-3); font-size:.8rem;">First-login password reset</td></tr>
+            <tr><td class="route-path">/dashboard</td><td>Dashboard</td><td><span class="access-badge access-protected">Protected (minTier 2)</span></td><td style="color:var(--text-3); font-size:.8rem;">Analytics for tier ≥3</td></tr>
+            <tr><td class="route-path">/incidents</td><td>Reports</td><td><span class="access-badge access-protected">Protected</span></td><td style="color:var(--text-3); font-size:.8rem;">⏳ Pagination — Session 2</td></tr>
+            <tr><td class="route-path">/incidents/:id</td><td>IncidentDetail</td><td><span class="access-badge access-protected">Protected</span></td><td style="color:var(--text-3); font-size:.8rem;">⏳ JCI panel, error feedback — Session 2</td></tr>
+            <tr><td class="route-path">/new</td><td>NewIncidentForm</td><td><span class="access-badge access-protected">Protected</span></td><td style="color:var(--text-3); font-size:.8rem;">Staff + quality_admin only</td></tr>
+            <tr><td class="route-path">/analytics</td><td>Analytics</td><td><span class="access-badge access-protected">Protected (minTier 3)</span></td><td style="color:var(--text-3); font-size:.8rem;">⏳ CompareView stub — Session 2</td></tr>
+            <tr><td class="route-path">/mfa/setup</td><td>MFASetup</td><td><span class="access-badge access-protected">Protected</span></td><td style="color:var(--text-3); font-size:.8rem;">Scans TOTP QR code</td></tr>
+            <tr><td class="route-path">/workflow</td><td>WorkflowPage</td><td><span class="access-badge access-role">RoleRoute</span></td><td style="color:var(--text-3); font-size:.8rem;">⏳ Missing roles fix — Session 2</td></tr>
+            <tr><td class="route-path">/admin/provision</td><td>AdminProvision</td><td><span class="access-badge access-role">top_management</span></td><td style="color:var(--text-3); font-size:.8rem;">User provisioning + QR codes</td></tr>
+            <tr><td class="route-path">*</td><td>FallbackRedirect</td><td><span class="access-badge access-public">Public</span></td><td style="color:var(--text-3); font-size:.8rem;">→ /dashboard or /login</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- ══════════════════════════════════════════
+       API REFERENCE
+  ══════════════════════════════════════════ -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">API Reference</div>
+      <h2 style="font-size:2rem; margin-bottom:2.5rem;">7 Routers · 50+ Endpoints</h2>
+
+      <div class="endpoint-group">
+        <div class="endpoint-group-label">// auth</div>
+        <div class="endpoint-row"><span class="method post">POST</span><span class="endpoint-path">/auth/login</span><span class="endpoint-desc">Issue access + refresh or MFA temp_token</span></div>
+        <div class="endpoint-row"><span class="method post">POST</span><span class="endpoint-path">/auth/mfa/setup</span><span class="endpoint-desc">Generate TOTP secret</span></div>
+        <div class="endpoint-row"><span class="method post">POST</span><span class="endpoint-path">/auth/mfa/verify</span><span class="endpoint-desc">Validate TOTP → issue full access token</span></div>
+        <div class="endpoint-row"><span class="method post">POST</span><span class="endpoint-path">/auth/refresh</span><span class="endpoint-desc">Silent token refresh via httpOnly cookie</span></div>
+        <div class="endpoint-row"><span class="method post">POST</span><span class="endpoint-path">/auth/logout</span><span class="endpoint-desc">Delete cookie + invalidate stored hash</span></div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/auth/me</span><span class="endpoint-desc">Current user profile</span></div>
+        <div class="endpoint-row"><span class="method post">POST</span><span class="endpoint-path">/auth/change-password</span><span class="endpoint-desc">Clears must_change_password</span></div>
+      </div>
+
+      <div class="endpoint-group">
+        <div class="endpoint-group-label">// incidents</div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/incidents/</span><span class="endpoint-desc">Scoped list — skip + limit</span></div>
+        <div class="endpoint-row"><span class="method post">POST</span><span class="endpoint-path">/incidents/</span><span class="endpoint-desc">Create + AI hook + insert</span></div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/incidents/{id}</span><span class="endpoint-desc">Scoped single incident</span></div>
+        <div class="endpoint-row"><span class="method patch">PATCH</span><span class="endpoint-path">/incidents/{id}/status</span><span class="endpoint-desc">State machine transition</span></div>
+        <div class="endpoint-row"><span class="method patch">PATCH</span><span class="endpoint-path">/incidents/{id}/assessment</span><span class="endpoint-desc">Risk matrix save — computes risk_score</span></div>
+        <div class="endpoint-row"><span class="method patch">PATCH</span><span class="endpoint-path">/incidents/{id}/actions</span><span class="endpoint-desc">CAPA corrective/preventive</span></div>
+        <div class="endpoint-row"><span class="method patch">PATCH</span><span class="endpoint-path">/incidents/{id}/jci-fields</span><span class="endpoint-desc">JCI compliance panel update</span></div>
+        <div class="endpoint-row"><span class="method post">POST</span><span class="endpoint-path">/incidents/{id}/final</span><span class="endpoint-desc">Finalise → Completed (from ActionTaken only)</span></div>
+        <div class="endpoint-row"><span class="method post">POST</span><span class="endpoint-path">/incidents/{id}/ai-feedback</span><span class="endpoint-desc">Accept / override AI suggestion</span></div>
+      </div>
+
+      <div class="endpoint-group">
+        <div class="endpoint-group-label">// analytics</div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/analytics/summary</span><span class="endpoint-desc">Status / severity / event_type (tier ≥2)</span></div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/analytics/trends</span><span class="endpoint-desc">12-month monthly series (tier ≥3)</span></div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/analytics/compare</span><span class="endpoint-desc">Facility/governorate comparison (tier ≥4)</span></div>
+      </div>
+
+      <div class="endpoint-group">
+        <div class="endpoint-group-label">// exports</div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/exports/excel</span><span class="endpoint-desc">Scoped .xlsx file stream</span></div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/exports/pdf/{id}</span><span class="endpoint-desc">Per-incident Arabic PDF stream</span></div>
+      </div>
+
+      <div class="endpoint-group">
+        <div class="endpoint-group-label">// patients</div>
+        <div class="endpoint-row"><span class="method post">POST</span><span class="endpoint-path">/patients/submit/{uuid}</span><span class="endpoint-desc">Anonymous patient submission</span></div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/patients/token/{facility_id}</span><span class="endpoint-desc">Patient link UUID (top_management)</span></div>
+      </div>
+
+      <div class="endpoint-group">
+        <div class="endpoint-group-label">// facilities</div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/facilities/</span><span class="endpoint-desc">Public safe list (no UUID)</span></div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/facilities/cascading</span><span class="endpoint-desc">Nested dropdown data (public)</span></div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/facilities/full</span><span class="endpoint-desc">Full list with UUIDs (top_management)</span></div>
+      </div>
+
+      <div class="endpoint-group">
+        <div class="endpoint-group-label">// users · ai · health</div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/users</span><span class="endpoint-desc">User list (top_management)</span></div>
+        <div class="endpoint-row"><span class="method post">POST</span><span class="endpoint-path">/users/provision/facility/{id}</span><span class="endpoint-desc">Create staff + quality_admin pair</span></div>
+        <div class="endpoint-row"><span class="method post">POST</span><span class="endpoint-path">/users/provision/tier</span><span class="endpoint-desc">Create tier 3–5 users</span></div>
+        <div class="endpoint-row"><span class="method patch">PATCH</span><span class="endpoint-path">/users/{id}/deactivate</span><span class="endpoint-desc">Set is_active=false</span></div>
+        <div class="endpoint-row"><span class="method post">POST</span><span class="endpoint-path">/ai/classify/batch</span><span class="endpoint-desc">Batch classify (top_management)</span></div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/ai/models</span><span class="endpoint-desc">Model registry</span></div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/health</span><span class="endpoint-desc">DB / AI / SendGrid status · always 200</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       KNOWN GAPS / ROADMAP
+  ══════════════════════════════════════════ -->
+  <section style="background:var(--bg-3); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Roadmap</div>
+      <h2 style="font-size:2rem; margin-bottom:1.5rem;">Gap Tracker &amp; Pending Sessions</h2>
+
+      <div class="two-col" style="gap:4rem; align-items:flex-start;">
+        <div>
+          <div class="label" style="margin-bottom:.75rem; color:var(--amber);">⏳ Session 2 — Frontend Completeness</div>
+          <div class="gap-row"><span class="gap-num">1</span><span class="gap-text">Pagination UI on IncidentList</span><span class="session-badge todo">Todo</span></div>
+          <div class="gap-row"><span class="gap-num">2</span><span class="gap-text">JCI panel in IncidentDetail</span><span class="session-badge todo">Todo</span></div>
+          <div class="gap-row"><span class="gap-num">3</span><span class="gap-text">Error feedback on all 5 mutations</span><span class="session-badge todo">Todo</span></div>
+          <div class="gap-row"><span class="gap-num">4</span><span class="gap-text">WorkflowView role access fix</span><span class="session-badge todo">Todo</span></div>
+          <div class="gap-row"><span class="gap-num">5</span><span class="gap-text">Session expiry warning (13/15 min)</span><span class="session-badge todo">Todo</span></div>
+          <div class="gap-row"><span class="gap-num">6</span><span class="gap-text">CompareView implementation</span><span class="session-badge todo">Todo</span></div>
+          <div class="gap-row"><span class="gap-num">7</span><span class="gap-text">QRCodeView implementation</span><span class="session-badge todo">Todo</span></div>
+          <div class="gap-row"><span class="gap-num">8</span><span class="gap-text">WorkflowStep component</span><span class="session-badge todo">Todo</span></div>
+        </div>
+        <div>
+          <div class="label" style="margin-bottom:.75rem; color:var(--amber);">⏳ Session 3 — Testing</div>
+          <div class="gap-row"><span class="gap-num">1</span><span class="gap-text">Frontend test runner (Vitest + MSW)</span><span class="session-badge todo">Todo</span></div>
+          <div class="gap-row"><span class="gap-num">2</span><span class="gap-text">Auth integration tests (6 tests)</span><span class="session-badge todo">Todo</span></div>
+          <div class="gap-row"><span class="gap-num">3</span><span class="gap-text">Incident lifecycle tests (5 tests)</span><span class="session-badge todo">Todo</span></div>
+          <div class="gap-row"><span class="gap-num">4</span><span class="gap-text">Frontend unit tests (7 tests)</span><span class="session-badge todo">Todo</span></div>
+          <div style="margin-top:1.5rem;">
+            <div class="label" style="margin-bottom:.75rem; color:var(--teal);">✓ Session 1 — Hardening</div>
+            <div class="gap-row"><span class="gap-num">✓</span><span class="gap-text" style="text-decoration:line-through;">UserInDB plain-text password</span><span class="session-badge done">Done</span></div>
+            <div class="gap-row"><span class="gap-num">✓</span><span class="gap-text" style="text-decoration:line-through;">Startup env validation</span><span class="session-badge done">Done</span></div>
+            <div class="gap-row"><span class="gap-num">✓</span><span class="gap-text" style="text-decoration:line-through;">Health check endpoint</span><span class="session-badge done">Done</span></div>
+            <div class="gap-row"><span class="gap-num">✓</span><span class="gap-text" style="text-decoration:line-through;">CORS parsing + dev fallback</span><span class="session-badge done">Done</span></div>
+            <div class="gap-row"><span class="gap-num">✓</span><span class="gap-text" style="text-decoration:line-through;">render.yaml + Dockerfile hardened</span><span class="session-badge done">Done</span></div>
+            <div class="gap-row"><span class="gap-num">✓</span><span class="gap-text" style="text-decoration:line-through;">requirements.txt pinned</span><span class="session-badge done">Done</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       TECH STACK
+  ══════════════════════════════════════════ -->
+  <section style="padding:2.5rem 0;">
+    <div class="container">
+      <div class="label" style="margin-bottom:1rem;">Full Tech Stack</div>
+      <div class="chips">
+        <span class="chip">React 18</span>
+        <span class="chip">React Router 6</span>
+        <span class="chip">React Query 5</span>
+        <span class="chip">React Hook Form</span>
+        <span class="chip">Recharts</span>
+        <span class="chip">qrcode.react</span>
+        <span class="chip">date-fns</span>
+        <span class="chip">Vite 5</span>
+        <span class="chip">FastAPI</span>
+        <span class="chip">Motor (async MongoDB)</span>
+        <span class="chip">Pydantic</span>
+        <span class="chip">python-jose JWT</span>
+        <span class="chip">passlib bcrypt</span>
+        <span class="chip">pyotp (TOTP MFA)</span>
+        <span class="chip">openpyxl</span>
+        <span class="chip">reportlab</span>
+        <span class="chip">arabic-reshaper</span>
+        <span class="chip">python-bidi</span>
+        <span class="chip">httpx</span>
+        <span class="chip">MongoDB CSFLE</span>
+        <span class="chip">NLP Free-text Analysis</span>
+        <span class="chip">Automated Triage ML</span>
+        <span class="chip">OpenAI / Anthropic / Google</span>
+        <span class="chip">SendGrid</span>
+        <span class="chip">Vercel</span>
+        <span class="chip">Render</span>
+        <span class="chip">Docker (python:3.11-slim)</span>
+        <span class="chip">MongoDB Atlas</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>© 2025 Clidatech · <a href="index.html">Portfolio</a> · <a href="mailto:contact@clidatech.com">contact@clidatech.com</a> · Developed by <strong>Ali Attia</strong> · 2023–Jun 2025</p>
+    </div>
+  </footer>
+
+</body>
+</html>

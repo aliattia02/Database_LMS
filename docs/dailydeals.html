@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DailyDeals — Smart Shopping Companion · Clidatech</title>
+  <meta name="description" content="Bilingual Arabic/English shopping app live on Google Play. Three-tier caching, RTL support, Leaflet branch maps, serving 5 Egyptian governorates." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .proj-hero { background: linear-gradient(160deg, var(--bg) 50%, #1a1005 100%); }
+
+    .store-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .75rem;
+      background: #000;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: .75rem 1.25rem;
+      color: var(--white);
+      font-family: var(--font-mono);
+      font-size: .8rem;
+      transition: all .25s;
+    }
+
+    .store-badge:hover {
+      border-color: var(--amber);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    .store-badge-icon { font-size: 1.4rem; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Clida<span>.</span>Tech</a>
+      <ul class="nav-links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="proj-hero">
+    <div class="container">
+      <a href="index.html" class="back-link">← Back to Portfolio</a>
+
+      <div class="label" style="margin-bottom:1.25rem;">Android App · Live Production</div>
+      <h1 class="fade-up">DailyDeals</h1>
+      <p class="lead fade-up-2">
+        Bilingual Arabic/English smart shopping companion for the Egyptian market.
+        Full RTL support, three-tier caching for instant offline loads, interactive
+        Leaflet branch maps, and live on Google Play serving 5 governorates.
+      </p>
+
+      <div class="proj-links fade-up-3">
+        <a href="https://play.google.com/store/apps/details?id=com.medlyticssolutions.dailydeals&hl=ar"
+           target="_blank" rel="noopener" class="store-badge">
+          <span class="store-badge-icon">▶</span>
+          <span>Google Play Store ↗</span>
+        </a>
+        <a href="https://github.com/aliattia02" target="_blank" rel="noopener" class="btn btn-outline">GitHub ↗</a>
+      </div>
+
+      <div class="chips fade-up-4" style="margin-top:1.5rem;">
+        <span class="tag amber">Live · Google Play</span>
+        <span class="tag">5 Governorates</span>
+        <span class="tag">Arabic RTL</span>
+        <span class="tag blue">Three-tier Cache</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN SCREENSHOT -->
+  <section style="padding:3rem 0;">
+    <div class="container">
+      <img src="docs/screenshots/dailydeals/dailydeals-screen-home.png"
+           alt="DailyDeals — Home screen showing active deals"
+           class="proj-screenshot" style="aspect-ratio:16/7;">
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section style="padding:3rem 0;">
+    <div class="container">
+      <div class="stat-grid">
+        <div class="stat-block">
+          <span class="stat-num">5</span>
+          <span class="stat-label">Egyptian Governorates Served</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">3</span>
+          <span class="stat-label">Caching Layers (Firestore / Local / Memory)</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">2</span>
+          <span class="stat-label">Languages (Arabic RTL + English)</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">Live</span>
+          <span class="stat-label">Google Play Store Status</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- FEATURES -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Core Features</div>
+      <h2 style="font-size:2rem; margin-bottom:2.5rem;">Built for Egypt's Market</h2>
+
+      <div class="feature-grid" style="margin-bottom:3rem;">
+        <div class="feature-card">
+          <div class="feature-icon">🌍</div>
+          <h4>Bilingual RTL Support</h4>
+          <p>Full Arabic and English UI with proper right-to-left layout, culturally appropriate date formats, and localised number formatting. Powered by i18next with zero layout regressions.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h4>Three-Tier Caching</h4>
+          <p>Firestore remote data, local AsyncStorage persistence, and in-memory Redux state — ensuring instant catalogue loads and full offline resilience even on slow Egyptian mobile networks.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🗺️</div>
+          <h4>Interactive Branch Maps</h4>
+          <p>Leaflet-based maps with direct-call buttons and navigation integration for national retailers (Carrefour, etc.) and local businesses. Filter by governorate in one tap.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛒</div>
+          <h4>Smart Shopping Basket</h4>
+          <p>Persistent basket with live price calculation, a favourites system, and real-time deal status tracking — Active, Upcoming, or Expired — surfaced with colour-coded banners.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📍</div>
+          <h4>Location-Based Filtering</h4>
+          <p>Dynamic store filtering based on the user's current governorate. Automatically surfaces the most relevant deals and branches without manual selection.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h4>Error Monitoring &amp; Analytics</h4>
+          <p>Sentry integration for crash reporting and error monitoring. Redux-managed ad-frequency control prevents over-exposure and keeps the experience clean.</p>
+        </div>
+      </div>
+
+      <!-- Screenshot: Store Directory -->
+      <div class="two-col" style="gap:3rem; margin-bottom:4rem; align-items:center;">
+        <div>
+          <div class="label" style="margin-bottom:1rem;">Store Directory</div>
+          <h3 style="font-size:1.6rem; margin-bottom:1rem;">Find any branch, call in one tap</h3>
+          <p style="color:var(--text-2); margin-bottom:1rem;">
+            A full interactive directory of national and local retailers. Each listing shows
+            opening hours, contact number, Leaflet map location, and live deal count.
+            Direct-call and Google Maps navigation built in.
+          </p>
+          <div class="chips">
+            <span class="chip">Leaflet.js</span>
+            <span class="chip">Firebase Firestore</span>
+            <span class="chip">Direct-call integration</span>
+          </div>
+        </div>
+        <img src="docs/screenshots/dailydeals/dailydeals-store-directory.png"
+             alt="DailyDeals — Store directory and branch map"
+             class="proj-screenshot">
+      </div>
+
+      <!-- Screenshot: Shopping Basket -->
+      <div class="two-col reverse" style="gap:3rem; align-items:center;">
+        <div>
+          <div class="label" style="margin-bottom:1rem;">Shopping Basket</div>
+          <h3 style="font-size:1.6rem; margin-bottom:1rem;">Persistent deals tracker</h3>
+          <p style="color:var(--text-2); margin-bottom:1rem;">
+            Add deals to your basket across sessions — the three-tier cache keeps everything
+            in sync whether the user is online, offline, or switching devices. Real-time total
+            calculation with currency-aware formatting.
+          </p>
+          <div class="chips">
+            <span class="chip">AsyncStorage</span>
+            <span class="chip">Redux</span>
+            <span class="chip">i18next · RTL</span>
+          </div>
+        </div>
+        <img src="docs/screenshots/dailydeals/dailydeals-screen-basket.png"
+             alt="DailyDeals — Shopping basket and price summary"
+             class="proj-screenshot">
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH STACK -->
+  <section style="background:var(--bg-2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">Tech Stack</div>
+      <h2 style="font-size:2rem; margin-bottom:2rem;">Mobile-First · Offline-Resilient</h2>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.25rem;">
+        <div class="card" style="padding:1.25rem;">
+          <div style="font-family:var(--font-mono); font-size:.7rem; color:var(--amber); margin-bottom:.6rem;">// Frontend</div>
+          <div class="chips"><span class="chip">React Native</span><span class="chip">Expo</span><span class="chip">TypeScript</span></div>
+        </div>
+        <div class="card" style="padding:1.25rem;">
+          <div style="font-family:var(--font-mono); font-size:.7rem; color:var(--amber); margin-bottom:.6rem;">// State &amp; Storage</div>
+          <div class="chips"><span class="chip">Redux</span><span class="chip">AsyncStorage</span><span class="chip">Firebase Firestore</span></div>
+        </div>
+        <div class="card" style="padding:1.25rem;">
+          <div style="font-family:var(--font-mono); font-size:.7rem; color:var(--amber); margin-bottom:.6rem;">// Maps &amp; i18n</div>
+          <div class="chips"><span class="chip">Leaflet.js</span><span class="chip">i18next</span><span class="chip">RTL support</span></div>
+        </div>
+        <div class="card" style="padding:1.25rem;">
+          <div style="font-family:var(--font-mono); font-size:.7rem; color:var(--amber); margin-bottom:.6rem;">// Monitoring</div>
+          <div class="chips"><span class="chip">Sentry</span><span class="chip">EAS Build</span><span class="chip">Google Play</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOBILE SCREENSHOTS -->
+  <section>
+    <div class="container">
+      <div class="label" style="margin-bottom:.75rem;">App Screens</div>
+      <h2 style="font-size:2rem; margin-bottom:2rem;">Bilingual Interface</h2>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1rem;">
+        <img src="docs/screenshots/dailydeals/dailydeals-screen-home.png"
+             alt="DailyDeals — Home / Deals screen"
+             class="proj-screenshot" style="aspect-ratio:9/19;">
+        <img src="docs/screenshots/dailydeals/dailydeals-screen-map.png"
+             alt="DailyDeals — Store branch map"
+             class="proj-screenshot" style="aspect-ratio:9/19;">
+        <img src="docs/screenshots/dailydeals/dailydeals-screen-basket.png"
+             alt="DailyDeals — Basket view"
+             class="proj-screenshot" style="aspect-ratio:9/19;">
+        <img src="docs/screenshots/dailydeals/dailydeals-screen-arabic.png"
+             alt="DailyDeals — Arabic RTL interface"
+             class="proj-screenshot" style="aspect-ratio:9/19;">
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>© 2025 Clidatech · <a href="index.html">Portfolio</a> · <a href="mailto:contact@clidatech.com">contact@clidatech.com</a> · Developed by <strong>Ali Attia</strong> · 2023–Jun 2025</p>
+    </div>
+  </footer>
+
+</body>
+</html>
